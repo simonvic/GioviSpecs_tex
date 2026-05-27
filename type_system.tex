@@ -423,9 +423,9 @@ Map of $\omega_\kappa$ keys (widest  among $\kappa$) and $\omega_\nu$ (widest am
 	\infrule{
 		\Gamma\vdash \beta \in \texttt{Number} \quad b:\beta\\*
 		\Gamma\vdash \epsilon \in \texttt{Number} \quad e:\epsilon \\*
-		\Gamma\vdash \tau = \beta \sqcap \epsilon
+		\Gamma\vdash \omega = \beta \sqcap \epsilon
 	}{
-		\Gamma\vdash \code{$b$..$e$} : \exists\tau.\texttt{Range}
+		\Gamma\vdash \code{$b$..$e$} : \exists\omega.\texttt{Range}
 	}
 \]
 Range from $b$ (begin) to $e$ (end)
@@ -435,9 +435,9 @@ Range from $b$ (begin) to $e$ (end)
 		\Gamma\vdash \beta \in \texttt{Number} \quad b:\beta\\*
 		\Gamma\vdash \epsilon \in \texttt{Number} \quad e:\epsilon \\*
 		\Gamma\vdash \sigma \in \texttt{Number} \quad s:\sigma \\*
-		\Gamma\vdash \tau = \beta \sqcap \epsilon \sqcap \sigma
+		\Gamma\vdash \omega = \beta \sqcap \epsilon \sqcap \sigma
 	}{
-		\Gamma\vdash \code{$b$..$e$..$s$} : \exists\tau.\texttt{Range}
+		\Gamma\vdash \code{$b$..$e$..$s$} : \exists\omega.\texttt{Range}
 	}
 \]
 
