@@ -217,14 +217,6 @@
 \]
 
 \[
-	\Gamma\vdash \texttt{Natural} \leq \texttt{Int}
-\]
-
-\[
-	\quad \Gamma\vdash \texttt{Int} \leq \texttt{Real}
-\]
-
-\[
 	\infrule{
 		\Gamma\vdash \tau:\texttt{Type}
 	}{
@@ -240,6 +232,11 @@
 		\Gamma\vdash \tau_1 \leq \tau_3
 	}
 	\qquad \text{Transitivity}
+\]
+
+\[
+	\Gamma\vdash \texttt{Natural} \leq \texttt{Int}
+	\qquad \Gamma\vdash \texttt{Int} \leq \texttt{Real}
 \]
 
 \[
