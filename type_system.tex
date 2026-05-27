@@ -278,7 +278,7 @@
 
 \[
 	\infrule{
-		\Gamma; \quad x \in \mathbb{Z}; \quad x \in [-2^{31}, 2^{31} - 1]
+		\Gamma\vdash x \in \mathbb{Z} \quad x \in [-2^{31}, 2^{31} - 1]
 	}{
 		\Gamma\vdash \code{$x$} : \texttt{Int} \\*
 		\land \Gamma\vdash \code{$x$i} : \texttt{Int}
@@ -291,7 +291,7 @@
 
 \[
 	\infrule{
-		\Gamma; \quad x \in \mathbb{N}; \quad x \in [0, 2^{31}]
+		\Gamma\vdash x \in \mathbb{N} \quad x \in [0, 2^{31}]
 	}{
 		\Gamma\vdash \code{$x$n} : \texttt{Natural}
 	}
@@ -303,7 +303,7 @@
 
 \[
 	\infrule{
-		\Gamma; \quad x \in \mathbb{R}
+		\Gamma\vdash x \in \mathbb{R}
 	}{
 		\Gamma\vdash \code{$x$} : \texttt{Real} \\*
 		\land \Gamma\vdash \code{$x$r} : \texttt{Real}
@@ -316,7 +316,7 @@
 
 \[
 	\infrule{
-		\Gamma; \quad x \in \text{Unicode} \setminus \set{"\backslash n", "\backslash r"}; \quad n \geq 0
+		\Gamma\vdash x \in \text{Unicode} \setminus \set{"\backslash n", "\backslash r"} \quad n \geq 0
 	}{
 		\Gamma\vdash \code{"$x_1...x_n$"} : \texttt{Text} \\*
 		\land \Gamma\vdash \code{'$x_1...x_n$'} : \texttt{Text}
@@ -325,7 +325,7 @@
 
 \[
 	\infrule{
-		\Gamma; \quad x \in \text{Unicode}; \quad n \geq 0
+		\Gamma\vdash x \in \text{Unicode} \quad n \geq 0
 	}{
 		\Gamma\vdash \code{"\{$x_1...x_n$\}"} : \texttt{Text} \\*
 		\land \Gamma\vdash \code{'\{$x_1...x_n$\}'} : \texttt{Text}
