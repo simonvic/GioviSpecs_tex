@@ -1285,7 +1285,7 @@ A list of $\tau$ contains an element of type $\sigma$ (narrower than $\tau$)
 \[
 	\infrule{
 		\Gamma\vdash \tau:\texttt{Type} \quad l:\exists\tau.\texttt{List}\\*
-		\Gamma\vdash \sigma:\texttt{Type} \quad \sigma \narr \tau \quad r:\exists\sigma.\texttt{Type}
+		\Gamma\vdash \sigma:\texttt{Type} \quad \sigma \narr \tau \quad r:\exists\sigma.\texttt{List}
 	}{
 		\Gamma\vdash \code{$l$ =\~{} $r$} : \texttt{Bool}
 	}
@@ -1344,6 +1344,7 @@ $\tau$)
 \[
 	\infrule{
 		\Gamma\vdash \tau:\texttt{Map}[\kappa_1:=\texttt{Type},\nu_1:=\texttt{Type}] \quad l:\tau \\*
+		\Gamma\vdash \rho:\texttt{Map}[\kappa_2:=\texttt{Type},\nu_2:=\texttt{Type}] \\*
 		\Gamma\vdash \code{k:$\kappa_1$ as $\kappa_2$} : \kappa_2 \land \code{v:$\nu_1$ as $\nu_2$} : \nu_2
 	}{
 		\Gamma\vdash \code{$l$ as $\rho$} : \rho
