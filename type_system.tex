@@ -20,6 +20,7 @@
 \newcommand{\tuple}[1]{\left<#1\right>}
 \newcommand{\code}[1]{\texttt{\colorbox{gray!10}{#1}}}
 \newcommand{\tuplecode}[1]{\code{<#1>}}
+\newcommand{\narr}{<:}
 
 \newcommand{\comment}[1]{\parbox{0.9\textwidth}{\small\sffamily #1}}
 
@@ -212,7 +213,7 @@
 	\infrule{
 		\Gamma\vdash \tau : \texttt{Type}
 	}{
-		\Gamma\vdash \texttt{Void} \leq \tau
+		\Gamma\vdash \texttt{Void} \narr \tau
 	}
 \]
 
@@ -220,32 +221,32 @@
 	\infrule{
 		\Gamma\vdash \tau:\texttt{Type}
 	}{
-		\Gamma\vdash \tau \leq \tau
+		\Gamma\vdash \tau \narr \tau
 	}
 	\qquad \text{Reflexivity}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash \tau_1 \leq \tau_2 \quad \tau_2 \leq \tau_3
+		\Gamma\vdash \tau_1 \narr \tau_2 \quad \tau_2 \narr \tau_3
 	}{
-		\Gamma\vdash \tau_1 \leq \tau_3
+		\Gamma\vdash \tau_1 \narr \tau_3
 	}
 	\qquad \text{Transitivity}
 \]
 
 \[
-	\Gamma\vdash \texttt{Natural} \leq \texttt{Int}
-	\qquad \Gamma\vdash \texttt{Int} \leq \texttt{Real}
+	\Gamma\vdash \texttt{Natural} \narr \texttt{Int}
+	\qquad \Gamma\vdash \texttt{Int} \narr \texttt{Real}
 \]
 
 \[
 	\infrule{
 		\Gamma\vdash \tau_1:\texttt{List}[\sigma_1:=\texttt{Type}]\\*
 		\Gamma\vdash \tau_2:\texttt{List}[\sigma_2:=\texttt{Type}]\\*
-		\Gamma\vdash \sigma_1 \leq \sigma_2
+		\Gamma\vdash \sigma_1 \narr \sigma_2
 	}{
-		\Gamma\vdash \tau_1 \leq \tau_2
+		\Gamma\vdash \tau_1 \narr \tau_2
 	}
 \]
 
@@ -253,9 +254,9 @@
 	\infrule{
 		\Gamma\vdash \tau_1:\texttt{Map}[\kappa_1:=\texttt{Type}, \nu_1=\texttt{Type}]\\*
 		\Gamma\vdash \tau_2:\texttt{Map}[\kappa_2:=\texttt{Type}, \nu_2=\texttt{Type}]\\*
-		\Gamma\vdash \kappa_1 \leq \kappa_2 \land \nu_1 \leq \nu_2
+		\Gamma\vdash \kappa_1 \narr \kappa_2 \land \nu_1 \narr \nu_2
 	}{
-		\Gamma\vdash \tau_1 \leq \tau_2
+		\Gamma\vdash \tau_1 \narr \tau_2
 	}
 \]
 
@@ -497,7 +498,7 @@ Range from $b$ (begin) to $e$ (end) with a step $s$
 \[
 	\infrule{
 		\Gamma\vdash \tau:\texttt{Type} \quad l:\tau \\*
-		\Gamma\vdash \sigma:\texttt{Type} \quad \tau \leq \sigma \quad r:\sigma
+		\Gamma\vdash \sigma:\texttt{Type} \quad \tau \narr \sigma \quad r:\sigma
 	}{
 		\Gamma\vdash \code{$l$ = $r$} : \texttt{Bool}
 	}
@@ -1273,7 +1274,7 @@ $\tau$ can be casted to the type $\rho$
 \[
 	\infrule{
 		\Gamma\vdash \tau:\texttt{Type} \quad l:\exists\tau.\texttt{List} \\*
-		\Gamma\vdash \sigma:\texttt{Type} \quad \sigma \leq \tau \quad r:\sigma
+		\Gamma\vdash \sigma:\texttt{Type} \quad \sigma \narr \tau \quad r:\sigma
 	}{
 		\Gamma\vdash \code{$l$ =\~{} $r$} : \texttt{Bool}
 	}
@@ -1284,7 +1285,7 @@ A list of $\tau$ contains an element of type $\sigma$ (narrower than $\tau$)
 \[
 	\infrule{
 		\Gamma\vdash \tau:\texttt{Type} \quad l:\exists\tau.\texttt{List}\\*
-		\Gamma\vdash \sigma:\texttt{Type} \quad \sigma \leq \tau \quad r:\exists\sigma.\texttt{Type}
+		\Gamma\vdash \sigma:\texttt{Type} \quad \sigma \narr \tau \quad r:\exists\sigma.\texttt{Type}
 	}{
 		\Gamma\vdash \code{$l$ =\~{} $r$} : \texttt{Bool}
 	}
@@ -1359,7 +1360,7 @@ be casted to the type $\rho$
 \[
 	\infrule{
 		\Gamma\vdash \tau:\texttt{Map}[\kappa:=\texttt{Type},\nu:=\texttt{Type}] \quad l:\tau \\*
-		\Gamma\vdash \sigma:\texttt{Type} \quad \sigma \leq \kappa \quad r:\sigma
+		\Gamma\vdash \sigma:\texttt{Type} \quad \sigma \narr \kappa \quad r:\sigma
 	}{
 		\Gamma\vdash \code{$l$ =\~{} $r$} : \texttt{Bool}
 	}
@@ -1372,7 +1373,7 @@ $\kappa$)
 	\infrule{
 		\Gamma\vdash \tau:\texttt{Map}[\kappa_1:=\texttt{Type},\nu_1:=\texttt{Type}] \quad l:\tau \\*
 		\Gamma\vdash \rho:\texttt{Map}[\kappa_2:=\texttt{Type},\nu_2:=\texttt{Type}] \quad r:\rho \\*
-		\Gamma\vdash \kappa_2 \leq \kappa_1 \land \nu_2 \leq \nu_1
+		\Gamma\vdash \kappa_2 \narr \kappa_1 \land \nu_2 \narr \nu_1
 	}{
 		\Gamma\vdash \code{$l$ =\~{} $r$} : \texttt{Bool}
 	}
@@ -1388,7 +1389,7 @@ of type $\rho$
 	\text{Access by key}\quad
 	\infrule{
 		\Gamma\vdash \tau:\texttt{Map}[\kappa:=\texttt{Type},\nu:=\texttt{Type}] \quad l:\tau \\*
-		\Gamma\vdash \rho:\texttt{Type} \quad \rho \leq \kappa \quad r:\rho
+		\Gamma\vdash \rho:\texttt{Type} \quad \rho \narr \kappa \quad r:\rho
 	}{
 		\Gamma\vdash \code{$l$ @ $r$}: \nu
 	}
