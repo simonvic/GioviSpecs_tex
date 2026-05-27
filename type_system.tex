@@ -119,7 +119,7 @@
 
 \[
 	\begin{split}
-		&\Gamma\vdash \texttt{List}[\tau:=\texttt{Type}]:\texttt{Type} \\
+		&\Gamma\vdash \texttt{List}[\sigma:=\texttt{Type}]:\texttt{Type} \\
 		&\Gamma\vdash \texttt{Map}[\kappa:=\texttt{Type},\nu:=\texttt{Type}]:\texttt{Type} \\
 	\end{split}
 \]
@@ -130,7 +130,7 @@
 	\infrule{
 		\Gamma\vdash \tau:\texttt{Type}
 	}{
-		\Gamma\vdash \code{[$\tau$]}: \texttt{List}[\alpha := \tau]
+		\Gamma\vdash \code{[$\tau$]}: \texttt{List}[\sigma := \tau]
 	}
 \]
 
