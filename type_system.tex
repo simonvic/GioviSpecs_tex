@@ -1466,7 +1466,7 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 	\text{Access by index}\quad
 	\infrule{
 		\Gamma\vdash n \in \mathbb{N} \quad \forall_{i\in[1,n]}\tau_i:\texttt{Type} \quad l:\tau_1 \times ... \times \tau_n \\*
-		\Gamma\vdash r:\texttt{Int} \quad r \in [0,n]
+		\Gamma\vdash r:\texttt{Int} \quad r \in [1,n]
 	}{
 		\Gamma\vdash \code{$l$ @ $r$}: \tau_r
 	}
