@@ -1,0 +1,1584 @@
+\documentclass[11pt]{report}
+\usepackage[T1]{fontenc}
+\usepackage{multirow}
+\usepackage{longtable}
+\usepackage{arydshln}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage{xcolor}
+\usepackage{mathtools}
+
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+
+\renewcommand{\arraystretch}{1.5} % increase space between table rows
+
+\newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\infrule}[2]{\frac{\begin{gathered}#1\end{gathered}}{\begin{gathered}#2\end{gathered}}}
+% \newcommand{\infrule}[2]{\colorbox{gray!2}{$\frac{\begin{gathered}#1\end{gathered}}{\begin{gathered}#2\end{gathered}}$}}
+\newcommand{\tuple}[1]{\left<#1\right>}
+\newcommand{\code}[1]{\texttt{\colorbox{gray!10}{#1}}}
+\newcommand{\tuplecode}[1]{\code{<#1>}}
+
+\newcommand{\comment}[1]{\parbox{0.9\textwidth}{\small\sffamily #1}}
+
+\makeatletter
+\providecommand{\bigsqcap}{%
+  \mathop{%
+    \mathpalette\@updown\bigsqcup
+  }%
+}
+\newcommand*{\@updown}[2]{%
+  \rotatebox[origin=c]{180}{$\m@th#1#2$}%
+}
+\makeatother
+
+\begin{document}
+
+\setlength{\doublerulesep}{0.40cm}
+% \setlength{\baselineskip}{11pt}
+\abovedisplayshortskip=8pt
+\belowdisplayshortskip=8pt
+
+\tableofcontents
+
+\newpage
+
+\chapter{Types}
+
+\comment{TODO: menzionare uso di type system strutturale e nominale}
+
+\comment{TODO: usare 0-based indexes}
+
+\comment{TODO: aggiungere operatore dotref}
+
+\section{Conversion}
+
+\resizebox{0.5\linewidth}{!}{
+	\begin{tabular}{ll}
+		Symbol & Meaning \\\hline
+		$=$ & Identity \\\hline
+		$w$ & Wideneable \\\hline
+		$n$ & Narrowable \\\hline
+		$W$ & Wideneable if components are wideneable \\\hline
+		$N$ & Narrowable if components are narrowable \\\hline
+		$!$ & Explicit cast is required (it may fail) \\\hline
+	\end{tabular}
+}
+
+\subsection{Primitive types}
+
+\resizebox{0.9\linewidth}{!}{
+	\begin{tabular}{|c|c|c|c|c|c|c|c|}
+		\hline
+		$_{from} \quad ^{to}$ & \texttt{Void} & \texttt{Type} & \texttt{Bool} & \texttt{Natural} & \texttt{Int} & \texttt{Real} & \texttt{Text} \\\hline
+		\texttt{Void}           & $=$         & $w$         & $w$         & $w$            & $w$        & $w$         & $w$         \\\hline
+		\texttt{Type}           &             & $=$         &             &                &            &             &             \\\hline
+		\texttt{Bool}           &             &             & $=$         &                &            &             &             \\\hline
+		\texttt{Natural}        &             &             &             & $=$            & $w$        & $w$         &             \\\hline
+		\texttt{Int}            &             &             &             & $n!$           & $=$        & $w$         &             \\\hline
+		\texttt{Real}           &             &             &             & $n!$           & $n!$       & $=$         &             \\\hline
+		\texttt{Text}           &             &             &             &                &            &             & $=$         \\\hline
+	\end{tabular}
+}
+
+
+\subsection{Non primitive types}
+
+\resizebox{0.9\linewidth}{!}{
+	\begin{tabular}{|c|c|c|c|c|c|c|c|}
+		\hline
+		$_{from} \quad ^{to}$ & \texttt{Void} & \texttt{List} & \texttt{Map} & \texttt{Function} & \texttt{Tuple} & \texttt{Record} & \texttt{Struct} \\\hline
+		\texttt{Void}           & $=$         & $w$         & $w$         & $w$            & $w$          & $w$           & $w$           \\\hline
+		\texttt{List}           &             & $N! W$      &             &                &              &               &               \\\hline
+		\texttt{Map}            &             &             & $N! W$      &                &              &               &               \\\hline
+		\texttt{Function}       &             &             &             & $N! W$         &              &               &               \\\hline
+		\texttt{Tuple}          &             &             &             &                & $N! W$       & $W$           & $W$          \\\hline
+		\texttt{Record}         &             &             &             &                & $N!$         & $N! W$        & $W$           \\\hline
+		\texttt{Struct}         &             &             &             &                & $N!$         & $N!$          & $N! W!$       \\\hline
+	\end{tabular}
+}
+
+\chapter{Inference rules}
+
+\section{Types}
+
+\comment{TODO: usare notazione tipi polimorfici invece che solo Type}
+
+\subsection{Primitive types}
+
+\[
+	\begin{split}
+		&\Gamma\vdash \texttt{Void}:\texttt{Type} \\
+		&\Gamma\vdash \texttt{Bool}:\texttt{Type} \\
+		&\Gamma\vdash \texttt{Natural}:\texttt{Type} \\
+		&\Gamma\vdash \texttt{Int}:\texttt{Type} \\
+		&\Gamma\vdash \texttt{Real}:\texttt{Type} \\
+		&\Gamma\vdash \texttt{Text}:\texttt{Type} \\
+	\end{split}
+\]
+
+\subsection{Composite types}
+
+\[
+	\begin{split}
+		&\Gamma\vdash \texttt{List}[\tau:=\texttt{Type}]:\texttt{Type} \\
+		&\Gamma\vdash \texttt{Map}[\kappa:=\texttt{Type},\nu:=\texttt{Type}]:\texttt{Type} \\
+	\end{split}
+\]
+
+\comment{TODO: tipi esistenziali? Rivedere notazione}
+
+\[
+	\infrule{
+		\Gamma\vdash \tau:\texttt{Type}
+	}{
+		\Gamma\vdash \code{[$\tau$]}: \texttt{List}[\alpha := \tau]
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash \tau:\texttt{Type} \quad \sigma:\texttt{Type}
+	}{
+		\Gamma\vdash \code{[$\tau$:$\sigma$]}: \texttt{Map}[\kappa:=\tau, \nu:=\sigma]
+	}
+\]
+
+\subsection{Product types}
+
+\[
+	\mathcal{I} = \set{ i \mid i := \text{identifier}}
+\]
+
+\comment{TODO: formalizzare}
+
+\[
+	\text{Tuple}\qquad
+	\infrule{
+		\Gamma\vdash \forall_{i\in[1,n]}\tau_i:\texttt{Type} \quad n \geq 0
+	}{
+		\Gamma\vdash \tuplecode{$\tau_1,...,\tau_n$} : \tau_1 \times ... \times \tau_n
+	}
+\]
+
+\[
+	\text{Record}\qquad
+	\infrule{
+		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}\tau_i:\texttt{Type}, a_i \in \mathcal{I}
+	}{
+		\Gamma\vdash \tuplecode{$a_1\tau_1,...,a_n\tau_n$} : \tuple{a_1:\tau_1, ..., a_n:\tau_n}
+	}
+\]
+
+\[
+	\text{Record (empty)} \qquad
+	\Gamma\vdash \tuplecode{:} : \tuple{}
+\]
+
+\[
+	\text{Struct (user defined)} \qquad
+	\infrule{
+		\Gamma\vdash \eta \in \mathcal{I} \quad \rho:\texttt{Record}
+	}{
+		\Gamma\vdash \code{$\eta$ $\rho$}: (\eta,\rho)
+	}
+\]
+
+\comment{TODO: che notazione usare per \texttt{Struct}???}
+
+\subsection{Functions}
+
+\[
+	\infrule{
+		\Gamma\vdash n \in \mathbb{N} \quad \forall_{i\in[1,n]}\tau_i:\texttt{Type},a_i\in\mathcal{I} \quad \sigma:\texttt{Type}
+	}{
+		\Gamma\vdash \code{::($a_1 \tau_1,...,a_n \tau_n$) => $\sigma$} : (\tau_1,...,\tau_n) \rightarrow \sigma
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash n \in \mathbb{N} \quad \forall_{i\in[1,n]}\tau_i:\texttt{Type},a_i\in\mathcal{I}
+	}{
+		\Gamma\vdash \code{::($a_1 \tau_1,...,a_n \tau_n$)} : (\tau_1,...,\tau_n) \rightarrow \texttt{Void}
+	}
+\]
+
+\subsection{Range}
+
+\comment{TODO: tipo concreto non implementato ancora}
+
+\subsection{Compatibility rules}
+
+\[
+	\infrule{
+		\Gamma\vdash \tau : \texttt{Type}
+	}{
+		\Gamma\vdash \texttt{Void} \leq \tau
+	}
+\]
+
+\[
+	\Gamma\vdash \texttt{Natural} \leq \texttt{Int}
+\]
+
+\[
+	\quad \Gamma\vdash \texttt{Int} \leq \texttt{Real}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash \tau:\texttt{Type}
+	}{
+		\Gamma\vdash \tau \leq \tau
+	}
+	\qquad \text{Reflexivity}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash \tau_1 \leq \tau_2 \quad \tau_2 \leq \tau_3
+	}{
+		\Gamma\vdash \tau_1 \leq \tau_3
+	}
+	\qquad \text{Transitivity}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash \tau_1:\texttt{List}[\sigma_1:=\texttt{Type}]\\*
+		\Gamma\vdash \tau_2:\texttt{List}[\sigma_2:=\texttt{Type}]\\*
+		\Gamma\vdash \sigma_1 \leq \sigma_2
+	}{
+		\Gamma\vdash \tau_1 \leq \tau_2
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash \tau_1:\texttt{Map}[\kappa_1:=\texttt{Type}, \nu_1=\texttt{Type}]\\*
+		\Gamma\vdash \tau_2:\texttt{Map}[\kappa_2:=\texttt{Type}, \nu_2=\texttt{Type}]\\*
+		\Gamma\vdash \kappa_1 \leq \kappa_2 \land \nu_1 \leq \nu_2
+	}{
+		\Gamma\vdash \tau_1 \leq \tau_2
+	}
+\]
+
+\comment{TODO: functions and product types rules}
+
+\newpage
+
+\section{Literals}
+
+\subsection{Primitive types}
+
+\subsubsection{Bool}
+
+\[
+	\Gamma\vdash \code{true}:\texttt{Bool} \qquad \Gamma \vdash \code{false}:\texttt{Bool}
+\]
+
+\subsubsection{Int}
+
+\[
+	\infrule{
+		\Gamma; \quad x \in \mathbb{Z}; \quad x \in [-2^{31}, 2^{31} - 1]
+	}{
+		\Gamma\vdash \code{$x$} : \texttt{Int} \\*
+		\land \Gamma\vdash \code{$x$i} : \texttt{Int}
+	}
+\]
+
+% \subparagraph{Examples} \verb|0, 0i, 69, -420, 32i, -99i|
+
+\subsubsection{Natural}
+
+\[
+	\infrule{
+		\Gamma; \quad x \in \mathbb{N}; \quad x \in [0, 2^{31}]
+	}{
+		\Gamma\vdash \code{$x$n} : \texttt{Natural}
+	}
+\]
+
+% \subparagraph{Examples} \verb|0n, 69n, 420n|
+
+\subsubsection{Real}
+
+\[
+	\infrule{
+		\Gamma; \quad x \in \mathbb{R}
+	}{
+		\Gamma\vdash \code{$x$} : \texttt{Real} \\*
+		\land \Gamma\vdash \code{$x$r} : \texttt{Real}
+	}
+\]
+
+% \subparagraph{Examples} \verb|0r, 0.0, 6.9, -4.20|
+
+\subsubsection{Text}
+
+\[
+	\infrule{
+		\Gamma; \quad x \in \text{Unicode} \setminus \set{"\backslash n", "\backslash r"}; \quad n \geq 0
+	}{
+		\Gamma\vdash \code{"$x_1...x_n$"} : \texttt{Text} \\*
+		\land \Gamma\vdash \code{'$x_1...x_n$'} : \texttt{Text}
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma; \quad x \in \text{Unicode}; \quad n \geq 0
+	}{
+		\Gamma\vdash \code{"\{$x_1...x_n$\}"} : \texttt{Text} \\*
+		\land \Gamma\vdash \code{'\{$x_1...x_n$\}'} : \texttt{Text}
+	}
+\]
+
+% \subparagraph{Examples} \verb|"hello", 'world', "{hello}", '{world}'|
+
+\comment{TODO: specificare il set $Unicode$ con i caratteri permessi da Java}
+
+\subsection{Composite types}
+
+\subsubsection{List}
+
+\[
+	\Gamma\vdash \code{[]}:\exists\texttt{Void}.\texttt{List}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash \tau:\texttt{Type} \qquad x:\tau \qquad n \in \mathbb{N}
+	}{
+		\Gamma\vdash \code{[$x_1, ...,x_n$]}:\exists\tau.\texttt{List}
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash n \in \mathbb{N} \quad \forall_{i \in [1,n]} \tau_i:\texttt{Type}, x_i:\tau_i \quad \omega = \bigsqcap_{i=1}^{n}{\tau_i}
+	}{
+		\Gamma\vdash \code{[$x_1, ...,x_n$]}:\exists\omega.\texttt{List}
+	}
+\]
+
+List of $\omega$ (widest among $\tau$)
+
+\subsubsection{Map}
+
+\[
+	\Gamma\vdash \code{[:]}:\exists\texttt{Void}.\exists\texttt{Void}.\texttt{Map}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash \kappa:\texttt{Type}
+		\quad \nu:\texttt{Type}
+		\quad \forall_{i\in[1,n]} k_i:\kappa,v_i:\nu
+		\quad n \in \mathbb{N}
+	}{
+		\Gamma\vdash \code{[$k_1:v_1, ..., k_n:v_n$]}:\exists\kappa.\exists\nu.\texttt{Map}
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash \forall_{i \in [1,n]} \kappa_i:\texttt{Type}, k_i:\kappa_i \quad n \in \mathbb{N} \\*
+		\Gamma\vdash \forall_{i \in [1,n]} \nu_i:\texttt{Type}, v_i:\nu_i \hfill\\*
+		\Gamma\vdash \omega_\kappa = \bigsqcap_{i=1}^{n}{\kappa_i} \quad \omega_\nu = \bigsqcap_{i=1}^{n}{\nu_i}
+	}{
+		\Gamma\vdash \code{[$k_1:v_1, ..., k_n:v_n$]}:\exists\omega_\kappa.\exists\omega_\nu.\texttt{Map}
+	}
+\]
+
+Map of $\omega_\kappa$ keys (widest  among $\kappa$) and $\omega_\nu$ (widest among $\nu$)
+
+\subsection{Product types}
+
+\subsubsection{Tuple}
+
+\[
+	\infrule{
+		\Gamma\vdash n \geq 1 \quad \forall_{i\in[1,n]}\tau_i:\texttt{Type}, x_i:\tau_i
+	}{
+		\Gamma\vdash \tuplecode{$x_1,...,x_n$}:\tau_1 \times ... \times \tau_n
+	}
+\]
+
+\subsubsection{Record}
+
+\[
+	\infrule{
+		\Gamma\vdash n \geq 1 \quad \forall_{i\in[1,n]}\tau_i:\texttt{Type}, x_i:\tau_i, a_i \in \mathcal{I}
+	}{
+		\Gamma\vdash \tuplecode{$a_1:x_1,...,a_n:x_n$}:\tuple{a_1:\tau_1,...,a_2:\tau_n}
+	}
+\]
+
+\subsubsection{Struct}
+
+\comment{TODO: ...}
+
+\subsection{Range}
+
+\[
+	\infrule{
+		\Gamma\vdash \beta \in \texttt{Number} \quad b:\beta\\*
+		\Gamma\vdash \epsilon \in \texttt{Number} \quad e:\epsilon \\*
+		\Gamma\vdash \tau = \beta \sqcap \epsilon
+	}{
+		\Gamma\vdash \code{$b$..$e$} : \exists\tau.\texttt{Range}
+	}
+\]
+Range from $b$ (begin) to $e$ (end)
+
+\[
+	\infrule{
+		\Gamma\vdash \beta \in \texttt{Number} \quad b:\beta\\*
+		\Gamma\vdash \epsilon \in \texttt{Number} \quad e:\epsilon \\*
+		\Gamma\vdash \sigma \in \texttt{Number} \quad s:\sigma \\*
+		\Gamma\vdash \tau = \beta \sqcap \epsilon \sqcap \sigma
+	}{
+		\Gamma\vdash \code{$b$..$e$..$s$} : \exists\tau.\texttt{Range}
+	}
+\]
+
+Range from $b$ (begin) to $e$ (end) with a step $s$
+
+\chapter{Operators}
+
+\section{Operators}
+
+\begin{longtable}{cc}
+	OPERATOR                        & SYMBOL     \\\hline
+	PLUS                            & \verb$+$   \\\hline
+	MINUS                           & \verb$-$   \\\hline
+	MULTIPLICATION                  & \verb$*$   \\\hline
+	DIVISION                        & \verb$/$   \\\hline
+	MODULO                          & \verb$%$  \\\hline
+	EXPONENTIAL                     & \verb$^$   \\\hline
+	EQUAL                           & \verb$=$   \\\hline
+	NOT EQUAL                       & \verb$!=$  \\\hline
+	LESS EQUAL                      & \verb$<=$  \\\hline
+	LESS                            & \verb$<$   \\\hline
+	GREATER                         & \verb$>$   \\\hline
+	GREATER EQUAL                   & \verb$>=$  \\\hline
+	\hdashline\newpage\hdashline\hline
+	CONTAINS                        & \verb$=~$  \\\hline
+	IS CONTAINED                    & \verb$~=$  \\\hline
+	\multirow{2}{*}{BOOL NOT}       & \verb$not$ \\
+	                                & \verb$!$ \\\hline
+	\multirow{2}{*}{BOOL AND}       & \verb$and$ \\
+	                                & \verb$&$ \\\hline
+	\multirow{2}{*}{BOOL OR}        & \verb$or$ \\
+	                                & \verb$|$ \\\hline
+	BITWISE NOT                     & \verb$!!$ \\\hline
+	BITWISE AND                     & \verb$&&$ \\\hline
+	BITWISE OR                      & \verb$||$ \\\hline
+	BITWISE XOR                     & \verb$|||$ \\\hline
+	BITWISE LEFT SHIFT              & \verb${<}$ \\\hline
+	BITWISE RIGHT SHIFT             & \verb${>}$ \\\hline
+	BITWISE RIGHT UNSIGNED SHIFT    & \verb${>>}$ \\\hline
+	IS (type check)                 & \verb$is$  \\\hline
+	AS (type coercion)              & \verb$as$  \\\hline
+\end{longtable}
+
+\section{Pseudo operators}
+
+\begin{longtable}{rl}
+	OPERATOR   & SYMBOL     \\\hline
+	DOT ACCESS & \verb$.$ \\\hline
+	AT ACCESS  & \verb$@$ \\\hline
+\end{longtable}
+
+\newpage
+
+\section{Inference rules}
+
+\[
+	\infrule{
+		\Gamma\vdash \tau:\texttt{Type} \quad l:\tau \\*
+		\Gamma\vdash \sigma:\texttt{Type} \quad \tau \leq \sigma \quad r:\sigma
+	}{
+		\Gamma\vdash \code{$l$ = $r$} : \texttt{Bool}
+	}
+\]
+
+\comment{TODO: se equal è definito, allora anche not equal}
+
+\comment{TODO: se contains è definito, allora anche contained}
+
+\[
+	\texttt{Number} = \set{\texttt{Natural}, \texttt{Int}, \texttt{Real}}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Number} \quad \tau \in \texttt{Number}
+	}{
+		\Gamma\vdash \code{$l$ as $\tau$}: \tau
+	}
+\]
+
+\comment{TODO(implementazione): -69 as Natural fallisce (out of bounds).
+Dovrebbe?}
+
+\[
+	\infrule{
+		\Gamma\vdash \tau \in \texttt{Number} \quad x:\tau
+	}{
+		\Gamma\vdash \code{+$x$}: \tau
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash \tau \in \texttt{Number}\setminus\set{\texttt{Natural}} \quad x:\tau
+	}{
+		\Gamma\vdash \code{-$x$}: \tau
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash \tau \in \texttt{Number} \quad l:\tau \quad r:\tau
+	}{
+		\Gamma\vdash \code{$l$ = $r$}: \texttt{Bool} \\*
+		\land \Gamma\vdash \code{$l$ != $r$}: \texttt{Bool} \\*
+		\land \Gamma\vdash \code{$l$ < $r$}: \texttt{Bool} \\*
+		\land \Gamma\vdash \code{$l$ <= $r$}: \texttt{Bool} \\*
+		\land \Gamma\vdash \code{$l$ >= $r$}: \texttt{Bool} \\*
+		\land \Gamma\vdash \code{$l$ > $r$}: \texttt{Bool}
+	}
+\]
+
+\subsection{Primitive types}
+
+\subsubsection{Void}
+
+\comment{TODO: ?}
+
+\subsubsection{Bool}
+
+\[
+	\infrule{
+		\Gamma\vdash x:\texttt{Bool}
+	}{
+		\Gamma\vdash \code{!$x$}:\texttt{Bool}
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Bool} \quad r:\texttt{Bool}
+	}{
+		\Gamma\vdash \code{$l$ and $r$}:\texttt{Bool}
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Bool} \quad r:\texttt{Bool}
+	}{
+		\Gamma\vdash \code{$l$ or $r$}:\texttt{Bool}
+	}
+\]
+
+\subsubsection{Natural}
+
+\paragraph{Plus}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Natural} \quad r:\texttt{Natural}
+	}{
+		\Gamma\vdash \code{$l$ + $r$} : \texttt{Natural}
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Natural} \quad r:\texttt{Int}
+	}{
+		\Gamma\vdash \code{$l$ + $r$} : \texttt{Int}
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Natural} \quad r:\texttt{Real}
+	}{
+		\Gamma\vdash \code{$l$ + $r$} : \texttt{Real}
+	}
+\]
+
+\paragraph{Minus}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Natural} \quad r:\texttt{Natural}
+	}{
+		\Gamma\vdash \code{$l$ - $r$} : \texttt{Int}
+	}
+\]
+
+\comment{TODO: specificare se $l-r\geq0$}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Natural} \quad r:\texttt{Int}
+	}{
+		\Gamma\vdash \code{$l$ - $r$} : \texttt{Int}
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Natural} \quad r:\texttt{Real}
+	}{
+		\Gamma\vdash \code{$l$ - $r$} : \texttt{Real}
+	}
+\]
+
+\paragraph{Multiplication}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Natural} \quad r:\texttt{Natural}
+	}{
+		\Gamma\vdash \code{$l$ * $r$} : \texttt{Natural}
+	}
+\]
+
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Natural} \quad r:\texttt{Int}
+	}{
+		\Gamma\vdash \code{$l$ * $r$} : \texttt{Int}
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Natural} \quad r:\texttt{Real}
+	}{
+		\Gamma\vdash \code{$l$ * $r$} : \texttt{Real}
+	}
+\]
+
+\paragraph{Division}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Natural} \quad r:\texttt{Natural}
+	}{
+		\Gamma\vdash \code{$l$ / $r$} : \texttt{Real}
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Natural} \quad r:\texttt{Int}
+	}{
+		\Gamma\vdash \code{$l$ / $r$} : \texttt{Real}
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Natural} \quad r:\texttt{Real}
+	}{
+		\Gamma\vdash \code{$l$ / $r$} : \texttt{Real}
+	}
+\]
+
+\paragraph{Modulo}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Natural} \quad r:\texttt{Natural}
+	}{
+		\Gamma\vdash \code{$l$ \% $r$} : \texttt{Natural}
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Natural} \quad r:\texttt{Int}
+	}{
+		\Gamma\vdash \code{$l$ \% $r$} : \texttt{Int}
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Natural} \quad r:\texttt{Real}
+	}{
+		\Gamma\vdash \code{$l$ \% $r$} : \texttt{Real}
+	}
+\]
+
+\paragraph{Power}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Natural} \quad r:\texttt{Natural}
+	}{
+		\Gamma\vdash \code{$l$ \^{} $r$} : \texttt{Natural}
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Natural} \quad r:\texttt{Int}
+	}{
+		\Gamma\vdash \code{$l$ \^{} $r$} : \texttt{Int}
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Natural} \quad r:\texttt{Real}
+	}{
+		\Gamma\vdash \code{$l$ \^{} $r$} : \texttt{Real}
+	}
+\]
+
+\subsubsection{Int}
+
+\paragraph{Bitwise not}
+
+\[
+	\infrule{
+		\Gamma\vdash x:\texttt{Int}
+	}{
+		\Gamma\vdash \code{!!$x$} : \texttt{Int}
+	}
+\]
+
+\paragraph{Bitwise and}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad r:\texttt{Natural}
+	}{
+		\Gamma\vdash \code{$l$ \&\& $r$} : \texttt{Int}
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad r:\texttt{Int}
+	}{
+		\Gamma\vdash \code{$l$ \&\& $r$} : \texttt{Int}
+	}
+\]
+
+\paragraph{Bitwise or}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad r:\texttt{Natural}
+	}{
+		\Gamma\vdash \code{$l$ || $r$} : \texttt{Int}
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad r:\texttt{Int}
+	}{
+		\Gamma\vdash \code{$l$ || $r$} : \texttt{Int}
+	}
+\]
+
+\paragraph{Bitwise xor}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad r:\texttt{Natural}
+	}{
+		\Gamma\vdash \code{$l$ ||| $r$} : \texttt{Int}
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad r:\texttt{Int}
+	}{
+		\Gamma\vdash \code{$l$ ||| $r$} : \texttt{Int}
+	}
+\]
+
+\paragraph{Bitwise left shift}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad r:\texttt{Natural}
+	}{
+		\Gamma\vdash \code{$l$ \{<\} $r$} : \texttt{Int}
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad r:\texttt{Int}
+	}{
+		\Gamma\vdash \code{$l$ \{<\} $r$} : \texttt{Int}
+	}
+\]
+
+\paragraph{Bitwise right shift}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad r:\texttt{Natural}
+	}{
+		\Gamma\vdash \code{$l$ \{>\} $r$} : \texttt{Int}
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad r:\texttt{Int}
+	}{
+		\Gamma\vdash \code{$l$ \{>\} $r$} : \texttt{Int}
+	}
+\]
+
+\paragraph{Bitwise right unsigned shift}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad r:\texttt{Natural}
+	}{
+		\Gamma\vdash \code{$l$ \{>>\} $r$} : \texttt{Int}
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad r:\texttt{Int}
+	}{
+		\Gamma\vdash \code{$l$ \{>>\} $r$} : \texttt{Int}
+	}
+\]
+
+\paragraph{Plus}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad r:\texttt{Natural}
+	}{
+		\Gamma\vdash \code{$l$ + $r$} : \texttt{Int}
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad r:\texttt{Int}
+	}{
+		\Gamma\vdash \code{$l$ + $r$} : \texttt{Int}
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad r:\texttt{Real}
+	}{
+		\Gamma\vdash \code{$l$ + $r$} : \texttt{Real}
+	}
+\]
+
+\paragraph{Minus}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad r:\texttt{Natural}
+	}{
+		\Gamma\vdash \code{$l$ - $r$} : \texttt{Int}
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad r:\texttt{Int}
+	}{
+		\Gamma\vdash \code{$l$ - $r$} : \texttt{Int}
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad r:\texttt{Real}
+	}{
+		\Gamma\vdash \code{$l$ - $r$} : \texttt{Real}
+	}
+\]
+
+\paragraph{Multiplication}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad r:\texttt{Natural}
+	}{
+		\Gamma\vdash \code{$l$ * $r$} : \texttt{Int}
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad r:\texttt{Int}
+	}{
+		\Gamma\vdash \code{$l$ * $r$} : \texttt{Int}
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad r:\texttt{Real}
+	}{
+		\Gamma\vdash \code{$l$ * $r$} : \texttt{Real}
+	}
+\]
+
+\paragraph{Division}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad r:\texttt{Natural}
+	}{
+		\Gamma\vdash \code{$l$ / $r$} : \texttt{Real}
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad r:\texttt{Int}
+	}{
+		\Gamma\vdash \code{$l$ / $r$} : \texttt{Real}
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad r:\texttt{Real}
+	}{
+		\Gamma\vdash \code{$l$ / $r$} : \texttt{Real}
+	}
+\]
+
+\paragraph{Modulo}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad r:\texttt{Natural}
+	}{
+		\Gamma\vdash \code{$l$ \% $r$} : \texttt{Int}
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad r:\texttt{Int}
+	}{
+		\Gamma\vdash \code{$l$ \% $r$} : \texttt{Int}
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad r:\texttt{Real}
+	}{
+		\Gamma\vdash \code{$l$ \% $r$} : \texttt{Real}
+	}
+\]
+
+\paragraph{Power}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad r:\texttt{Natural}
+	}{
+		\Gamma\vdash \code{$l$ \^{} $r$} : \texttt{Real}
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad r:\texttt{Int}
+	}{
+		\Gamma\vdash \code{$l$ \^{} $r$} : \texttt{Real}
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad r:\texttt{Real}
+	}{
+		\Gamma\vdash \code{$l$ \^{} $r$} : \texttt{Real}
+	}
+\]
+
+\subsubsection{Real}
+
+\paragraph{Plus}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad \tau \in \texttt{Number} \quad r:\tau
+	}{
+		\Gamma\vdash \code{$l$ + $r$} : \texttt{Real}
+	}
+\]
+
+\paragraph{Minus}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad \tau \in \texttt{Number} \quad r:\tau
+	}{
+		\Gamma\vdash \code{$l$ - $r$} : \texttt{Real}
+	}
+\]
+
+\paragraph{Multiplication}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad \tau \in \texttt{Number} \quad r:\tau
+	}{
+		\Gamma\vdash \code{$l$ * $r$} : \texttt{Real}
+	}
+\]
+
+\paragraph{Division}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad \tau \in \texttt{Number} \quad r:\tau
+	}{
+		\Gamma\vdash \code{$l$ / $r$} : \texttt{Real}
+	}
+\]
+
+\paragraph{Modulo}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad \tau \in \texttt{Number} \quad r:\tau
+	}{
+		\Gamma\vdash \code{$l$ \% $r$} : \texttt{Real}
+	}
+\]
+
+\paragraph{Power}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Int} \quad \tau \in \texttt{Number} \quad r:\tau
+	}{
+		\Gamma\vdash \code{$l$ \^{} $r$} : \texttt{Real}
+	}
+\]
+
+\subsubsection{Text}
+
+\paragraph{As}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Text} \quad \tau \in \texttt{Number} \cup \set{\texttt{Text}, \texttt{Bool}}
+	}{
+		\Gamma\vdash \code{$l$ as $\tau$}: \tau
+	}
+\]
+
+\paragraph{Plus}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Text} \quad \tau:\texttt{Type} \quad r:\tau
+	}{
+		\Gamma\vdash \code{$l$ + $r$}: \texttt{Text}
+	}
+\]
+
+\paragraph{Minus}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Text} \quad r:\texttt{Text}
+	}{
+		\Gamma\vdash \code{$l$ - $r$}: \texttt{Text}
+	}
+\]
+
+\paragraph{Power}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Text} \quad \tau \in \texttt{Number} \quad r:\tau
+	}{
+		\Gamma\vdash \code{$l$ \^{} $r$}: \texttt{Text}
+	}
+\]
+
+\comment{TODO(implementazione): non dovremmo permettere Real}
+
+\paragraph{Division}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Text} \quad r:\texttt{Text}
+	}{
+		\Gamma\vdash \code{$l$ / $r$}: \exists\texttt{Text}.\texttt{List}
+	}
+\]
+
+\paragraph{Equal}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Text} \quad r:\texttt{Text}
+	}{
+		\Gamma\vdash \code{$l$ = $r$}: \texttt{Bool}
+	}
+\]
+
+\paragraph{Less}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Text} \quad r:\texttt{Text}
+	}{
+		\Gamma\vdash \code{$l$ < $r$}: \texttt{Bool}
+	}
+\]
+
+\paragraph{Less equal}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Text} \quad r:\texttt{Text}
+	}{
+		\Gamma\vdash \code{$l$ <= $r$}: \texttt{Bool}
+	}
+\]
+
+\paragraph{Greater equal}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Text} \quad r:\texttt{Text}
+	}{
+		\Gamma\vdash \code{$l$ >= $r$}: \texttt{Bool}
+	}
+\]
+
+\paragraph{Greater}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Text} \quad r:\texttt{Text}
+	}{
+		\Gamma\vdash \code{$l$ > $r$}: \texttt{Bool}
+	}
+\]
+
+\paragraph{Contains}
+
+\[
+	\infrule{
+		\Gamma\vdash l:\texttt{Text} \quad r:\texttt{Text}
+	}{
+		\Gamma\vdash \code{$l$ =\~{} $r$}: \texttt{Bool}
+	}
+\]
+
+\paragraph{Access}
+
+\[
+	\text{Index access}\quad
+	\infrule{
+		\Gamma\vdash l:\texttt{Text} \quad r:\texttt{Int}
+	}{
+		\Gamma\vdash \code{$l$ @ $r$}: \texttt{Text}
+	}
+\]
+
+\[
+	\text{"Substring"}\quad
+	\infrule{
+		\Gamma\vdash l:\texttt{Text} \quad r:\exists\texttt{Int}.\texttt{Range}
+	}{
+		\Gamma\vdash \code{$l$ @ $r$}: \texttt{Text}
+	}
+\]
+
+\comment{TODO: specificare parametri range}
+
+\[
+	\text{Count access}\quad
+	\infrule{
+		\Gamma\vdash l:\texttt{Text}
+	}{
+		\Gamma\vdash \code{$l$ @ \%}: \texttt{Int}
+	}
+\]
+
+\[
+	\text{Range access}\quad
+	\infrule{
+		\Gamma\vdash l:\texttt{Text}
+	}{
+		\Gamma\vdash \code{$l$ @ @}: \exists\texttt{Int}.\texttt{Range}
+	}
+\]
+
+\[
+	\text{Values access}\quad
+	\infrule{
+		\Gamma\vdash l:\texttt{Text}
+	}{
+		\Gamma\vdash \code{$l$ @ *}: \exists\texttt{Text}.\texttt{List}
+	}
+\]
+
+\comment{TODO: legacy access syntax. Rimuovere?}
+
+\subsection{Composite types}
+
+\subsubsection{List}
+
+\paragraph{As}
+
+\[
+	\infrule{
+		\Gamma\vdash \tau:\texttt{Type} \quad l:\exists\tau.\texttt{List} \\*
+		\Gamma\vdash \rho:\texttt{List}[\sigma:=\texttt{Type}] \\*
+		\Gamma\vdash \code{x:$\tau$ as $\sigma$} : \sigma
+	}{
+		\Gamma\vdash \code{$l$ as $\rho$} : \rho
+	}
+\]
+
+A term of type $\tau$ can be casted to type $\sigma$ $\implies$ A list of
+$\tau$ can be casted to the type $\rho$
+
+\comment{TODO: eventualmente generalizzare questa regola per tutti i tipi esistenziali}
+
+\paragraph{Contains}
+
+\[
+	\infrule{
+		\Gamma\vdash \tau:\texttt{Type} \quad l:\exists\tau.\texttt{List} \\*
+		\Gamma\vdash \sigma:\texttt{Type} \quad \sigma \leq \tau \quad r:\sigma
+	}{
+		\Gamma\vdash \code{$l$ =\~{} $r$} : \texttt{Bool}
+	}
+\]
+
+A list of $\tau$ contains an element of type $\sigma$ (narrower than $\tau$)
+
+\[
+	\infrule{
+		\Gamma\vdash \tau:\texttt{Type} \quad l:\exists\tau.\texttt{List}\\*
+		\Gamma\vdash \sigma:\texttt{Type} \quad \sigma \leq \tau \quad r:\exists\sigma.\texttt{Type}
+	}{
+		\Gamma\vdash \code{$l$ =\~{} $r$} : \texttt{Bool}
+	}
+\]
+
+A list of $\tau$ contains the elements of a list of $\sigma$ (narrower than
+$\tau$)
+
+\paragraph{Access}
+
+\[
+	\text{Index access}\quad
+	\infrule{
+		\Gamma\vdash \tau:\texttt{Type}
+		\quad l:\exists\tau.\texttt{List}
+		\quad r:\texttt{Int}
+	}{
+		\Gamma\vdash \code{$l$ @ $r$}: \tau
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash \tau:\texttt{List}[\sigma:=\texttt{Type}]
+		\quad l:\tau
+		\quad r:\exists\texttt{Int}.\texttt{Range}
+	}{
+		\Gamma\vdash \code{$l$ @ $r$}: \tau
+	}
+\]
+
+\[
+	\text{Count access}\quad
+	\infrule{
+		\Gamma\vdash \tau:\texttt{Type} \quad l:\exists\tau.\texttt{List}
+	}{
+		\Gamma\vdash \code{$l$ @ \%}: \texttt{Int}
+	}
+\]
+
+\[
+	\text{Range access}\quad
+	\infrule{
+		\Gamma\vdash l:\texttt{Text}
+	}{
+		\Gamma\vdash \code{$l$ @ @}: \exists\texttt{Int}.\texttt{Range}
+	}
+\]
+
+\comment{TODO: operatori aritmetici (+ concat, - remove) e uguaglianza}
+
+\subsubsection{Map}
+
+\paragraph{As}
+
+\[
+	\infrule{
+		\Gamma\vdash \tau:\texttt{Map}[\kappa_1:=\texttt{Type},\nu_1:=\texttt{Type}] \quad l:\tau \\*
+		\Gamma\vdash \code{k:$\kappa_1$ as $\kappa_2$} : \kappa_2 \land \code{v:$\nu_1$ as $\nu_2$} : \nu_2
+	}{
+		\Gamma\vdash \code{$l$ as $\rho$} : \rho
+	}
+\]
+
+A term of type $\kappa_1$ and be casted to type $\kappa_2$ $\land$ A term of
+type $\nu_1$ can be casted to type $\nu_2$ $\implies$ A map of type $\tau$ can
+be casted to the type $\rho$
+
+
+\paragraph{Contains}
+
+\[
+	\infrule{
+		\Gamma\vdash \tau:\texttt{Map}[\kappa:=\texttt{Type},\nu:=\texttt{Type}] \quad l:\tau \\*
+		\Gamma\vdash \sigma:\texttt{Type} \quad \sigma \leq \kappa \quad r:\sigma
+	}{
+		\Gamma\vdash \code{$l$ =\~{} $r$} : \texttt{Bool}
+	}
+\]
+
+A map $l$ of type $\tau$ contains a key of type $\sigma$ (narrower than
+$\kappa$)
+
+\[
+	\infrule{
+		\Gamma\vdash \tau:\texttt{Map}[\kappa_1:=\texttt{Type},\nu_1:=\texttt{Type}] \quad l:\tau \\*
+		\Gamma\vdash \rho:\texttt{Map}[\kappa_2:=\texttt{Type},\nu_2:=\texttt{Type}] \quad r:\rho \\*
+		\Gamma\vdash \kappa_2 \leq \kappa_1 \land \nu_2 \leq \nu_1
+	}{
+		\Gamma\vdash \code{$l$ =\~{} $r$} : \texttt{Bool}
+	}
+\]
+
+A map $l$ of type $\tau$ contais the key-value pairs of type $\kappa_2$
+(narrower than $\kappa_1$) and $\nu_2$ (narrower than $\nu_1$) of the map $r$
+of type $\rho$
+
+\paragraph{Access}
+
+\[
+	\text{Access by key}\quad
+	\infrule{
+		\Gamma\vdash \tau:\texttt{Map}[\kappa:=\texttt{Type},\nu:=\texttt{Type}] \quad l:\tau \\*
+		\Gamma\vdash \rho:\texttt{Type} \quad \rho \leq \kappa \quad r:\rho
+	}{
+		\Gamma\vdash \code{$l$ @ $r$}: \nu
+	}
+\]
+
+\[
+	\text{Count access}\quad
+	\infrule{
+		\Gamma\vdash \tau:\texttt{Map}[\kappa:=\texttt{Type},\nu:=\texttt{Type}] \quad l:\tau \\*
+	}{
+		\Gamma\vdash \code{$l$ @ \%}: \texttt{Int}
+	}
+\]
+
+\[
+	\text{Keys access}\quad
+	\infrule{
+		\Gamma\vdash \tau:\texttt{Map}[\kappa:=\texttt{Type},\nu:=\texttt{Type}] \quad l:\tau \\*
+	}{
+		\Gamma\vdash \code{$l$ @ @}: \exists\kappa.\texttt{List}
+	}
+\]
+
+\[
+	\text{Values access}\quad
+	\infrule{
+		\Gamma\vdash \tau:\texttt{Map}[\kappa:=\texttt{Type},\nu:=\texttt{Type}] \quad l:\tau \\*
+	}{
+		\Gamma\vdash \code{$l$ @ @}: \exists\nu.\texttt{List}
+	}
+\]
+
+\subsection{Product types}
+
+\[
+	\texttt{Products} = \set{\texttt{Tuple, Record, Struct}}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash \tau \in \texttt{Products} \quad l:\tau \\*
+		\Gamma\vdash \sigma \in \texttt{Products} \quad r:\sigma
+	}{
+		\Gamma\vdash \code{$l$ = $r$}: \texttt{Bool}
+	}
+\]
+
+
+\subsubsection{Tuple}
+
+\paragraph{Access}
+
+\[
+	\text{"Slice" access}\quad
+	\infrule{
+		\Gamma\vdash n \in \mathbb{N} \quad \forall_{i\in[1,n]}\tau_i:\texttt{Type} \quad l:\tau_1 \times ... \times \tau_n \\*
+		\Gamma\vdash r:\exists\texttt{Int}.\texttt{Range}
+	}{
+		\Gamma\vdash \code{$l$ @ $r$}: \bigtimes_{i \in r} \tau_i
+	}
+\]
+
+Example: \code{<0,1,2,3,4,5> @ 2..4 = <2 3 4>}
+
+With step: \code{<0,1,2,3,4,5> @ 0..5..2 = <0 2 4>}
+
+Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
+
+\[
+	\text{Access by index}\quad
+	\infrule{
+		\Gamma\vdash n \in \mathbb{N} \quad \forall_{i\in[1,n]}\tau_i:\texttt{Type} \quad l:\tau_1 \times ... \times \tau_n \\*
+		\Gamma\vdash r:\texttt{Int} \quad r \in [0,n]
+	}{
+		\Gamma\vdash \code{$l$ @ $r$}: \tau_r
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash n \in \mathbb{N} \quad \forall_{i\in[1,n]}\tau_i:\texttt{Type} \quad l:\tau_1 \times ... \times \tau_n \\*
+	}{
+		\begin{aligned}
+			\text{(Count access)} \qquad & \Gamma\vdash \code{$l$ @ \%}: \texttt{Int}                           \\
+			\text{(Range access)} \qquad & \land\Gamma\vdash \code{$l$ @ @}: \exists\texttt{Int}.\texttt{Range} 
+		\end{aligned}
+	}
+\]
+
+\subsubsection{Record}
+
+\paragraph{Access}
+
+\[
+	\text{Access by index}\quad
+	\infrule{
+		\Gamma\vdash n \geq 1 \quad \forall_{i\in[1,n]}\tau_i:\texttt{Type}, x_i:\tau_i, a_i \in \mathcal{I} \\*
+		\Gamma\vdash l:\tuple{a_1:\tau_1,...,a_n:\tau_n}\\*
+		\Gamma\vdash r:\texttt{Int} \quad r \in [1,n]
+	}{
+		\Gamma\vdash \code{$l$ @ $r$}: \tau_r
+	}
+\]
+
+\comment{TODO(implemenatzione): permettere solo a Tuple in modo da rendere esplicito la perdita degli identificatori}
+
+\[
+	\infrule{
+		\Gamma\vdash n \geq 1 \quad \forall_{i\in[1,n]}\tau_i:\texttt{Type}, x_i:\tau_i, a_i \in \mathcal{I} \\*
+		\Gamma\vdash l:\tuple{a_1:\tau_1,...,a_n:\tau_n}\\*
+	}{
+		\begin{aligned}
+			\text{(Count access)} \qquad & \Gamma\vdash \code{$l$ @ \%}: \texttt{Int}                     \\*
+			\text{(Range access)} \qquad & \land\Gamma\vdash \code{$l$ @ @}: \exists\texttt{Int}.\texttt{Range}\\*
+			\text{(Fields access)} \qquad & \land\Gamma\vdash \code{$l$ @ *}: \exists\texttt{Text}.\texttt{List}
+		\end{aligned}
+	}
+\]
+
+\paragraph{Dot access}
+
+\[
+	\text{Access by name}\quad
+	\infrule{
+		\Gamma\vdash n \geq 1 \quad \forall_{i\in[1,n]}\tau_i:\texttt{Type}, x_i:\tau_i, a_i \in \mathcal{I} \\*
+		\Gamma\vdash l:\tuple{a_1:\tau_1,...,a_n:\tau_n}\\*
+		\Gamma\vdash r \in \mathcal{I} \quad \exists_j a_j = r
+	}{
+		\Gamma\vdash \code{$l$ @ $r$}: \tau_j
+	}
+\]
+
+
+\subsubsection{Struct}
+
+\subsubsection{Function}
+
+\chapter{Statements}
+
+\section{Variable declaration}
+
+\[
+	\infrule{
+		\Gamma\vdash \tau:\texttt{Type}
+	}{
+		\Gamma, \code{$a$ $\tau$} \vdash a:\tau
+	}
+\]
+
+\comment{TODO: specificare il tipo Var come da implementazione?}
+
+\section{Constant declaration}
+
+\[
+	\infrule{
+		\Gamma\vdash \tau:\texttt{Type} \quad e:\tau
+	}{
+		\Gamma, \code{const $A$ $\tau$ <- $e$} \vdash A:\tau \qquad \text{(esplicit type)} \\*
+		\land \Gamma, \code{const $A$ <- $e$} \vdash A:\tau \qquad \text{(implicit type)}
+	}
+\]
+
+\section{For loop}
+
+\[
+	\infrule{
+		\Gamma\vdash \tau:\texttt{Type} \quad l:\exists\tau.\texttt{List}
+	}{
+		\Gamma, \code{for $i$ in $l$} \vdash i:\tau
+	}
+\]
+
+\[
+	\infrule{
+		\Gamma\vdash \kappa:\texttt{Type} \quad \nu:\texttt{Type} \quad m:\exists\kappa.\exists\nu.\texttt{Map}
+	}{
+		\Gamma, \code{for $k$:$v$ in $m$} \vdash k:\kappa \quad v:\nu
+	}
+\]
+
+\comment{TODO: deconstruction}
+
+
+
+
+\end{document}
+
+
