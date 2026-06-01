@@ -271,49 +271,49 @@
 
 \[
 	\infrule{
-		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\sigma_i:\texttt{Type}} \quad \tau_1:\bigtimes_{i \in [1,n]}{\sigma_i}\\*
-		\Gamma\vdash m \geq n \quad \forall_{i\in[1,m]}{\omega_i:\texttt{Type}} \quad \tau_2:\bigtimes_{j \in [1,m]}{\omega_j}\\*
-		\Gamma\vdash \forall_{i \in [1,n]}{\sigma_i \narr \omega_i}
+		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\texttt{Type}} \quad \theta_1:\bigtimes_{i \in [1,n]}{\tau_i}\\*
+		\Gamma\vdash m \geq n \quad \forall_{i\in[1,m]}{\omega_i:\texttt{Type}} \quad \theta_2:\bigtimes_{j \in [1,m]}{\omega_j}\\*
+		\Gamma\vdash \forall_{i \in [1,n]}{\tau_i \narr \omega_i}
 	}{
-		\Gamma\vdash \tau_1 \narr \tau_2
+		\Gamma\vdash \theta_1 \narr \theta_2
 	}
 \]
 
-A tuple type $\tau_1$ is narrower than the tuple type $\tau_2$ if the first $n$
-fields of $\tau_1$ have a type $\sigma$ narrower than the first $n$ fields
-types $\omega$ of $\tau_2$
+A tuple type $\theta_1$ is narrower than the tuple type $\theta_2$ if the first $n$
+fields of $\theta_1$ have a type $\tau$ narrower than the first $n$ fields
+types $\omega$ of $\theta_2$
 
 \vspace{\baselineskip}
 
 \[
 	\infrule{
-		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\sigma_i:\texttt{Type}} \quad \tau:\bigtimes_{i \in [1,n]}{\sigma_i}\\*
+		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\texttt{Type}} \quad \theta:\bigtimes_{i \in [1,n]}{\tau_i}\\*
 		\Gamma\vdash m \geq n \quad \forall_{j\in[1,m]}{\eta_j \in \mathcal{I}, \omega_j:\texttt{Type}} \quad \rho:\tuple{\eta_1:\omega_1,...,\eta_m:\omega_m} \\*
-		\Gamma\vdash \forall_{i \in [1,n]}{\sigma_i \narr \omega_i}
+		\Gamma\vdash \forall_{i \in [1,n]}{\tau_i \narr \omega_i}
 	}{
-		\Gamma\vdash \tau \narr \rho
+		\Gamma\vdash \theta \narr \rho
 	}
 \]
 
-A tuple type $\tau$ is narrower than the record type $\rho$ if the first $n$
-fields of $\tau$ have a type $\sigma$ narrower than the first $n$ fields type
+A tuple type $\theta$ is narrower than the record type $\rho$ if the first $n$
+fields of $\theta$ have a type $\tau$ narrower than the first $n$ fields type
 $\omega$ of $\rho$ (fields names are ignored)
 
 \vspace{\baselineskip}
 
 \[
 	\infrule{
-		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\sigma_i:\texttt{Type}} \quad \tau:\bigtimes_{i \in [1,n]}{\sigma_i}\\*
-		\Gamma\vdash \iota \in \mathcal{I} \quad m \geq n \quad \forall_{j\in[1,m]}{\eta_j \in \mathcal{I}, \omega_j:\texttt{Type}} \quad \psi:(\iota, \tuple{\eta_1:\omega_1,...,\eta_m:\omega_m}) \\*
-		\Gamma\vdash \forall_{i \in [1,n]}{\sigma_i \narr \omega_i}
+		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\texttt{Type}} \quad \theta:\bigtimes_{i \in [1,n]}{\tau_i}\\*
+		\Gamma\vdash \iota \in \mathcal{I} \quad m \geq n \quad \forall_{j\in[1,m]}{\eta_j \in \mathcal{I}, \omega_j:\texttt{Type}} \quad \sigma:(\iota, \tuple{\eta_1:\omega_1,...,\eta_m:\omega_m}) \\*
+		\Gamma\vdash \forall_{i \in [1,n]}{\tau_i \narr \omega_i}
 	}{
-		\Gamma\vdash \tau \narr \rho
+		\Gamma\vdash \theta \narr \rho
 	}
 \]
 
-A tuple type $\tau$ is narrower than the struct type $\psi$ if the first $n$
-fields of $\tau$ have a type $\sigma$ narrower than the first $n$ fields type
-$\omega$ of $\psi$ (struct name and fields names are ignored)
+A tuple type $\theta$ is narrower than the struct type $\sigma$ if the first $n$
+fields of $\theta$ have a type $\tau$ narrower than the first $n$ fields type
+$\omega$ of $\sigma$ (struct name and fields names are ignored)
 
 \comment{TODO: notazione struct}
 
@@ -339,17 +339,17 @@ $\xi'$ of type $\omega'$ in $\rho_2$, where $\tau'$ is narrower than $\omega'$
 
 \[
 	\infrule{
-		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\eta \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\texttt{Type}} \quad \rho_1:\tuple{\eta_1:\tau_1,...,\eta_n:\tau_n} \\*
-		\Gamma\vdash \epsilon \in \mathcal{I} \quad m \geq n \quad \forall_{j\in[1,m]}{\xi_j \in \mathcal{I}, \omega_j:\texttt{Type}} \quad \psi:(\epsilon, \tuple{\xi_1:\omega_1,...,\xi_m:\omega_m}) \\*
+		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\eta \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\texttt{Type}} \quad \rho:\tuple{\eta_1:\tau_1,...,\eta_n:\tau_n} \\*
+		\Gamma\vdash \epsilon \in \mathcal{I} \quad m \geq n \quad \forall_{j\in[1,m]}{\xi_j \in \mathcal{I}, \omega_j:\texttt{Type}} \quad \sigma:(\epsilon, \tuple{\xi_1:\omega_1,...,\xi_m:\omega_m}) \\*
 		\Gamma\vdash \forall_{\eta':\tau'}{\exists_{\xi':\omega'}{\eta'=\xi' \land \tau' \narr \omega'}}
 	}{
-		\Gamma\vdash \rho_1 \narr \rho_2
+		\Gamma\vdash \rho \narr \phi
 	}
 \]
 
-A record type $\rho_1$ is narrower than a struct type $\psi$ if, for all fields
-$\eta'$ of type $\tau'$ in $\rho_1$, there is a field with the same name $\xi'$
-of type $\omega'$ in $\rho_2$, where $\tau'$ is narrower than $\omega'$ (struct
+A record type $\rho$ is narrower than a struct type $\sigma$ if, for all fields
+$\eta'$ of type $\tau'$ in $\rho$, there is a field with the same name $\xi'$
+of type $\omega'$ in $\rho$, where $\tau'$ is narrower than $\omega'$ (struct
 name is ignored)
 \vspace{\baselineskip}
 
@@ -357,15 +357,15 @@ name is ignored)
 
 \[
 	\infrule{
-		\Gamma\vdash \iota \in \mathcal{I} \quad n \geq 0 \quad \forall_{i\in[1,n]}{\eta_i \in \mathcal{I}, \tau_i:\texttt{Type}} \quad \psi_1:(\iota, \tuple{\eta_1:\tau_1,...,\eta_n:\tau_n}) \\*
-		\Gamma\vdash \epsilon \in \mathcal{I} \quad m \geq n \quad \forall_{j\in[1,m]}{\xi_j \in \mathcal{I}, \omega_j:\texttt{Type}} \quad \psi_2:(\epsilon, \tuple{\xi_1:\omega_1,...,\xi_m:\omega_m}) \\*
+		\Gamma\vdash \iota \in \mathcal{I} \quad n \geq 0 \quad \forall_{i\in[1,n]}{\eta_i \in \mathcal{I}, \tau_i:\texttt{Type}} \quad \sigma_1:(\iota, \tuple{\eta_1:\tau_1,...,\eta_n:\tau_n}) \\*
+		\Gamma\vdash \epsilon \in \mathcal{I} \quad m \geq n \quad \forall_{j\in[1,m]}{\xi_j \in \mathcal{I}, \omega_j:\texttt{Type}} \quad \sigma_2:(\epsilon, \tuple{\xi_1:\omega_1,...,\xi_m:\omega_m}) \\*
 		\Gamma\vdash \iota = \epsilon
 	}{
-		\Gamma\vdash \psi_1 \narr \psi_2
+		\Gamma\vdash \sigma_1 \narr \sigma_2
 	}
 \]
 
-A struct type $\psi_1$ is narrower than a struct type $\psi_2$ if and only if
+A struct type $\sigma_1$ is narrower than a struct type $\sigma_2$ if and only if
 they have the same name (fields are ignored since they're equal by
 construction).
 
