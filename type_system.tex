@@ -639,9 +639,33 @@ Range from $b$ (begin) to $e$ (end) with a step $s$
 	}
 \]
 
-\comment{TODO: se equal è definito, allora anche not equal}
+\[
+	\infrule{
+		\Gamma\vdash \tau:\texttt{Type} \quad l:\tau \\*
+		\Gamma\vdash \sigma:\texttt{Type} \quad r:\sigma \\*
+		\Gamma\vdash \code{$l$ = $r$} : \texttt{Bool}
+	}{
+		\Gamma\vdash \code{$l$ != $r$} : \texttt{Bool}
+	}
+\]
 
-\comment{TODO: se contains è definito, allora anche contained}
+If the "equal" operator is defined, the "not equal" operator is also defined
+
+\vspace{\baselineskip}
+
+\[
+	\infrule{
+		\Gamma\vdash \tau:\texttt{Type} \quad l:\tau \\*
+		\Gamma\vdash \sigma:\texttt{Type} \quad r:\sigma \\*
+		\Gamma\vdash \code{$l$ =\~{} $r$}: \texttt{Bool}
+	}{
+		\Gamma\vdash \code{$r$ \~{}= $l$}: \texttt{Bool}
+	}
+\]
+
+If the "contains" operator is defined, the "contained" operator is also defined
+
+\vspace{\baselineskip}
 
 \[
 	\texttt{Number} = \set{\texttt{Natural}, \texttt{Int}, \texttt{Real}}
