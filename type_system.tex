@@ -23,6 +23,7 @@
 \newcommand{\code}[1]{\texttt{\colorbox{gray!10}{#1}}}
 \newcommand{\tuplecode}[1]{\code{<#1>}}
 \newcommand{\narr}{<:}
+\newcommand{\tenv}[2]{#1[\![#2]\!]}
 
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[section]
@@ -133,7 +134,7 @@ arguments of type $\tau_1$ and $\tau_2$ respectively, and produces a value of
 type $\rho$
 
 \subparagraph{"Generic" types} Some types are "generic" (a.k.a. existential
-types), meaning that they declare one or more type variable (known as type
+types), meaning that they declare one or more type variable (a.k.a. type
 parameters).\\*
 The notation $T[\tau:=\sigma]$ describes a generic type $T$ that
 takes a type parameter $\tau$ of some type $\sigma$.\\*
@@ -141,6 +142,12 @@ The notation $t : \exists\sigma.T$ means that the $t$ is a term of concrete
 type $T$ with the type parameter $\tau$ equal to $\sigma$
 
 \comment{TODO: tipi esistenziali? Rivedere notazione}
+
+\subparagraph{Identifiers set} A set $\mathcal{I}=\set{i\mid
+i:=\text{identifier}}$ is used to encompass all possible identifiers allowed by
+the grammar.
+
+\comment{TODO: formalizzare}
 
 \paragraph{Product types}
 
@@ -174,6 +181,80 @@ The $\sqcap$ operator produces the least wide type for the operand types
 	}{
 		\Gamma\vdash \tau_1 \sqcap \tau_2 = \omega
 	}
+\]
+
+\subsection{Type environment}
+
+The definition of an expression type is done within a "context" (a.k.a. type
+environment) which describes the type of any identifier or any other
+expressions appearing in the described expression.
+
+The general type environment is denoted by $\Gamma$.
+
+To avoid ambiguities and to more clearly describe expressions, $\Gamma$ is
+partioned in the $C,V,\Sigma,\Phi$ environments:
+
+\begin{itemize}
+	\item $C$: the Constants environment
+		\[
+			\begin{split}
+				C: \mathcal{I} & \to \texttt{Type}\\*
+				C(i) & \mapsto \tau
+			\end{split}
+		\]
+		A function that maps a constant identifier $i$ to its type $\tau$
+	\item $V$: the Variable environment
+		\[
+			\begin{split}
+				V: \mathcal{I} & \to \texttt{Type}\\*
+				V(i) & \mapsto \tau
+			\end{split}
+		\]
+		A function that maps a variable identifier $i$ to its type $\tau$
+	\item $\Sigma$: the Structs environment
+		\[
+			\begin{split}
+				\Sigma: \mathcal{I} & \to (\mathcal{I}, \texttt{Record})\\*
+				\Sigma(i) & \mapsto (i, \rho)
+			\end{split}
+		\]
+		A function that maps a typename $i$ (struct definition identifier) to
+		its type definition (identifier $i$ and record $\rho$)
+	\item $\Phi$: the Functions environment
+		\[
+			\begin{split}
+				\Phi: \mathcal{I} & \to (\mathcal{I}, \texttt{Function})\\*
+				\Phi(i) & \mapsto (i, \phi)
+			\end{split}
+		\]
+		A function that maps a function identifier $i$ to its definition
+		signature $(i, \phi)$\\*
+		With a type $\tau$, it maps to the function defined within the type
+		$\tau$
+		\[
+			\begin{split}
+				\Phi: (\texttt{Type},\mathcal{I}) & \to (\mathcal{I}, \texttt{Function})\\*
+				\Phi(\tau, i) & \mapsto (i, \phi)
+			\end{split}
+		\]
+\end{itemize}
+
+\comment{TODO: formalizzare structs e funzioni}
+
+\paragraph{Environment extension}
+
+Given how scopes and symbols lookup work, it will be useful to define "new"
+type environments extending an existing environment. The notation
+$\tenv{E}{t:T}$ will be used to denote that the environment $E$ is extended
+with $\tenv{}{t:T}$.
+
+Using the $C$ environment as example
+
+\[
+	\tenv{C}{t:T}(u) \mapsto \begin{cases}
+		T &\text{ if } u = t\\
+		C(u) &\text{ if } u \neq t\\
+	\end{cases}
 \]
 
 \newpage
@@ -223,12 +304,6 @@ The $\sqcap$ operator produces the least wide type for the operand types
 \]
 
 \subsection{Product types}
-
-\[
-	\mathcal{I} = \set{ i \mid i := \text{identifier}}
-\]
-
-\comment{TODO: formalizzare}
 
 \[
 	\text{Tuple}\qquad
