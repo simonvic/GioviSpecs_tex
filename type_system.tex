@@ -851,14 +851,10 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash \tau \in \texttt{Number} \quad l:\tau \quad r:\tau
+		\Gamma\vdash \tau \in \texttt{Number} \quad l:\tau \quad r:\tau\\*
+		op = \set{\code{=}, \code{!=}, \code{<}, \code{<=}, \code{>=}, \code{>=}, \code{>}}
 	}{
-		\Gamma\vdash \code{$l$ = $r$}: \texttt{Bool} \\*
-		\land \Gamma\vdash \code{$l$ != $r$}: \texttt{Bool} \\*
-		\land \Gamma\vdash \code{$l$ < $r$}: \texttt{Bool} \\*
-		\land \Gamma\vdash \code{$l$ <= $r$}: \texttt{Bool} \\*
-		\land \Gamma\vdash \code{$l$ >= $r$}: \texttt{Bool} \\*
-		\land \Gamma\vdash \code{$l$ > $r$}: \texttt{Bool}
+		\Gamma\vdash \code{$l$ $op$ $r$}: \texttt{Bool}
 	}
 \]
 
@@ -880,17 +876,10 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\texttt{Bool} \quad r:\texttt{Bool}
+		\Gamma\vdash l:\texttt{Bool} \quad r:\texttt{Bool} \\*
+		op = \set{\code{and}, \code{\&}, \code{or}, \code{|}}
 	}{
-		\Gamma\vdash \code{$l$ and $r$}:\texttt{Bool}
-	}
-\]
-
-\[
-	\infrule{
-		\Gamma\vdash l:\texttt{Bool} \quad r:\texttt{Bool}
-	}{
-		\Gamma\vdash \code{$l$ or $r$}:\texttt{Bool}
+		\Gamma\vdash \code{$l$ $op$ $r$}:\texttt{Bool}
 	}
 \]
 
@@ -1576,8 +1565,6 @@ Dovrebbe?}
 
 A term of type $\tau$ can be casted to type $\sigma$ $\implies$ A list of
 $\tau$ can be casted to the type $\rho$
-
-\comment{TODO: eventualmente generalizzare questa regola per tutti i tipi esistenziali}
 
 \paragraph{Contains}
 
