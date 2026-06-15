@@ -192,22 +192,22 @@ expressions appearing in the described expression.
 The general type environment is denoted by $\Gamma$.
 
 To avoid ambiguities and to more clearly describe expressions, $\Gamma$ is
-partioned in the $C,V,\Sigma,\Phi$ environments:
+partioned in the $\Pi,\Upsilon,\Sigma,\Phi$ environments:
 
 \begin{itemize}
-	\item $C$: the Constants environment
+	\item $\Pi$: the Constants environment
 		\[
 			\begin{split}
-				C: \mathcal{I} & \to \texttt{Type}\\*
-				C(i) & \mapsto \tau
+				\Pi: \mathcal{I} & \to \texttt{Type}\\*
+				\Pi(i) & \mapsto \tau
 			\end{split}
 		\]
 		A function that maps a constant identifier $i$ to its type $\tau$
-	\item $V$: the Variable environment
+	\item $\Upsilon$: the Variable environment
 		\[
 			\begin{split}
-				V: \mathcal{I} & \to \texttt{Type}\\*
-				V(i) & \mapsto \tau
+				\Upsilon: \mathcal{I} & \to \texttt{Type}\\*
+				\Upsilon(i) & \mapsto \tau
 			\end{split}
 		\]
 		A function that maps a variable identifier $i$ to its type $\tau$
@@ -248,12 +248,12 @@ type environments extending an existing environment. The notation
 $\tenv{E}{t:T}$ will be used to denote that the environment $E$ is extended
 with $\tenv{}{t:T}$.
 
-Using the $C$ environment as example
+Using the $\Upsilon$ variables environment as example
 
 \[
-	\tenv{C}{t:T}(u) \mapsto \begin{cases}
+	\tenv{\Upsilon}{t:T}(u) \mapsto \begin{cases}
 		T &\text{ if } u = t\\
-		C(u) &\text{ if } u \neq t\\
+		\Upsilon(u) &\text{ if } u \neq t\\
 	\end{cases}
 \]
 
