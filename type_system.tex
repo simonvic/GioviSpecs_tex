@@ -1932,6 +1932,10 @@ results in an alteration of an environment, the judgement may be followed by a
 "double turnstile" symbol $\vDash$ and the new environments.\\*
 For example: $\envLoc,\envStore \vdash e \vDash \envStore_2$
 
+\paragraph{Expression value} To denote to what value an expression evaluates
+to, the $\equiv$ symbol will be used.\\*
+For example: $\envLoc,\envStore \vdash e \equiv 69 \vDash \envStore_2$
+
 \section{Operational rules}
 
 \subsection{Literals}
@@ -1940,13 +1944,13 @@ For example: $\envLoc,\envStore \vdash e \vDash \envStore_2$
 
 \[
 	\oprule{}{
-		\envLoc,\envStore\vdash \code{true} : \texttt{Bool}
+		\envLoc,\envStore\vdash \code{true} \equiv \texttt{true}
 	}
 \]
 
 \[
 	\oprule{}{
-		\envLoc,\envStore\vdash \code{false} : \texttt{Bool}
+		\envLoc,\envStore\vdash \code{false} \equiv \texttt{true}
 	}
 \]
 
