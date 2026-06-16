@@ -24,6 +24,7 @@
 \newcommand{\code}[1]{\texttt{\colorbox{gray!10}{#1}}}
 \newcommand{\tuplecode}[1]{\code{<#1>}}
 \newcommand{\narr}{<:}
+\newcommand{\bop}{\diamond}
 \newcommand{\Zero}{\mathcal{Z}}
 \newcommand{\Type}{\texttt{Type}}
 \newcommand{\Bool}{\texttt{Bool}}
@@ -873,9 +874,9 @@ Dovrebbe?}
 \[
 	\infrule{
 		\Gamma\vdash \tau \in \texttt{Number} \quad l:\tau \quad r:\tau\\*
-		op = \set{\code{=}, \code{!=}, \code{<}, \code{<=}, \code{>=}, \code{>=}, \code{>}}
+		\bop = \set{\code{=}, \code{!=}, \code{<}, \code{<=}, \code{>=}, \code{>=}, \code{>}}
 	}{
-		\Gamma\vdash \code{$l$ $op$ $r$}: \Bool
+		\Gamma\vdash \code{$l$ $\bop$ $r$}: \Bool
 	}
 \]
 
@@ -898,9 +899,9 @@ Dovrebbe?}
 \[
 	\infrule{
 		\Gamma\vdash l:\Bool \quad r:\Bool \\*
-		op = \set{\code{and}, \code{\&}, \code{or}, \code{|}}
+		\bop = \set{\code{and}, \code{\&}, \code{or}, \code{|}}
 	}{
-		\Gamma\vdash \code{$l$ $op$ $r$}:\Bool
+		\Gamma\vdash \code{$l$ $\bop$ $r$}:\Bool
 	}
 \]
 
