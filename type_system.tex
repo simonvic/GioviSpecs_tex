@@ -2136,21 +2136,25 @@ dimensione iniziale}
 	}
 \]
 
+\subsection{Operators}
+
 \[
 	\oprule{
-		i \in \mathcal{I} \\*
-		\envLoc(i) = l \\*
-		\envStore(l) = v_l \\*
-		\envLoc,\envStore\vdash e \equiv v_e \vDash \envLoc_2,\envStore_2 \\*
+		\envLoc,\envStore\vdash e_1 \equiv v_1 \vDash \envLoc_2,\envStore_2 \\*
+		\envLoc_2,\envStore_2\vdash e_2 \equiv v_2 \vDash \envLoc_3,\envStore_3 \\*
+		\envLoc_3,\envStore_3\vdash v_3 = v_1 \bop v_2 \vDash \envStore_4 = \envStore_3\env{\alloc(\envStore_3) \mapsto v_3}\\*
 	}{
-		\envLoc,\envStore\vdash \code{$i$ <- $e$} \vDash \envStore_2[l \mapsto v_e]
+		\envLoc_3,\envStore_3\vdash \code{$e_1$ $\bop$ $e_2$} \equiv v_3 \vDash \envStore_4
 	}
 \]
 
-NOTE: evaluating $e$ may cause side effects (e.g. a function
-invokation), hence the new enviroments $\envLoc_2$ and
-$\envStore_2$
+\subparagraph{Side-effects} Evaluating expressions may cause side effects (e.g.
+a function invokation), hence new environments are declared.
 
+\subparagraph{Short-circuit evaluation} In some operations (e.g. boolean), some
+expressions may be "short-circuited" (they won't be evaluated).\\*
+For example: \code{false and someFunction()}, \texttt{someFunction()} will not be
+evaluated
 
 
 \end{document}
