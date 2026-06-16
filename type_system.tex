@@ -18,6 +18,7 @@
 
 \newcommand{\set}[1]{\left\{#1\right\}}
 \newcommand{\infrule}[2]{\frac{\begin{gathered}#1\end{gathered}}{\begin{gathered}#2\end{gathered}}}
+\newcommand{\oprule}[2]{\frac{\begin{gathered}#1\end{gathered}}{\begin{gathered}#2\end{gathered}}}
 % \newcommand{\infrule}[2]{\colorbox{gray!2}{$\frac{\begin{gathered}#1\end{gathered}}{\begin{gathered}#2\end{gathered}}$}}
 \newcommand{\tuple}[1]{\left<#1\right>}
 \newcommand{\code}[1]{\texttt{\colorbox{gray!10}{#1}}}
@@ -247,12 +248,11 @@ partioned in the $\envConst,\envVar,\envStructs,\envFunc$ environments:
 
 \comment{TODO: formalizzare structs e funzioni}
 
-\paragraph{Environment extension}
-
-Given how scopes and symbols lookup work, it will be useful to define "new"
-type environments extending an existing environment. The notation
-$E\env{t:T}$ will be used to denote that the environment $E$ is extended
-with $\env{t:T}$.
+\paragraph{Environment extension} Given how scopes and symbols
+lookup work, it will be useful to define "new" type
+environments extending an existing environment. The notation
+$E\env{t:T}$ will be used to denote that the environment $E$ is
+extended with $\env{t:T}$.
 
 Using the $\envVar$ variables environment as example
 
@@ -1880,6 +1880,110 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 
 \comment{TODO: deconstruction}
 
+\chapter{Operational semantics}
+
+This section provides a semi-formal definition of the operational semantics of
+the language, definining the state and context and how they mutate with every
+expression.
+
+\section{Notation and terminology}
+
+Two environments will be used:
+
+\begin{itemize}
+	\item $\envLoc :=$ \textbf{location environment}. Describes the mappings
+		between identifiers and their "location/address" in memory.
+		\[
+			\begin{split}
+				\envLoc: \mathcal{I} & \to \mathbb{Z}\\*
+				\envLoc(i) & \mapsto a
+			\end{split}
+		\]
+		NOTE: "location" and "memory" are used loosely here. They do not
+		represent an actual memory address, but rather an abstraction of it.
+	\item $\envStore :=$ \textbf{store environment}. Describes the mappings
+		between a location in memory and its data content
+		\[
+				\mathcal{D} = \set{d \mid d := \text{any data}}
+		\]
+		\[
+			\begin{split}
+				\envStore: \mathbb{Z} & \to \mathcal{D} \\*
+				\envStore(a) & \mapsto d
+			\end{split}
+		\]
+\end{itemize}
+
+\paragraph{Environment extension} To denote a environment extending, modifying
+or overriding an existing one, this notation will be used $\envLoc\env{i \to
+a}$ where it's defined as follows:
+
+\[
+	\envLoc\env{i \to a}(j) \mapsto \begin{cases}
+		a          &\text{ if } i = j\\
+		\envLoc(j) &\text{ if } i \neq j\\
+	\end{cases}
+\]
+
+Multiple mappings may be specified: $\envLoc\env{i_1 \to a_1, i_2 \to a_2}$
+
+\paragraph{Environment modification} If the evaluation of an expression
+results in an alteration of an environment, the judgement may be followed by a
+"double turnstile" symbol $\vDash$ and the new environments.\\*
+For example: $\envLoc,\envStore \vdash e \vDash \envStore_2$
+
+\section{Operational rules}
+
+\subsection{Literals}
+
+\paragraph{Bool}
+
+\[
+	\oprule{}{
+		\envLoc,\envStore\vdash \code{true} : \texttt{Bool}
+	}
+\]
+
+\[
+	\oprule{}{
+		\envLoc,\envStore\vdash \code{false} : \texttt{Bool}
+	}
+\]
+
+\paragraph{Int}
+
+\paragraph{Natural}
+
+\paragraph{Real}
+
+\paragraph{Text}
+
+\paragraph{Identifiers}
+
+\[
+	\oprule{
+		i \in \mathcal{I}\\*
+		\envLoc(i) = l\\*
+		\envStore(l) = v
+	}{
+		\envLoc,\envStore\vdash \code{$i$} \equiv v
+	}
+\]
+
+\[
+	\oprule{
+		\envLoc,\envStore\vdash e \equiv v_e \vDash \envLoc_2,\envStore_2 \\*
+		i \in \mathcal{I} \\*
+		\envLoc(i) = l \\*
+		\envStore(l) = v_l
+	}{
+		\envLoc,\envStore\vdash \code{$i$ <- $e$} \vDash \envStore_2[l \mapsto v_e]
+	}
+\]
+
+NOTE: evaluating $e$ may cause side effects (e.g. a function
+invokation), hence the new enviroments $\envLoc_2$ and
+$\envStore_2$
 
 
 
