@@ -196,7 +196,6 @@ describes a struct (a pair of an identifier $\iota$ and a record)
 \end{definition}
 
 The $\sqcap$ operator produces the least wide type for the operand types
-
 \[
 	\infrule{
 		\Gamma\vdash \tau_1:\Type \quad \tau_2:\Type \hfill \\*
@@ -272,7 +271,6 @@ $E\env{t:T}$ will be used to denote that the environment $E$ is
 extended with $\env{t:T}$.
 
 Using the $\envVar$ variables environment as example
-
 \[
 	\envVar\env{t:T}(u) \mapsto \begin{cases}
 		T &\text{ if } u = t\\
@@ -1934,7 +1932,6 @@ Two environments will be used:
 \paragraph{Environment extension} To denote a environment extending, modifying
 or overriding an existing one, this notation will be used $\envLoc\env{i \mapsto
 a}$ where it's defined as follows:
-
 \[
 	\envLoc\env{i \mapsto a}(j) \mapsto \begin{cases}
 		a          &\text{ if } i = j\\
@@ -1975,7 +1972,6 @@ Every variable, constant, function parameter, product types member etc. gets
 automatically initialized to its type's zero value.
 
 Every type has a zero value and will be described using $\mathcal{Z}$
-
 \[
 	\begin{split}
 		\Zero: \Type \to \mathcal{V} \\*
