@@ -2052,7 +2052,7 @@ dimensione iniziale}
 \subsubsection{Range}
 
 \[
-	\Gamma\vdash \Zero(\Range) = () \to \Range(0, 0, 1)
+	\Gamma\vdash \Zero(\Range) = \Range(0, 0, 1)
 \]
 
 \section{Operational rules}
@@ -2114,7 +2114,7 @@ dimensione iniziale}
 
 \comment{TODO: variables interpolation?}
 
-\paragraph{Identifiers}
+\subsection{Identifiers}
 
 \[
 	\oprule{
@@ -2128,10 +2128,10 @@ dimensione iniziale}
 
 \[
 	\oprule{
-		\envLoc,\envStore\vdash e \equiv v_e \vDash \envLoc_2,\envStore_2 \\*
 		i \in \mathcal{I} \\*
 		\envLoc(i) = l \\*
-		\envStore(l) = v_l
+		\envStore(l) = v_l \\*
+		\envLoc,\envStore\vdash e \equiv v_e \vDash \envLoc_2,\envStore_2 \\*
 	}{
 		\envLoc,\envStore\vdash \code{$i$ <- $e$} \vDash \envStore_2[l \mapsto v_e]
 	}
