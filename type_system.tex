@@ -1934,33 +1934,68 @@ For example: $\envLoc,\envStore \vdash e \vDash \envStore_2$
 
 \paragraph{Expression value} To denote to what value an expression evaluates
 to, the $\equiv$ symbol will be used.\\*
-For example: $\envLoc,\envStore \vdash e \equiv 69 \vDash \envStore_2$
+For example: $\envLoc,\envStore \vdash e \equiv v \vDash \envStore_2$.\\*
+To specify the type of the value, the notation $\tau(v)$ will be used, where
+$\tau$ can be any \texttt{Type} and $v$ any value
 
 \section{Operational rules}
 
 \subsection{Literals}
 
+\comment{TODO: come nelle regole di inferenza?}
+
 \paragraph{Bool}
 
 \[
-	\oprule{}{
-		\envLoc,\envStore\vdash \code{true} \equiv \texttt{true}
+	\oprule{
+		b \in \set{\texttt{true}, \texttt{false}}
+	}{
+		\envLoc,\envStore\vdash \code{$b$} \equiv \texttt{Bool($b$)}
 	}
 \]
 
+\paragraph{Natural}
+
 \[
-	\oprule{}{
-		\envLoc,\envStore\vdash \code{false} \equiv \texttt{true}
+	\oprule{
+		n := \text{ natural literal }
+	}{
+		\envLoc,\envStore\vdash \code{$n$} \equiv \texttt{Natural($n$)}
 	}
 \]
 
 \paragraph{Int}
 
-\paragraph{Natural}
+\[
+	\oprule{
+		i := \text{ integer literal }
+	}{
+		\envLoc,\envStore\vdash \code{$i$} \equiv \texttt{Int($i$)}
+	}
+\]
 
 \paragraph{Real}
 
+\[
+	\oprule{
+		r := \text{ real literal }
+	}{
+		\envLoc,\envStore\vdash \code{$r$} \equiv \texttt{Real($r$)}
+	}
+\]
+
+
 \paragraph{Text}
+
+\[
+	\oprule{
+		t := \text{ text literal }
+	}{
+		\envLoc,\envStore\vdash \code{$t$} \equiv \texttt{Text($t$)}
+	}
+\]
+
+\comment{TODO: variables interpolation?}
 
 \paragraph{Identifiers}
 
