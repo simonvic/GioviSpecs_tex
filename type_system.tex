@@ -1950,8 +1950,110 @@ For example: $\envLoc,\envStore \vdash e \vDash \envStore_2$
 \paragraph{Expression value} To denote to what value an expression evaluates
 to, the $\equiv$ symbol will be used.\\*
 For example: $\envLoc,\envStore \vdash e \equiv v \vDash \envStore_2$.\\*
-To specify the type of the value, the notation $\tau(v)$ will be used, where
-$\tau$ can be any \texttt{Type} and $v$ any value
+To specify the value with its type, the notation $\tau(v)$ will be used, where
+$\tau$ can be any \Type{} and $v$ any value
+
+\newpage
+
+\subsection{Zero values}
+
+The concept of a "default" value (a.k.a. zero value) is very important since
+the language has no concept of (nor models) a "null" value or uninitialized
+memory.
+
+Every variable, constant, function parameter, product types member etc. gets
+automatically initialized to its type's zero value.
+
+Every type has a zero value and will be described using $\mathcal{Z}$
+
+\[
+	\begin{split}
+		\Zero: \Type \to \mathcal{V} \\*
+		\Zero(\tau) \mapsto v
+	\end{split}
+\]
+
+\subsubsection{Primitive types}
+
+\[
+	\begin{split}
+		\Gamma\vdash \Zero(\Bool)    &= \Bool(\texttt{false}) \\*
+		\Gamma\vdash \Zero(\Text)    &= \Text(\texttt{""}) \\*
+		\Gamma\vdash \Zero(\Natural) &= \Natural(\texttt{0}) \\*
+		\Gamma\vdash \Zero(\Int)     &= \Int(\texttt{0}) \\*
+		\Gamma\vdash \Zero(\Real)    &= \Real(\texttt{0}) \\*
+		\Gamma\vdash \Zero(\Type)    &= \Type(\Void) \\*
+		\Gamma\vdash \Zero(\Void)    &= \Void() \\*
+	\end{split}
+\]
+
+\subsubsection{Composite types}
+
+\subparagraph{List}
+
+\[
+	\Gamma\vdash \Zero(\List[\sigma:=\Type]) = \List(0, \Zero(\sigma))
+\]
+
+\comment{TODO: se eventualmente formalizzo l'operatore \code{**}, aggiornare
+dimensione iniziale}
+
+\subparagraph{Map}
+
+\[
+	\Gamma\vdash \Zero(\Map[\kappa:=\Type,\nu:=\Type]) = \Map(\Zero(\kappa), \Zero(\nu))
+\]
+
+\subsubsection{Product types}
+
+\comment{TODO: riscrivere usando environment per membri (con default override)}
+
+\subparagraph{Tuple}
+
+\[
+	\infrule{
+		\Gamma\vdash \forall_{i\in[1,n]}{\tau_i:\Type} \quad n \geq 0
+	}{
+		\Gamma\vdash \Zero(\tau_1 \times ... \times \tau_n) = \Zero(\tau_1) \times ... \times \Zero(\tau_n)
+	}
+\]
+
+\subparagraph{Record}
+
+\[
+	\infrule{
+		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \mathcal{I}}
+	}{
+		\Gamma\vdash \Zero(\tuple{a_1:\tau_1,...,a_n:\tau_n}) : \tuple{a_1:\Zero(\tau_1), ..., a_n:\Zero(\tau_n)}
+	}
+\]
+
+\subparagraph{Struct}
+
+\text{}
+
+\comment{TODO: completare}
+
+\subsubsection{Function}
+
+\[
+	\Gamma\vdash \Zero(\Function) = () \to \Void
+\]
+
+% \[
+% 	\infrule{
+% 		\Gamma\vdash n \in \mathbb{N} \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\mathcal{I}} \quad \rho:\Type \\*
+% 		\Gamma\vdash \phi : (\tau_1,...,\tau_n) \to \rho
+% 	}{
+% 		\Gamma\vdash \Zero(\phi()) = \Zero(\rho)
+% 	}
+% \]
+
+\subsubsection{Range}
+
+\[
+	\Gamma\vdash \Zero(\Range) = () \to \Range(0, 0, 1)
+\]
 
 \section{Operational rules}
 
