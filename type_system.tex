@@ -1904,31 +1904,31 @@ Two environments will be used:
 	\item $\envStore :=$ \textbf{store environment}. Describes the mappings
 		between a location in memory and its data content
 		\[
-				\mathcal{D} = \set{d \mid d := \text{any data}}
+				\mathcal{V} = \set{v \mid v := \text{any value or data}}
 		\]
 		\[
 			\begin{split}
-				\envStore: \mathbb{Z} & \to \mathcal{D} \\*
-				\envStore(a) & \mapsto d
+				\envStore: \mathbb{Z} & \to \mathcal{V} \\*
+				\envStore(a) & \mapsto v
 			\end{split}
 		\]
 \end{itemize}
 
 \paragraph{Environment extension} To denote a environment extending, modifying
-or overriding an existing one, this notation will be used $\envLoc\env{i \to
+or overriding an existing one, this notation will be used $\envLoc\env{i \mapsto
 a}$ where it's defined as follows:
 
 \[
-	\envLoc\env{i \to a}(j) \mapsto \begin{cases}
+	\envLoc\env{i \mapsto a}(j) \mapsto \begin{cases}
 		a          &\text{ if } i = j\\
 		\envLoc(j) &\text{ if } i \neq j\\
 	\end{cases}
 \]
 
-Multiple mappings may be specified: $\envLoc\env{i_1 \to a_1, i_2 \to a_2}$
+Multiple mappings may be specified: $\envLoc\env{i_1 \mapsto a_1, i_2 \mapsto a_2}$
 
 \paragraph{Environment modification} If the evaluation of an expression
-results in an alteration of an environment, the judgement may be followed by a
+results in an alteration of an environment, the judgment may be followed by a
 "double turnstile" symbol $\vDash$ and the new environments.\\*
 For example: $\envLoc,\envStore \vdash e \vDash \envStore_2$
 
