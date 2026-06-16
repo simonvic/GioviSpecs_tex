@@ -23,7 +23,13 @@
 \newcommand{\code}[1]{\texttt{\colorbox{gray!10}{#1}}}
 \newcommand{\tuplecode}[1]{\code{<#1>}}
 \newcommand{\narr}{<:}
-\newcommand{\tenv}[2]{#1[\![#2]\!]}
+\newcommand{\env}[1]{[\![#1]\!]}
+\newcommand{\envConst}{\Pi}
+\newcommand{\envVar}{\Upsilon}
+\newcommand{\envStructs}{\Sigma}
+\newcommand{\envFunc}{\Phi}
+\newcommand{\envLoc}{\Lambda}
+\newcommand{\envStore}{\Psi}
 
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[section]
@@ -192,39 +198,39 @@ expressions appearing in the described expression.
 The general type environment is denoted by $\Gamma$.
 
 To avoid ambiguities and to more clearly describe expressions, $\Gamma$ is
-partioned in the $\Pi,\Upsilon,\Sigma,\Phi$ environments:
+partioned in the $\envConst,\envVar,\envStructs,\envFunc$ environments:
 
 \begin{itemize}
-	\item $\Pi$: the Constants environment
+	\item $\envConst$: the Constants environment
 		\[
 			\begin{split}
-				\Pi: \mathcal{I} & \to \texttt{Type}\\*
-				\Pi(i) & \mapsto \tau
+				\envConst: \mathcal{I} & \to \texttt{Type}\\*
+				\envConst(i) & \mapsto \tau
 			\end{split}
 		\]
 		A function that maps a constant identifier $i$ to its type $\tau$
-	\item $\Upsilon$: the Variable environment
+	\item $\envVar$: the Variable environment
 		\[
 			\begin{split}
-				\Upsilon: \mathcal{I} & \to \texttt{Type}\\*
-				\Upsilon(i) & \mapsto \tau
+				\envVar: \mathcal{I} & \to \texttt{Type}\\*
+				\envVar(i) & \mapsto \tau
 			\end{split}
 		\]
 		A function that maps a variable identifier $i$ to its type $\tau$
-	\item $\Sigma$: the Structs environment
+	\item $\envStructs$: the Structs environment
 		\[
 			\begin{split}
-				\Sigma: \mathcal{I} & \to (\mathcal{I}, \texttt{Record})\\*
-				\Sigma(i) & \mapsto (i, \rho)
+				\envStructs: \mathcal{I} & \to (\mathcal{I}, \texttt{Record})\\*
+				\envStructs(i) & \mapsto (i, \rho)
 			\end{split}
 		\]
 		A function that maps a typename $i$ (struct definition identifier) to
 		its type definition (identifier $i$ and record $\rho$)
-	\item $\Phi$: the Functions environment
+	\item $\envFunc$: the Functions environment
 		\[
 			\begin{split}
-				\Phi: \mathcal{I} & \to (\mathcal{I}, \texttt{Function})\\*
-				\Phi(i) & \mapsto (i, \phi)
+				\envFunc: \mathcal{I} & \to (\mathcal{I}, \texttt{Function})\\*
+				\envFunc(i) & \mapsto (i, \phi)
 			\end{split}
 		\]
 		A function that maps a function identifier $i$ to its definition
@@ -233,8 +239,8 @@ partioned in the $\Pi,\Upsilon,\Sigma,\Phi$ environments:
 		$\tau$
 		\[
 			\begin{split}
-				\Phi: (\texttt{Type},\mathcal{I}) & \to (\mathcal{I}, \texttt{Function})\\*
-				\Phi(\tau, i) & \mapsto (i, \phi)
+				\envFunc: (\texttt{Type},\mathcal{I}) & \to (\mathcal{I}, \texttt{Function})\\*
+				\envFunc(\tau, i) & \mapsto (i, \phi)
 			\end{split}
 		\]
 \end{itemize}
@@ -245,15 +251,15 @@ partioned in the $\Pi,\Upsilon,\Sigma,\Phi$ environments:
 
 Given how scopes and symbols lookup work, it will be useful to define "new"
 type environments extending an existing environment. The notation
-$\tenv{E}{t:T}$ will be used to denote that the environment $E$ is extended
-with $\tenv{}{t:T}$.
+$E\env{t:T}$ will be used to denote that the environment $E$ is extended
+with $\env{t:T}$.
 
-Using the $\Upsilon$ variables environment as example
+Using the $\envVar$ variables environment as example
 
 \[
-	\tenv{\Upsilon}{t:T}(u) \mapsto \begin{cases}
+	\envVar\env{t:T}(u) \mapsto \begin{cases}
 		T &\text{ if } u = t\\
-		\Upsilon(u) &\text{ if } u \neq t\\
+		\envVar(u) &\text{ if } u \neq t\\
 	\end{cases}
 \]
 
