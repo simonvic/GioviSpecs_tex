@@ -595,9 +595,9 @@ $\omega'$.
 
 \newpage
 
-\section{Literals}
+\section{Expressions}
 
-\subsection{Primitive types}
+\subsection{Literals}
 
 \subsubsection{Bool}
 
@@ -785,6 +785,45 @@ Range from $b$ (begin) to $e$ (end)
 \]
 
 Range from $b$ (begin) to $e$ (end) with a step $s$
+
+\newpage
+
+\subsection{Other}
+
+\subsubsection{Parenthesized expression}
+
+\[
+	\infrule{
+		\Gamma\vdash \tau:\Type \quad \epsilon:\tau
+	}{
+		\Gamma\vdash \code{\{$\epsilon$\}} : \tau
+	}
+\]
+
+\subsubsection{Invocation}
+
+\[
+	\infrule{
+		\Gamma\vdash \rho:\Type \\*
+		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\eta_i \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \\*
+		\Gamma\vdash \phi = (\eta_1:\tau_1,...,\eta_n:\tau_n) \to \rho \\*
+	}{
+		\Gamma\vdash \code{$\phi$($...$)} : \rho
+	}
+\]
+
+\subsubsection{Reference}
+
+\comment{TODO: chiarire notazione e muovere in sezione operatori}
+
+\[
+	\infrule{
+		\Gamma\vdash a \in \mathcal{I} \\*
+		\Gamma\vdash \phi = (\eta_1:\tau_1,...,\eta_n:\tau_n) \to \rho \\*
+	}{
+		\Gamma,\code{$a$ $\phi$}\vdash \code{::$a$} : \phi
+	}
+\]
 
 \chapter{Operators}
 
