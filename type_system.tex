@@ -750,7 +750,15 @@ Map of $\omega_\kappa$ keys (widest  among $\kappa$) and $\omega_\nu$ (widest am
 
 \subsubsection{Struct}
 
-\comment{TODO: ...}
+\[
+	\infrule{
+		\Gamma\vdash \iota \in \mathcal{I} \quad n \geq 0 \quad \forall_{i\in[1,n]}{\eta_i \in \mathcal{I}, \tau_i:\Type} \quad \sigma_1 = (\iota, \tuple{\eta_1:\tau_1,...,\eta_n:\tau_n}) \\*
+	}{
+		\Gamma\vdash \code{$\iota$.<>} : \sigma \\*
+	}
+\]
+
+\comment{TODO: regola con initializazzione dei campi}
 
 \subsection{Range}
 
