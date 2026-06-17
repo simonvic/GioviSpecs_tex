@@ -958,6 +958,8 @@ Dovrebbe?}
 	}
 \]
 
+\newpage
+
 \subsection{Primitive types}
 
 \subsubsection{Void}
@@ -1647,6 +1649,8 @@ Dovrebbe?}
 
 \comment{TODO: legacy access syntax. Rimuovere?}
 
+\newpage
+
 \subsection{Composite types}
 
 \subsubsection{List}
@@ -1655,41 +1659,42 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash \tau:\Type \quad l:\exists\tau.\List \\*
-		\Gamma\vdash \rho:\List[\sigma:=\Type] \\*
-		\Gamma\vdash \code{x:$\tau$ as $\sigma$} : \sigma
+		\Gamma\vdash \tau_1 = \List[\sigma_1 := \Type] \\*
+		\Gamma\vdash \tau_2 = \List[\sigma_2 := \Type] \\*
+		\Gamma\vdash l:\tau_1 \quad x:\sigma_1 \\*
+		\Gamma\vdash \code{$x$ as $\sigma_2$} : \sigma_2
 	}{
-		\Gamma\vdash \code{$l$ as $\rho$} : \rho
+		\Gamma\vdash \code{$l$ as $\tau_2$} : \tau_2
 	}
 \]
 
-A term of type $\tau$ can be casted to type $\sigma$ $\implies$ A list of
-$\tau$ can be casted to the type $\rho$
+If a term of type $\sigma_1$ can be casted to type $\sigma_2$ $\implies$ A list of
+$\sigma_1$ can be casted to a list of $\sigma_2$
 
 \paragraph{Contains}
 
 \[
 	\infrule{
-		\Gamma\vdash \tau:\Type \quad l:\exists\tau.\List \\*
-		\Gamma\vdash \sigma:\Type \quad \sigma \narr \tau \quad r:\sigma
+		\Gamma\vdash \tau_1:\Type \quad l:\exists\tau_1.\List \\*
+		\Gamma\vdash \tau_2:\Type \quad \tau_2 \narr \tau_1 \quad r:\tau_2
 	}{
 		\Gamma\vdash \code{$l$ =\~{} $r$} : \Bool
 	}
 \]
 
-A list of $\tau$ contains an element of type $\sigma$ (narrower than $\tau$)
+A list of $\tau_1$ contains an element of type $\tau_2$ (narrower than $\tau_1$)
 
 \[
 	\infrule{
-		\Gamma\vdash \tau:\Type \quad l:\exists\tau.\List\\*
-		\Gamma\vdash \sigma:\Type \quad \sigma \narr \tau \quad r:\exists\sigma.\List
+		\Gamma\vdash \tau_1:\Type \quad l:\exists\tau_1.\List\\*
+		\Gamma\vdash \tau_2:\Type \quad \tau_2 \narr \tau_1 \quad r:\exists\tau_2.\List
 	}{
 		\Gamma\vdash \code{$l$ =\~{} $r$} : \Bool
 	}
 \]
 
-A list of $\tau$ contains the elements of a list of $\sigma$ (narrower than
-$\tau$)
+A list of $\tau_1$ contains the elements of a list of $\tau_2$ (narrower than
+$\tau_1$)
 
 \paragraph{Access}
 
@@ -1706,8 +1711,8 @@ $\tau$)
 
 \[
 	\infrule{
-		\Gamma\vdash \tau:\List[\sigma:=\Type]
-		\quad l:\tau
+		\Gamma\vdash \tau : \Type
+		\quad l:\exists\tau.\List
 		\quad r:\exists\Int.\Range
 	}{
 		\Gamma\vdash \code{$l$ @ $r$}: \tau
@@ -1740,54 +1745,55 @@ $\tau$)
 
 \[
 	\infrule{
-		\Gamma\vdash \tau:\Map[\kappa_1:=\Type,\nu_1:=\Type] \quad l:\tau \\*
-		\Gamma\vdash \rho:\Map[\kappa_2:=\Type,\nu_2:=\Type] \\*
-		\Gamma\vdash \code{k:$\kappa_1$ as $\kappa_2$} : \kappa_2 \land \code{v:$\nu_1$ as $\nu_2$} : \nu_2
+		\Gamma\vdash \tau_1 = \Map[\kappa_1:=\Type,\nu_1:=\Type] \\*
+		\Gamma\vdash \tau_2 = \Map[\kappa_2:=\Type,\nu_2:=\Type] \\*
+		\Gamma\vdash l:\tau_1 \quad k:\kappa_1 \quad v:\nu_1 \\*
+		\Gamma\vdash \code{$k$ as $\kappa_2$} : \kappa_2 \land \code{$v$ as $\nu_2$} : \nu_2
 	}{
-		\Gamma\vdash \code{$l$ as $\rho$} : \rho
+		\Gamma\vdash \code{$l$ as $\tau_2$} : \tau_2
 	}
 \]
 
-A term of type $\kappa_1$ and be casted to type $\kappa_2$ $\land$ A term of
-type $\nu_1$ can be casted to type $\nu_2$ $\implies$ A map of type $\tau$ can
-be casted to the type $\rho$
+If a term of type $\kappa_1$ and be casted to type $\kappa_2$ $\land$ A term of
+type $\nu_1$ can be casted to type $\nu_2$ $\implies$ A map of type $\tau_1$
+can be casted to the type $\tau_2$
 
 
 \paragraph{Contains}
 
 \[
 	\infrule{
-		\Gamma\vdash \tau:\Map[\kappa:=\Type,\nu:=\Type] \quad l:\tau \\*
-		\Gamma\vdash \sigma:\Type \quad \sigma \narr \kappa \quad r:\sigma
+		\Gamma\vdash \tau = \Map[\kappa_1:=\Type,\nu:=\Type] \quad l:\tau \\*
+		\Gamma\vdash \kappa_2:\Type \quad \kappa_2 \narr \kappa_1 \quad r:\kappa_2
 	}{
 		\Gamma\vdash \code{$l$ =\~{} $r$} : \Bool
 	}
 \]
 
-A map $l$ of type $\tau$ contains a key of type $\sigma$ (narrower than
-$\kappa$)
+A map $l$ of type $\tau$ contains a key of type $\kappa_2$ (narrower than
+$\kappa_1$)
 
 \[
 	\infrule{
-		\Gamma\vdash \tau:\Map[\kappa_1:=\Type,\nu_1:=\Type] \quad l:\tau \\*
-		\Gamma\vdash \rho:\Map[\kappa_2:=\Type,\nu_2:=\Type] \quad r:\rho \\*
+		\Gamma\vdash \tau_1 = \Map[\kappa_1:=\Type,\nu_1:=\Type] \quad l:\tau_1 \\*
+		\Gamma\vdash \tau_2 = \Map[\kappa_2:=\Type,\nu_2:=\Type] \quad r:\tau_2 \\*
 		\Gamma\vdash \kappa_2 \narr \kappa_1 \land \nu_2 \narr \nu_1
 	}{
 		\Gamma\vdash \code{$l$ =\~{} $r$} : \Bool
 	}
 \]
 
-A map $l$ of type $\tau$ contais the key-value pairs of type $\kappa_2$
+A map $l$ of type $\tau_1$ contais the key-value pairs of type $\kappa_2$
 (narrower than $\kappa_1$) and $\nu_2$ (narrower than $\nu_1$) of the map $r$
-of type $\rho$
+of type $\tau_2$
 
 \paragraph{Access}
 
 \[
 	\text{Access by key}\quad
 	\infrule{
-		\Gamma\vdash \tau:\Map[\kappa:=\Type,\nu:=\Type] \quad l:\tau \\*
-		\Gamma\vdash \rho:\Type \quad \rho \narr \kappa \quad r:\rho
+		\Gamma\vdash \tau = \Map[\kappa_1:=\Type,\nu:=\Type] \quad l:\tau \\*
+		\Gamma\vdash \kappa_2 = \Type \quad \kappa_2 \narr \kappa_1 \quad r:\kappa_2
 	}{
 		\Gamma\vdash \code{$l$ @ $r$}: \nu
 	}
@@ -1796,7 +1802,7 @@ of type $\rho$
 \[
 	\text{Count access}\quad
 	\infrule{
-		\Gamma\vdash \tau:\Map[\kappa:=\Type,\nu:=\Type] \quad l:\tau \\*
+		\Gamma\vdash \tau = \Map[\kappa:=\Type,\nu:=\Type] \quad l:\tau \\*
 	}{
 		\Gamma\vdash \code{$l$ @ \%}: \Int
 	}
@@ -1805,7 +1811,7 @@ of type $\rho$
 \[
 	\text{Keys access}\quad
 	\infrule{
-		\Gamma\vdash \tau:\Map[\kappa:=\Type,\nu:=\Type] \quad l:\tau \\*
+		\Gamma\vdash \tau = \Map[\kappa:=\Type,\nu:=\Type] \quad l:\tau \\*
 	}{
 		\Gamma\vdash \code{$l$ @ @}: \exists\kappa.\List
 	}
@@ -1814,7 +1820,7 @@ of type $\rho$
 \[
 	\text{Values access}\quad
 	\infrule{
-		\Gamma\vdash \tau:\Map[\kappa:=\Type,\nu:=\Type] \quad l:\tau \\*
+		\Gamma\vdash \tau = \Map[\kappa:=\Type,\nu:=\Type] \quad l:\tau \\*
 	}{
 		\Gamma\vdash \code{$l$ @ @}: \exists\nu.\List
 	}
@@ -1843,7 +1849,7 @@ of type $\rho$
 \[
 	\text{"Slice" access}\quad
 	\infrule{
-		\Gamma\vdash n \in \mathbb{N} \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad l:\tau_1 \times ... \times \tau_n \\*
+		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad l:\tau_1 \times ... \times \tau_n \\*
 		\Gamma\vdash r:\exists\Int.\Range
 	}{
 		\Gamma\vdash \code{$l$ @ $r$}: \bigtimes_{i \in r} \tau_i
@@ -1859,7 +1865,7 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 \[
 	\text{Access by index}\quad
 	\infrule{
-		\Gamma\vdash n \in \mathbb{N} \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad l:\tau_1 \times ... \times \tau_n \\*
+		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad l:\tau_1 \times ... \times \tau_n \\*
 		\Gamma\vdash r:\Int \quad r \in [1,n]
 	}{
 		\Gamma\vdash \code{$l$ @ $r$}: \tau_r
@@ -1868,7 +1874,7 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 
 \[
 	\infrule{
-		\Gamma\vdash n \in \mathbb{N} \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad l:\tau_1 \times ... \times \tau_n \\*
+		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad l:\tau_1 \times ... \times \tau_n \\*
 	}{
 		\begin{aligned}
 			\text{(Count access)} \qquad & \Gamma\vdash \code{$l$ @ \%}: \Int                           \\
