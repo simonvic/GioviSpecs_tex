@@ -189,7 +189,7 @@ three members of type $\tau, \sigma, \rho$.
 \subparagraph{Record} The notation $\tuple{a:\tau, b:\sigma}$ describes a
 record (a tuple whose members are named)
 
-\subparagraph{Struct} The notation $(\iota, \tuple{a:\tau, b:\sigma})$
+\subparagraph{Struct} The notation $(\xi, \tuple{a_1:\tau_1, a_2:\tau_2})$
 describes a struct (a pair of an identifier $\iota$ and a record)
 
 \comment{TODO: rivedere notazione struct}
@@ -361,11 +361,11 @@ Using the $\envVar$ variables environment as example
 \]
 
 \[
-	\text{Struct (user defined)} \qquad
+	\text{Struct} \qquad
 	\infrule{
-		\Gamma\vdash \eta \in \mathcal{I} \quad n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \mathcal{I}}
+		\Gamma\vdash \xi \in \mathcal{I} \quad n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \mathcal{I}}
 	}{
-		\Gamma,\code{struct $\eta$ <$a_1$ $\tau_1,...,a_n$ $\tau_n$>} \vdash \code{$\eta$} \equiv (\eta,\rho)
+		\Gamma,\code{struct $\xi$ <$a_1$ $\tau_1,...,a_n$ $\tau_n$>} \vdash \code{$\xi$} \equiv (\xi,\tuple{a_1:\tau_1,...,a_n:\tau_n})
 	}
 \]
 
@@ -426,7 +426,7 @@ Using the $\envVar$ variables environment as example
 	\qquad \Gamma\vdash \Int \narr \Real
 \]
 
-\paragraph{Composite types}
+\subsubsection{Composite types}
 
 \[
 	\infrule{
@@ -450,9 +450,9 @@ Using the $\envVar$ variables environment as example
 
 \newpage
 
-\paragraph{Product types}
+\subsubsection{Product types}
 
-\subparagraph{Tuple}
+\paragraph{Tuple}
 
 \[
 	\infrule{
@@ -489,7 +489,7 @@ $\omega$ of $\rho$ (fields names are ignored)
 \[
 	\infrule{
 		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad \theta = \bigtimes_{i \in [1,n]}{\tau_i}\\*
-		\Gamma\vdash \iota \in \mathcal{I} \quad m \geq n \quad \forall_{j\in[1,m]}{\eta_j \in \mathcal{I}, \omega_j:\Type} \quad \sigma = (\iota, \tuple{\eta_1:\omega_1,...,\eta_m:\omega_m}) \\*
+		\Gamma\vdash \xi \in \mathcal{I} \quad m \geq n \quad \forall_{j\in[1,m]}{a_j \in \mathcal{I}, \omega_j:\Type} \quad \sigma = (\xi, \tuple{a_1:\omega_1,...,a_m:\omega_m}) \\*
 		\Gamma\vdash \forall_{i \in [1,n]}{\tau_i \narr \omega_i}
 	}{
 		\Gamma\vdash \theta \narr \rho
@@ -502,47 +502,52 @@ $\omega$ of $\sigma$ (struct name and fields names are ignored)
 
 \vspace{\baselineskip}
 
-\subparagraph{Record}
+\newpage
+
+\paragraph{Record}
 
 \[
 	\infrule{
-		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\eta_i \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \quad \rho_1 = \tuple{\eta_1:\tau_1,...,\eta_n:\tau_n} \\*
-		\Gamma\vdash m \geq n \quad \forall_{j\in[1,m]}{\xi_j \in \mathcal{M} \subseteq \mathcal{I}, \omega_i:\Type} \quad \rho_2 = \tuple{\xi_1:\omega_1,...,\xi_m:\omega_m} \\*
-		\Gamma\vdash \forall_{\eta':\tau'}{\exists_{\xi':\omega'}{\eta'=\xi' \land \tau' \narr \omega'}}
+		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \quad \rho_1 = \tuple{a_1:\tau_1,...,a_n:\tau_n} \\*
+		\Gamma\vdash m \geq n \quad \forall_{j\in[1,m]}{b_j \in \mathcal{M} \subseteq \mathcal{I}, \omega_i:\Type} \quad \rho_2 = \tuple{b_1:\omega_1,...,b_m:\omega_m} \\*
+		\Gamma\vdash \forall_{a':\tau'\in\mathcal{N}}{\exists_{b':\omega'\in\mathcal{M}}{a'=b' \land \tau' \narr \omega'}}
 	}{
 		\Gamma\vdash \rho_1 \narr \rho_2
 	}
 \]
 
 A record type $\rho_1$ is narrower than a record type $\rho_2$ if, for all
-fields $\eta'$ of type $\tau'$ in $\rho_1$, there is a field with the same name
-$\xi'$ of type $\omega'$ in $\rho_2$, where $\tau'$ is narrower than $\omega'$
+fields $a'$ of type $\tau'$ in $\rho_1$, there is a field with the same name
+$b'$ of type $\omega'$ in $\rho_2$, where $\tau'$ is narrower than $\omega'$
 
 \vspace{\baselineskip}
 
 \[
 	\infrule{
-		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\eta \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \quad \rho = \tuple{\eta_1:\tau_1,...,\eta_n:\tau_n} \\*
-		\Gamma\vdash \epsilon \in \mathcal{I} \quad m \geq n \quad \forall_{j\in[1,m]}{\xi_j \in \mathcal{I}, \omega_j:\Type} \quad \sigma = (\epsilon, \tuple{\xi_1:\omega_1,...,\xi_m:\omega_m}) \\*
-		\Gamma\vdash \forall_{\eta':\tau'}{\exists_{\xi':\omega'}{\eta'=\xi' \land \tau' \narr \omega'}}
+		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{a \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \quad \rho = \tuple{a_1:\tau_1,...,a_n:\tau_n} \\*
+		\Gamma\vdash \xi \in \mathcal{I} \quad m \geq n \quad \forall_{j\in[1,m]}{b_j \in \mathcal{I}, \omega_j:\Type} \quad \sigma = (\xi, \tuple{b_1:\omega_1,...,b_m:\omega_m}) \\*
+		\Gamma\vdash \forall_{a':\tau'\in\mathcal{N}}{\exists_{b':\omega'\in\mathcal{M}}{a'=b' \land \tau' \narr \omega'}}
 	}{
-		\Gamma\vdash \rho \narr \phi
+		\Gamma\vdash \rho \narr \sigma
 	}
 \]
 
 A record type $\rho$ is narrower than a struct type $\sigma$ if, for all fields
-$\eta'$ of type $\tau'$ in $\rho$, there is a field with the same name $\xi'$
-of type $\omega'$ in $\rho$, where $\tau'$ is narrower than $\omega'$ (struct
+$a'$ of type $\tau'$ in $\rho$, there is a field with the same name $b'$
+of type $\omega'$ in $\sigma$, where $\tau'$ is narrower than $\omega'$ (struct
 name is ignored)
-\vspace{\baselineskip}
 
-\subparagraph{Struct}
+\newpage
+
+\paragraph{Struct}
 
 \[
 	\infrule{
-		\Gamma\vdash \iota \in \mathcal{I} \quad n \geq 0 \quad \forall_{i\in[1,n]}{\eta_i \in \mathcal{I}, \tau_i:\Type} \quad \sigma_1 = (\iota, \tuple{\eta_1:\tau_1,...,\eta_n:\tau_n}) \\*
-		\Gamma\vdash \epsilon \in \mathcal{I} \quad m \geq n \quad \forall_{j\in[1,m]}{\xi_j \in \mathcal{I}, \omega_j:\Type} \quad \sigma_2 = (\epsilon, \tuple{\xi_1:\omega_1,...,\xi_m:\omega_m}) \\*
-		\Gamma\vdash \iota = \epsilon
+		\Gamma\vdash \xi_1 \in \mathcal{I} \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \mathcal{I}, \tau_i:\Type} \\*
+		\Gamma\vdash \sigma_1 = (\xi_1, \tuple{a_1:\tau_1,...,a_n:\tau_n}) \\*
+		\Gamma\vdash \xi_2 \in \mathcal{I} \quad m \geq n \quad \forall_{j\in[1,m]}{b_j \in \mathcal{I}, \omega_j:\Type} \\*
+		\Gamma\vdash \sigma_2 = (\xi_2, \tuple{b_1:\omega_1,...,b_m:\omega_m}) \\*
+		\Gamma\vdash \xi_1 = \xi_2
 	}{
 		\Gamma\vdash \sigma_1 \narr \sigma_2
 	}
@@ -559,12 +564,12 @@ construction).
 
 \[
 	\infrule{
-		\Gamma\vdash \rho_1:\Type \quad n \geq 0 \quad \forall_{i\in[1,n]}{\eta_i \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \\*
-		\Gamma\vdash \phi_1 = (\eta_1:\tau_1,...,\eta_n:\tau_n) \to \rho_1 \\*
-		\Gamma\vdash \rho_2:\Type \quad m \geq n  \quad \forall_{j\in[1,m]}{\xi_j \in \mathcal{M} \subseteq \mathcal{I}, \omega_i:\Type} \\*
-		\Gamma\vdash \phi_2 = (\xi_1:\omega_1,...,\xi_m:\omega_m) \to \rho_1 \\*
+		\Gamma\vdash \rho_1:\Type \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \\*
+		\Gamma\vdash \phi_1 = (a_1:\tau_1,...,a_n:\tau_n) \to \rho_1 \\*
+		\Gamma\vdash \rho_2:\Type \quad m \geq n  \quad \forall_{j\in[1,m]}{b_j \in \mathcal{M} \subseteq \mathcal{I}, \omega_i:\Type} \\*
+		\Gamma\vdash \phi_2 = (b_1:\omega_1,...,b_m:\omega_m) \to \rho_1 \\*
 		\Gamma\vdash \rho_1 \narr \rho_2 \\*
-		\Gamma\vdash \forall_{\eta':\tau'}{\exists_{\xi':\omega'}{\eta'=\xi' \land \tau' \narr \omega'}}
+		\Gamma\vdash \forall_{a':\tau'}{\exists_{b':\omega'}{a'=b' \land \tau' \narr \omega'}}
 	}{
 		\Gamma\vdash \phi_1 \narr \phi_2
 	}
@@ -572,8 +577,8 @@ construction).
 
 A function type $\phi_1$ is narrower than a function type $\phi_2$ if the
 return type $\rho_1$ is narrower than the other return type $\rho_2$, and if,
-for all parameters $\eta'$ of type $\tau'$ in $\phi_1$, there is a parameter with
-the same name $\xi'$ of type $\omega'$ in $\phi_2$, where $\tau'$ is narrower than
+for all parameters $a'$ of type $\tau'$ in $\phi_1$, there is a parameter with
+the same name $b'$ of type $\omega'$ in $\phi_2$, where $\tau'$ is narrower than
 $\omega'$.
 
 \comment{TODO: è gia un casino cosi :D, ma includere anche opzionalità dei parametri}
@@ -752,9 +757,9 @@ Map of $\omega_\kappa$ keys (widest  among $\kappa$) and $\omega_\nu$ (widest am
 
 \[
 	\infrule{
-		\Gamma\vdash \iota \in \mathcal{I} \quad n \geq 0 \quad \forall_{i\in[1,n]}{\eta_i \in \mathcal{I}, \tau_i:\Type} \quad \sigma_1 = (\iota, \tuple{\eta_1:\tau_1,...,\eta_n:\tau_n}) \\*
+		\Gamma\vdash \xi \in \mathcal{I} \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \mathcal{I}, \tau_i:\Type} \quad \sigma_1 = (\xi, \tuple{a_1:\tau_1,...,a_n:\tau_n}) \\*
 	}{
-		\Gamma\vdash \code{$\iota$.<>} : \sigma \\*
+		\Gamma\vdash \code{$\xi$.<>} : \sigma \\*
 	}
 \]
 
@@ -804,11 +809,10 @@ Range from $b$ (begin) to $e$ (end) with a step $s$
 
 \[
 	\infrule{
-		\Gamma\vdash \rho:\Type \\*
-		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\eta_i \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \\*
-		\Gamma\vdash \phi = (\eta_1:\tau_1,...,\eta_n:\tau_n) \to \rho \\*
+		\Gamma\vdash \rho:\Type \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \mathcal{I}, \tau_i:\Type} \quad \phi = (a_1:\tau_1,...,a_n:\tau_n) \to \rho \\*
+		\Gamma\vdash f : \phi
 	}{
-		\Gamma\vdash \code{$\phi$($...$)} : \rho
+		\Gamma\vdash \code{$f$($...$)} : \rho
 	}
 \]
 
@@ -819,13 +823,13 @@ Range from $b$ (begin) to $e$ (end) with a step $s$
 \[
 	\infrule{
 		\Gamma\vdash a \in \mathcal{I} \\*
-		\Gamma\vdash \phi = (\eta_1:\tau_1,...,\eta_n:\tau_n) \to \rho \\*
+		\Gamma\vdash \rho:\Type \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \mathcal{I}, \tau_i:\Type} \quad \phi = (a_1:\tau_1,...,a_n:\tau_n) \to \rho \\*
 	}{
 		\Gamma,\code{$a$ $\phi$}\vdash \code{::$a$} : \phi
 	}
 \]
 
-\chapter{Operators}
+\newpage
 
 \section{Operators}
 
