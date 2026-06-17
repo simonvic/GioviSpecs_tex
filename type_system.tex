@@ -132,7 +132,7 @@
 
 \subparagraph{Judgements and terms} To describe the type system, its types and
 the inference rules, this document uses "judgements" on "terms".\\*
-For example, $t:T$ means $t$ is a term of type $T$.
+For example, $t:T$ is a judgement telling that $t$ is a term of type $T$.
 
 \subparagraph{Assumptions} Zero or more assumptions (comma separated) can be
 used for a judgement; they're specified before the "turnstile" symbol
@@ -140,17 +140,16 @@ $\vdash$.\\*
 For example, $\Gamma \vdash t:T$ can be read as "if $\Gamma$ is true, then $t$
 is a term of type $T$".
 
-\subparagraph{Premise} Judgements can be made based on zero or more judgements
-(premise, space separated).\\*
+\subparagraph{Premise} Judgements can be made based on zero or more premises
+(space separated judgements).\\*
 For example, $\infrule{\Gamma\vdash t_1:T \quad \Delta\vdash
 t_2:T}{\Gamma,\Delta\vdash \code{$t_1$ + $t_2$}: T}$ means that with a premise
 that $\Gamma\vdash t_1:T$ and $\Delta\vdash t_2:T$ are true, then
 $\Gamma,\Delta\vdash \code{$t_1$ + $t_2$}: T$ is true.
 
 \subparagraph{Code} Text written with \code{monospaced} font denotes the text
-as written in code verbatim.\\*
-Some types may also be written with \texttt{Monospace} font (usually in pascal
-case)
+as written in code verbatim. Some types may also be written with
+\texttt{Monospace} font (usually in PascalCase)
 
 \subparagraph{Functions} Functions are denoted by a list of zero or more input
 arguments followed by an output argument.\\*
@@ -161,8 +160,8 @@ type $\rho$
 \subparagraph{"Generic" types} Some types are "generic" (a.k.a. existential
 types), meaning that they declare one or more type variable (a.k.a. type
 parameters).\\*
-The notation $T[\tau:=\sigma]$ describes a generic type $T$ that
-takes a type parameter $\tau$ of some type $\sigma$.\\*
+The notation $T[\tau:=\sigma]$ describes a generic type $T$ with a type
+parameter $\tau$ of some type $\sigma$.\\*
 The notation $t : \exists\sigma.T$ means that the $t$ is a term of concrete
 type $T$ with the type parameter $\tau$ equal to $\sigma$
 
