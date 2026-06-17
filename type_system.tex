@@ -826,49 +826,45 @@ Range from $b$ (begin) to $e$ (end) with a step $s$
 
 \section{Operators}
 
-\comment{TODO: aggiungere operatore dotref}
-
-\begin{longtable}{cc}
-	OPERATOR                        & SYMBOL     \\\hline
-	PLUS                            & \verb$+$   \\\hline
-	MINUS                           & \verb$-$   \\\hline
-	MULTIPLICATION                  & \verb$*$   \\\hline
-	DIVISION                        & \verb$/$   \\\hline
-	MODULO                          & \verb$%$  \\\hline
-	EXPONENTIAL                     & \verb$^$   \\\hline
-	EQUAL                           & \verb$=$   \\\hline
-	NOT EQUAL                       & \verb$!=$  \\\hline
-	LESS EQUAL                      & \verb$<=$  \\\hline
-	LESS                            & \verb$<$   \\\hline
-	GREATER                         & \verb$>$   \\\hline
-	GREATER EQUAL                   & \verb$>=$  \\\hline
-	\hdashline\newpage\hdashline\hline
-	CONTAINS                        & \verb$=~$  \\\hline
-	IS CONTAINED                    & \verb$~=$  \\\hline
-	\multirow{2}{*}{BOOL NOT}       & \verb$not$ \\
-	                                & \verb$!$ \\\hline
-	\multirow{2}{*}{BOOL AND}       & \verb$and$ \\
-	                                & \verb$&$ \\\hline
-	\multirow{2}{*}{BOOL OR}        & \verb$or$ \\
-	                                & \verb$|$ \\\hline
-	BITWISE NOT                     & \verb$!!$ \\\hline
-	BITWISE AND                     & \verb$&&$ \\\hline
-	BITWISE OR                      & \verb$||$ \\\hline
-	BITWISE XOR                     & \verb$|||$ \\\hline
-	BITWISE LEFT SHIFT              & \verb${<}$ \\\hline
-	BITWISE RIGHT SHIFT             & \verb${>}$ \\\hline
-	BITWISE RIGHT UNSIGNED SHIFT    & \verb${>>}$ \\\hline
-	IS (type check)                 & \verb$is$  \\\hline
-	AS (type coercion)              & \verb$as$  \\\hline
-\end{longtable}
-
-\paragraph{Pseudo operators}
-
-\begin{longtable}{rl}
-	OPERATOR   & SYMBOL     \\\hline
-	DOT ACCESS & \verb$.$ \\\hline
-	AT ACCESS  & \verb$@$ \\\hline
-\end{longtable}
+\resizebox{\linewidth}{!}{
+	\begin{tabular}{rcl}
+		Operator                        & Symbol          & Description\\\hline
+		PLUS                            & \texttt{+}      & Arithmetic sum, concatenation\\\hline
+		MINUS                           & \texttt{-}      & Arithmetic subtraction, intersection\\\hline
+		MULTIPLICATION                  & \texttt{*}      & Arithmetic multiplication\\\hline
+		DIVISION                        & \texttt{/}      & Arithmetic division\\\hline
+		MODULO                          & \texttt{\%}     & Arithmetic remainder\\\hline
+		EXPONENTIAL                     & \texttt{\^}     & Arithmetic power, text repetition\\\hline
+		EQUAL                           & \texttt{=}      & Loose equality\\\hline
+		NOT EQUAL                       & \texttt{!=}     & Loose inequality\\\hline
+		LESS EQUAL                      & \texttt{<=}     & Arithmetic and lexicographical comparison\\\hline
+		LESS                            & \texttt{<}      & Arithmetic and lexicographical comparison\\\hline
+		GREATER                         & \texttt{>}      & Arithmetic and lexicographical comparison\\\hline
+		GREATER EQUAL                   & \texttt{>=}     & Arithmetic and lexicographical comparison\\\hline
+		CONTAINS                        & \texttt{=\~{}}  & Checks if a set of elements contains an element\\\hline
+		IS CONTAINED                    & \texttt{\~{}=}  & Reverse of CONTAINS\\\hline
+		\multirow{2}{*}{BOOL NOT}       & \texttt{not}    & \multirow{2}{*}{Boolean logic negation}\\
+	                                	& \texttt{!}      & \\\hline
+		\multirow{2}{*}{BOOL AND}       & \texttt{and}    & \multirow{2}{*}{Boolean logic and}\\
+	                                	& \texttt{\&}     & \\\hline
+		\multirow{2}{*}{BOOL OR}        & \texttt{or}     & \multirow{2}{*}{Boolean logic or}\\
+	                                	& \texttt{|}      & \\\hline
+		BITWISE NOT                     & \texttt{!!}     & Bitwise negation\\\hline
+		BITWISE AND                     & \texttt{\&\&}   & Bitwise and\\\hline
+		BITWISE OR                      & \texttt{||}     & Bitwise or\\\hline
+		BITWISE XOR                     & \texttt{|||}    & Bitwise exclusive or\\\hline
+		BITWISE LEFT SHIFT              & \texttt{\{<\}}  & Bitwise left shift\\\hline
+		BITWISE RIGHT SHIFT             & \texttt{\{>\}}  & Bitwise right shift\\\hline
+		BITWISE RIGHT UNSIGNED SHIFT    & \texttt{\{>>\}} & Bitwise right unsigned shift\\\hline
+		IS                              & \texttt{is}     & Runtime type check, deconstruction (?)\\\hline
+		AS                              & \texttt{as}     & Explicit type coercion\\\hline
+	    \\
+		\multicolumn{3}{c}{Pseudo-Operators}                \\\hline
+		DOT ACCESS                      & \texttt{.}      & Members access\\\hline
+		DOTREF ACCESS                   & \texttt{::}     & Function member access\\\hline
+		AT ACCESS                       & \texttt{@}      & Properties access\\\hline
+	\end{tabular}
+}
 
 \newpage
 
