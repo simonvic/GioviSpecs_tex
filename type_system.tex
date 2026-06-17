@@ -24,6 +24,7 @@
 \newcommand{\tuple}[1]{\left<#1\right>}
 \newcommand{\code}[1]{\texttt{\colorbox{gray!10}{#1}}}
 \newcommand{\tuplecode}[1]{\code{<#1>}}
+\newcommand{\nb}[1]{\textbf{N.B. } #1}
 \newcommand{\narr}{<:}
 \newcommand{\bop}{\diamond}
 \newcommand{\alloc}{\mathrm{alloc}}
@@ -149,7 +150,14 @@ $\Gamma,\Delta\vdash \code{$t_1$ + $t_2$}: T$ is true.
 
 \subparagraph{Code} Text written with \code{monospaced} font denotes the text
 as written in code verbatim. Some types may also be written with
-\texttt{Monospace} font (usually in PascalCase)
+\texttt{Monospace} font (usually in PascalCase).
+
+If the code evaluates to some value, to denote its type the
+$:\texttt{SomeType}$ notation will be used.\\*
+For example: $\code{59 + 10} : \Int$
+
+To denote to what the value evaluates to, the $\equiv$ symbol will be used.\\*
+For example: $\code{59 + 10} \equiv 69$
 
 \subparagraph{Functions} Functions are denoted by a list of zero or more input
 arguments followed by an output argument.\\*
@@ -206,7 +214,9 @@ The $\sqcap$ operator produces the least wide type for the operand types
 	}
 \]
 
-\subsection{Type environment}
+\newpage
+
+\subsection{Type environments}
 
 The definition of an expression type is done within a "context" (a.k.a. type
 environment) which describes the type of any identifier or any other
@@ -282,6 +292,13 @@ Using the $\envVar$ variables environment as example
 
 \section{Types}
 
+\nb{
+	The syntax for expressing a type or an expression may be ambiguous without
+	context. For this reason the \code{type.} prefix syntax is used, but note
+	that in some contexts (e.g. variable declaration) the \code{type.} is not
+	needed
+}
+
 \comment{TODO: menzionare uso di type system strutturale e nominale}\\*
 \comment{TODO: usare 0-based indexes}\\*
 \comment{TODO: usare notazione tipi polimorfici invece che solo Type}
@@ -312,7 +329,7 @@ Using the $\envVar$ variables environment as example
 	\infrule{
 		\Gamma\vdash \tau:\Type
 	}{
-		\Gamma\vdash \code{[$\tau$]}: \List[\sigma := \tau]
+		\Gamma\vdash \code{type.[$\tau$]} \equiv \exists\tau.\List
 	}
 \]
 
@@ -320,7 +337,7 @@ Using the $\envVar$ variables environment as example
 	\infrule{
 		\Gamma\vdash \tau:\Type \quad \sigma:\Type
 	}{
-		\Gamma\vdash \code{[$\tau$:$\sigma$]}: \Map[\kappa:=\tau, \nu:=\sigma]
+		\Gamma\vdash \code{type.[$\tau$:$\sigma$]} \equiv \exists\tau.\exists\sigma.\Map
 	}
 \]
 
@@ -329,9 +346,9 @@ Using the $\envVar$ variables environment as example
 \[
 	\text{Tuple}\qquad
 	\infrule{
-		\Gamma\vdash \forall_{i\in[1,n]}{\tau_i:\Type} \quad n \geq 0
+		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type}
 	}{
-		\Gamma\vdash \tuplecode{$\tau_1,...,\tau_n$} : \tau_1 \times ... \times \tau_n
+		\Gamma\vdash \code{tuple <$\tau_1,...,\tau_n$>} \equiv \tau_1 \times ... \times \tau_n
 	}
 \]
 
@@ -340,21 +357,16 @@ Using the $\envVar$ variables environment as example
 	\infrule{
 		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \mathcal{I}}
 	}{
-		\Gamma\vdash \tuplecode{$a_1\tau_1,...,a_n\tau_n$} : \tuple{a_1:\tau_1, ..., a_n:\tau_n}
+		\Gamma\vdash \code{record <$a_1$ $\tau_1,...,a_n$ $\tau_n$>} \equiv \tuple{a_1:\tau_1, ..., a_n:\tau_n}
 	}
-\]
-
-\[
-	\text{Record (empty)} \qquad
-	\Gamma\vdash \tuplecode{:} : \tuple{}
 \]
 
 \[
 	\text{Struct (user defined)} \qquad
 	\infrule{
-		\Gamma\vdash \eta \in \mathcal{I} \quad \rho:\Record
+		\Gamma\vdash \eta \in \mathcal{I} \quad n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \mathcal{I}}
 	}{
-		\Gamma\vdash \code{$\eta$ $\rho$}: (\eta,\rho)
+		\Gamma,\code{struct $\eta$ <$a_1$ $\tau_1,...,a_n$ $\tau_n$>} \vdash \code{$\eta$} \equiv (\eta,\rho)
 	}
 \]
 
@@ -364,17 +376,17 @@ Using the $\envVar$ variables environment as example
 
 \[
 	\infrule{
-		\Gamma\vdash n \in \mathbb{N} \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\mathcal{I}} \quad \rho:\Type
+		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\mathcal{I}} \quad \rho:\Type
 	}{
-		\Gamma\vdash \code{::($a_1 \tau_1,...,a_n \tau_n$) => $\rho$} : (\tau_1,...,\tau_n) \to \rho
+		\Gamma\vdash \code{::($a_1 \tau_1,...,a_n \tau_n$) => $\rho$} \equiv (\tau_1,...,\tau_n) \to \rho
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash n \in \mathbb{N} \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\mathcal{I}}
+		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\mathcal{I}}
 	}{
-		\Gamma\vdash \code{::($a_1 \tau_1,...,a_n \tau_n$)} : (\tau_1,...,\tau_n) \to \Void
+		\Gamma\vdash \code{::($a_1 \tau_1,...,a_n \tau_n$)} \equiv (\tau_1,...,\tau_n) \to \Void
 	}
 \]
 
@@ -419,8 +431,8 @@ Using the $\envVar$ variables environment as example
 
 \[
 	\infrule{
-		\Gamma\vdash \tau_1:\List[\sigma_1:=\Type]\\*
-		\Gamma\vdash \tau_2:\List[\sigma_2:=\Type]\\*
+		\Gamma\vdash \tau_1 = \List[\sigma_1:=\Type]\\*
+		\Gamma\vdash \tau_2 = \List[\sigma_2:=\Type]\\*
 		\Gamma\vdash \sigma_1 \narr \sigma_2
 	}{
 		\Gamma\vdash \tau_1 \narr \tau_2
@@ -429,8 +441,8 @@ Using the $\envVar$ variables environment as example
 
 \[
 	\infrule{
-		\Gamma\vdash \tau_1:\Map[\kappa_1:=\Type, \nu_1=\Type]\\*
-		\Gamma\vdash \tau_2:\Map[\kappa_2:=\Type, \nu_2=\Type]\\*
+		\Gamma\vdash \tau_1 = \Map[\kappa_1:=\Type, \nu_1:=\Type]\\*
+		\Gamma\vdash \tau_2 = \Map[\kappa_2:=\Type, \nu_2:=\Type]\\*
 		\Gamma\vdash \kappa_1 \narr \kappa_2 \land \nu_1 \narr \nu_2
 	}{
 		\Gamma\vdash \tau_1 \narr \tau_2
@@ -445,8 +457,8 @@ Using the $\envVar$ variables environment as example
 
 \[
 	\infrule{
-		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad \theta_1:\bigtimes_{i \in [1,n]}{\tau_i}\\*
-		\Gamma\vdash m \geq n \quad \forall_{i\in[1,m]}{\omega_i:\Type} \quad \theta_2:\bigtimes_{j \in [1,m]}{\omega_j}\\*
+		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad \theta_1 = \bigtimes_{i \in [1,n]}{\tau_i}\\*
+		\Gamma\vdash m \geq n \quad \forall_{i\in[1,m]}{\omega_i:\Type} \quad \theta_2 = \bigtimes_{j \in [1,m]}{\omega_j}\\*
 		\Gamma\vdash \forall_{i \in [1,n]}{\tau_i \narr \omega_i}
 	}{
 		\Gamma\vdash \theta_1 \narr \theta_2
@@ -461,8 +473,8 @@ types $\omega$ of $\theta_2$
 
 \[
 	\infrule{
-		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad \theta:\bigtimes_{i \in [1,n]}{\tau_i}\\*
-		\Gamma\vdash m \geq n \quad \forall_{j\in[1,m]}{\eta_j \in \mathcal{I}, \omega_j:\Type} \quad \rho:\tuple{\eta_1:\omega_1,...,\eta_m:\omega_m} \\*
+		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad \theta = \bigtimes_{i \in [1,n]}{\tau_i}\\*
+		\Gamma\vdash m \geq n \quad \forall_{j\in[1,m]}{\eta_j \in \mathcal{I}, \omega_j:\Type} \quad \rho = \tuple{\eta_1:\omega_1,...,\eta_m:\omega_m} \\*
 		\Gamma\vdash \forall_{i \in [1,n]}{\tau_i \narr \omega_i}
 	}{
 		\Gamma\vdash \theta \narr \rho
@@ -477,8 +489,8 @@ $\omega$ of $\rho$ (fields names are ignored)
 
 \[
 	\infrule{
-		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad \theta:\bigtimes_{i \in [1,n]}{\tau_i}\\*
-		\Gamma\vdash \iota \in \mathcal{I} \quad m \geq n \quad \forall_{j\in[1,m]}{\eta_j \in \mathcal{I}, \omega_j:\Type} \quad \sigma:(\iota, \tuple{\eta_1:\omega_1,...,\eta_m:\omega_m}) \\*
+		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad \theta = \bigtimes_{i \in [1,n]}{\tau_i}\\*
+		\Gamma\vdash \iota \in \mathcal{I} \quad m \geq n \quad \forall_{j\in[1,m]}{\eta_j \in \mathcal{I}, \omega_j:\Type} \quad \sigma = (\iota, \tuple{\eta_1:\omega_1,...,\eta_m:\omega_m}) \\*
 		\Gamma\vdash \forall_{i \in [1,n]}{\tau_i \narr \omega_i}
 	}{
 		\Gamma\vdash \theta \narr \rho
@@ -495,8 +507,8 @@ $\omega$ of $\sigma$ (struct name and fields names are ignored)
 
 \[
 	\infrule{
-		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\eta_i \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \quad \rho_1:\tuple{\eta_1:\tau_1,...,\eta_n:\tau_n} \\*
-		\Gamma\vdash m \geq n \quad \forall_{j\in[1,m]}{\xi_j \in \mathcal{M} \subseteq \mathcal{I}, \omega_i:\Type} \quad \rho_2:\tuple{\xi_1:\omega_1,...,\xi_m:\omega_m} \\*
+		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\eta_i \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \quad \rho_1 = \tuple{\eta_1:\tau_1,...,\eta_n:\tau_n} \\*
+		\Gamma\vdash m \geq n \quad \forall_{j\in[1,m]}{\xi_j \in \mathcal{M} \subseteq \mathcal{I}, \omega_i:\Type} \quad \rho_2 = \tuple{\xi_1:\omega_1,...,\xi_m:\omega_m} \\*
 		\Gamma\vdash \forall_{\eta':\tau'}{\exists_{\xi':\omega'}{\eta'=\xi' \land \tau' \narr \omega'}}
 	}{
 		\Gamma\vdash \rho_1 \narr \rho_2
@@ -511,8 +523,8 @@ $\xi'$ of type $\omega'$ in $\rho_2$, where $\tau'$ is narrower than $\omega'$
 
 \[
 	\infrule{
-		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\eta \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \quad \rho:\tuple{\eta_1:\tau_1,...,\eta_n:\tau_n} \\*
-		\Gamma\vdash \epsilon \in \mathcal{I} \quad m \geq n \quad \forall_{j\in[1,m]}{\xi_j \in \mathcal{I}, \omega_j:\Type} \quad \sigma:(\epsilon, \tuple{\xi_1:\omega_1,...,\xi_m:\omega_m}) \\*
+		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\eta \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \quad \rho = \tuple{\eta_1:\tau_1,...,\eta_n:\tau_n} \\*
+		\Gamma\vdash \epsilon \in \mathcal{I} \quad m \geq n \quad \forall_{j\in[1,m]}{\xi_j \in \mathcal{I}, \omega_j:\Type} \quad \sigma = (\epsilon, \tuple{\xi_1:\omega_1,...,\xi_m:\omega_m}) \\*
 		\Gamma\vdash \forall_{\eta':\tau'}{\exists_{\xi':\omega'}{\eta'=\xi' \land \tau' \narr \omega'}}
 	}{
 		\Gamma\vdash \rho \narr \phi
@@ -529,8 +541,8 @@ name is ignored)
 
 \[
 	\infrule{
-		\Gamma\vdash \iota \in \mathcal{I} \quad n \geq 0 \quad \forall_{i\in[1,n]}{\eta_i \in \mathcal{I}, \tau_i:\Type} \quad \sigma_1:(\iota, \tuple{\eta_1:\tau_1,...,\eta_n:\tau_n}) \\*
-		\Gamma\vdash \epsilon \in \mathcal{I} \quad m \geq n \quad \forall_{j\in[1,m]}{\xi_j \in \mathcal{I}, \omega_j:\Type} \quad \sigma_2:(\epsilon, \tuple{\xi_1:\omega_1,...,\xi_m:\omega_m}) \\*
+		\Gamma\vdash \iota \in \mathcal{I} \quad n \geq 0 \quad \forall_{i\in[1,n]}{\eta_i \in \mathcal{I}, \tau_i:\Type} \quad \sigma_1 = (\iota, \tuple{\eta_1:\tau_1,...,\eta_n:\tau_n}) \\*
+		\Gamma\vdash \epsilon \in \mathcal{I} \quad m \geq n \quad \forall_{j\in[1,m]}{\xi_j \in \mathcal{I}, \omega_j:\Type} \quad \sigma_2 = (\epsilon, \tuple{\xi_1:\omega_1,...,\xi_m:\omega_m}) \\*
 		\Gamma\vdash \iota = \epsilon
 	}{
 		\Gamma\vdash \sigma_1 \narr \sigma_2
@@ -549,9 +561,9 @@ construction).
 \[
 	\infrule{
 		\Gamma\vdash \rho_1:\Type \quad n \geq 0 \quad \forall_{i\in[1,n]}{\eta_i \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \\*
-		\phi_1:(\eta_1:\tau_1,...,\eta_n:\tau_n) \to \rho_1 \\*
+		\Gamma\vdash \phi_1 = (\eta_1:\tau_1,...,\eta_n:\tau_n) \to \rho_1 \\*
 		\Gamma\vdash \rho_2:\Type \quad m \geq n  \quad \forall_{j\in[1,m]}{\xi_j \in \mathcal{M} \subseteq \mathcal{I}, \omega_i:\Type} \\*
-		\phi_2:(\xi_1:\omega_1,...,\xi_m:\omega_m) \to \rho_1 \\*
+		\Gamma\vdash \phi_2 = (\xi_1:\omega_1,...,\xi_m:\omega_m) \to \rho_1 \\*
 		\Gamma\vdash \rho_1 \narr \rho_2 \\*
 		\Gamma\vdash \forall_{\eta':\tau'}{\exists_{\xi':\omega'}{\eta'=\xi' \land \tau' \narr \omega'}}
 	}{
@@ -653,7 +665,7 @@ $\omega'$.
 
 \[
 	\infrule{
-		\Gamma\vdash \tau:\Type \qquad x:\tau \qquad n \in \mathbb{N}
+		\Gamma\vdash \tau:\Type \quad x:\tau \quad n \in \mathbb{N}
 	}{
 		\Gamma\vdash \code{[$x_1, ...,x_n$]}:\exists\tau.\List
 	}
