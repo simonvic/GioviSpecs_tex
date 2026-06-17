@@ -273,11 +273,10 @@ partioned in the $\envConst,\envVar,\envStructs,\envFunc$ environments:
 
 \comment{TODO: formalizzare structs e funzioni}
 
-\paragraph{Environment extension} Given how scopes and symbols
-lookup work, it will be useful to define "new" type
-environments extending an existing environment. The notation
-$E\env{t:T}$ will be used to denote that the environment $E$ is
-extended with $\env{t:T}$.
+\paragraph{Environment extension} Given how scopes and symbols lookup work, it
+will be useful to define "new" type environments extending an existing
+environment. The notation $E\env{t:T}$ will be used to denote that the
+environment $E$ is extended with $\env{t:T}$.
 
 Using the $\envVar$ variables environment as example
 \[
@@ -397,14 +396,6 @@ Using the $\envVar$ variables environment as example
 
 \[
 	\infrule{
-		\Gamma\vdash \tau : \Type
-	}{
-		\Gamma\vdash \Void \narr \tau
-	}
-\]
-
-\[
-	\infrule{
 		\Gamma\vdash \tau:\Type
 	}{
 		\Gamma\vdash \tau \narr \tau
@@ -419,6 +410,16 @@ Using the $\envVar$ variables environment as example
 		\Gamma\vdash \tau_1 \narr \tau_3
 	}
 	\qquad \text{Transitivity}
+\]
+
+\subsubsection{Primitive types}
+
+\[
+	\infrule{
+		\Gamma\vdash \tau : \Type
+	}{
+		\Gamma\vdash \Void \narr \tau
+	}
 \]
 
 \[
@@ -532,8 +533,6 @@ $a'$ of type $\tau'$ in $\rho$, there is a field with the same name $b'$ of
 type $\omega'$ in $\sigma$, where $\tau'$ is narrower than $\omega'$ (struct
 name is ignored)
 
-\newpage
-
 \paragraph{Struct}
 
 \[
@@ -554,7 +553,9 @@ construction).
 \comment{TODO: questa regola è ridondante?}
 \vspace{\baselineskip}
 
-\paragraph{Function}
+\newpage
+
+\subsubsection{Function}
 
 \[
 	\infrule{
@@ -582,13 +583,13 @@ than $\omega'$.
 	TODO: come menzionato nel README, il widening tra funzioni potrebbe essere
 	errato se si considerano i domini delle funzioni rispetto al loro corpo.
 
-	Per funzioni senza parametri è ok: \code{::() => Int} può essere allargata a
-	\code{::() => Real}.
+	Per funzioni senza parametri è ok: \code{::() => Int} può essere allargata
+	a \code{::() => Real}.
 
 	Ma se una funziona richiede dei parametri \code{::(i Int) => Int},
-	significa che il suo corpo sa come lavorare con \code{i Int}; nel momento in
-	cui si allarga a \code{::(i Real) => Real}, il corpo potrebbe operare su un
-	tipo inaspettato
+	significa che il suo corpo sa come lavorare con \code{i Int}; nel momento
+	in cui si allarga a \code{::(i Real) => Real}, il corpo potrebbe operare su
+	un tipo inaspettato
 }
 
 \newpage
@@ -720,7 +721,8 @@ List of $\omega$ (widest among $\tau$)
 	}
 \]
 
-Map of $\omega_\kappa$ keys (widest  among $\kappa$) and $\omega_\nu$ (widest among $\nu$)
+Map of $\omega_\kappa$ keys (widest  among $\kappa$) and $\omega_\nu$ (widest
+among $\nu$)
 
 \newpage
 
@@ -828,41 +830,41 @@ Range from $b$ (begin) to $e$ (end) with a step $s$
 
 \resizebox{\linewidth}{!}{
 	\begin{tabular}{rcl}
-		Operator                        & Symbol          & Description\\\hline
-		PLUS                            & \texttt{+}      & Arithmetic sum, concatenation\\\hline
-		MINUS                           & \texttt{-}      & Arithmetic subtraction, intersection\\\hline
-		MULTIPLICATION                  & \texttt{*}      & Arithmetic multiplication\\\hline
-		DIVISION                        & \texttt{/}      & Arithmetic division\\\hline
-		MODULO                          & \texttt{\%}     & Arithmetic remainder\\\hline
-		EXPONENTIAL                     & \texttt{\^}     & Arithmetic power, text repetition\\\hline
-		EQUAL                           & \texttt{=}      & Loose equality\\\hline
-		NOT EQUAL                       & \texttt{!=}     & Loose inequality\\\hline
-		LESS EQUAL                      & \texttt{<=}     & Arithmetic and lexicographical comparison\\\hline
-		LESS                            & \texttt{<}      & Arithmetic and lexicographical comparison\\\hline
-		GREATER                         & \texttt{>}      & Arithmetic and lexicographical comparison\\\hline
-		GREATER EQUAL                   & \texttt{>=}     & Arithmetic and lexicographical comparison\\\hline
-		CONTAINS                        & \texttt{=\~{}}  & Checks if a set of elements contains an element\\\hline
-		IS CONTAINED                    & \texttt{\~{}=}  & Reverse of CONTAINS\\\hline
-		\multirow{2}{*}{BOOL NOT}       & \texttt{not}    & \multirow{2}{*}{Boolean logic negation}\\
-	                                	& \texttt{!}      & \\\hline
-		\multirow{2}{*}{BOOL AND}       & \texttt{and}    & \multirow{2}{*}{Boolean logic and}\\
-	                                	& \texttt{\&}     & \\\hline
-		\multirow{2}{*}{BOOL OR}        & \texttt{or}     & \multirow{2}{*}{Boolean logic or}\\
-	                                	& \texttt{|}      & \\\hline
-		BITWISE NOT                     & \texttt{!!}     & Bitwise negation\\\hline
-		BITWISE AND                     & \texttt{\&\&}   & Bitwise and\\\hline
-		BITWISE OR                      & \texttt{||}     & Bitwise or\\\hline
-		BITWISE XOR                     & \texttt{|||}    & Bitwise exclusive or\\\hline
-		BITWISE LEFT SHIFT              & \texttt{\{<\}}  & Bitwise left shift\\\hline
-		BITWISE RIGHT SHIFT             & \texttt{\{>\}}  & Bitwise right shift\\\hline
-		BITWISE RIGHT UNSIGNED SHIFT    & \texttt{\{>>\}} & Bitwise right unsigned shift\\\hline
-		IS                              & \texttt{is}     & Runtime type check, deconstruction (?)\\\hline
-		AS                              & \texttt{as}     & Explicit type coercion\\\hline
+		Operator                        & Symbol          & Description                                     \\\hline
+		PLUS                            & \texttt{+}      & Arithmetic sum, concatenation                   \\\hline
+		MINUS                           & \texttt{-}      & Arithmetic subtraction, intersection            \\\hline
+		MULTIPLICATION                  & \texttt{*}      & Arithmetic multiplication                       \\\hline
+		DIVISION                        & \texttt{/}      & Arithmetic division                             \\\hline
+		MODULO                          & \texttt{\%}     & Arithmetic remainder                            \\\hline
+		EXPONENTIAL                     & \texttt{\^}     & Arithmetic power, text repetition               \\\hline
+		EQUAL                           & \texttt{=}      & Loose equality                                  \\\hline
+		NOT EQUAL                       & \texttt{!=}     & Loose inequality                                \\\hline
+		LESS EQUAL                      & \texttt{<=}     & Arithmetic and lexicographical comparison       \\\hline
+		LESS                            & \texttt{<}      & Arithmetic and lexicographical comparison       \\\hline
+		GREATER                         & \texttt{>}      & Arithmetic and lexicographical comparison       \\\hline
+		GREATER EQUAL                   & \texttt{>=}     & Arithmetic and lexicographical comparison       \\\hline
+		CONTAINS                        & \texttt{=\~{}}  & Checks if a set of elements contains an element \\\hline
+		IS CONTAINED                    & \texttt{\~{}=}  & Reverse of CONTAINS                             \\\hline
+		\multirow{2}{*}{BOOL NOT}       & \texttt{not}    & \multirow{2}{*}{Boolean logic negation}         \\
+	                                	& \texttt{!}      &                                                 \\\hline
+		\multirow{2}{*}{BOOL AND}       & \texttt{and}    & \multirow{2}{*}{Boolean logic and}              \\
+	                                	& \texttt{\&}     &                                                 \\\hline
+		\multirow{2}{*}{BOOL OR}        & \texttt{or}     & \multirow{2}{*}{Boolean logic or}               \\
+	                                	& \texttt{|}      &                                                 \\\hline
+		BITWISE NOT                     & \texttt{!!}     & Bitwise negation                                \\\hline
+		BITWISE AND                     & \texttt{\&\&}   & Bitwise and                                     \\\hline
+		BITWISE OR                      & \texttt{||}     & Bitwise or                                      \\\hline
+		BITWISE XOR                     & \texttt{|||}    & Bitwise exclusive or                            \\\hline
+		BITWISE LEFT SHIFT              & \texttt{\{<\}}  & Bitwise left shift                              \\\hline
+		BITWISE RIGHT SHIFT             & \texttt{\{>\}}  & Bitwise right shift                             \\\hline
+		BITWISE RIGHT UNSIGNED SHIFT    & \texttt{\{>>\}} & Bitwise right unsigned shift                    \\\hline
+		IS                              & \texttt{is}     & Runtime type check, deconstruction (?)          \\\hline
+		AS                              & \texttt{as}     & Explicit type coercion                          \\\hline
 	    \\
-		\multicolumn{3}{c}{Pseudo-Operators}                \\\hline
-		DOT ACCESS                      & \texttt{.}      & Members access\\\hline
-		DOTREF ACCESS                   & \texttt{::}     & Function member access\\\hline
-		AT ACCESS                       & \texttt{@}      & Properties access\\\hline
+		\multicolumn{3}{c}{Pseudo-Operators}                                                                \\\hline
+		DOT ACCESS                      & \texttt{.}      & Members access                                  \\\hline
+		DOTREF ACCESS                   & \texttt{::}     & Function member access                          \\\hline
+		AT ACCESS                       & \texttt{@}      & Properties access                               \\\hline
 	\end{tabular}
 }
 
@@ -2224,8 +2226,8 @@ a function invokation), hence new environments are declared.
 
 \subparagraph{Short-circuit evaluation} In some operations (e.g. boolean), some
 expressions may be "short-circuited" (they won't be evaluated).\\*
-For example: \code{false and someFunction()}, \texttt{someFunction()} will not be
-evaluated
+For example: \code{false and someFunction()}, \texttt{someFunction()} will not
+be evaluated
 
 
 \end{document}
