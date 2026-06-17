@@ -581,6 +581,19 @@ $\omega'$.
 
 \comment{Eventualmente estrarre una regola per il singolo parametro}
 
+\comment{
+	TODO: come menzionato nel README, il widening tra funzioni potrebbe essere
+	errato se si considerano i domini delle funzioni rispetto al loro corpo.
+
+	Per funzioni senza parametri è ok: \code{::() => Int} può essere allargata a
+	\code{::() => Real}.
+
+	Ma se una funziona richiede dei parametri \code{::(i Int) => Int},
+	significa che il suo corpo sa come lavorare con \code{i Int}; nel momento in
+	cui si allarga a \code{::(i Real) => Real}, il corpo potrebbe operare su un
+	tipo inaspettato
+}
+
 \newpage
 
 \section{Literals}
