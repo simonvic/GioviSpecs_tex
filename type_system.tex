@@ -1966,12 +1966,12 @@ a}$ where it's defined as follows:
 
 Multiple mappings may be specified: $\envLoc\env{i_1 \mapsto a_1, i_2 \mapsto a_2}$
 
-\subparagraph{$\alloc()$} When store environment is extended with a new mapping,
-it is implicit that if that mapping exists it is updated, if it does not exist
-it is added. In some cases, to improve clarity, the $\alloc()$ function will be
-used to explicitly state that a new memory "address" is allocated in the
-specified environment. The $\alloc()$ function takes a store environment and
-returns the newly allocated address.\\*
+\subparagraph{The $\alloc()$ function} When store environment is extended with
+a new mapping, it is implicit that if that mapping exists it is updated, if it
+does not exist it is added. In some cases, to improve clarity, the $\alloc()$
+function will be used to explicitly state that a new memory "address" is
+allocated in the specified environment. The $\alloc()$ function takes a store
+environment and returns the newly allocated address.\\*
 For example: $a = \alloc(\envStore)$
 
 \paragraph{Environment modification} If the evaluation of an expression
