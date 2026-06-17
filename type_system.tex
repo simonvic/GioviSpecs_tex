@@ -23,7 +23,6 @@
 % \newcommand{\infrule}[2]{\colorbox{gray!2}{$\frac{\begin{gathered}#1\end{gathered}}{\begin{gathered}#2\end{gathered}}$}}
 \newcommand{\tuple}[1]{\left<#1\right>}
 \newcommand{\code}[1]{\texttt{\colorbox{gray!10}{#1}}}
-\newcommand{\tuplecode}[1]{\code{<#1>}}
 \newcommand{\nb}[1]{\textbf{N.B. } #1}
 \newcommand{\narr}{<:}
 \newcommand{\bop}{\diamond}
@@ -731,7 +730,7 @@ Map of $\omega_\kappa$ keys (widest  among $\kappa$) and $\omega_\nu$ (widest am
 	\infrule{
 		\Gamma\vdash n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type, x_i:\tau_i}
 	}{
-		\Gamma\vdash \tuplecode{$x_1,...,x_n$}:\tau_1 \times ... \times \tau_n
+		\Gamma\vdash \code{<$x_1,...,x_n$>}:\tau_1 \times ... \times \tau_n
 	}
 \]
 
@@ -741,7 +740,7 @@ Map of $\omega_\kappa$ keys (widest  among $\kappa$) and $\omega_\nu$ (widest am
 	\infrule{
 		\Gamma\vdash n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type, x_i:\tau_i, a_i \in \mathcal{I}}
 	}{
-		\Gamma\vdash \tuplecode{$a_1:x_1,...,a_n:x_n$}:\tuple{a_1:\tau_1,...,a_2:\tau_n}
+		\Gamma\vdash \code{<$a_1:x_1,...,a_n:x_n$>}:\tuple{a_1:\tau_1,...,a_2:\tau_n}
 	}
 \]
 
