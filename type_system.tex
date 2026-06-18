@@ -2101,8 +2101,20 @@ automatically initialized to its type's zero value.
 Every type has a zero value and will be described using $\Zero$
 \[
 	\begin{split}
-		\Zero: \Type \to \Val \\*
-		\Zero(\tau) \mapsto \val
+		\Zero : \Type &\to \Val \\*
+		\Zero(\tau)   &\mapsto \val
+	\end{split}
+\]
+
+In some cases the zero value may be overridden. In that case the $\Zero$
+function can be applied on an identifier
+\[
+	\begin{split}
+		\Zero : \Id &\to \Val \\*
+		\Zero(i) &\mapsto \begin{cases}
+			\val             &\text{ if default overridden } \\*
+			\Zero(\Gamma(i)) &
+		\end{cases}
 	\end{split}
 \]
 
