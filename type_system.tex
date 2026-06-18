@@ -27,6 +27,11 @@
 \newcommand{\narr}{<:}
 \newcommand{\bop}{\diamond}
 \newcommand{\alloc}{\mathrm{alloc}}
+\newcommand{\addr}{\alpha}
+\newcommand{\expr}{\epsilon}
+\newcommand{\val}{\nu}
+\newcommand{\Id}{\mathcal{I}}
+\newcommand{\Val}{\mathcal{V}}
 \newcommand{\Zero}{\mathcal{Z}}
 \newcommand{\Type}{\texttt{Type}}
 \newcommand{\Bool}{\texttt{Bool}}
@@ -174,9 +179,8 @@ type $T$ with the type parameter $\tau$ equal to $\sigma$
 
 \comment{TODO: tipi esistenziali? Rivedere notazione}
 
-\subparagraph{Identifiers set} A set $\mathcal{I}=\set{i\mid
-i:=\text{identifier}}$ is used to encompass all possible identifiers allowed by
-the grammar.
+\subparagraph{Identifiers set} A set $\Id=\set{i\mid i:=\text{identifier}}$ is
+used to encompass all possible identifiers allowed by the grammar.
 
 \comment{TODO: formalizzare}
 
@@ -230,7 +234,7 @@ partioned in the $\envConst,\envVar,\envStructs,\envFunc$ environments:
 	\item $\envConst$: the Constants environment
 		\[
 			\begin{split}
-				\envConst: \mathcal{I} & \to \Type\\*
+				\envConst: \Id & \to \Type\\*
 				\envConst(i) & \mapsto \tau
 			\end{split}
 		\]
@@ -238,7 +242,7 @@ partioned in the $\envConst,\envVar,\envStructs,\envFunc$ environments:
 	\item $\envVar$: the Variable environment
 		\[
 			\begin{split}
-				\envVar: \mathcal{I} & \to \Type\\*
+				\envVar: \Id & \to \Type\\*
 				\envVar(i) & \mapsto \tau
 			\end{split}
 		\]
@@ -246,7 +250,7 @@ partioned in the $\envConst,\envVar,\envStructs,\envFunc$ environments:
 	\item $\envStructs$: the Structs environment
 		\[
 			\begin{split}
-				\envStructs: \mathcal{I} & \to (\mathcal{I}, \Record)\\*
+				\envStructs: \Id & \to (\Id, \Record)\\*
 				\envStructs(i) & \mapsto (i, \rho)
 			\end{split}
 		\]
@@ -255,7 +259,7 @@ partioned in the $\envConst,\envVar,\envStructs,\envFunc$ environments:
 	\item $\envFunc$: the Functions environment
 		\[
 			\begin{split}
-				\envFunc: \mathcal{I} & \to (\mathcal{I}, \Function)\\*
+				\envFunc: \Id & \to (\Id, \Function)\\*
 				\envFunc(i) & \mapsto (i, \phi)
 			\end{split}
 		\]
@@ -265,7 +269,7 @@ partioned in the $\envConst,\envVar,\envStructs,\envFunc$ environments:
 		$\tau$
 		\[
 			\begin{split}
-				\envFunc: (\Type,\mathcal{I}) & \to (\mathcal{I}, \Function)\\*
+				\envFunc: (\Type,\Id) & \to (\Id, \Function)\\*
 				\envFunc(\tau, i) & \mapsto (i, \phi)
 			\end{split}
 		\]
@@ -353,7 +357,7 @@ Using the $\envVar$ variables environment as example
 \[
 	\text{Record}\qquad
 	\infrule{
-		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \mathcal{I}}
+		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \Id}
 	}{
 		\Gamma\vdash \code{record <$a_1$ $\tau_1,...,a_n$ $\tau_n$>} \equiv \tuple{a_1:\tau_1, ..., a_n:\tau_n}
 	}
@@ -362,7 +366,7 @@ Using the $\envVar$ variables environment as example
 \[
 	\text{Struct} \qquad
 	\infrule{
-		\Gamma\vdash \xi \in \mathcal{I} \quad n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \mathcal{I}}
+		\Gamma\vdash \xi \in \Id \quad n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \Id}
 	}{
 		\Gamma,\code{struct $\xi$ <$a_1$ $\tau_1,...,a_n$ $\tau_n$>} \vdash \code{$\xi$} \equiv (\xi,\tuple{a_1:\tau_1,...,a_n:\tau_n})
 	}
@@ -374,7 +378,7 @@ Using the $\envVar$ variables environment as example
 
 \[
 	\infrule{
-		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\mathcal{I}} \quad \rho:\Type
+		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\Id} \quad \rho:\Type
 	}{
 		\Gamma\vdash \code{::($a_1 \tau_1,...,a_n \tau_n$) => $\rho$} \equiv (\tau_1,...,\tau_n) \to \rho
 	}
@@ -382,7 +386,7 @@ Using the $\envVar$ variables environment as example
 
 \[
 	\infrule{
-		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\mathcal{I}}
+		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\Id}
 	}{
 		\Gamma\vdash \code{::($a_1 \tau_1,...,a_n \tau_n$)} \equiv (\tau_1,...,\tau_n) \to \Void
 	}
@@ -473,7 +477,7 @@ types $\omega$ of $\theta_2$
 \[
 	\infrule{
 		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad \theta = \bigtimes_{i \in [1,n]}{\tau_i}\\*
-		\Gamma\vdash m \geq n \quad \forall_{j\in[1,m]}{\eta_j \in \mathcal{I}, \omega_j:\Type} \quad \rho = \tuple{\eta_1:\omega_1,...,\eta_m:\omega_m} \\*
+		\Gamma\vdash m \geq n \quad \forall_{j\in[1,m]}{\eta_j \in \Id, \omega_j:\Type} \quad \rho = \tuple{\eta_1:\omega_1,...,\eta_m:\omega_m} \\*
 		\Gamma\vdash \forall_{i \in [1,n]}{\tau_i \narr \omega_i}
 	}{
 		\Gamma\vdash \theta \narr \rho
@@ -488,7 +492,7 @@ $\omega$ of $\rho$ (fields names are ignored)
 \[
 	\infrule{
 		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad \theta = \bigtimes_{i \in [1,n]}{\tau_i}\\*
-		\Gamma\vdash \xi \in \mathcal{I} \quad m \geq n \quad \forall_{j\in[1,m]}{a_j \in \mathcal{I}, \omega_j:\Type} \quad \sigma = (\xi, \tuple{a_1:\omega_1,...,a_m:\omega_m}) \\*
+		\Gamma\vdash \xi \in \Id \quad m \geq n \quad \forall_{j\in[1,m]}{a_j \in \Id, \omega_j:\Type} \quad \sigma = (\xi, \tuple{a_1:\omega_1,...,a_m:\omega_m}) \\*
 		\Gamma\vdash \forall_{i \in [1,n]}{\tau_i \narr \omega_i}
 	}{
 		\Gamma\vdash \theta \narr \sigma
@@ -507,7 +511,7 @@ type $\omega$ of $\sigma$ (struct name and fields names are ignored)
 \[
 	\infrule{
 		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \quad \rho_1 = \tuple{a_1:\tau_1,...,a_n:\tau_n} \\*
-		\Gamma\vdash m \geq n \quad \forall_{j\in[1,m]}{b_j \in \mathcal{M} \subseteq \mathcal{I}, \omega_i:\Type} \quad \rho_2 = \tuple{b_1:\omega_1,...,b_m:\omega_m} \\*
+		\Gamma\vdash m \geq n \quad \forall_{j\in[1,m]}{b_j \in \mathcal{M} \subseteq \Id, \omega_i:\Type} \quad \rho_2 = \tuple{b_1:\omega_1,...,b_m:\omega_m} \\*
 		\Gamma\vdash \forall_{a':\tau'\in\mathcal{N}}{\exists_{b':\omega'\in\mathcal{M}}{a'=b' \land \tau' \narr \omega'}}
 	}{
 		\Gamma\vdash \rho_1 \narr \rho_2
@@ -522,7 +526,7 @@ $b'$ of type $\omega'$ in $\rho_2$, where $\tau'$ is narrower than $\omega'$
 \[
 	\infrule{
 		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{a \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \quad \rho = \tuple{a_1:\tau_1,...,a_n:\tau_n} \\*
-		\Gamma\vdash \xi \in \mathcal{I} \quad m \geq n \quad \forall_{j\in[1,m]}{b_j \in \mathcal{I}, \omega_j:\Type} \quad \sigma = (\xi, \tuple{b_1:\omega_1,...,b_m:\omega_m}) \\*
+		\Gamma\vdash \xi \in \Id \quad m \geq n \quad \forall_{j\in[1,m]}{b_j \in \Id, \omega_j:\Type} \quad \sigma = (\xi, \tuple{b_1:\omega_1,...,b_m:\omega_m}) \\*
 		\Gamma\vdash \forall_{a':\tau'\in\mathcal{N}}{\exists_{b':\omega'\in\mathcal{M}}{a'=b' \land \tau' \narr \omega'}}
 	}{
 		\Gamma\vdash \rho \narr \sigma
@@ -537,9 +541,9 @@ name is ignored)
 
 \[
 	\infrule{
-		\Gamma\vdash \xi_1 \in \mathcal{I} \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \mathcal{I}, \tau_i:\Type} \\*
+		\Gamma\vdash \xi_1 \in \Id \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \Id, \tau_i:\Type} \\*
 		\Gamma\vdash \sigma_1 = (\xi_1, \tuple{a_1:\tau_1,...,a_n:\tau_n}) \\*
-		\Gamma\vdash \xi_2 \in \mathcal{I} \quad m \geq n \quad \forall_{j\in[1,m]}{b_j \in \mathcal{I}, \omega_j:\Type} \\*
+		\Gamma\vdash \xi_2 \in \Id \quad m \geq n \quad \forall_{j\in[1,m]}{b_j \in \Id, \omega_j:\Type} \\*
 		\Gamma\vdash \sigma_2 = (\xi_2, \tuple{b_1:\omega_1,...,b_m:\omega_m}) \\*
 		\Gamma\vdash \xi_1 = \xi_2
 	}{
@@ -561,7 +565,7 @@ construction).
 	\infrule{
 		\Gamma\vdash \rho_1:\Type \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \\*
 		\Gamma\vdash \phi_1 = (a_1:\tau_1,...,a_n:\tau_n) \to \rho_1 \\*
-		\Gamma\vdash \rho_2:\Type \quad m \geq n  \quad \forall_{j\in[1,m]}{b_j \in \mathcal{M} \subseteq \mathcal{I}, \omega_i:\Type} \\*
+		\Gamma\vdash \rho_2:\Type \quad m \geq n  \quad \forall_{j\in[1,m]}{b_j \in \mathcal{M} \subseteq \Id, \omega_i:\Type} \\*
 		\Gamma\vdash \phi_2 = (b_1:\omega_1,...,b_m:\omega_m) \to \rho_1 \\*
 		\Gamma\vdash \rho_1 \narr \rho_2 \\*
 		\Gamma\vdash \forall_{a':\tau'}{\exists_{b':\omega'}{a'=b' \land \tau' \narr \omega'}}
@@ -742,7 +746,7 @@ among $\nu$)
 
 \[
 	\infrule{
-		\Gamma\vdash n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type, x_i:\tau_i, a_i \in \mathcal{I}}
+		\Gamma\vdash n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type, x_i:\tau_i, a_i \in \Id}
 	}{
 		\Gamma\vdash \code{<$a_1:x_1,...,a_n:x_n$>}:\tuple{a_1:\tau_1,...,a_2:\tau_n}
 	}
@@ -752,7 +756,7 @@ among $\nu$)
 
 \[
 	\infrule{
-		\Gamma\vdash \xi \in \mathcal{I} \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \mathcal{I}, \tau_i:\Type} \quad \sigma_1 = (\xi, \tuple{a_1:\tau_1,...,a_n:\tau_n}) \\*
+		\Gamma\vdash \xi \in \Id \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \Id, \tau_i:\Type} \quad \sigma_1 = (\xi, \tuple{a_1:\tau_1,...,a_n:\tau_n}) \\*
 	}{
 		\Gamma\vdash \code{$\xi$.<>} : \sigma \\*
 	}
@@ -804,7 +808,7 @@ Range from $b$ (begin) to $e$ (end) with a step $s$
 
 \[
 	\infrule{
-		\Gamma\vdash \rho:\Type \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \mathcal{I}, \tau_i:\Type} \quad \phi = (a_1:\tau_1,...,a_n:\tau_n) \to \rho \\*
+		\Gamma\vdash \rho:\Type \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \Id, \tau_i:\Type} \quad \phi = (a_1:\tau_1,...,a_n:\tau_n) \to \rho \\*
 		\Gamma\vdash f : \phi
 	}{
 		\Gamma\vdash \code{$f$($...$)} : \rho
@@ -817,8 +821,8 @@ Range from $b$ (begin) to $e$ (end) with a step $s$
 
 \[
 	\infrule{
-		\Gamma\vdash a \in \mathcal{I} \\*
-		\Gamma\vdash \rho:\Type \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \mathcal{I}, \tau_i:\Type} \quad \phi = (a_1:\tau_1,...,a_n:\tau_n) \to \rho \\*
+		\Gamma\vdash a \in \Id \\*
+		\Gamma\vdash \rho:\Type \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \Id, \tau_i:\Type} \quad \phi = (a_1:\tau_1,...,a_n:\tau_n) \to \rho \\*
 	}{
 		\Gamma,\code{$a$ $\phi$}\vdash \code{::$a$} : \phi
 	}
@@ -1881,7 +1885,7 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 \[
 	\text{Access by index}\quad
 	\infrule{
-		\Gamma\vdash n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type, x_i:\tau_i, a_i \in \mathcal{I}} \\*
+		\Gamma\vdash n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type, x_i:\tau_i, a_i \in \Id} \\*
 		\Gamma\vdash l:\tuple{a_1:\tau_1,...,a_n:\tau_n}\\*
 		\Gamma\vdash r:\Int \quad r \in [1,n]
 	}{
@@ -1893,7 +1897,7 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 
 \[
 	\infrule{
-		\Gamma\vdash n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type, x_i:\tau_i, a_i \in \mathcal{I}} \\*
+		\Gamma\vdash n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type, x_i:\tau_i, a_i \in \Id} \\*
 		\Gamma\vdash l:\tuple{a_1:\tau_1,...,a_n:\tau_n}\\*
 	}{
 		\begin{aligned}
@@ -1909,9 +1913,9 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 \[
 	\text{Access by name}\quad
 	\infrule{
-		\Gamma\vdash n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type, x_i:\tau_i, a_i \in \mathcal{I}} \\*
+		\Gamma\vdash n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type, x_i:\tau_i, a_i \in \Id} \\*
 		\Gamma\vdash l:\tuple{a_1:\tau_1,...,a_n:\tau_n}\\*
-		\Gamma\vdash r \in \mathcal{I} \quad \exists_j a_j = r
+		\Gamma\vdash r \in \Id \quad \exists_j a_j = r
 	}{
 		\Gamma\vdash \code{$l$ @ $r$}: \tau_j
 	}
@@ -1986,18 +1990,18 @@ Two environments will be used:
 		between identifiers and their "location/address" in memory.
 		\[
 			\begin{split}
-				\envLoc: \mathcal{I} & \to \mathbb{Z}\\*
+				\envLoc: \Id & \to \mathbb{Z}\\*
 				\envLoc(i) & \mapsto a
 			\end{split}
 		\]
 	\item $\envStore :=$ \textbf{store environment}. Describes the mappings
 		between a location in memory and its data content
 		\[
-				\mathcal{V} = \set{v \mid v := \text{any value or data}}
+				\Val = \set{v \mid v := \text{any value or data}}
 		\]
 		\[
 			\begin{split}
-				\envStore: \mathbb{Z} & \to \mathcal{V} \\*
+				\envStore: \mathbb{Z} & \to \Val \\*
 				\envStore(a) & \mapsto v
 			\end{split}
 		\]
@@ -2025,8 +2029,8 @@ a}$ where it's defined as follows:
 Multiple mappings may be specified: $\envLoc\env{i_1 \mapsto a_1, i_2 \mapsto a_2}$
 
 \subparagraph{The $\alloc()$ function} When store environment is extended with
-a new mapping, it is implicit that if that mapping exists it is updated, if it
-does not exist it is added. In some cases, to improve clarity, the $\alloc()$
+a mapping, it's implicit that it is added if it does not exist, and it is
+updated if it already exists. In some cases, to improve clarity, the $\alloc()$
 function will be used to explicitly state that a new memory "address" is
 allocated in the specified environment. The $\alloc()$ function takes a store
 environment and returns the newly allocated address.\\*
@@ -2035,13 +2039,13 @@ For example: $a = \alloc(\envStore)$
 \paragraph{Environment modification} If the evaluation of an expression
 results in an alteration of an environment, the judgment may be followed by a
 "double turnstile" symbol $\vDash$ and the new environments.\\*
-For example: $\envLoc,\envStore \vdash e \vDash \envStore_2$
+For example: $\envLoc,\envStore \vdash \expr \vDash \envStore_2$
 
 \paragraph{Expression value} To denote to what value an expression evaluates
 to, the $\equiv$ symbol will be used.\\*
-For example: $\envLoc,\envStore \vdash e \equiv v \vDash \envStore_2$.\\*
-To specify the value with its type, the notation $\tau(v)$ will be used, where
-$\tau$ can be any \Type{} and $v$ any value
+For example: $\envLoc,\envStore \vdash \expr \equiv \val \vDash \envStore_2$.\\*
+To specify the value with its type, the notation $\tau(\val)$ will be used,
+where $\tau$ can be any \Type{} and $\val$ any value
 
 \newpage
 
@@ -2054,11 +2058,11 @@ memory.
 Every variable, constant, function parameter, product types member etc. gets
 automatically initialized to its type's zero value.
 
-Every type has a zero value and will be described using $\mathcal{Z}$
+Every type has a zero value and will be described using $\Zero$
 \[
 	\begin{split}
-		\Zero: \Type \to \mathcal{V} \\*
-		\Zero(\tau) \mapsto v
+		\Zero: \Type \to \Val \\*
+		\Zero(\tau) \mapsto \val
 	\end{split}
 \]
 
@@ -2111,7 +2115,7 @@ dimensione iniziale}
 
 \[
 	\infrule{
-		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \mathcal{I}}
+		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \Id}
 	}{
 		\Gamma\vdash \Zero(\tuple{a_1:\tau_1,...,a_n:\tau_n}) : \tuple{a_1:\Zero(\tau_1), ..., a_n:\Zero(\tau_n)}
 	}
@@ -2131,7 +2135,7 @@ dimensione iniziale}
 
 % \[
 % 	\infrule{
-% 		\Gamma\vdash n \in \mathbb{N} \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\mathcal{I}} \quad \rho:\Type \\*
+% 		\Gamma\vdash n \in \mathbb{N} \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\Id} \quad \rho:\Type \\*
 % 		\Gamma\vdash \phi : (\tau_1,...,\tau_n) \to \rho
 % 	}{
 % 		\Gamma\vdash \Zero(\phi()) = \Zero(\rho)
@@ -2211,7 +2215,7 @@ dimensione iniziale}
 		\envLoc(i) = l\\*
 		\envStore(l) = v
 	}{
-		\envLoc,\envStore\vdash \code{$i$} \equiv v
+		\envLoc,\envStore\vdash \code{$i$} \equiv \val
 	}
 \]
 
@@ -2220,11 +2224,11 @@ dimensione iniziale}
 \[
 	\oprule{
 		\bop = \text{any binary operator} \\*
-		\envLoc,\envStore\vdash e_1 \equiv v_1 \vDash \envLoc_2,\envStore_2 \\*
-		\envLoc_2,\envStore_2\vdash e_2 \equiv v_2 \vDash \envLoc_3,\envStore_3 \\*
-		\envLoc_3,\envStore_3\vdash v_3 = v_1 \bop v_2 \vDash \envStore_4 = \envStore_3\env{\alloc(\envStore_3) \mapsto v_3}\\*
+		\envLoc,\envStore\vdash \expr_1 \equiv \val_1 \vDash \envLoc_2,\envStore_2 \\*
+		\envLoc_2,\envStore_2\vdash \expr_2 \equiv \val_2 \vDash \envLoc_3,\envStore_3 \\*
+		\envLoc_3,\envStore_3\vdash \val_3 = \val_1 \bop \val_2 \vDash \envStore_4 = \envStore_3\env{\alloc(\envStore_3) \mapsto \val_3}\\*
 	}{
-		\envLoc_3,\envStore_3\vdash \code{$e_1$ $\bop$ $e_2$} \equiv v_3 \vDash \envStore_4
+		\envLoc_3,\envStore_3\vdash \code{$\expr_1$ $\bop$ $\expr$} \equiv \val_3 \vDash \envStore_4
 	}
 \]
 
