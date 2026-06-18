@@ -2292,6 +2292,127 @@ expressions may be "short-circuited" (they won't be evaluated).\\*
 For example: \code{false and someFunction()}, \texttt{someFunction()} will not
 be evaluated
 
+\subsection{Statements}
+
+\paragraph{Variable declaration}
+
+\[
+	\oprule[aligned]{
+		\Env            &\vdash i \in \Id \quad \tau : \Type \\*
+		\EnvLoc,\EnvStore &\vdash \EnvLoc(i) = \varnothing \\*
+		\EnvLoc,\EnvStore &\vdash \addr = \alloc(\EnvStore)
+	}{
+		\Env,\EnvLoc,\EnvStore \vdash \code{$i$ $\tau$}
+		\vDash \EnvLoc\env{i \mapsto \addr},\EnvStore\env{\addr \mapsto \Zero(\tau)}
+	}
+\]
+
+\subparagraph{Initialization} A variable can be initialized at declaration
+\[
+	\oprule[aligned]{
+		\Env                  &\vdash i \in \Id \quad \tau : \Type \\*
+		\EnvLoc,\EnvStore     &\vdash \EnvLoc(i) = \varnothing \\*
+		\EnvLoc,\EnvStore     &\vdash \expr \equiv \val \vDash \EnvLoc_2,\EnvStore_2 \\*
+		\EnvLoc_2,\EnvStore_2 &\vdash \addr = \alloc(\EnvStore_2) \\*
+	}{
+		\EnvLoc_2,\EnvStore_2 \vdash \code{$i$ $\tau$ default $\expr$}
+		\vDash \EnvLoc_2\env{i \mapsto \addr},\EnvStore_2\env{\addr \mapsto \val}
+	}
+\]
+
+
+\subparagraph{Zero override} At (and only at) declaration, the zero value of a
+variable can be overridden
+\[
+	\oprule[aligned]{
+		\Env                  &\vdash i \in \Id \quad \tau : \Type \\*
+		\EnvLoc,\EnvStore     &\vdash \EnvLoc(i) = \varnothing \\*
+		\EnvLoc,\EnvStore     &\vdash \expr \equiv \val \vDash \EnvLoc_2,\EnvStore_2 \\*
+		\EnvLoc_2,\EnvStore_2 &\vdash \addr = \alloc(\EnvStore_2) \\*
+	}{
+		\EnvLoc_2,\EnvStore_2 \vdash \code{$i$ $\tau$ default $\expr$}
+		\vDash \EnvLoc_2\env{i \mapsto \addr},\EnvStore\env{\addr \mapsto \val}
+	}
+\]
+
+\subparagraph{Initialization vs Zero override} Initialization and zero
+override may seem identical, but they do two different things:
+\begin{itemize}
+	\item initialization: initializes the variable values with the one provided
+		(without overriding its zero value)
+	\item zero override: overrides the variable's zero value (to which the
+		variable is initialized to)
+\end{itemize}
+Both can be performed in a single statement
+\[
+	\oprule[aligned]{
+		\Env                  &\vdash i \in \Id \quad \tau : \Type \\*
+		\EnvLoc,\EnvStore     &\vdash \EnvLoc(i) = \varnothing \\*
+		\EnvLoc,\EnvStore     &\vdash \expr_z \equiv \val_z \vDash \EnvLoc_2,\EnvStore_2 \\*
+		\EnvLoc_2,\EnvStore_2 &\vdash \expr \equiv \val \vDash \EnvLoc_3,\EnvStore_3 \\*
+		\EnvLoc_3,\EnvStore_3 &\vdash \addr_z = \alloc(\EnvStore_3) \\*
+		\EnvLoc_3,\EnvStore_3 &\vdash \addr = \alloc(\EnvStore_3) \\*
+	}{
+		\EnvLoc_3,\EnvStore_3 \vdash \code{$i$ $\tau$ default $\expr_z$ <- $\expr$}
+		\vDash \EnvLoc_3\env{i \mapsto \addr},\EnvStore\env{\addr \mapsto \val,\addr_z \mapsto \val_z} \\*
+		\hfill\implies \code{$i$} \equiv \val \land \Zero(i) = \val_z
+	}
+\]
+
+\paragraph{Redirection (assignment)}
+
+\[
+	\oprule[aligned]{
+		\EnvLoc,\EnvStore     &\vdash i \in \Id \quad \EnvLoc(i) = \addr_i \quad \EnvStore(\addr_i) = \val_i \\*
+		\EnvLoc,\EnvStore     &\vdash \expr \equiv \val_\expr \vDash \EnvLoc_2,\EnvStore_2 \\*
+		\EnvLoc_2,\EnvStore_2 &\vdash \addr_i' = \alloc(\EnvStore_2) \\*
+	}{
+		\EnvLoc_2,\EnvStore_2\vdash \code{$i$ <- $\expr$} \vDash \EnvLoc_2\env{i \mapsto \addr_i'},\EnvStore_2\env{\addr_i' \mapsto \val_\expr}
+	}
+\]
+
+\paragraph{Constant declaration}
+
+\[
+	\oprule[aligned]{
+		\EnvLoc,\EnvStore     &\vdash i \in \Id \quad \EnvLoc(i) = \varnothing \\*
+		\EnvLoc,\EnvStore     &\vdash \expr \equiv \val_\expr \vDash \EnvLoc_2,\EnvStore_2 \\*
+		\EnvLoc_2,\EnvStore_2 &\vdash \addr_i' = \alloc(\EnvStore_2) \\*
+	}{
+		\EnvLoc_2,\EnvStore_2\vdash \code{const $i$ <- $\expr$} \vDash \EnvLoc_2\env{i \mapsto \addr_i'},\EnvStore_2\env{\addr_i' \mapsto \val_\expr}
+	}
+\]
+
+\newpage
+
+\[
+	\begin{split}
+		A        \alpha   & \quad \text{alpha}   \\
+		B        \beta    & \quad \text{beta}    \\
+		\Gamma   \gamma   & \quad \text{gamma}   \\
+		\Delta   \delta   & \quad \text{delta}   \\
+		E        \epsilon & \quad \text{epsilon} \\
+		Z        \zeta    & \quad \text{zeta}    \\
+		H        \eta     & \quad \text{eta}     \\
+		\Theta   \theta   & \quad \text{theta}   \\
+		I        \iota    & \quad \text{iota}    \\
+		K        \kappa   & \quad \text{kappa}   \\
+		\Lambda  \lambda  & \quad \text{lambda}  \\
+		M        \mu      & \quad \text{mu}      \\
+		N        \nu      & \quad \text{nu}      \\
+		\Xi      \xi      & \quad \text{xi}      \\
+		O        o        & \quad \text{o}       \\
+		\Pi      \pi      & \quad \text{pi}      \\
+		P        \rho     & \quad \text{rho}     \\
+		\Sigma   \sigma   & \quad \text{sigma}   \\
+		T        \tau     & \quad \text{tau}     \\
+		\Upsilon \upsilon & \quad \text{upsilon} \\
+		\Phi     \phi     & \quad \text{phi}     \\
+		X        \chi     & \quad \text{chi}     \\
+		\Psi     \psi     & \quad \text{psi}     \\
+		\Omega   \omega   & \quad \text{omega}   \\
+	\end{split}
+\]
 
 \end{document}
 
