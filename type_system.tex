@@ -2148,6 +2148,8 @@ dimensione iniziale}
 	\Gamma\vdash \Zero(\Range) = \Range(0, 0, 1)
 \]
 
+\newpage
+
 \section{Operational rules}
 
 \subsection{Literals}
@@ -2211,9 +2213,7 @@ dimensione iniziale}
 
 \[
 	\oprule{
-		i \in \mathcal{I}\\*
-		\envLoc(i) = l\\*
-		\envStore(l) = v
+		i \in \Id \quad \envLoc(i) = \addr \quad \envStore(\addr) = \val
 	}{
 		\envLoc,\envStore\vdash \code{$i$} \equiv \val
 	}
@@ -2226,9 +2226,9 @@ dimensione iniziale}
 		\bop = \text{any binary operator} \\*
 		\envLoc,\envStore\vdash \expr_1 \equiv \val_1 \vDash \envLoc_2,\envStore_2 \\*
 		\envLoc_2,\envStore_2\vdash \expr_2 \equiv \val_2 \vDash \envLoc_3,\envStore_3 \\*
-		\envLoc_3,\envStore_3\vdash \val_3 = \val_1 \bop \val_2 \vDash \envStore_4 = \envStore_3\env{\alloc(\envStore_3) \mapsto \val_3}\\*
+		\envLoc_3,\envStore_3\vdash \val_3 = \val_1 \bop \val_2 \\*
 	}{
-		\envLoc_3,\envStore_3\vdash \code{$\expr_1$ $\bop$ $\expr$} \equiv \val_3 \vDash \envStore_4
+		\envLoc_3,\envStore_3\vdash \code{$\expr_1$ $\bop$ $\expr$} \equiv \val_3 \vDash \envStore_3\env{\alloc(\envStore_3) \mapsto \val_3}
 	}
 \]
 
