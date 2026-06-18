@@ -146,15 +146,15 @@ For example, $t:T$ is a judgement telling that $t$ is a term of type $T$.
 \subparagraph{Assumptions} Zero or more assumptions (comma separated) can be
 used for a judgement; they're specified before the "turnstile" symbol
 $\vdash$.\\*
-For example, $\Gamma \vdash t:T$ can be read as "if $\Gamma$ is true, then $t$
+For example, $\Env \vdash t:T$ can be read as "if $\Env$ is true, then $t$
 is a term of type $T$".
 
 \subparagraph{Premise} Judgements can be made based on zero or more premises
 (space separated judgements).\\*
-For example, $\infrule{\Gamma\vdash t_1:T \quad \Delta\vdash
-t_2:T}{\Gamma,\Delta\vdash \code{$t_1$ + $t_2$}: T}$ means that with a premise
-that both judgements $\Gamma\vdash t_1:T$ and $\Delta\vdash t_2:T$ are true,
-then $\Gamma,\Delta\vdash \code{$t_1$ + $t_2$}: T$ is true.
+For example, $\infrule{\Env\vdash t_1:T \quad \Delta\vdash
+t_2:T}{\Env,\Delta\vdash \code{$t_1$ + $t_2$}: T}$ means that with a premise
+that both judgements $\Env\vdash t_1:T$ and $\Delta\vdash t_2:T$ are true,
+then $\Env,\Delta\vdash \code{$t_1$ + $t_2$}: T$ is true.
 
 \subparagraph{Code} Text written with \code{monospaced} font denotes the text
 as written in code verbatim. Some types may also be written with
@@ -213,11 +213,11 @@ describes a struct (a pair of an identifier $\iota$ and a record)
 The $\sqcap$ operator produces the least wide type for the operand types
 \[
 	\infrule[aligned]{
-		\Gamma & \vdash \tau_1:\Type \quad \tau_2:\Type \\*
-		\Gamma & \vdash \exists_{\omega:\Type}{\tau_1\narr\omega \land \tau_2\narr\omega} \\*
-		\Gamma & \vdash \nexists_{\sigma:\Type}{\tau_1\narr\sigma \land \tau_2\narr\sigma \land \sigma\narr\omega}
+		\Env & \vdash \tau_1:\Type \quad \tau_2:\Type \\*
+		\Env & \vdash \exists_{\omega:\Type}{\tau_1\narr\omega \land \tau_2\narr\omega} \\*
+		\Env & \vdash \nexists_{\sigma:\Type}{\tau_1\narr\sigma \land \tau_2\narr\sigma \land \sigma\narr\omega}
 	}{
-		\Gamma\vdash \tau_1 \sqcap \tau_2 = \omega
+		\Env\vdash \tau_1 \sqcap \tau_2 = \omega
 	}
 \]
 
@@ -336,12 +336,12 @@ Using the $\envVar$ variables environment as example
 
 \[
 	\begin{split}
-		&\Gamma\vdash \Void:\Type \\
-		&\Gamma\vdash \Bool:\Type \\
-		&\Gamma\vdash \Natural:\Type \\
-		&\Gamma\vdash \Int:\Type \\
-		&\Gamma\vdash \Real:\Type \\
-		&\Gamma\vdash \Text:\Type \\
+		&\Env\vdash \Void:\Type \\
+		&\Env\vdash \Bool:\Type \\
+		&\Env\vdash \Natural:\Type \\
+		&\Env\vdash \Int:\Type \\
+		&\Env\vdash \Real:\Type \\
+		&\Env\vdash \Text:\Type \\
 	\end{split}
 \]
 
@@ -349,24 +349,24 @@ Using the $\envVar$ variables environment as example
 
 \[
 	\begin{split}
-		&\Gamma\vdash \List[\sigma:=\Type]:\Type \\
-		&\Gamma\vdash \Map[\kappa:=\Type,\nu:=\Type]:\Type \\
+		&\Env\vdash \List[\sigma:=\Type]:\Type \\
+		&\Env\vdash \Map[\kappa:=\Type,\nu:=\Type]:\Type \\
 	\end{split}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash \tau:\Type
+		\Env\vdash \tau:\Type
 	}{
-		\Gamma\vdash \code{type.[$\tau$]} \equiv \exists\tau.\List
+		\Env\vdash \code{type.[$\tau$]} \equiv \exists\tau.\List
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash \tau:\Type \quad \sigma:\Type
+		\Env\vdash \tau:\Type \quad \sigma:\Type
 	}{
-		\Gamma\vdash \code{type.[$\tau$:$\sigma$]} \equiv \exists\tau.\exists\sigma.\Map
+		\Env\vdash \code{type.[$\tau$:$\sigma$]} \equiv \exists\tau.\exists\sigma.\Map
 	}
 \]
 
@@ -375,27 +375,27 @@ Using the $\envVar$ variables environment as example
 \[
 	\text{Tuple}\qquad
 	\infrule{
-		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type}
+		\Env\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type}
 	}{
-		\Gamma\vdash \code{tuple <$\tau_1,...,\tau_n$>} \equiv \tau_1 \times ... \times \tau_n
+		\Env\vdash \code{tuple <$\tau_1,...,\tau_n$>} \equiv \tau_1 \times ... \times \tau_n
 	}
 \]
 
 \[
 	\text{Record}\qquad
 	\infrule{
-		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \Id}
+		\Env\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \Id}
 	}{
-		\Gamma\vdash \code{record <$a_1$ $\tau_1,...,a_n$ $\tau_n$>} \equiv \tuple{a_1:\tau_1, ..., a_n:\tau_n}
+		\Env\vdash \code{record <$a_1$ $\tau_1,...,a_n$ $\tau_n$>} \equiv \tuple{a_1:\tau_1, ..., a_n:\tau_n}
 	}
 \]
 
 \[
 	\text{Struct} \qquad
 	\infrule{
-		\Gamma\vdash \xi \in \Id \quad n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \Id}
+		\Env\vdash \xi \in \Id \quad n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \Id}
 	}{
-		\Gamma,\code{struct $\xi$ <$a_1$ $\tau_1,...,a_n$ $\tau_n$>} \vdash \code{$\xi$} \equiv (\xi,\tuple{a_1:\tau_1,...,a_n:\tau_n})
+		\Env,\code{struct $\xi$ <$a_1$ $\tau_1,...,a_n$ $\tau_n$>} \vdash \code{$\xi$} \equiv (\xi,\tuple{a_1:\tau_1,...,a_n:\tau_n})
 	}
 \]
 
@@ -405,17 +405,17 @@ Using the $\envVar$ variables environment as example
 
 \[
 	\infrule{
-		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\Id} \quad \rho:\Type
+		\Env\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\Id} \quad \rho:\Type
 	}{
-		\Gamma\vdash \code{::($a_1 \tau_1,...,a_n \tau_n$) => $\rho$} \equiv (\tau_1,...,\tau_n) \to \rho
+		\Env\vdash \code{::($a_1 \tau_1,...,a_n \tau_n$) => $\rho$} \equiv (\tau_1,...,\tau_n) \to \rho
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\Id}
+		\Env\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\Id}
 	}{
-		\Gamma\vdash \code{::($a_1 \tau_1,...,a_n \tau_n$)} \equiv (\tau_1,...,\tau_n) \to \Void
+		\Env\vdash \code{::($a_1 \tau_1,...,a_n \tau_n$)} \equiv (\tau_1,...,\tau_n) \to \Void
 	}
 \]
 
@@ -427,18 +427,18 @@ Using the $\envVar$ variables environment as example
 
 \[
 	\infrule{
-		\Gamma\vdash \tau:\Type
+		\Env\vdash \tau:\Type
 	}{
-		\Gamma\vdash \tau \narr \tau
+		\Env\vdash \tau \narr \tau
 	}
 	\qquad \text{Reflexivity}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash \tau_1 \narr \tau_2 \quad \tau_2 \narr \tau_3
+		\Env\vdash \tau_1 \narr \tau_2 \quad \tau_2 \narr \tau_3
 	}{
-		\Gamma\vdash \tau_1 \narr \tau_3
+		\Env\vdash \tau_1 \narr \tau_3
 	}
 	\qquad \text{Transitivity}
 \]
@@ -447,36 +447,36 @@ Using the $\envVar$ variables environment as example
 
 \[
 	\infrule{
-		\Gamma\vdash \tau : \Type
+		\Env\vdash \tau : \Type
 	}{
-		\Gamma\vdash \Void \narr \tau
+		\Env\vdash \Void \narr \tau
 	}
 \]
 
 \[
-	\Gamma\vdash \Natural \narr \Int
-	\qquad \Gamma\vdash \Int \narr \Real
+	\Env\vdash \Natural \narr \Int
+	\qquad \Env\vdash \Int \narr \Real
 \]
 
 \subsubsection{Composite types}
 
 \[
 	\infrule{
-		\Gamma\vdash \tau_1 = \List[\sigma_1:=\Type]\\*
-		\Gamma\vdash \tau_2 = \List[\sigma_2:=\Type]\\*
-		\Gamma\vdash \sigma_1 \narr \sigma_2
+		\Env\vdash \tau_1 = \List[\sigma_1:=\Type]\\*
+		\Env\vdash \tau_2 = \List[\sigma_2:=\Type]\\*
+		\Env\vdash \sigma_1 \narr \sigma_2
 	}{
-		\Gamma\vdash \tau_1 \narr \tau_2
+		\Env\vdash \tau_1 \narr \tau_2
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash \tau_1 = \Map[\kappa_1:=\Type, \nu_1:=\Type]\\*
-		\Gamma\vdash \tau_2 = \Map[\kappa_2:=\Type, \nu_2:=\Type]\\*
-		\Gamma\vdash \kappa_1 \narr \kappa_2 \land \nu_1 \narr \nu_2
+		\Env\vdash \tau_1 = \Map[\kappa_1:=\Type, \nu_1:=\Type]\\*
+		\Env\vdash \tau_2 = \Map[\kappa_2:=\Type, \nu_2:=\Type]\\*
+		\Env\vdash \kappa_1 \narr \kappa_2 \land \nu_1 \narr \nu_2
 	}{
-		\Gamma\vdash \tau_1 \narr \tau_2
+		\Env\vdash \tau_1 \narr \tau_2
 	}
 \]
 
@@ -488,11 +488,11 @@ Using the $\envVar$ variables environment as example
 
 \[
 	\infrule{
-		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad \theta_1 = \bigtimes_{i \in [1,n]}{\tau_i}\\*
-		\Gamma\vdash m \geq n \quad \forall_{i\in[1,m]}{\omega_i:\Type} \quad \theta_2 = \bigtimes_{j \in [1,m]}{\omega_j}\\*
-		\Gamma\vdash \forall_{i \in [1,n]}{\tau_i \narr \omega_i}
+		\Env\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad \theta_1 = \bigtimes_{i \in [1,n]}{\tau_i}\\*
+		\Env\vdash m \geq n \quad \forall_{i\in[1,m]}{\omega_i:\Type} \quad \theta_2 = \bigtimes_{j \in [1,m]}{\omega_j}\\*
+		\Env\vdash \forall_{i \in [1,n]}{\tau_i \narr \omega_i}
 	}{
-		\Gamma\vdash \theta_1 \narr \theta_2
+		\Env\vdash \theta_1 \narr \theta_2
 	}
 \]
 A tuple type $\theta_1$ is narrower than the tuple type $\theta_2$ if the first
@@ -503,11 +503,11 @@ types $\omega$ of $\theta_2$
 
 \[
 	\infrule{
-		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad \theta = \bigtimes_{i \in [1,n]}{\tau_i}\\*
-		\Gamma\vdash m \geq n \quad \forall_{j\in[1,m]}{\eta_j \in \Id, \omega_j:\Type} \quad \rho = \tuple{\eta_1:\omega_1,...,\eta_m:\omega_m} \\*
-		\Gamma\vdash \forall_{i \in [1,n]}{\tau_i \narr \omega_i}
+		\Env\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad \theta = \bigtimes_{i \in [1,n]}{\tau_i}\\*
+		\Env\vdash m \geq n \quad \forall_{j\in[1,m]}{\eta_j \in \Id, \omega_j:\Type} \quad \rho = \tuple{\eta_1:\omega_1,...,\eta_m:\omega_m} \\*
+		\Env\vdash \forall_{i \in [1,n]}{\tau_i \narr \omega_i}
 	}{
-		\Gamma\vdash \theta \narr \rho
+		\Env\vdash \theta \narr \rho
 	}
 \]
 A tuple type $\theta$ is narrower than the record type $\rho$ if the first $n$
@@ -518,11 +518,11 @@ $\omega$ of $\rho$ (fields names are ignored)
 
 \[
 	\infrule{
-		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad \theta = \bigtimes_{i \in [1,n]}{\tau_i}\\*
-		\Gamma\vdash \xi \in \Id \quad m \geq n \quad \forall_{j\in[1,m]}{a_j \in \Id, \omega_j:\Type} \quad \sigma = (\xi, \tuple{a_1:\omega_1,...,a_m:\omega_m}) \\*
-		\Gamma\vdash \forall_{i \in [1,n]}{\tau_i \narr \omega_i}
+		\Env\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad \theta = \bigtimes_{i \in [1,n]}{\tau_i}\\*
+		\Env\vdash \xi \in \Id \quad m \geq n \quad \forall_{j\in[1,m]}{a_j \in \Id, \omega_j:\Type} \quad \sigma = (\xi, \tuple{a_1:\omega_1,...,a_m:\omega_m}) \\*
+		\Env\vdash \forall_{i \in [1,n]}{\tau_i \narr \omega_i}
 	}{
-		\Gamma\vdash \theta \narr \sigma
+		\Env\vdash \theta \narr \sigma
 	}
 \]
 A tuple type $\theta$ is narrower than the struct type $\sigma$ if the first
@@ -537,11 +537,11 @@ type $\omega$ of $\sigma$ (struct name and fields names are ignored)
 
 \[
 	\infrule{
-		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \quad \rho_1 = \tuple{a_1:\tau_1,...,a_n:\tau_n} \\*
-		\Gamma\vdash m \geq n \quad \forall_{j\in[1,m]}{b_j \in \mathcal{M} \subseteq \Id, \omega_i:\Type} \quad \rho_2 = \tuple{b_1:\omega_1,...,b_m:\omega_m} \\*
-		\Gamma\vdash \forall_{a':\tau'\in\mathcal{N}}{\exists_{b':\omega'\in\mathcal{M}}{a'=b' \land \tau' \narr \omega'}}
+		\Env\vdash n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \quad \rho_1 = \tuple{a_1:\tau_1,...,a_n:\tau_n} \\*
+		\Env\vdash m \geq n \quad \forall_{j\in[1,m]}{b_j \in \mathcal{M} \subseteq \Id, \omega_i:\Type} \quad \rho_2 = \tuple{b_1:\omega_1,...,b_m:\omega_m} \\*
+		\Env\vdash \forall_{a':\tau'\in\mathcal{N}}{\exists_{b':\omega'\in\mathcal{M}}{a'=b' \land \tau' \narr \omega'}}
 	}{
-		\Gamma\vdash \rho_1 \narr \rho_2
+		\Env\vdash \rho_1 \narr \rho_2
 	}
 \]
 A record type $\rho_1$ is narrower than a record type $\rho_2$ if, for all
@@ -552,11 +552,11 @@ $b'$ of type $\omega'$ in $\rho_2$, where $\tau'$ is narrower than $\omega'$
 
 \[
 	\infrule{
-		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{a \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \quad \rho = \tuple{a_1:\tau_1,...,a_n:\tau_n} \\*
-		\Gamma\vdash \xi \in \Id \quad m \geq n \quad \forall_{j\in[1,m]}{b_j \in \Id, \omega_j:\Type} \quad \sigma = (\xi, \tuple{b_1:\omega_1,...,b_m:\omega_m}) \\*
-		\Gamma\vdash \forall_{a':\tau'\in\mathcal{N}}{\exists_{b':\omega'\in\mathcal{M}}{a'=b' \land \tau' \narr \omega'}}
+		\Env\vdash n \geq 0 \quad \forall_{i\in[1,n]}{a \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \quad \rho = \tuple{a_1:\tau_1,...,a_n:\tau_n} \\*
+		\Env\vdash \xi \in \Id \quad m \geq n \quad \forall_{j\in[1,m]}{b_j \in \Id, \omega_j:\Type} \quad \sigma = (\xi, \tuple{b_1:\omega_1,...,b_m:\omega_m}) \\*
+		\Env\vdash \forall_{a':\tau'\in\mathcal{N}}{\exists_{b':\omega'\in\mathcal{M}}{a'=b' \land \tau' \narr \omega'}}
 	}{
-		\Gamma\vdash \rho \narr \sigma
+		\Env\vdash \rho \narr \sigma
 	}
 \]
 A record type $\rho$ is narrower than a struct type $\sigma$ if, for all fields
@@ -568,13 +568,13 @@ name is ignored)
 
 \[
 	\infrule{
-		\Gamma\vdash \xi_1 \in \Id \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \Id, \tau_i:\Type} \\*
-		\Gamma\vdash \sigma_1 = (\xi_1, \tuple{a_1:\tau_1,...,a_n:\tau_n}) \\*
-		\Gamma\vdash \xi_2 \in \Id \quad m \geq n \quad \forall_{j\in[1,m]}{b_j \in \Id, \omega_j:\Type} \\*
-		\Gamma\vdash \sigma_2 = (\xi_2, \tuple{b_1:\omega_1,...,b_m:\omega_m}) \\*
-		\Gamma\vdash \xi_1 = \xi_2
+		\Env\vdash \xi_1 \in \Id \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \Id, \tau_i:\Type} \\*
+		\Env\vdash \sigma_1 = (\xi_1, \tuple{a_1:\tau_1,...,a_n:\tau_n}) \\*
+		\Env\vdash \xi_2 \in \Id \quad m \geq n \quad \forall_{j\in[1,m]}{b_j \in \Id, \omega_j:\Type} \\*
+		\Env\vdash \sigma_2 = (\xi_2, \tuple{b_1:\omega_1,...,b_m:\omega_m}) \\*
+		\Env\vdash \xi_1 = \xi_2
 	}{
-		\Gamma\vdash \sigma_1 \narr \sigma_2
+		\Env\vdash \sigma_1 \narr \sigma_2
 	}
 \]
 A struct type $\sigma_1$ is narrower than a struct type $\sigma_2$ if and only
@@ -590,14 +590,14 @@ construction).
 
 \[
 	\infrule{
-		\Gamma\vdash \rho_1:\Type \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \\*
-		\Gamma\vdash \phi_1 = (a_1:\tau_1,...,a_n:\tau_n) \to \rho_1 \\*
-		\Gamma\vdash \rho_2:\Type \quad m \geq n  \quad \forall_{j\in[1,m]}{b_j \in \mathcal{M} \subseteq \Id, \omega_i:\Type} \\*
-		\Gamma\vdash \phi_2 = (b_1:\omega_1,...,b_m:\omega_m) \to \rho_1 \\*
-		\Gamma\vdash \rho_1 \narr \rho_2 \\*
-		\Gamma\vdash \forall_{a':\tau'}{\exists_{b':\omega'}{a'=b' \land \tau' \narr \omega'}}
+		\Env\vdash \rho_1:\Type \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \\*
+		\Env\vdash \phi_1 = (a_1:\tau_1,...,a_n:\tau_n) \to \rho_1 \\*
+		\Env\vdash \rho_2:\Type \quad m \geq n  \quad \forall_{j\in[1,m]}{b_j \in \mathcal{M} \subseteq \Id, \omega_i:\Type} \\*
+		\Env\vdash \phi_2 = (b_1:\omega_1,...,b_m:\omega_m) \to \rho_1 \\*
+		\Env\vdash \rho_1 \narr \rho_2 \\*
+		\Env\vdash \forall_{a':\tau'}{\exists_{b':\omega'}{a'=b' \land \tau' \narr \omega'}}
 	}{
-		\Gamma\vdash \phi_1 \narr \phi_2
+		\Env\vdash \phi_1 \narr \phi_2
 	}
 \]
 A function type $\phi_1$ is narrower than a function type $\phi_2$ if the
@@ -632,17 +632,17 @@ than $\omega'$.
 \subsubsection{Bool}
 
 \[
-	\Gamma\vdash \code{true}:\Bool \qquad \Gamma \vdash \code{false}:\Bool
+	\Env\vdash \code{true}:\Bool \qquad \Env \vdash \code{false}:\Bool
 \]
 
 \subsubsection{Int}
 
 \[
 	\infrule{
-		\Gamma\vdash x \in \mathbb{Z} \quad x \in [-2^{31}, 2^{31} - 1]
+		\Env\vdash x \in \mathbb{Z} \quad x \in [-2^{31}, 2^{31} - 1]
 	}{
-		\Gamma\vdash \code{$x$} : \Int \\*
-		\land \Gamma\vdash \code{$x$i} : \Int
+		\Env\vdash \code{$x$} : \Int \\*
+		\land \Env\vdash \code{$x$i} : \Int
 	}
 \]
 
@@ -652,9 +652,9 @@ than $\omega'$.
 
 \[
 	\infrule{
-		\Gamma\vdash x \in \mathbb{N} \quad x \in [0, 2^{31}]
+		\Env\vdash x \in \mathbb{N} \quad x \in [0, 2^{31}]
 	}{
-		\Gamma\vdash \code{$x$n} : \Natural
+		\Env\vdash \code{$x$n} : \Natural
 	}
 \]
 
@@ -664,10 +664,10 @@ than $\omega'$.
 
 \[
 	\infrule{
-		\Gamma\vdash x \in \mathbb{R}
+		\Env\vdash x \in \mathbb{R}
 	}{
-		\Gamma\vdash \code{$x$} : \Real \\*
-		\land \Gamma\vdash \code{$x$r} : \Real
+		\Env\vdash \code{$x$} : \Real \\*
+		\land \Env\vdash \code{$x$r} : \Real
 	}
 \]
 
@@ -677,19 +677,19 @@ than $\omega'$.
 
 \[
 	\infrule{
-		\Gamma\vdash x \in \text{Unicode} \setminus \set{"\backslash n", "\backslash r"} \quad n \geq 0
+		\Env\vdash x \in \text{Unicode} \setminus \set{"\backslash n", "\backslash r"} \quad n \geq 0
 	}{
-		\Gamma\vdash \code{"$x_1...x_n$"} : \Text \\*
-		\land \Gamma\vdash \code{'$x_1...x_n$'} : \Text
+		\Env\vdash \code{"$x_1...x_n$"} : \Text \\*
+		\land \Env\vdash \code{'$x_1...x_n$'} : \Text
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash x \in \text{Unicode} \quad n \geq 0
+		\Env\vdash x \in \text{Unicode} \quad n \geq 0
 	}{
-		\Gamma\vdash \code{"\{$x_1...x_n$\}"} : \Text \\*
-		\land \Gamma\vdash \code{'\{$x_1...x_n$\}'} : \Text
+		\Env\vdash \code{"\{$x_1...x_n$\}"} : \Text \\*
+		\land \Env\vdash \code{'\{$x_1...x_n$\}'} : \Text
 	}
 \]
 
@@ -704,22 +704,22 @@ than $\omega'$.
 \subsubsection{List}
 
 \[
-	\Gamma\vdash \code{[]}:\exists\Void.\List
+	\Env\vdash \code{[]}:\exists\Void.\List
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash \tau:\Type \quad x:\tau \quad n \in \mathbb{N}
+		\Env\vdash \tau:\Type \quad x:\tau \quad n \in \mathbb{N}
 	}{
-		\Gamma\vdash \code{[$x_1, ...,x_n$]}:\exists\tau.\List
+		\Env\vdash \code{[$x_1, ...,x_n$]}:\exists\tau.\List
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash n \in \mathbb{N} \quad \forall_{i \in [1,n]}{\tau_i:\Type, x_i:\tau_i} \quad \omega = \bigsqcap_{i=1}^{n}{\tau_i}
+		\Env\vdash n \in \mathbb{N} \quad \forall_{i \in [1,n]}{\tau_i:\Type, x_i:\tau_i} \quad \omega = \bigsqcap_{i=1}^{n}{\tau_i}
 	}{
-		\Gamma\vdash \code{[$x_1, ...,x_n$]}:\exists\omega.\List
+		\Env\vdash \code{[$x_1, ...,x_n$]}:\exists\omega.\List
 	}
 \]
 
@@ -728,27 +728,27 @@ List of $\omega$ (widest among $\tau$)
 \subsubsection{Map}
 
 \[
-	\Gamma\vdash \code{[:]}:\exists\Void.\exists\Void.\Map
+	\Env\vdash \code{[:]}:\exists\Void.\exists\Void.\Map
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash \kappa:\Type
+		\Env\vdash \kappa:\Type
 		\quad \nu:\Type
 		\quad \forall_{i\in[1,n]}{k_i:\kappa,v_i:\nu}
 		\quad n \in \mathbb{N}
 	}{
-		\Gamma\vdash \code{[$k_1:v_1, ..., k_n:v_n$]}:\exists\kappa.\exists\nu.\Map
+		\Env\vdash \code{[$k_1:v_1, ..., k_n:v_n$]}:\exists\kappa.\exists\nu.\Map
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash \forall_{i \in [1,n]}{\kappa_i:\Type, k_i:\kappa_i} \quad n \in \mathbb{N} \\*
-		\Gamma\vdash \forall_{i \in [1,n]}{\nu_i:\Type, v_i:\nu_i} \hfill\\*
-		\Gamma\vdash \omega_\kappa = \bigsqcap_{i=1}^{n}{\kappa_i} \quad \omega_\nu = \bigsqcap_{i=1}^{n}{\nu_i}
+		\Env\vdash \forall_{i \in [1,n]}{\kappa_i:\Type, k_i:\kappa_i} \quad n \in \mathbb{N} \\*
+		\Env\vdash \forall_{i \in [1,n]}{\nu_i:\Type, v_i:\nu_i} \hfill\\*
+		\Env\vdash \omega_\kappa = \bigsqcap_{i=1}^{n}{\kappa_i} \quad \omega_\nu = \bigsqcap_{i=1}^{n}{\nu_i}
 	}{
-		\Gamma\vdash \code{[$k_1:v_1, ..., k_n:v_n$]}:\exists\omega_\kappa.\exists\omega_\nu.\Map
+		\Env\vdash \code{[$k_1:v_1, ..., k_n:v_n$]}:\exists\omega_\kappa.\exists\omega_\nu.\Map
 	}
 \]
 
@@ -763,9 +763,9 @@ among $\nu$)
 
 \[
 	\infrule{
-		\Gamma\vdash n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type, x_i:\tau_i}
+		\Env\vdash n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type, x_i:\tau_i}
 	}{
-		\Gamma\vdash \code{<$x_1,...,x_n$>}:\tau_1 \times ... \times \tau_n
+		\Env\vdash \code{<$x_1,...,x_n$>}:\tau_1 \times ... \times \tau_n
 	}
 \]
 
@@ -773,9 +773,9 @@ among $\nu$)
 
 \[
 	\infrule{
-		\Gamma\vdash n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type, x_i:\tau_i, a_i \in \Id}
+		\Env\vdash n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type, x_i:\tau_i, a_i \in \Id}
 	}{
-		\Gamma\vdash \code{<$a_1:x_1,...,a_n:x_n$>}:\tuple{a_1:\tau_1,...,a_2:\tau_n}
+		\Env\vdash \code{<$a_1:x_1,...,a_n:x_n$>}:\tuple{a_1:\tau_1,...,a_2:\tau_n}
 	}
 \]
 
@@ -783,9 +783,9 @@ among $\nu$)
 
 \[
 	\infrule{
-		\Gamma\vdash \xi \in \Id \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \Id, \tau_i:\Type} \quad \sigma_1 = (\xi, \tuple{a_1:\tau_1,...,a_n:\tau_n}) \\*
+		\Env\vdash \xi \in \Id \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \Id, \tau_i:\Type} \quad \sigma_1 = (\xi, \tuple{a_1:\tau_1,...,a_n:\tau_n}) \\*
 	}{
-		\Gamma\vdash \code{$\xi$.<>} : \sigma \\*
+		\Env\vdash \code{$\xi$.<>} : \sigma \\*
 	}
 \]
 
@@ -795,23 +795,23 @@ among $\nu$)
 
 \[
 	\infrule{
-		\Gamma\vdash \beta \in \texttt{Number} \quad b:\beta\\*
-		\Gamma\vdash \epsilon \in \texttt{Number} \quad e:\epsilon \\*
-		\Gamma\vdash \omega = \beta \sqcap \epsilon
+		\Env\vdash \beta \in \texttt{Number} \quad b:\beta\\*
+		\Env\vdash \epsilon \in \texttt{Number} \quad e:\epsilon \\*
+		\Env\vdash \omega = \beta \sqcap \epsilon
 	}{
-		\Gamma\vdash \code{$b$..$e$} : \exists\omega.\Range
+		\Env\vdash \code{$b$..$e$} : \exists\omega.\Range
 	}
 \]
 Range from $b$ (begin) to $e$ (end)
 
 \[
 	\infrule{
-		\Gamma\vdash \beta \in \texttt{Number} \quad b:\beta\\*
-		\Gamma\vdash \epsilon \in \texttt{Number} \quad e:\epsilon \\*
-		\Gamma\vdash \sigma \in \texttt{Number} \quad s:\sigma \\*
-		\Gamma\vdash \omega = \beta \sqcap \epsilon \sqcap \sigma
+		\Env\vdash \beta \in \texttt{Number} \quad b:\beta\\*
+		\Env\vdash \epsilon \in \texttt{Number} \quad e:\epsilon \\*
+		\Env\vdash \sigma \in \texttt{Number} \quad s:\sigma \\*
+		\Env\vdash \omega = \beta \sqcap \epsilon \sqcap \sigma
 	}{
-		\Gamma\vdash \code{$b$..$e$..$s$} : \exists\omega.\Range
+		\Env\vdash \code{$b$..$e$..$s$} : \exists\omega.\Range
 	}
 \]
 
@@ -825,9 +825,9 @@ Range from $b$ (begin) to $e$ (end) with a step $s$
 
 \[
 	\infrule{
-		\Gamma\vdash \tau:\Type \quad \epsilon:\tau
+		\Env\vdash \tau:\Type \quad \epsilon:\tau
 	}{
-		\Gamma\vdash \code{\{$\epsilon$\}} : \tau
+		\Env\vdash \code{\{$\epsilon$\}} : \tau
 	}
 \]
 
@@ -835,10 +835,10 @@ Range from $b$ (begin) to $e$ (end) with a step $s$
 
 \[
 	\infrule{
-		\Gamma\vdash \rho:\Type \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \Id, \tau_i:\Type} \quad \phi = (a_1:\tau_1,...,a_n:\tau_n) \to \rho \\*
-		\Gamma\vdash f : \phi
+		\Env\vdash \rho:\Type \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \Id, \tau_i:\Type} \quad \phi = (a_1:\tau_1,...,a_n:\tau_n) \to \rho \\*
+		\Env\vdash f : \phi
 	}{
-		\Gamma\vdash \code{$f$($...$)} : \rho
+		\Env\vdash \code{$f$($...$)} : \rho
 	}
 \]
 
@@ -848,10 +848,10 @@ Range from $b$ (begin) to $e$ (end) with a step $s$
 
 \[
 	\infrule{
-		\Gamma\vdash a \in \Id \\*
-		\Gamma\vdash \rho:\Type \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \Id, \tau_i:\Type} \quad \phi = (a_1:\tau_1,...,a_n:\tau_n) \to \rho \\*
+		\Env\vdash a \in \Id \\*
+		\Env\vdash \rho:\Type \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \Id, \tau_i:\Type} \quad \phi = (a_1:\tau_1,...,a_n:\tau_n) \to \rho \\*
 	}{
-		\Gamma,\code{$a$ $\phi$}\vdash \code{::$a$} : \phi
+		\Env,\code{$a$ $\phi$}\vdash \code{::$a$} : \phi
 	}
 \]
 
@@ -905,20 +905,20 @@ Range from $b$ (begin) to $e$ (end) with a step $s$
 
 \[
 	\infrule{
-		\Gamma\vdash \tau:\Type \quad l:\tau \\*
-		\Gamma\vdash \sigma:\Type \quad \tau \narr \sigma \quad r:\sigma
+		\Env\vdash \tau:\Type \quad l:\tau \\*
+		\Env\vdash \sigma:\Type \quad \tau \narr \sigma \quad r:\sigma
 	}{
-		\Gamma\vdash \code{$l$ = $r$} : \Bool
+		\Env\vdash \code{$l$ = $r$} : \Bool
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash \tau:\Type \quad l:\tau \\*
-		\Gamma\vdash \sigma:\Type \quad r:\sigma \\*
-		\Gamma\vdash \code{$l$ = $r$} : \Bool
+		\Env\vdash \tau:\Type \quad l:\tau \\*
+		\Env\vdash \sigma:\Type \quad r:\sigma \\*
+		\Env\vdash \code{$l$ = $r$} : \Bool
 	}{
-		\Gamma\vdash \code{$l$ != $r$} : \Bool
+		\Env\vdash \code{$l$ != $r$} : \Bool
 	}
 \]
 
@@ -928,11 +928,11 @@ If the "equal" operator is defined, the "not equal" operator is also defined
 
 \[
 	\infrule{
-		\Gamma\vdash \tau:\Type \quad l:\tau \\*
-		\Gamma\vdash \sigma:\Type \quad r:\sigma \\*
-		\Gamma\vdash \code{$l$ =\~{} $r$}: \Bool
+		\Env\vdash \tau:\Type \quad l:\tau \\*
+		\Env\vdash \sigma:\Type \quad r:\sigma \\*
+		\Env\vdash \code{$l$ =\~{} $r$}: \Bool
 	}{
-		\Gamma\vdash \code{$r$ \~{}= $l$}: \Bool
+		\Env\vdash \code{$r$ \~{}= $l$}: \Bool
 	}
 \]
 
@@ -946,9 +946,9 @@ If the "contains" operator is defined, the "contained" operator is also defined
 
 \[
 	\infrule{
-		\Gamma\vdash l:\texttt{Number} \quad \tau \in \texttt{Number}
+		\Env\vdash l:\texttt{Number} \quad \tau \in \texttt{Number}
 	}{
-		\Gamma\vdash \code{$l$ as $\tau$}: \tau
+		\Env\vdash \code{$l$ as $\tau$}: \tau
 	}
 \]
 
@@ -957,26 +957,26 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash \tau \in \texttt{Number} \quad x:\tau
+		\Env\vdash \tau \in \texttt{Number} \quad x:\tau
 	}{
-		\Gamma\vdash \code{+$x$}: \tau
+		\Env\vdash \code{+$x$}: \tau
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash \tau \in \texttt{Number}\setminus\set{\Natural} \quad x:\tau
+		\Env\vdash \tau \in \texttt{Number}\setminus\set{\Natural} \quad x:\tau
 	}{
-		\Gamma\vdash \code{-$x$}: \tau
+		\Env\vdash \code{-$x$}: \tau
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash \tau \in \texttt{Number} \quad l:\tau \quad r:\tau\\*
+		\Env\vdash \tau \in \texttt{Number} \quad l:\tau \quad r:\tau\\*
 		\bop = \set{\code{=}, \code{!=}, \code{<}, \code{<=}, \code{>=}, \code{>=}, \code{>}}
 	}{
-		\Gamma\vdash \code{$l$ $\bop$ $r$}: \Bool
+		\Env\vdash \code{$l$ $\bop$ $r$}: \Bool
 	}
 \]
 
@@ -992,18 +992,18 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash x:\Bool
+		\Env\vdash x:\Bool
 	}{
-		\Gamma\vdash \code{!$x$}:\Bool
+		\Env\vdash \code{!$x$}:\Bool
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Bool \quad r:\Bool \\*
+		\Env\vdash l:\Bool \quad r:\Bool \\*
 		\bop = \set{\code{and}, \code{\&}, \code{or}, \code{|}}
 	}{
-		\Gamma\vdash \code{$l$ $\bop$ $r$}:\Bool
+		\Env\vdash \code{$l$ $\bop$ $r$}:\Bool
 	}
 \]
 
@@ -1013,25 +1013,25 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Natural \quad r:\Natural
+		\Env\vdash l:\Natural \quad r:\Natural
 	}{
-		\Gamma\vdash \code{$l$ + $r$} : \Natural
+		\Env\vdash \code{$l$ + $r$} : \Natural
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Natural \quad r:\Int
+		\Env\vdash l:\Natural \quad r:\Int
 	}{
-		\Gamma\vdash \code{$l$ + $r$} : \Int
+		\Env\vdash \code{$l$ + $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Natural \quad r:\Real
+		\Env\vdash l:\Natural \quad r:\Real
 	}{
-		\Gamma\vdash \code{$l$ + $r$} : \Real
+		\Env\vdash \code{$l$ + $r$} : \Real
 	}
 \]
 
@@ -1039,9 +1039,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Natural \quad r:\Natural
+		\Env\vdash l:\Natural \quad r:\Natural
 	}{
-		\Gamma\vdash \code{$l$ - $r$} : \Int
+		\Env\vdash \code{$l$ - $r$} : \Int
 	}
 \]
 
@@ -1049,17 +1049,17 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Natural \quad r:\Int
+		\Env\vdash l:\Natural \quad r:\Int
 	}{
-		\Gamma\vdash \code{$l$ - $r$} : \Int
+		\Env\vdash \code{$l$ - $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Natural \quad r:\Real
+		\Env\vdash l:\Natural \quad r:\Real
 	}{
-		\Gamma\vdash \code{$l$ - $r$} : \Real
+		\Env\vdash \code{$l$ - $r$} : \Real
 	}
 \]
 
@@ -1067,26 +1067,26 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Natural \quad r:\Natural
+		\Env\vdash l:\Natural \quad r:\Natural
 	}{
-		\Gamma\vdash \code{$l$ * $r$} : \Natural
+		\Env\vdash \code{$l$ * $r$} : \Natural
 	}
 \]
 
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Natural \quad r:\Int
+		\Env\vdash l:\Natural \quad r:\Int
 	}{
-		\Gamma\vdash \code{$l$ * $r$} : \Int
+		\Env\vdash \code{$l$ * $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Natural \quad r:\Real
+		\Env\vdash l:\Natural \quad r:\Real
 	}{
-		\Gamma\vdash \code{$l$ * $r$} : \Real
+		\Env\vdash \code{$l$ * $r$} : \Real
 	}
 \]
 
@@ -1094,25 +1094,25 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Natural \quad r:\Natural
+		\Env\vdash l:\Natural \quad r:\Natural
 	}{
-		\Gamma\vdash \code{$l$ / $r$} : \Real
+		\Env\vdash \code{$l$ / $r$} : \Real
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Natural \quad r:\Int
+		\Env\vdash l:\Natural \quad r:\Int
 	}{
-		\Gamma\vdash \code{$l$ / $r$} : \Real
+		\Env\vdash \code{$l$ / $r$} : \Real
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Natural \quad r:\Real
+		\Env\vdash l:\Natural \quad r:\Real
 	}{
-		\Gamma\vdash \code{$l$ / $r$} : \Real
+		\Env\vdash \code{$l$ / $r$} : \Real
 	}
 \]
 
@@ -1120,25 +1120,25 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Natural \quad r:\Natural
+		\Env\vdash l:\Natural \quad r:\Natural
 	}{
-		\Gamma\vdash \code{$l$ \% $r$} : \Natural
+		\Env\vdash \code{$l$ \% $r$} : \Natural
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Natural \quad r:\Int
+		\Env\vdash l:\Natural \quad r:\Int
 	}{
-		\Gamma\vdash \code{$l$ \% $r$} : \Int
+		\Env\vdash \code{$l$ \% $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Natural \quad r:\Real
+		\Env\vdash l:\Natural \quad r:\Real
 	}{
-		\Gamma\vdash \code{$l$ \% $r$} : \Real
+		\Env\vdash \code{$l$ \% $r$} : \Real
 	}
 \]
 
@@ -1146,25 +1146,25 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Natural \quad r:\Natural
+		\Env\vdash l:\Natural \quad r:\Natural
 	}{
-		\Gamma\vdash \code{$l$ \^{} $r$} : \Natural
+		\Env\vdash \code{$l$ \^{} $r$} : \Natural
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Natural \quad r:\Int
+		\Env\vdash l:\Natural \quad r:\Int
 	}{
-		\Gamma\vdash \code{$l$ \^{} $r$} : \Int
+		\Env\vdash \code{$l$ \^{} $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Natural \quad r:\Real
+		\Env\vdash l:\Natural \quad r:\Real
 	}{
-		\Gamma\vdash \code{$l$ \^{} $r$} : \Real
+		\Env\vdash \code{$l$ \^{} $r$} : \Real
 	}
 \]
 
@@ -1174,9 +1174,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash x:\Int
+		\Env\vdash x:\Int
 	}{
-		\Gamma\vdash \code{!!$x$} : \Int
+		\Env\vdash \code{!!$x$} : \Int
 	}
 \]
 
@@ -1184,17 +1184,17 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad r:\Natural
+		\Env\vdash l:\Int \quad r:\Natural
 	}{
-		\Gamma\vdash \code{$l$ \&\& $r$} : \Int
+		\Env\vdash \code{$l$ \&\& $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad r:\Int
+		\Env\vdash l:\Int \quad r:\Int
 	}{
-		\Gamma\vdash \code{$l$ \&\& $r$} : \Int
+		\Env\vdash \code{$l$ \&\& $r$} : \Int
 	}
 \]
 
@@ -1202,17 +1202,17 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad r:\Natural
+		\Env\vdash l:\Int \quad r:\Natural
 	}{
-		\Gamma\vdash \code{$l$ || $r$} : \Int
+		\Env\vdash \code{$l$ || $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad r:\Int
+		\Env\vdash l:\Int \quad r:\Int
 	}{
-		\Gamma\vdash \code{$l$ || $r$} : \Int
+		\Env\vdash \code{$l$ || $r$} : \Int
 	}
 \]
 
@@ -1220,17 +1220,17 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad r:\Natural
+		\Env\vdash l:\Int \quad r:\Natural
 	}{
-		\Gamma\vdash \code{$l$ ||| $r$} : \Int
+		\Env\vdash \code{$l$ ||| $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad r:\Int
+		\Env\vdash l:\Int \quad r:\Int
 	}{
-		\Gamma\vdash \code{$l$ ||| $r$} : \Int
+		\Env\vdash \code{$l$ ||| $r$} : \Int
 	}
 \]
 
@@ -1238,17 +1238,17 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad r:\Natural
+		\Env\vdash l:\Int \quad r:\Natural
 	}{
-		\Gamma\vdash \code{$l$ \{<\} $r$} : \Int
+		\Env\vdash \code{$l$ \{<\} $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad r:\Int
+		\Env\vdash l:\Int \quad r:\Int
 	}{
-		\Gamma\vdash \code{$l$ \{<\} $r$} : \Int
+		\Env\vdash \code{$l$ \{<\} $r$} : \Int
 	}
 \]
 
@@ -1256,17 +1256,17 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad r:\Natural
+		\Env\vdash l:\Int \quad r:\Natural
 	}{
-		\Gamma\vdash \code{$l$ \{>\} $r$} : \Int
+		\Env\vdash \code{$l$ \{>\} $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad r:\Int
+		\Env\vdash l:\Int \quad r:\Int
 	}{
-		\Gamma\vdash \code{$l$ \{>\} $r$} : \Int
+		\Env\vdash \code{$l$ \{>\} $r$} : \Int
 	}
 \]
 
@@ -1274,17 +1274,17 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad r:\Natural
+		\Env\vdash l:\Int \quad r:\Natural
 	}{
-		\Gamma\vdash \code{$l$ \{>>\} $r$} : \Int
+		\Env\vdash \code{$l$ \{>>\} $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad r:\Int
+		\Env\vdash l:\Int \quad r:\Int
 	}{
-		\Gamma\vdash \code{$l$ \{>>\} $r$} : \Int
+		\Env\vdash \code{$l$ \{>>\} $r$} : \Int
 	}
 \]
 
@@ -1292,25 +1292,25 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad r:\Natural
+		\Env\vdash l:\Int \quad r:\Natural
 	}{
-		\Gamma\vdash \code{$l$ + $r$} : \Int
+		\Env\vdash \code{$l$ + $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad r:\Int
+		\Env\vdash l:\Int \quad r:\Int
 	}{
-		\Gamma\vdash \code{$l$ + $r$} : \Int
+		\Env\vdash \code{$l$ + $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad r:\Real
+		\Env\vdash l:\Int \quad r:\Real
 	}{
-		\Gamma\vdash \code{$l$ + $r$} : \Real
+		\Env\vdash \code{$l$ + $r$} : \Real
 	}
 \]
 
@@ -1318,25 +1318,25 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad r:\Natural
+		\Env\vdash l:\Int \quad r:\Natural
 	}{
-		\Gamma\vdash \code{$l$ - $r$} : \Int
+		\Env\vdash \code{$l$ - $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad r:\Int
+		\Env\vdash l:\Int \quad r:\Int
 	}{
-		\Gamma\vdash \code{$l$ - $r$} : \Int
+		\Env\vdash \code{$l$ - $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad r:\Real
+		\Env\vdash l:\Int \quad r:\Real
 	}{
-		\Gamma\vdash \code{$l$ - $r$} : \Real
+		\Env\vdash \code{$l$ - $r$} : \Real
 	}
 \]
 
@@ -1344,25 +1344,25 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad r:\Natural
+		\Env\vdash l:\Int \quad r:\Natural
 	}{
-		\Gamma\vdash \code{$l$ * $r$} : \Int
+		\Env\vdash \code{$l$ * $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad r:\Int
+		\Env\vdash l:\Int \quad r:\Int
 	}{
-		\Gamma\vdash \code{$l$ * $r$} : \Int
+		\Env\vdash \code{$l$ * $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad r:\Real
+		\Env\vdash l:\Int \quad r:\Real
 	}{
-		\Gamma\vdash \code{$l$ * $r$} : \Real
+		\Env\vdash \code{$l$ * $r$} : \Real
 	}
 \]
 
@@ -1370,25 +1370,25 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad r:\Natural
+		\Env\vdash l:\Int \quad r:\Natural
 	}{
-		\Gamma\vdash \code{$l$ / $r$} : \Real
+		\Env\vdash \code{$l$ / $r$} : \Real
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad r:\Int
+		\Env\vdash l:\Int \quad r:\Int
 	}{
-		\Gamma\vdash \code{$l$ / $r$} : \Real
+		\Env\vdash \code{$l$ / $r$} : \Real
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad r:\Real
+		\Env\vdash l:\Int \quad r:\Real
 	}{
-		\Gamma\vdash \code{$l$ / $r$} : \Real
+		\Env\vdash \code{$l$ / $r$} : \Real
 	}
 \]
 
@@ -1396,25 +1396,25 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad r:\Natural
+		\Env\vdash l:\Int \quad r:\Natural
 	}{
-		\Gamma\vdash \code{$l$ \% $r$} : \Int
+		\Env\vdash \code{$l$ \% $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad r:\Int
+		\Env\vdash l:\Int \quad r:\Int
 	}{
-		\Gamma\vdash \code{$l$ \% $r$} : \Int
+		\Env\vdash \code{$l$ \% $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad r:\Real
+		\Env\vdash l:\Int \quad r:\Real
 	}{
-		\Gamma\vdash \code{$l$ \% $r$} : \Real
+		\Env\vdash \code{$l$ \% $r$} : \Real
 	}
 \]
 
@@ -1422,25 +1422,25 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad r:\Natural
+		\Env\vdash l:\Int \quad r:\Natural
 	}{
-		\Gamma\vdash \code{$l$ \^{} $r$} : \Real
+		\Env\vdash \code{$l$ \^{} $r$} : \Real
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad r:\Int
+		\Env\vdash l:\Int \quad r:\Int
 	}{
-		\Gamma\vdash \code{$l$ \^{} $r$} : \Real
+		\Env\vdash \code{$l$ \^{} $r$} : \Real
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad r:\Real
+		\Env\vdash l:\Int \quad r:\Real
 	}{
-		\Gamma\vdash \code{$l$ \^{} $r$} : \Real
+		\Env\vdash \code{$l$ \^{} $r$} : \Real
 	}
 \]
 
@@ -1450,9 +1450,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad \tau \in \texttt{Number} \quad r:\tau
+		\Env\vdash l:\Int \quad \tau \in \texttt{Number} \quad r:\tau
 	}{
-		\Gamma\vdash \code{$l$ + $r$} : \Real
+		\Env\vdash \code{$l$ + $r$} : \Real
 	}
 \]
 
@@ -1460,9 +1460,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad \tau \in \texttt{Number} \quad r:\tau
+		\Env\vdash l:\Int \quad \tau \in \texttt{Number} \quad r:\tau
 	}{
-		\Gamma\vdash \code{$l$ - $r$} : \Real
+		\Env\vdash \code{$l$ - $r$} : \Real
 	}
 \]
 
@@ -1470,9 +1470,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad \tau \in \texttt{Number} \quad r:\tau
+		\Env\vdash l:\Int \quad \tau \in \texttt{Number} \quad r:\tau
 	}{
-		\Gamma\vdash \code{$l$ * $r$} : \Real
+		\Env\vdash \code{$l$ * $r$} : \Real
 	}
 \]
 
@@ -1480,9 +1480,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad \tau \in \texttt{Number} \quad r:\tau
+		\Env\vdash l:\Int \quad \tau \in \texttt{Number} \quad r:\tau
 	}{
-		\Gamma\vdash \code{$l$ / $r$} : \Real
+		\Env\vdash \code{$l$ / $r$} : \Real
 	}
 \]
 
@@ -1490,9 +1490,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad \tau \in \texttt{Number} \quad r:\tau
+		\Env\vdash l:\Int \quad \tau \in \texttt{Number} \quad r:\tau
 	}{
-		\Gamma\vdash \code{$l$ \% $r$} : \Real
+		\Env\vdash \code{$l$ \% $r$} : \Real
 	}
 \]
 
@@ -1500,9 +1500,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Int \quad \tau \in \texttt{Number} \quad r:\tau
+		\Env\vdash l:\Int \quad \tau \in \texttt{Number} \quad r:\tau
 	}{
-		\Gamma\vdash \code{$l$ \^{} $r$} : \Real
+		\Env\vdash \code{$l$ \^{} $r$} : \Real
 	}
 \]
 
@@ -1512,9 +1512,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Text \quad \tau \in \texttt{Number} \cup \set{\Text, \Bool}
+		\Env\vdash l:\Text \quad \tau \in \texttt{Number} \cup \set{\Text, \Bool}
 	}{
-		\Gamma\vdash \code{$l$ as $\tau$}: \tau
+		\Env\vdash \code{$l$ as $\tau$}: \tau
 	}
 \]
 
@@ -1522,9 +1522,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Text \quad \tau:\Type \quad r:\tau
+		\Env\vdash l:\Text \quad \tau:\Type \quad r:\tau
 	}{
-		\Gamma\vdash \code{$l$ + $r$}: \Text
+		\Env\vdash \code{$l$ + $r$}: \Text
 	}
 \]
 
@@ -1532,9 +1532,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Text \quad r:\Text
+		\Env\vdash l:\Text \quad r:\Text
 	}{
-		\Gamma\vdash \code{$l$ - $r$}: \Text
+		\Env\vdash \code{$l$ - $r$}: \Text
 	}
 \]
 
@@ -1542,9 +1542,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Text \quad \tau \in \texttt{Number} \quad r:\tau
+		\Env\vdash l:\Text \quad \tau \in \texttt{Number} \quad r:\tau
 	}{
-		\Gamma\vdash \code{$l$ \^{} $r$}: \Text
+		\Env\vdash \code{$l$ \^{} $r$}: \Text
 	}
 \]
 
@@ -1554,9 +1554,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Text \quad r:\Text
+		\Env\vdash l:\Text \quad r:\Text
 	}{
-		\Gamma\vdash \code{$l$ / $r$}: \exists\Text.\List
+		\Env\vdash \code{$l$ / $r$}: \exists\Text.\List
 	}
 \]
 
@@ -1564,9 +1564,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Text \quad r:\Text
+		\Env\vdash l:\Text \quad r:\Text
 	}{
-		\Gamma\vdash \code{$l$ = $r$}: \Bool
+		\Env\vdash \code{$l$ = $r$}: \Bool
 	}
 \]
 
@@ -1574,9 +1574,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Text \quad r:\Text
+		\Env\vdash l:\Text \quad r:\Text
 	}{
-		\Gamma\vdash \code{$l$ < $r$}: \Bool
+		\Env\vdash \code{$l$ < $r$}: \Bool
 	}
 \]
 
@@ -1584,9 +1584,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Text \quad r:\Text
+		\Env\vdash l:\Text \quad r:\Text
 	}{
-		\Gamma\vdash \code{$l$ <= $r$}: \Bool
+		\Env\vdash \code{$l$ <= $r$}: \Bool
 	}
 \]
 
@@ -1594,9 +1594,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Text \quad r:\Text
+		\Env\vdash l:\Text \quad r:\Text
 	}{
-		\Gamma\vdash \code{$l$ >= $r$}: \Bool
+		\Env\vdash \code{$l$ >= $r$}: \Bool
 	}
 \]
 
@@ -1604,9 +1604,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Text \quad r:\Text
+		\Env\vdash l:\Text \quad r:\Text
 	}{
-		\Gamma\vdash \code{$l$ > $r$}: \Bool
+		\Env\vdash \code{$l$ > $r$}: \Bool
 	}
 \]
 
@@ -1614,9 +1614,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash l:\Text \quad r:\Text
+		\Env\vdash l:\Text \quad r:\Text
 	}{
-		\Gamma\vdash \code{$l$ =\~{} $r$}: \Bool
+		\Env\vdash \code{$l$ =\~{} $r$}: \Bool
 	}
 \]
 
@@ -1625,18 +1625,18 @@ Dovrebbe?}
 \[
 	\text{Index access}\quad
 	\infrule{
-		\Gamma\vdash l:\Text \quad r:\Int
+		\Env\vdash l:\Text \quad r:\Int
 	}{
-		\Gamma\vdash \code{$l$ @ $r$}: \Text
+		\Env\vdash \code{$l$ @ $r$}: \Text
 	}
 \]
 
 \[
 	\text{"Substring"}\quad
 	\infrule{
-		\Gamma\vdash l:\Text \quad r:\exists\Int.\Range
+		\Env\vdash l:\Text \quad r:\exists\Int.\Range
 	}{
-		\Gamma\vdash \code{$l$ @ $r$}: \Text
+		\Env\vdash \code{$l$ @ $r$}: \Text
 	}
 \]
 
@@ -1645,27 +1645,27 @@ Dovrebbe?}
 \[
 	\text{Count access}\quad
 	\infrule{
-		\Gamma\vdash l:\Text
+		\Env\vdash l:\Text
 	}{
-		\Gamma\vdash \code{$l$ @ \%}: \Int
+		\Env\vdash \code{$l$ @ \%}: \Int
 	}
 \]
 
 \[
 	\text{Range access}\quad
 	\infrule{
-		\Gamma\vdash l:\Text
+		\Env\vdash l:\Text
 	}{
-		\Gamma\vdash \code{$l$ @ @}: \exists\Int.\Range
+		\Env\vdash \code{$l$ @ @}: \exists\Int.\Range
 	}
 \]
 
 \[
 	\text{Values access}\quad
 	\infrule{
-		\Gamma\vdash l:\Text
+		\Env\vdash l:\Text
 	}{
-		\Gamma\vdash \code{$l$ @ *}: \exists\Text.\List
+		\Env\vdash \code{$l$ @ *}: \exists\Text.\List
 	}
 \]
 
@@ -1681,12 +1681,12 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Gamma\vdash \tau_1 = \List[\sigma_1 := \Type] \\*
-		\Gamma\vdash \tau_2 = \List[\sigma_2 := \Type] \\*
-		\Gamma\vdash l:\tau_1 \quad x:\sigma_1 \\*
-		\Gamma\vdash \code{$x$ as $\sigma_2$} : \sigma_2
+		\Env\vdash \tau_1 = \List[\sigma_1 := \Type] \\*
+		\Env\vdash \tau_2 = \List[\sigma_2 := \Type] \\*
+		\Env\vdash l:\tau_1 \quad x:\sigma_1 \\*
+		\Env\vdash \code{$x$ as $\sigma_2$} : \sigma_2
 	}{
-		\Gamma\vdash \code{$l$ as $\tau_2$} : \tau_2
+		\Env\vdash \code{$l$ as $\tau_2$} : \tau_2
 	}
 \]
 
@@ -1697,10 +1697,10 @@ $\sigma_1$ can be casted to a list of $\sigma_2$
 
 \[
 	\infrule{
-		\Gamma\vdash \tau_1:\Type \quad l:\exists\tau_1.\List \\*
-		\Gamma\vdash \tau_2:\Type \quad \tau_2 \narr \tau_1 \quad r:\tau_2
+		\Env\vdash \tau_1:\Type \quad l:\exists\tau_1.\List \\*
+		\Env\vdash \tau_2:\Type \quad \tau_2 \narr \tau_1 \quad r:\tau_2
 	}{
-		\Gamma\vdash \code{$l$ =\~{} $r$} : \Bool
+		\Env\vdash \code{$l$ =\~{} $r$} : \Bool
 	}
 \]
 
@@ -1708,10 +1708,10 @@ A list of $\tau_1$ contains an element of type $\tau_2$ (narrower than $\tau_1$)
 
 \[
 	\infrule{
-		\Gamma\vdash \tau_1:\Type \quad l:\exists\tau_1.\List\\*
-		\Gamma\vdash \tau_2:\Type \quad \tau_2 \narr \tau_1 \quad r:\exists\tau_2.\List
+		\Env\vdash \tau_1:\Type \quad l:\exists\tau_1.\List\\*
+		\Env\vdash \tau_2:\Type \quad \tau_2 \narr \tau_1 \quad r:\exists\tau_2.\List
 	}{
-		\Gamma\vdash \code{$l$ =\~{} $r$} : \Bool
+		\Env\vdash \code{$l$ =\~{} $r$} : \Bool
 	}
 \]
 
@@ -1723,39 +1723,39 @@ $\tau_1$)
 \[
 	\text{Index access}\quad
 	\infrule{
-		\Gamma\vdash \tau:\Type
+		\Env\vdash \tau:\Type
 		\quad l:\exists\tau.\List
 		\quad r:\Int
 	}{
-		\Gamma\vdash \code{$l$ @ $r$}: \tau
+		\Env\vdash \code{$l$ @ $r$}: \tau
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash \tau : \Type
+		\Env\vdash \tau : \Type
 		\quad l:\exists\tau.\List
 		\quad r:\exists\Int.\Range
 	}{
-		\Gamma\vdash \code{$l$ @ $r$}: \tau
+		\Env\vdash \code{$l$ @ $r$}: \tau
 	}
 \]
 
 \[
 	\text{Count access}\quad
 	\infrule{
-		\Gamma\vdash \tau:\Type \quad l:\exists\tau.\List
+		\Env\vdash \tau:\Type \quad l:\exists\tau.\List
 	}{
-		\Gamma\vdash \code{$l$ @ \%}: \Int
+		\Env\vdash \code{$l$ @ \%}: \Int
 	}
 \]
 
 \[
 	\text{Range access}\quad
 	\infrule{
-		\Gamma\vdash l:\Text
+		\Env\vdash l:\Text
 	}{
-		\Gamma\vdash \code{$l$ @ @}: \exists\Int.\Range
+		\Env\vdash \code{$l$ @ @}: \exists\Int.\Range
 	}
 \]
 
@@ -1767,12 +1767,12 @@ $\tau_1$)
 
 \[
 	\infrule{
-		\Gamma\vdash \tau_1 = \Map[\kappa_1:=\Type,\nu_1:=\Type] \\*
-		\Gamma\vdash \tau_2 = \Map[\kappa_2:=\Type,\nu_2:=\Type] \\*
-		\Gamma\vdash l:\tau_1 \quad k:\kappa_1 \quad v:\nu_1 \\*
-		\Gamma\vdash \code{$k$ as $\kappa_2$} : \kappa_2 \land \code{$v$ as $\nu_2$} : \nu_2
+		\Env\vdash \tau_1 = \Map[\kappa_1:=\Type,\nu_1:=\Type] \\*
+		\Env\vdash \tau_2 = \Map[\kappa_2:=\Type,\nu_2:=\Type] \\*
+		\Env\vdash l:\tau_1 \quad k:\kappa_1 \quad v:\nu_1 \\*
+		\Env\vdash \code{$k$ as $\kappa_2$} : \kappa_2 \land \code{$v$ as $\nu_2$} : \nu_2
 	}{
-		\Gamma\vdash \code{$l$ as $\tau_2$} : \tau_2
+		\Env\vdash \code{$l$ as $\tau_2$} : \tau_2
 	}
 \]
 
@@ -1785,10 +1785,10 @@ can be casted to the type $\tau_2$
 
 \[
 	\infrule{
-		\Gamma\vdash \tau = \Map[\kappa_1:=\Type,\nu:=\Type] \quad l:\tau \\*
-		\Gamma\vdash \kappa_2:\Type \quad \kappa_2 \narr \kappa_1 \quad r:\kappa_2
+		\Env\vdash \tau = \Map[\kappa_1:=\Type,\nu:=\Type] \quad l:\tau \\*
+		\Env\vdash \kappa_2:\Type \quad \kappa_2 \narr \kappa_1 \quad r:\kappa_2
 	}{
-		\Gamma\vdash \code{$l$ =\~{} $r$} : \Bool
+		\Env\vdash \code{$l$ =\~{} $r$} : \Bool
 	}
 \]
 
@@ -1797,11 +1797,11 @@ $\kappa_1$)
 
 \[
 	\infrule{
-		\Gamma\vdash \tau_1 = \Map[\kappa_1:=\Type,\nu_1:=\Type] \quad l:\tau_1 \\*
-		\Gamma\vdash \tau_2 = \Map[\kappa_2:=\Type,\nu_2:=\Type] \quad r:\tau_2 \\*
-		\Gamma\vdash \kappa_2 \narr \kappa_1 \land \nu_2 \narr \nu_1
+		\Env\vdash \tau_1 = \Map[\kappa_1:=\Type,\nu_1:=\Type] \quad l:\tau_1 \\*
+		\Env\vdash \tau_2 = \Map[\kappa_2:=\Type,\nu_2:=\Type] \quad r:\tau_2 \\*
+		\Env\vdash \kappa_2 \narr \kappa_1 \land \nu_2 \narr \nu_1
 	}{
-		\Gamma\vdash \code{$l$ =\~{} $r$} : \Bool
+		\Env\vdash \code{$l$ =\~{} $r$} : \Bool
 	}
 \]
 
@@ -1814,37 +1814,37 @@ of type $\tau_2$
 \[
 	\text{Access by key}\quad
 	\infrule{
-		\Gamma\vdash \tau = \Map[\kappa_1:=\Type,\nu:=\Type] \quad l:\tau \\*
-		\Gamma\vdash \kappa_2 = \Type \quad \kappa_2 \narr \kappa_1 \quad r:\kappa_2
+		\Env\vdash \tau = \Map[\kappa_1:=\Type,\nu:=\Type] \quad l:\tau \\*
+		\Env\vdash \kappa_2 = \Type \quad \kappa_2 \narr \kappa_1 \quad r:\kappa_2
 	}{
-		\Gamma\vdash \code{$l$ @ $r$}: \nu
+		\Env\vdash \code{$l$ @ $r$}: \nu
 	}
 \]
 
 \[
 	\text{Count access}\quad
 	\infrule{
-		\Gamma\vdash \tau = \Map[\kappa:=\Type,\nu:=\Type] \quad l:\tau \\*
+		\Env\vdash \tau = \Map[\kappa:=\Type,\nu:=\Type] \quad l:\tau \\*
 	}{
-		\Gamma\vdash \code{$l$ @ \%}: \Int
+		\Env\vdash \code{$l$ @ \%}: \Int
 	}
 \]
 
 \[
 	\text{Keys access}\quad
 	\infrule{
-		\Gamma\vdash \tau = \Map[\kappa:=\Type,\nu:=\Type] \quad l:\tau \\*
+		\Env\vdash \tau = \Map[\kappa:=\Type,\nu:=\Type] \quad l:\tau \\*
 	}{
-		\Gamma\vdash \code{$l$ @ @}: \exists\kappa.\List
+		\Env\vdash \code{$l$ @ @}: \exists\kappa.\List
 	}
 \]
 
 \[
 	\text{Values access}\quad
 	\infrule{
-		\Gamma\vdash \tau = \Map[\kappa:=\Type,\nu:=\Type] \quad l:\tau \\*
+		\Env\vdash \tau = \Map[\kappa:=\Type,\nu:=\Type] \quad l:\tau \\*
 	}{
-		\Gamma\vdash \code{$l$ @ @}: \exists\nu.\List
+		\Env\vdash \code{$l$ @ @}: \exists\nu.\List
 	}
 \]
 
@@ -1856,10 +1856,10 @@ of type $\tau_2$
 
 \[
 	\infrule{
-		\Gamma\vdash \tau \in \texttt{Products} \quad l:\tau \\*
-		\Gamma\vdash \sigma \in \texttt{Products} \quad r:\sigma
+		\Env\vdash \tau \in \texttt{Products} \quad l:\tau \\*
+		\Env\vdash \sigma \in \texttt{Products} \quad r:\sigma
 	}{
-		\Gamma\vdash \code{$l$ = $r$}: \Bool
+		\Env\vdash \code{$l$ = $r$}: \Bool
 	}
 \]
 
@@ -1871,10 +1871,10 @@ of type $\tau_2$
 \[
 	\text{"Slice" access}\quad
 	\infrule{
-		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad l:\tau_1 \times ... \times \tau_n \\*
-		\Gamma\vdash r:\exists\Int.\Range
+		\Env\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad l:\tau_1 \times ... \times \tau_n \\*
+		\Env\vdash r:\exists\Int.\Range
 	}{
-		\Gamma\vdash \code{$l$ @ $r$}: \bigtimes_{i \in r} \tau_i
+		\Env\vdash \code{$l$ @ $r$}: \bigtimes_{i \in r} \tau_i
 	}
 \]
 
@@ -1887,20 +1887,20 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 \[
 	\text{Access by index}\quad
 	\infrule{
-		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad l:\tau_1 \times ... \times \tau_n \\*
-		\Gamma\vdash r:\Int \quad r \in [1,n]
+		\Env\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad l:\tau_1 \times ... \times \tau_n \\*
+		\Env\vdash r:\Int \quad r \in [1,n]
 	}{
-		\Gamma\vdash \code{$l$ @ $r$}: \tau_r
+		\Env\vdash \code{$l$ @ $r$}: \tau_r
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad l:\tau_1 \times ... \times \tau_n \\*
+		\Env\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad l:\tau_1 \times ... \times \tau_n \\*
 	}{
 		\begin{aligned}
-			\text{(Count access)} \qquad & \Gamma\vdash \code{$l$ @ \%}: \Int                           \\
-			\text{(Range access)} \qquad & \land\Gamma\vdash \code{$l$ @ @}: \exists\Int.\Range 
+			\text{(Count access)} \qquad & \Env\vdash \code{$l$ @ \%}: \Int                           \\
+			\text{(Range access)} \qquad & \land\Env\vdash \code{$l$ @ @}: \exists\Int.\Range 
 		\end{aligned}
 	}
 \]
@@ -1912,11 +1912,11 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 \[
 	\text{Access by index}\quad
 	\infrule{
-		\Gamma\vdash n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type, x_i:\tau_i, a_i \in \Id} \\*
-		\Gamma\vdash l:\tuple{a_1:\tau_1,...,a_n:\tau_n}\\*
-		\Gamma\vdash r:\Int \quad r \in [1,n]
+		\Env\vdash n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type, x_i:\tau_i, a_i \in \Id} \\*
+		\Env\vdash l:\tuple{a_1:\tau_1,...,a_n:\tau_n}\\*
+		\Env\vdash r:\Int \quad r \in [1,n]
 	}{
-		\Gamma\vdash \code{$l$ @ $r$}: \tau_r
+		\Env\vdash \code{$l$ @ $r$}: \tau_r
 	}
 \]
 
@@ -1924,13 +1924,13 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 
 \[
 	\infrule{
-		\Gamma\vdash n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type, x_i:\tau_i, a_i \in \Id} \\*
-		\Gamma\vdash l:\tuple{a_1:\tau_1,...,a_n:\tau_n}\\*
+		\Env\vdash n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type, x_i:\tau_i, a_i \in \Id} \\*
+		\Env\vdash l:\tuple{a_1:\tau_1,...,a_n:\tau_n}\\*
 	}{
 		\begin{aligned}
-			\text{(Count access)} \qquad & \Gamma\vdash \code{$l$ @ \%}: \Int                     \\*
-			\text{(Range access)} \qquad & \land\Gamma\vdash \code{$l$ @ @}: \exists\Int.\Range\\*
-			\text{(Fields access)} \qquad & \land\Gamma\vdash \code{$l$ @ *}: \exists\Text.\List
+			\text{(Count access)} \qquad & \Env\vdash \code{$l$ @ \%}: \Int                     \\*
+			\text{(Range access)} \qquad & \land\Env\vdash \code{$l$ @ @}: \exists\Int.\Range\\*
+			\text{(Fields access)} \qquad & \land\Env\vdash \code{$l$ @ *}: \exists\Text.\List
 		\end{aligned}
 	}
 \]
@@ -1940,11 +1940,11 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 \[
 	\text{Access by name}\quad
 	\infrule{
-		\Gamma\vdash n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type, x_i:\tau_i, a_i \in \Id} \\*
-		\Gamma\vdash l:\tuple{a_1:\tau_1,...,a_n:\tau_n}\\*
-		\Gamma\vdash r \in \Id \quad \exists_j a_j = r
+		\Env\vdash n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type, x_i:\tau_i, a_i \in \Id} \\*
+		\Env\vdash l:\tuple{a_1:\tau_1,...,a_n:\tau_n}\\*
+		\Env\vdash r \in \Id \quad \exists_j a_j = r
 	}{
-		\Gamma\vdash \code{$l$ @ $r$}: \tau_j
+		\Env\vdash \code{$l$ @ $r$}: \tau_j
 	}
 \]
 
@@ -1963,9 +1963,9 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 
 \[
 	\infrule{
-		\Gamma\vdash \tau:\Type
+		\Env\vdash \tau:\Type
 	}{
-		\Gamma, \code{$a$ $\tau$} \vdash a:\tau
+		\Env, \code{$a$ $\tau$} \vdash a:\tau
 	}
 \]
 
@@ -1975,10 +1975,10 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 
 \[
 	\infrule{
-		\Gamma\vdash \tau:\Type \quad e:\tau
+		\Env\vdash \tau:\Type \quad e:\tau
 	}{
-		\Gamma, \code{const $A$ $\tau$ <- $e$} \vdash A:\tau \qquad \text{(esplicit type)} \\*
-		\land \Gamma, \code{const $A$ <- $e$} \vdash A:\tau \qquad \text{(implicit type)}
+		\Env, \code{const $A$ $\tau$ <- $e$} \vdash A:\tau \qquad \text{(esplicit type)} \\*
+		\land \Env, \code{const $A$ <- $e$} \vdash A:\tau \qquad \text{(implicit type)}
 	}
 \]
 
@@ -1986,17 +1986,17 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 
 \[
 	\infrule{
-		\Gamma\vdash \tau:\Type \quad l:\exists\tau.\List
+		\Env\vdash \tau:\Type \quad l:\exists\tau.\List
 	}{
-		\Gamma, \code{for $i$ in $l$} \vdash i:\tau
+		\Env, \code{for $i$ in $l$} \vdash i:\tau
 	}
 \]
 
 \[
 	\infrule{
-		\Gamma\vdash \kappa:\Type \quad \nu:\Type \quad m:\exists\kappa.\exists\nu.\Map
+		\Env\vdash \kappa:\Type \quad \nu:\Type \quad m:\exists\kappa.\exists\nu.\Map
 	}{
-		\Gamma, \code{for $k$:$v$ in $m$} \vdash k:\kappa \quad v:\nu
+		\Env, \code{for $k$:$v$ in $m$} \vdash k:\kappa \quad v:\nu
 	}
 \]
 
@@ -2113,7 +2113,7 @@ function can be applied on an identifier
 		\Zero : \Id &\to \Val \\*
 		\Zero(i) &\mapsto \begin{cases}
 			\val             &\text{ if default overridden } \\*
-			\Zero(\Gamma(i)) &
+			\Zero(\Env(i)) &
 		\end{cases}
 	\end{split}
 \]
@@ -2122,13 +2122,13 @@ function can be applied on an identifier
 
 \[
 	\begin{split}
-		\Gamma\vdash \Zero(\Bool)    &= \Bool(\texttt{false}) \\*
-		\Gamma\vdash \Zero(\Text)    &= \Text(\texttt{""}) \\*
-		\Gamma\vdash \Zero(\Natural) &= \Natural(\texttt{0}) \\*
-		\Gamma\vdash \Zero(\Int)     &= \Int(\texttt{0}) \\*
-		\Gamma\vdash \Zero(\Real)    &= \Real(\texttt{0}) \\*
-		\Gamma\vdash \Zero(\Type)    &= \Type(\Void) \\*
-		\Gamma\vdash \Zero(\Void)    &= \Void() \\*
+		\Env\vdash \Zero(\Bool)    &= \Bool(\texttt{false}) \\*
+		\Env\vdash \Zero(\Text)    &= \Text(\texttt{""}) \\*
+		\Env\vdash \Zero(\Natural) &= \Natural(\texttt{0}) \\*
+		\Env\vdash \Zero(\Int)     &= \Int(\texttt{0}) \\*
+		\Env\vdash \Zero(\Real)    &= \Real(\texttt{0}) \\*
+		\Env\vdash \Zero(\Type)    &= \Type(\Void) \\*
+		\Env\vdash \Zero(\Void)    &= \Void() \\*
 	\end{split}
 \]
 
@@ -2137,7 +2137,7 @@ function can be applied on an identifier
 \subparagraph{List}
 
 \[
-	\Gamma\vdash \Zero(\List[\sigma:=\Type]) = \List(0, \Zero(\sigma))
+	\Env\vdash \Zero(\List[\sigma:=\Type]) = \List(0, \Zero(\sigma))
 \]
 
 \comment{TODO: se eventualmente formalizzo l'operatore \code{**}, aggiornare
@@ -2146,7 +2146,7 @@ dimensione iniziale}
 \subparagraph{Map}
 
 \[
-	\Gamma\vdash \Zero(\Map[\kappa:=\Type,\nu:=\Type]) = \Map(\Zero(\kappa), \Zero(\nu))
+	\Env\vdash \Zero(\Map[\kappa:=\Type,\nu:=\Type]) = \Map(\Zero(\kappa), \Zero(\nu))
 \]
 
 \subsubsection{Product types}
@@ -2157,9 +2157,9 @@ dimensione iniziale}
 
 \[
 	\infrule{
-		\Gamma\vdash \forall_{i\in[1,n]}{\tau_i:\Type} \quad n \geq 0
+		\Env\vdash \forall_{i\in[1,n]}{\tau_i:\Type} \quad n \geq 0
 	}{
-		\Gamma\vdash \Zero(\tau_1 \times ... \times \tau_n) = \Zero(\tau_1) \times ... \times \Zero(\tau_n)
+		\Env\vdash \Zero(\tau_1 \times ... \times \tau_n) = \Zero(\tau_1) \times ... \times \Zero(\tau_n)
 	}
 \]
 
@@ -2167,9 +2167,9 @@ dimensione iniziale}
 
 \[
 	\infrule{
-		\Gamma\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \Id}
+		\Env\vdash n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \Id}
 	}{
-		\Gamma\vdash \Zero(\tuple{a_1:\tau_1,...,a_n:\tau_n}) = \tuple{a_1:\Zero(\tau_1), ..., a_n:\Zero(\tau_n)}
+		\Env\vdash \Zero(\tuple{a_1:\tau_1,...,a_n:\tau_n}) = \tuple{a_1:\Zero(\tau_1), ..., a_n:\Zero(\tau_n)}
 	}
 \]
 
@@ -2182,22 +2182,22 @@ dimensione iniziale}
 \subsubsection{Function}
 
 \[
-	\Gamma\vdash \Zero(\Function) = () \to \Void
+	\Env\vdash \Zero(\Function) = () \to \Void
 \]
 
 % \[
 % 	\infrule{
-% 		\Gamma\vdash n \in \mathbb{N} \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\Id} \quad \rho:\Type \\*
-% 		\Gamma\vdash \phi : (\tau_1,...,\tau_n) \to \rho
+% 		\Env\vdash n \in \mathbb{N} \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\Id} \quad \rho:\Type \\*
+% 		\Env\vdash \phi : (\tau_1,...,\tau_n) \to \rho
 % 	}{
-% 		\Gamma\vdash \Zero(\phi()) = \Zero(\rho)
+% 		\Env\vdash \Zero(\phi()) = \Zero(\rho)
 % 	}
 % \]
 
 \subsubsection{Range}
 
 \[
-	\Gamma\vdash \Zero(\Range) = \Range(0, 0, 1)
+	\Env\vdash \Zero(\Range) = \Range(0, 0, 1)
 \]
 
 \newpage
