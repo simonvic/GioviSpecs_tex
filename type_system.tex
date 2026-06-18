@@ -1990,8 +1990,6 @@ Two environments will be used:
 				\envLoc(i) & \mapsto a
 			\end{split}
 		\]
-		NOTE: "location" and "memory" are used loosely here. They do not
-		represent an actual memory address, but rather an abstraction of it.
 	\item $\envStore :=$ \textbf{store environment}. Describes the mappings
 		between a location in memory and its data content
 		\[
@@ -2004,6 +2002,11 @@ Two environments will be used:
 			\end{split}
 		\]
 \end{itemize}
+
+\nb{
+	"Location" and "memory" are used loosely here. They do not represent an
+	actual memory address, but rather an abstraction of it.
+}
 
 \paragraph{Environment extension} To denote a environment extending, modifying
 or overriding an existing one, this notation will be used $\envLoc\env{i \mapsto
