@@ -48,11 +48,14 @@
 \newcommand{\Record}{\texttt{Record}}
 \newcommand{\Struct}{\texttt{Struct}}
 \newcommand{\Range}{\texttt{Range}}
+% \newcommand{\Module}{\texttt{Module}}
 \newcommand{\env}[1]{[\![#1]\!]}
-\newcommand{\envConst}{\Pi}
+\newcommand{\Env}{\Gamma}
 \newcommand{\envVar}{\Upsilon}
-\newcommand{\envStructs}{\Sigma}
+\newcommand{\envConst}{\Pi}
 \newcommand{\envFunc}{\Phi}
+\newcommand{\envStructs}{\Sigma}
+% \newcommand{\envModules}{M}
 \newcommand{\envLoc}{\Lambda}
 \newcommand{\envStore}{\Psi}
 
@@ -150,8 +153,8 @@ is a term of type $T$".
 (space separated judgements).\\*
 For example, $\infrule{\Gamma\vdash t_1:T \quad \Delta\vdash
 t_2:T}{\Gamma,\Delta\vdash \code{$t_1$ + $t_2$}: T}$ means that with a premise
-that $\Gamma\vdash t_1:T$ and $\Delta\vdash t_2:T$ are true, then
-$\Gamma,\Delta\vdash \code{$t_1$ + $t_2$}: T$ is true.
+that both judgements $\Gamma\vdash t_1:T$ and $\Delta\vdash t_2:T$ are true,
+then $\Gamma,\Delta\vdash \code{$t_1$ + $t_2$}: T$ is true.
 
 \subparagraph{Code} Text written with \code{monospaced} font denotes the text
 as written in code verbatim. Some types may also be written with
@@ -209,10 +212,10 @@ describes a struct (a pair of an identifier $\iota$ and a record)
 
 The $\sqcap$ operator produces the least wide type for the operand types
 \[
-	\infrule{
-		\Gamma\vdash \tau_1:\Type \quad \tau_2:\Type \hfill \\*
-		\Gamma\vdash \exists_{\omega:\Type}{\tau_1\narr\omega \land \tau_2\narr\omega} \hfill \\*
-		\Gamma\vdash \nexists_{\sigma:\Type}{\tau_1\narr\sigma \land \tau_2\narr\sigma \land \sigma\narr\omega}
+	\infrule[aligned]{
+		\Gamma & \vdash \tau_1:\Type \quad \tau_2:\Type \\*
+		\Gamma & \vdash \exists_{\omega:\Type}{\tau_1\narr\omega \land \tau_2\narr\omega} \\*
+		\Gamma & \vdash \nexists_{\sigma:\Type}{\tau_1\narr\sigma \land \tau_2\narr\sigma \land \sigma\narr\omega}
 	}{
 		\Gamma\vdash \tau_1 \sqcap \tau_2 = \omega
 	}
@@ -226,68 +229,91 @@ The definition of an expression type is done within a "context" (a.k.a. type
 environment) which describes the type of any identifier or any other
 expressions appearing in the described expression.
 
-The general type environment is denoted by $\Gamma$.
+The general type environment is denoted by $\Env$, a function that maps an
+identifier to its type.
 
-To avoid ambiguities and to more clearly describe expressions, $\Gamma$ is
-partioned in the $\envConst,\envVar,\envStructs,\envFunc$ environments:
+To avoid ambiguities and to more clearly describe expressions, $\Env$ is
+partioned in the $\envVar,\envConst,\envFunc,\envStructs$ environments:
 
 \begin{itemize}
-	\item $\envConst$: the Constants environment
+	\item $\envVar$: the Variable environment, a function that maps a variable
+		identifier $i$ to its type $\tau$
 		\[
 			\begin{split}
-				\envConst: \Id & \to \Type\\*
-				\envConst(i) & \mapsto \tau
+				\envVar : \Id &\to \Type\\*
+				\envVar(i)    &\mapsto \tau
 			\end{split}
 		\]
-		A function that maps a constant identifier $i$ to its type $\tau$
-	\item $\envVar$: the Variable environment
+	\item $\envConst$: the Constants environment, a function that maps a
+		constant identifier $i$ to its type $\tau$
 		\[
 			\begin{split}
-				\envVar: \Id & \to \Type\\*
-				\envVar(i) & \mapsto \tau
+				\envConst : \Id &\to \Type\\*
+				\envConst(i)    &\mapsto \tau
 			\end{split}
 		\]
-		A function that maps a variable identifier $i$ to its type $\tau$
-	\item $\envStructs$: the Structs environment
+	\item $\envFunc$: the Functions environment, a function that maps a
+		function identifier $i$ to its definition signature $(i, \phi)$
 		\[
 			\begin{split}
-				\envStructs: \Id & \to (\Id, \Record)\\*
-				\envStructs(i) & \mapsto (i, \rho)
+				\envFunc : \Id &\to (\Id, \Function)\\*
+				\envFunc(i)    &\mapsto (i, \phi)
 			\end{split}
 		\]
-		A function that maps a typename $i$ (struct definition identifier) to
-		its type definition (identifier $i$ and record $\rho$)
-	\item $\envFunc$: the Functions environment
-		\[
-			\begin{split}
-				\envFunc: \Id & \to (\Id, \Function)\\*
-				\envFunc(i) & \mapsto (i, \phi)
-			\end{split}
-		\]
-		A function that maps a function identifier $i$ to its definition
-		signature $(i, \phi)$\\*
 		With a type $\tau$, it maps to the function defined within the type
 		$\tau$
 		\[
 			\begin{split}
-				\envFunc: (\Type,\Id) & \to (\Id, \Function)\\*
-				\envFunc(\tau, i) & \mapsto (i, \phi)
+				\envFunc : (\Type,\Id) &\to (\Id, \Function)\\*
+				\envFunc(\tau, i)      &\mapsto (i, \phi)
 			\end{split}
 		\]
+	\item $\envStructs$: the Structs environment
+		\[
+			\begin{split}
+				\envStructs : \Id &\to (\Id, \Record)\\*
+				\envStructs(i)    &\mapsto (i, \rho)
+			\end{split}
+		\]
+		A function that maps a typename $i$ (struct definition identifier) to
+		its type definition (identifier $i$ and record $\rho$)
+	% \item $\envModules$: the Modules environment
+	% 	\[
+	% 		\begin{split}
+	% 			\envModules : \Id & \to \Module\\*
+	% 			\envModules(i)    & \mapsto m
+	% 		\end{split}
+	% 	\]
+	% 	A function that maps an identifier $i$ to the module
 \end{itemize}
 
-\comment{TODO: formalizzare structs e funzioni}
+\comment{TODO: formalizzare structs, funzioni e moduli}
+
+The $\Env$ function can now be defined as follows
+\[
+	\begin{split}
+		\Env : \Id & \to \Type\\*
+		\Env(i) & \mapsto \begin{cases}
+			\envStructs(i) &\text{ if } \envFunc(i)=\varnothing \land \envConst(i)=\varnothing \land \envVar(i)=\varnothing \\*
+			\envFunc(i) &\text{ if } \envConst(i)=\varnothing \land \envVar(i)=\varnothing \\*
+			\envConst(i) &\text{ if } \envVar(i)=\varnothing \\*
+			\envVar(i) & \\*
+			% \envModules(i) & \text{ if } \\*
+		\end{cases}
+	\end{split}
+\]
+which formally describes the lookup order and priority of a generic symbol $i$
 
 \paragraph{Environment extension} Given how scopes and symbols lookup work, it
 will be useful to define "new" type environments extending an existing
-environment. The notation $E\env{t:T}$ will be used to denote that the
-environment $E$ is extended with $\env{t:T}$.
+environment. The notation $E\env{t:\tau}$ will be used to denote that the
+environment $E$ is extended with $\env{t:\tau}$.
 
 Using the $\envVar$ variables environment as example
 \[
-	\envVar\env{t:T}(u) \mapsto \begin{cases}
-		T &\text{ if } u = t\\
-		\envVar(u) &\text{ if } u \neq t\\
+	\envVar\env{t:\tau}(u) \mapsto \begin{cases}
+		T &\text{ if } u = t \\*
+		\envVar(u) & \\*
 	\end{cases}
 \]
 
