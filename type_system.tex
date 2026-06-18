@@ -18,8 +18,8 @@
 \renewcommand{\arraystretch}{1.5} % increase space between table rows
 
 \newcommand{\set}[1]{\left\{#1\right\}}
-\newcommand{\infrule}[2]{\frac{\begin{gathered}#1\end{gathered}}{\begin{gathered}#2\end{gathered}}}
-\newcommand{\oprule}[2]{\frac{\begin{gathered}#1\end{gathered}}{\begin{gathered}#2\end{gathered}}}
+\newcommand{\infrule}[3][gathered]{\frac{\begin{#1}#2\end{#1}}{\begin{gathered}#3\end{gathered}}}
+\newcommand{\oprule}[3][gathered]{\frac{\begin{#1}#2\end{#1}}{\begin{gathered}#3\end{gathered}}}
 % \newcommand{\infrule}[2]{\colorbox{gray!2}{$\frac{\begin{gathered}#1\end{gathered}}{\begin{gathered}#2\end{gathered}}$}}
 \newcommand{\tuple}[1]{\left<#1\right>}
 \newcommand{\code}[1]{\texttt{\colorbox{gray!10}{#1}}}
