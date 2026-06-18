@@ -51,13 +51,13 @@
 % \newcommand{\Module}{\texttt{Module}}
 \newcommand{\env}[1]{[\![#1]\!]}
 \newcommand{\Env}{\Gamma}
-\newcommand{\envVar}{\Upsilon}
-\newcommand{\envConst}{\Pi}
-\newcommand{\envFunc}{\Phi}
-\newcommand{\envStructs}{\Sigma}
-% \newcommand{\envModules}{M}
-\newcommand{\envLoc}{\Lambda}
-\newcommand{\envStore}{\Psi}
+\newcommand{\EnvVar}{\Upsilon}
+\newcommand{\EnvConst}{\Pi}
+\newcommand{\EnvFunc}{\Phi}
+\newcommand{\EnvStucts}{\Sigma}
+% \newcommand{\EnvModules}{M}
+\newcommand{\EnvLoc}{\Lambda}
+\newcommand{\EnvStore}{\Psi}
 
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[section]
@@ -233,55 +233,55 @@ The general type environment is denoted by $\Env$, a function that maps an
 identifier to its type.
 
 To avoid ambiguities and to more clearly describe expressions, $\Env$ is
-partioned in the $\envVar,\envConst,\envFunc,\envStructs$ environments:
+partioned in the $\EnvVar,\EnvConst,\EnvFunc,\EnvStucts$ environments:
 
 \begin{itemize}
-	\item $\envVar$: the Variable environment, a function that maps a variable
+	\item $\EnvVar$: the Variable environment, a function that maps a variable
 		identifier $i$ to its type $\tau$
 		\[
 			\begin{split}
-				\envVar : \Id &\to \Type\\*
-				\envVar(i)    &\mapsto \tau
+				\EnvVar : \Id &\to \Type\\*
+				\EnvVar(i)    &\mapsto \tau
 			\end{split}
 		\]
-	\item $\envConst$: the Constants environment, a function that maps a
+	\item $\EnvConst$: the Constants environment, a function that maps a
 		constant identifier $i$ to its type $\tau$
 		\[
 			\begin{split}
-				\envConst : \Id &\to \Type\\*
-				\envConst(i)    &\mapsto \tau
+				\EnvConst : \Id &\to \Type\\*
+				\EnvConst(i)    &\mapsto \tau
 			\end{split}
 		\]
-	\item $\envFunc$: the Functions environment, a function that maps a
+	\item $\EnvFunc$: the Functions environment, a function that maps a
 		function identifier $i$ to its definition signature $(i, \phi)$
 		\[
 			\begin{split}
-				\envFunc : \Id &\to (\Id, \Function)\\*
-				\envFunc(i)    &\mapsto (i, \phi)
+				\EnvFunc : \Id &\to (\Id, \Function)\\*
+				\EnvFunc(i)    &\mapsto (i, \phi)
 			\end{split}
 		\]
 		With a type $\tau$, it maps to the function defined within the type
 		$\tau$
 		\[
 			\begin{split}
-				\envFunc : (\Type,\Id) &\to (\Id, \Function)\\*
-				\envFunc(\tau, i)      &\mapsto (i, \phi)
+				\EnvFunc : (\Type,\Id) &\to (\Id, \Function)\\*
+				\EnvFunc(\tau, i)      &\mapsto (i, \phi)
 			\end{split}
 		\]
-	\item $\envStructs$: the Structs environment
+	\item $\EnvStucts$: the Structs environment
 		\[
 			\begin{split}
-				\envStructs : \Id &\to (\Id, \Record)\\*
-				\envStructs(i)    &\mapsto (i, \rho)
+				\EnvStucts : \Id &\to (\Id, \Record)\\*
+				\EnvStucts(i)    &\mapsto (i, \rho)
 			\end{split}
 		\]
 		A function that maps a typename $i$ (struct definition identifier) to
 		its type definition (identifier $i$ and record $\rho$)
-	% \item $\envModules$: the Modules environment
+	% \item $\EnvModules$: the Modules environment
 	% 	\[
 	% 		\begin{split}
-	% 			\envModules : \Id & \to \Module\\*
-	% 			\envModules(i)    & \mapsto m
+	% 			\EnvModules : \Id & \to \Module\\*
+	% 			\EnvModules(i)    & \mapsto m
 	% 		\end{split}
 	% 	\]
 	% 	A function that maps an identifier $i$ to the module
@@ -294,11 +294,11 @@ The $\Env$ function can now be defined as follows
 	\begin{split}
 		\Env : \Id & \to \Type\\*
 		\Env(i) & \mapsto \begin{cases}
-			\envStructs(i) &\text{ if } \envFunc(i)=\varnothing \land \envConst(i)=\varnothing \land \envVar(i)=\varnothing \\*
-			\envFunc(i) &\text{ if } \envConst(i)=\varnothing \land \envVar(i)=\varnothing \\*
-			\envConst(i) &\text{ if } \envVar(i)=\varnothing \\*
-			\envVar(i) & \\*
-			% \envModules(i) & \text{ if } \\*
+			\EnvStucts(i) &\text{ if } \EnvFunc(i)=\varnothing \land \EnvConst(i)=\varnothing \land \EnvVar(i)=\varnothing \\*
+			\EnvFunc(i) &\text{ if } \EnvConst(i)=\varnothing \land \EnvVar(i)=\varnothing \\*
+			\EnvConst(i) &\text{ if } \EnvVar(i)=\varnothing \\*
+			\EnvVar(i) & \\*
+			% \EnvModules(i) & \text{ if } \\*
 		\end{cases}
 	\end{split}
 \]
@@ -309,11 +309,11 @@ will be useful to define "new" type environments extending an existing
 environment. The notation $E\env{t:\tau}$ will be used to denote that the
 environment $E$ is extended with $\env{t:\tau}$.
 
-Using the $\envVar$ variables environment as example
+Using the $\EnvVar$ variables environment as example
 \[
-	\envVar\env{t:\tau}(u) \mapsto \begin{cases}
+	\EnvVar\env{t:\tau}(u) \mapsto \begin{cases}
 		T &\text{ if } u = t \\*
-		\envVar(u) & \\*
+		\EnvVar(u) & \\*
 	\end{cases}
 \]
 
@@ -2013,23 +2013,23 @@ expression.
 Two environments will be used:
 
 \begin{itemize}
-	\item $\envLoc :=$ \textbf{location environment}. Describes the mappings
+	\item $\EnvLoc :=$ \textbf{location environment}. Describes the mappings
 		between identifiers and their "location/address" in memory.
 		\[
 			\begin{split}
-				\envLoc: \Id & \to \mathbb{Z}\\*
-				\envLoc(i) & \mapsto a
+				\EnvLoc: \Id & \to \mathbb{Z}\\*
+				\EnvLoc(i) & \mapsto a
 			\end{split}
 		\]
-	\item $\envStore :=$ \textbf{store environment}. Describes the mappings
+	\item $\EnvStore :=$ \textbf{store environment}. Describes the mappings
 		between a location in memory and its data content
 		\[
 			\Val = \set{v \mid v := \text{any value}}
 		\]
 		\[
 			\begin{split}
-				\envStore : \mathbb{Z} & \to \Val \\*
-				\envStore(a) & \mapsto \val
+				\EnvStore : \mathbb{Z} & \to \Val \\*
+				\EnvStore(a) & \mapsto \val
 			\end{split}
 		\]
 \end{itemize}
@@ -2045,19 +2045,19 @@ data is effectively duplicated.
 
 \paragraph{Unmapped values} A slight abuse of notation is used to denote the
 lack of mapping in an environment via the $\varnothing$ symbol.\\*
-For example: $\envLoc(i) = \varnothing, \envStore(a) = \varnothing$
+For example: $\EnvLoc(i) = \varnothing, \EnvStore(a) = \varnothing$
 
 \paragraph{Environment extension} To denote a environment extending, modifying
-or overriding an existing one, this notation will be used $\envLoc\env{i \mapsto
+or overriding an existing one, this notation will be used $\EnvLoc\env{i \mapsto
 a}$ where it's defined as follows:
 \[
-	\envLoc\env{i \mapsto a}(j) \mapsto \begin{cases}
+	\EnvLoc\env{i \mapsto a}(j) \mapsto \begin{cases}
 		a          &\text{ if } i = j\\
-		\envLoc(j) &\text{ if } i \neq j\\
+		\EnvLoc(j) &\text{ if } i \neq j\\
 	\end{cases}
 \]
 
-Multiple mappings may be specified: $\envLoc\env{i_1 \mapsto a_1, i_2 \mapsto a_2}$
+Multiple mappings may be specified: $\EnvLoc\env{i_1 \mapsto a_1, i_2 \mapsto a_2}$
 
 \subparagraph{The $\alloc()$ function} When store environment is extended with
 a mapping, it's implicit that it is added if it does not exist, and it is
@@ -2065,7 +2065,7 @@ updated if it already exists. In some cases, to improve clarity, the $\alloc()$
 function will be used to explicitly state that a new memory "address" is
 allocated in the specified environment. The $\alloc()$ function takes a store
 environment and returns the newly allocated address.\\*
-For example: $a = \alloc(\envStore)$
+For example: $a = \alloc(\EnvStore)$
 
 % \subparagraph{The $\copi()$ function} The language (almost) never pass values
 % by reference, hence many copies are made during an execution. The simplify the
@@ -2075,7 +2075,7 @@ For example: $a = \alloc(\envStore)$
 \paragraph{Environment modification} If the evaluation of an expression
 results in an alteration of an environment, the judgment may be followed by a
 "double turnstile" symbol $\vDash$ and the new environments.\\*
-For example: $\envLoc,\envStore \vdash \expr \vDash \envStore_2$
+For example: $\EnvLoc,\EnvStore \vdash \expr \vDash \EnvStore_2$
 
 \paragraph{Expression} With $\expr$, an expression will be denoted, where
 $\expr$ can be any expression permitted by the language (e.g. a literal, a
@@ -2083,7 +2083,7 @@ binary expression, a function invocation etc.)
 
 \paragraph{Expression's value} To denote to what value an expression evaluates
 to, the $\equiv$ symbol will be used.\\*
-For example: $\envLoc,\envStore \vdash \expr \equiv \val \vDash \envStore_2$.\\*
+For example: $\EnvLoc,\EnvStore \vdash \expr \equiv \val \vDash \EnvStore_2$.\\*
 To specify the value with its type, the notation $\tau(\val)$ will be used,
 where $\tau$ can be any \Type{} and $\val$ any value
 
@@ -2214,7 +2214,7 @@ dimensione iniziale}
 	\oprule{
 		b \in \set{\texttt{true}, \texttt{false}}
 	}{
-		\envLoc,\envStore\vdash \code{$b$} \equiv \texttt{Bool($b$)}
+		\EnvLoc,\EnvStore\vdash \code{$b$} \equiv \texttt{Bool($b$)}
 	}
 \]
 
@@ -2224,7 +2224,7 @@ dimensione iniziale}
 	\oprule{
 		n := \text{ natural literal }
 	}{
-		\envLoc,\envStore\vdash \code{$n$} \equiv \texttt{Natural($n$)}
+		\EnvLoc,\EnvStore\vdash \code{$n$} \equiv \texttt{Natural($n$)}
 	}
 \]
 
@@ -2234,7 +2234,7 @@ dimensione iniziale}
 	\oprule{
 		i := \text{ integer literal }
 	}{
-		\envLoc,\envStore\vdash \code{$i$} \equiv \texttt{Int($i$)}
+		\EnvLoc,\EnvStore\vdash \code{$i$} \equiv \texttt{Int($i$)}
 	}
 \]
 
@@ -2244,7 +2244,7 @@ dimensione iniziale}
 	\oprule{
 		r := \text{ real literal }
 	}{
-		\envLoc,\envStore\vdash \code{$r$} \equiv \texttt{Real($r$)}
+		\EnvLoc,\EnvStore\vdash \code{$r$} \equiv \texttt{Real($r$)}
 	}
 \]
 
@@ -2255,7 +2255,7 @@ dimensione iniziale}
 	\oprule{
 		t := \text{ text literal }
 	}{
-		\envLoc,\envStore\vdash \code{$t$} \equiv \texttt{Text($t$)}
+		\EnvLoc,\EnvStore\vdash \code{$t$} \equiv \texttt{Text($t$)}
 	}
 \]
 
@@ -2265,9 +2265,9 @@ dimensione iniziale}
 
 \[
 	\oprule{
-		i \in \Id \quad \envLoc(i) = \addr \quad \envStore(\addr) = \val
+		i \in \Id \quad \EnvLoc(i) = \addr \quad \EnvStore(\addr) = \val
 	}{
-		\envLoc,\envStore\vdash \code{$i$} \equiv \val
+		\EnvLoc,\EnvStore\vdash \code{$i$} \equiv \val
 	}
 \]
 
@@ -2276,11 +2276,11 @@ dimensione iniziale}
 \[
 	\oprule[aligned]{
 		&\bop = \text{any binary operator} \\*
-		\envLoc,\envStore     &\vdash \expr_1 \equiv \val_1 \vDash \envLoc_2,\envStore_2 \\*
-		\envLoc_2,\envStore_2 &\vdash \expr_2 \equiv \val_2 \vDash \envLoc_3,\envStore_3 \\*
-		\envLoc_3,\envStore_3 &\vdash \val_3 = \val_1 \bop \val_2 \\*
+		\EnvLoc,\EnvStore     &\vdash \expr_1 \equiv \val_1 \vDash \EnvLoc_2,\EnvStore_2 \\*
+		\EnvLoc_2,\EnvStore_2 &\vdash \expr_2 \equiv \val_2 \vDash \EnvLoc_3,\EnvStore_3 \\*
+		\EnvLoc_3,\EnvStore_3 &\vdash \val_3 = \val_1 \bop \val_2 \\*
 	}{
-		\envLoc_3,\envStore_3\vdash \code{$\expr_1$ $\bop$ $\expr$} \equiv \val_3 \vDash \envStore_3\env{\alloc(\envStore_3) \mapsto \val_3}
+		\EnvLoc_3,\EnvStore_3\vdash \code{$\expr_1$ $\bop$ $\expr$} \equiv \val_3 \vDash \EnvStore_3\env{\alloc(\EnvStore_3) \mapsto \val_3}
 	}
 \]
 
