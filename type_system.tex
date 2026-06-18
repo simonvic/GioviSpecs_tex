@@ -1998,23 +1998,23 @@ Two environments will be used:
 	\item $\envStore :=$ \textbf{store environment}. Describes the mappings
 		between a location in memory and its data content
 		\[
-				\Val = \set{v \mid v := \text{any value or data}}
+			\Val = \set{v \mid v := \text{any value}}
 		\]
 		\[
 			\begin{split}
-				\envStore: \mathbb{Z} & \to \Val \\*
-				\envStore(a) & \mapsto v
+				\envStore : \mathbb{Z} & \to \Val \\*
+				\envStore(a) & \mapsto \val
 			\end{split}
 		\]
 \end{itemize}
 
 \nb{
 	"Location" and "memory" are used loosely here. They do not represent an
-	actual memory address, but rather an abstraction of it.
+	actual computer memory, but rather an abstraction of it.
 }
 
 \paragraph{Unmapped values} A slight abuse of notation is used to denote the
-lack of mapping in an environment via the $\varnothing$.\\*
+lack of mapping in an environment via the $\varnothing$ symbol.\\*
 For example: $\envLoc(i) = \varnothing, \envStore(a) = \varnothing$
 
 \paragraph{Environment extension} To denote a environment extending, modifying
@@ -2228,11 +2228,11 @@ dimensione iniziale}
 \subsection{Operators}
 
 \[
-	\oprule{
-		\bop = \text{any binary operator} \\*
-		\envLoc,\envStore\vdash \expr_1 \equiv \val_1 \vDash \envLoc_2,\envStore_2 \\*
-		\envLoc_2,\envStore_2\vdash \expr_2 \equiv \val_2 \vDash \envLoc_3,\envStore_3 \\*
-		\envLoc_3,\envStore_3\vdash \val_3 = \val_1 \bop \val_2 \\*
+	\oprule[aligned]{
+		&\bop = \text{any binary operator} \\*
+		\envLoc,\envStore     &\vdash \expr_1 \equiv \val_1 \vDash \envLoc_2,\envStore_2 \\*
+		\envLoc_2,\envStore_2 &\vdash \expr_2 \equiv \val_2 \vDash \envLoc_3,\envStore_3 \\*
+		\envLoc_3,\envStore_3 &\vdash \val_3 = \val_1 \bop \val_2 \\*
 	}{
 		\envLoc_3,\envStore_3\vdash \code{$\expr_1$ $\bop$ $\expr$} \equiv \val_3 \vDash \envStore_3\env{\alloc(\envStore_3) \mapsto \val_3}
 	}
