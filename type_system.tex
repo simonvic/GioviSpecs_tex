@@ -27,6 +27,7 @@
 \newcommand{\narr}{<:}
 \newcommand{\bop}{\diamond}
 \newcommand{\alloc}{\mathrm{alloc}}
+% \newcommand{\copi}{\mathrm{copy}}
 \newcommand{\addr}{\alpha}
 \newcommand{\expr}{\epsilon}
 \newcommand{\val}{\nu}
@@ -2035,6 +2036,11 @@ function will be used to explicitly state that a new memory "address" is
 allocated in the specified environment. The $\alloc()$ function takes a store
 environment and returns the newly allocated address.\\*
 For example: $a = \alloc(\envStore)$
+
+% \subparagraph{The $\copi()$ function} The language (almost) never pass values
+% by reference, hence many copies are made during an execution. The simplify the
+% rules, a $\copi()$ function is used as a shorthand for allocating a new address
+% and mapping it a copy of the specified value
 
 \paragraph{Environment modification} If the evaluation of an expression
 results in an alteration of an environment, the judgment may be followed by a
