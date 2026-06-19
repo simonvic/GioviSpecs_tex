@@ -2430,6 +2430,18 @@ Both can be performed in a single statement
 \comment{TODO: rettificare in caso scelgo deep immutability invece che shallow
 immutability}
 
+\paragraph{Alias declaration}
+
+\[
+	\oprule[aligned]{
+		\EnvLoc,\EnvStore     &\then i \in \Id \quad \EnvLoc(i) = \varnothing \\*
+		\EnvLoc,\EnvStore     &\then \expr \equiv \val \Then \EnvLoc_2,\EnvStore_2 \\*
+		\EnvLoc_2,\EnvStore_2 &\then \EnvLoc_2(\expr) = \addr_\expr \quad \EnvStore_2(\addr_\expr) = \val \\*
+	}{
+		\EnvLoc_2,\EnvStore_2\then \code{alias $\expr$ as $i$} \Then \EnvLoc_2\env{i \mapsto \addr_\expr}
+	}
+\]
+
 \newpage
 
 \[
