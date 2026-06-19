@@ -66,7 +66,9 @@
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[section]
 
-\newcommand{\comment}[1]{\parbox{0.9\textwidth}{\color{black!30}\small\sffamily #1}}
+\newcommand{\comment}[1]{
+	\parbox{0.9\textwidth}{\color{black!30}\small\sffamily #1}
+}
 
 \makeatletter
 \providecommand{\bigsqcap}{%
@@ -332,8 +334,10 @@ Using the $\EnvVar$ variables environment as example
 	needed
 }
 
-\comment{TODO: menzionare uso di type system strutturale e nominale}\\*
-\comment{TODO: usare 0-based indexes}\\*
+\comment{TODO: menzionare uso di type system strutturale e nominale}
+
+\comment{TODO: usare 0-based indexes}
+
 \comment{TODO: usare notazione tipi polimorfici invece che solo Type}
 
 \subsection{Primitive types}
@@ -2404,10 +2408,10 @@ Both can be performed in a single statement
 \[
 	\oprule[aligned]{
 		\EnvLoc,\EnvStore     &\then i \in \Id \quad \EnvLoc(i) = \addr_i \quad \EnvStore(\addr_i) = \val_i \\*
-		\EnvLoc,\EnvStore     &\then \expr \equiv \val_\expr \Then \EnvLoc_2,\EnvStore_2 \\*
+		\EnvLoc,\EnvStore     &\then \expr \equiv \val \Then \EnvLoc_2,\EnvStore_2 \\*
 		\EnvLoc_2,\EnvStore_2 &\then \addr_i' = \alloc(\EnvStore_2) \\*
 	}{
-		\EnvLoc_2,\EnvStore_2\then \code{$i$ <- $\expr$} \Then \EnvLoc_2\env{i \mapsto \addr_i'},\EnvStore_2\env{\addr_i' \mapsto \val_\expr}
+		\EnvLoc_2,\EnvStore_2\then \code{$i$ <- $\expr$} \Then \EnvLoc_2\env{i \mapsto \addr_i'},\EnvStore_2\env{\addr_i' \mapsto \val}
 	}
 \]
 
@@ -2416,12 +2420,15 @@ Both can be performed in a single statement
 \[
 	\oprule[aligned]{
 		\EnvLoc,\EnvStore     &\then i \in \Id \quad \EnvLoc(i) = \varnothing \\*
-		\EnvLoc,\EnvStore     &\then \expr \equiv \val_\expr \Then \EnvLoc_2,\EnvStore_2 \\*
-		\EnvLoc_2,\EnvStore_2 &\then \addr_i' = \alloc(\EnvStore_2) \\*
+		\EnvLoc,\EnvStore     &\then \expr \equiv \val \Then \EnvLoc_2,\EnvStore_2 \\*
+		\EnvLoc_2,\EnvStore_2 &\then \EnvLoc_2(\expr) = \addr_\expr \quad \EnvStore_2(\addr_\expr) = \val \\*
 	}{
-		\EnvLoc_2,\EnvStore_2\then \code{const $i$ <- $\expr$} \Then \EnvLoc_2\env{i \mapsto \addr_i'},\EnvStore_2\env{\addr_i' \mapsto \val_\expr}
+		\EnvLoc_2,\EnvStore_2\then \code{const $i$ <- $\expr$} \Then \EnvLoc_2\env{i \mapsto \addr_\expr}
 	}
 \]
+
+\comment{TODO: rettificare in caso scelgo deep immutability invece che shallow
+immutability}
 
 \newpage
 
