@@ -421,6 +421,22 @@ Using the $\EnvVar$ variables environment as example
 	}
 \]
 
+\[
+	\infrule{
+		\Env\then \xi \in \Id \quad n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\Id} \quad \rho:\Type
+	}{
+		\Env,\code{$\xi$($a_1 \tau_1,...,a_n \tau_n$) => $\rho$ \{\}} \then \code{$\xi$} : (\tau_1,...,\tau_n) \to \rho
+	}
+\]
+
+\[
+	\infrule{
+		\Env\then \xi \in \Id \quad n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\Id} \quad \rho:\Type
+	}{
+		\Env,\code{$\xi$($a_1 \tau_1,...,a_n \tau_n$) \{\}} \then \code{$\xi$} : (\tau_1,...,\tau_n) \to \Void
+	}
+\]
+
 \subsection{Range}
 
 \comment{TODO: tipo concreto non implementato ancora}
