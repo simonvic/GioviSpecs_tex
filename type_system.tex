@@ -35,6 +35,7 @@
 \newcommand{\expr}{\epsilon}
 \newcommand{\val}{\nu}
 \newcommand{\Id}{\mathcal{I}}
+\newcommand{\Expr}{\mathcal{E}}
 \newcommand{\Val}{\mathcal{V}}
 \newcommand{\Zero}{\mathcal{Z}}
 \newcommand{\Type}{\texttt{Type}}
@@ -2029,22 +2030,45 @@ expression.
 
 \section{Notation and terminology}
 
-Two environments will be used:
+\paragraph{Common sets} Some sets will be used throughout the rules
+\[
+	\begin{split}
+		\Expr &= \set{\expr \mid \expr := \text{any expression}} \\*
+		\Val  &= \set{\val \mid \val := \text{any value}} \\*
+	\end{split}
+\]
 
+\subparagraph{Expression} The $\expr$ will be used to denote any expression
+permitted by the language (e.g. a literal, a binary expression, a function
+invocation etc.).\\*
+Unless noted otherwise, $\expr \in \Expr$ is implied.
+
+\subparagraph{Expression's value} To denote to what value an expression evaluates
+to, the $\equiv$ symbol will be used, for example: $\expr \equiv \val$\\*
+To specify the value along with its type, the notation $\tau(\val)$ will be
+used, where $\tau:\Type$ and $\val\in\Val$, for example: $\expr:\Int(\val)$\\*
+Unless noted otherwise, $\val \in \Val$ is implied.
+
+\paragraph{Environments} Two environments will be used:
 \begin{itemize}
-	\item $\EnvLoc :=$ \textbf{location environment}. Describes the mappings
-		between identifiers and their "location/address" in memory.
+	\item $\EnvLoc :=$ \textbf{location environment}. Describes the
+		mappings/bindings between identifiers and their "location/address" in
+		memory.
 		\[
 			\begin{split}
 				\EnvLoc: \Id & \to \mathbb{Z}\\*
 				\EnvLoc(i) & \mapsto a
 			\end{split}
 		\]
+		Occasionally, the function will be applied on an expression
+		\[
+			\begin{split}
+				\EnvLoc: \Expr & \to \mathbb{Z}\\*
+				\EnvLoc(\expr) & \mapsto a
+			\end{split}
+		\]
 	\item $\EnvStore :=$ \textbf{store environment}. Describes the mappings
 		between a location in memory and its data content
-		\[
-			\Val = \set{v \mid v := \text{any value}}
-		\]
 		\[
 			\begin{split}
 				\EnvStore : \mathbb{Z} & \to \Val \\*
@@ -2057,6 +2081,13 @@ Two environments will be used:
 	"Location" and "memory" are used loosely here. They do not represent an
 	actual computer memory, but rather an abstraction of it.
 }
+
+\paragraph{Expression's location} The expression location and its value
+mappings in the environment is implied
+\[
+	\expr\equiv\val
+	\implies \exists_\addr{\EnvLoc(\expr)=\addr \land \EnvStore(\addr)=\val}
+\]
 
 \paragraph{Values identity} In this context, values do not have an identity,
 meaning that if two memory locations are mapped to the same value, the value
@@ -2095,16 +2126,6 @@ For example: $a = \alloc(\EnvStore)$
 results in an alteration of an environment, the judgment may be followed by a
 "double turnstile" symbol $\Then$ and the new environments.\\*
 For example: $\EnvLoc,\EnvStore \then \expr \Then \EnvStore_2$
-
-\paragraph{Expression} With $\expr$, an expression will be denoted, where
-$\expr$ can be any expression permitted by the language (e.g. a literal, a
-binary expression, a function invocation etc.)
-
-\paragraph{Expression's value} To denote to what value an expression evaluates
-to, the $\equiv$ symbol will be used.\\*
-For example: $\EnvLoc,\EnvStore \then \expr \equiv \val \Then \EnvStore_2$.\\*
-To specify the value with its type, the notation $\tau(\val)$ will be used,
-where $\tau$ can be any \Type{} and $\val$ any value
 
 \newpage
 
