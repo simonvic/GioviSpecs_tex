@@ -300,8 +300,8 @@ The $\Env$ function can now be defined as follows
 	\begin{split}
 		\Env : \Id & \to \Type\\*
 		\Env(i) & \mapsto \begin{cases}
-			\EnvStucts(i) &\text{ if } \EnvFunc(i)=\varnothing \land \EnvConst(i)=\varnothing \land \EnvVar(i)=\varnothing \\*
-			\EnvFunc(i) &\text{ if } \EnvConst(i)=\varnothing \land \EnvVar(i)=\varnothing \\*
+			\EnvStucts(i) &\text{ if } \EnvVar(i)=\varnothing \land \EnvConst(i)=\varnothing \land \EnvFunc(i)=\varnothing \\*
+			\EnvFunc(i) &\text{ if } \EnvVar(i)=\varnothing \land \EnvConst(i)=\varnothing \\*
 			\EnvConst(i) &\text{ if } \EnvVar(i)=\varnothing \\*
 			\EnvVar(i) & \\*
 			% \EnvModules(i) & \text{ if } \\*
@@ -1989,9 +1989,9 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 
 \[
 	\infrule{
-		\Env\then \tau:\Type
+		\Env\then i \in \Id \quad \tau:\Type
 	}{
-		\Env, \code{$a$ $\tau$} \then a:\tau
+		\Env, \code{$i$ $\tau$} \then i:\tau
 	}
 \]
 
@@ -2001,10 +2001,10 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 
 \[
 	\infrule{
-		\Env\then \tau:\Type \quad e:\tau
+		\Env\then i \in \Id \quad \expr \in \Expr \quad \tau:\Type \quad \expr:\tau
 	}{
-		\Env, \code{const $A$ $\tau$ <- $e$} \then A:\tau \qquad \text{(esplicit type)} \\*
-		\land \Env, \code{const $A$ <- $e$} \then A:\tau \qquad \text{(implicit type)}
+		\Env, \code{const $i$ $\tau$ <- $\expr$} \then i:\tau \qquad \text{(esplicit type)} \\*
+		\land \Env, \code{const $i$ <- $\expr$} \then i:\tau \qquad \text{(implicit type)}
 	}
 \]
 
@@ -2012,17 +2012,17 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 
 \[
 	\infrule{
-		\Env\then \tau:\Type \quad l:\exists\tau.\List
+		\Env\then i \in \Id \quad \tau:\Type \quad l:\exists\tau.\List
 	}{
-		\Env, \code{for $i$ in $l$} \then i:\tau
+		\Env, \code{for $i$ in $l$ do} \then i:\tau
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then \kappa:\Type \quad \nu:\Type \quad m:\exists\kappa.\exists\nu.\Map
+		\Env\then k \in \Id \quad v \in \Id \quad \kappa:\Type \quad \nu:\Type \quad m:\exists\kappa.\exists\nu.\Map
 	}{
-		\Env, \code{for $k$:$v$ in $m$} \then k:\kappa \quad v:\nu
+		\Env, \code{for $k$:$v$ in $m$ do} \then k:\kappa \quad v:\nu
 	}
 \]
 
@@ -2385,7 +2385,8 @@ variable can be overridden
 override may seem identical, but they do two different things:
 \begin{itemize}
 	\item initialization: initializes the variable values with the one provided
-		(without overriding its zero value)
+		(without overriding its zero value, which remains equal to its type's
+		zero value)
 	\item zero override: overrides the variable's zero value (to which the
 		variable is initialized to)
 \end{itemize}
