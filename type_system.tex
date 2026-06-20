@@ -733,17 +733,17 @@ than $\omega'$.
 
 \[
 	\infrule{
-		\Env\then \tau:\Type \quad x:\tau \quad n \in \mathbb{N}
+		\Env\then n \geq 1 \quad \tau:\Type \quad \forall_{i\in[1,n]}{\expr_i\in\Expr,\expr_i:\tau}
 	}{
-		\Env\then \code{[$x_1, ...,x_n$]}:\exists\tau.\List
+		\Env\then \code{[$\expr_1, ...,\expr_n$]}:\exists\tau.\List
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then n \in \mathbb{N} \quad \forall_{i \in [1,n]}{\tau_i:\Type, x_i:\tau_i} \quad \omega = \bigsqcap_{i=1}^{n}{\tau_i}
+		\Env\then n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type,\expr_i\in\Expr,\expr_i:\tau_i} \quad \omega = \bigsqcap_{i=1}^{n}{\tau_i}
 	}{
-		\Env\then \code{[$x_1, ...,x_n$]}:\exists\omega.\List
+		\Env\then \code{[$\expr_1, ...,\expr_n$]}:\exists\omega.\List
 	}
 \]
 
@@ -757,10 +757,8 @@ List of $\omega$ (widest among $\tau$)
 
 \[
 	\infrule{
-		\Env\then \kappa:\Type
-		\quad \nu:\Type
-		\quad \forall_{i\in[1,n]}{k_i:\kappa,v_i:\nu}
-		\quad n \in \mathbb{N}
+		\Env\then \kappa:\Type \quad \forall_{i\in[1,n]}{k_i\in\Expr,k_i:\kappa} \quad n \geq 1 \\*
+		\Env\then \nu:\Type \quad \forall_{i\in[1,n]}{v_i\in\Expr,v_i:\nu} \hfill
 	}{
 		\Env\then \code{[$k_1:v_1, ..., k_n:v_n$]}:\exists\kappa.\exists\nu.\Map
 	}
@@ -768,8 +766,8 @@ List of $\omega$ (widest among $\tau$)
 
 \[
 	\infrule{
-		\Env\then \forall_{i \in [1,n]}{\kappa_i:\Type, k_i:\kappa_i} \quad n \in \mathbb{N} \\*
-		\Env\then \forall_{i \in [1,n]}{\nu_i:\Type, v_i:\nu_i} \hfill\\*
+		\Env\then \forall_{i \in [1,n]}{\kappa_i:\Type, k_i\in\Expr, k_i:\kappa_i} \quad n \geq 1 \\*
+		\Env\then \forall_{i \in [1,n]}{\nu_i:\Type, v_i\in\Expr, v_i:\nu_i} \hfill\\*
 		\Env\then \omega_\kappa = \bigsqcap_{i=1}^{n}{\kappa_i} \quad \omega_\nu = \bigsqcap_{i=1}^{n}{\nu_i}
 	}{
 		\Env\then \code{[$k_1:v_1, ..., k_n:v_n$]}:\exists\omega_\kappa.\exists\omega_\nu.\Map
@@ -787,9 +785,9 @@ among $\nu$)
 
 \[
 	\infrule{
-		\Env\then n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type, x_i:\tau_i}
+		\Env\then n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type, \expr_i\in\Expr, \expr_i:\tau_i}
 	}{
-		\Env\then \code{<$x_1,...,x_n$>}:\tau_1 \times ... \times \tau_n
+		\Env\then \code{<$\expr_1,...,\expr_n$>}:\tau_1 \times ... \times \tau_n
 	}
 \]
 
@@ -797,9 +795,9 @@ among $\nu$)
 
 \[
 	\infrule{
-		\Env\then n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type, x_i:\tau_i, a_i \in \Id}
+		\Env\then n \geq 1 \quad \forall_{i\in[1,n]}{a_i\in\Id, \tau_i:\Type, \expr_i\in\Expr, \expr_i:\tau_i}
 	}{
-		\Env\then \code{<$a_1:x_1,...,a_n:x_n$>}:\tuple{a_1:\tau_1,...,a_2:\tau_n}
+		\Env\then \code{<$a_1:\expr_1,...,a_n:\expr_n$>}:\tuple{a_1:\tau_1,...,a_2:\tau_n}
 	}
 \]
 
@@ -819,27 +817,27 @@ among $\nu$)
 
 \[
 	\infrule{
-		\Env\then \beta \in \texttt{Number} \quad b:\beta\\*
-		\Env\then \epsilon \in \texttt{Number} \quad e:\epsilon \\*
-		\Env\then \omega = \beta \sqcap \epsilon
+		\Env\then \tau_1 \in \texttt{Number} \quad \expr_1\in\Expr \quad \expr_1:\tau_1\\*
+		\Env\then \tau_2 \in \texttt{Number} \quad \expr_2\in\Expr \quad \expr_2:\tau_2 \\*
+		\Env\then \omega = \tau_1 \sqcap \tau_2
 	}{
-		\Env\then \code{$b$..$e$} : \exists\omega.\Range
+		\Env\then \code{$\expr_1$..$\expr_2$} : \exists\omega.\Range
 	}
 \]
-Range from $b$ (begin) to $e$ (end)
+Range from $\expr_1$ (begin) to $\expr_2$ (end)
 
 \[
 	\infrule{
-		\Env\then \beta \in \texttt{Number} \quad b:\beta\\*
-		\Env\then \epsilon \in \texttt{Number} \quad e:\epsilon \\*
-		\Env\then \sigma \in \texttt{Number} \quad s:\sigma \\*
-		\Env\then \omega = \beta \sqcap \epsilon \sqcap \sigma
+		\Env\then \tau_1 \in \texttt{Number} \quad \expr_1\in\Expr \quad \expr_1:\tau_1\\*
+		\Env\then \tau_2 \in \texttt{Number} \quad \expr_2\in\Expr \quad \expr_2:\tau_2 \\*
+		\Env\then \tau_3 \in \texttt{Number} \quad \expr_3\in\Expr \quad \expr_3:\tau_3 \\*
+		\Env\then \omega = \tau_1 \sqcap \tau_2 \sqcap \tau_3
 	}{
-		\Env\then \code{$b$..$e$..$s$} : \exists\omega.\Range
+		\Env\then \code{$\expr_1$..$\expr_2$..$\expr_3$} : \exists\omega.\Range
 	}
 \]
 
-Range from $b$ (begin) to $e$ (end) with a step $s$
+Range from $\expr_1$ (begin) to $\expr_2$ (end) with a step $\expr_3$
 
 \newpage
 
@@ -849,7 +847,7 @@ Range from $b$ (begin) to $e$ (end) with a step $s$
 
 \[
 	\infrule{
-		\Env\then \tau:\Type \quad \epsilon:\tau
+		\Env\then \tau:\Type \quad \expr\in\Expr \quad \expr:\tau
 	}{
 		\Env\then \code{\{$\expr$\}} : \tau
 	}
@@ -865,6 +863,8 @@ Range from $b$ (begin) to $e$ (end) with a step $s$
 		\Env\then \code{$f$($...$)} : \rho
 	}
 \]
+
+\comment{TODO: completare}
 
 \subsubsection{Reference}
 
@@ -924,6 +924,8 @@ Range from $b$ (begin) to $e$ (end) with a step $s$
 }
 
 \newpage
+
+\comment{TODO: usare $\expr$ con $\Expr$}
 
 \paragraph{General rules}
 
