@@ -2008,6 +2008,16 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 	}
 \]
 
+\subsection{Alias declaration}
+
+\[
+	\infrule{
+		\Env\then i \in \Id \quad \expr \in \Expr \quad \tau:\Type \quad \expr:\tau
+	}{
+		\Env, \code{alias $e$ as $i$} \then i:\tau
+	}
+\]
+
 \subsection{For loop}
 
 \[
