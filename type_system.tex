@@ -2070,19 +2070,12 @@ Unless noted otherwise, $\val \in \Val$ is implied.
 \paragraph{Environments} Two environments will be used:
 \begin{itemize}
 	\item $\EnvLoc :=$ \textbf{location environment}. Describes the
-		mappings/bindings between identifiers and their "location/address" in
-		memory.
+		mappings/bindings between identifiers or an evaluated expression and
+		their "location/address" in memory.
 		\[
 			\begin{split}
-				\EnvLoc: \Id & \to \mathbb{Z}\\*
-				\EnvLoc(i) & \mapsto a
-			\end{split}
-		\]
-		Occasionally, the function will be applied on an expression
-		\[
-			\begin{split}
-				\EnvLoc: \Expr & \to \mathbb{Z}\\*
-				\EnvLoc(\expr) & \mapsto a
+				\EnvLoc: \Id \cup \Expr & \to \mathbb{Z}\\*
+				\EnvLoc(x) & \mapsto a
 			\end{split}
 		\]
 	\item $\EnvStore :=$ \textbf{store environment}. Describes the mappings
