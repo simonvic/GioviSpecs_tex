@@ -2345,6 +2345,18 @@ be evaluated
 
 \subsection{Statements}
 
+\paragraph{Redirection (assignment)}
+
+\[
+	\oprule[aligned]{
+		\EnvLoc,\EnvStore     &\then i \in \Id \quad \EnvLoc(i) = \addr_i \quad \EnvStore(\addr_i) = \val_i \\*
+		\EnvLoc,\EnvStore     &\then \expr \equiv \val \Then \EnvLoc_2,\EnvStore_2 \\*
+		\EnvLoc_2,\EnvStore_2 &\then \addr_i' = \alloc(\EnvStore_2) \\*
+	}{
+		\EnvLoc_2,\EnvStore_2\then \code{$i$ <- $\expr$} \Then \EnvLoc_2\env{i \mapsto \addr_i'},\EnvStore_2\env{\addr_i' \mapsto \val}
+	}
+\]
+
 \paragraph{Variable declaration}
 
 \[
@@ -2370,6 +2382,8 @@ be evaluated
 		\Then \EnvLoc_2\env{i \mapsto \addr},\EnvStore_2\env{\addr \mapsto \val}
 	}
 \]
+It is semantically identical to a variable declaration followed by a
+redirection.
 
 
 \subparagraph{Zero override} At (and only at) declaration, the zero value of a
@@ -2408,18 +2422,6 @@ Both can be performed in a single statement
 		\EnvLoc_3,\EnvStore_3 \then \code{$i$ $\tau$ default $\expr_z$ <- $\expr$}
 		\Then \EnvLoc_3\env{i \mapsto \addr},\EnvStore\env{\addr \mapsto \val,\addr_z \mapsto \val_z} \\*
 		\hfill\implies \code{$i$} \equiv \val \land \Zero(i) = \val_z
-	}
-\]
-
-\paragraph{Redirection (assignment)}
-
-\[
-	\oprule[aligned]{
-		\EnvLoc,\EnvStore     &\then i \in \Id \quad \EnvLoc(i) = \addr_i \quad \EnvStore(\addr_i) = \val_i \\*
-		\EnvLoc,\EnvStore     &\then \expr \equiv \val \Then \EnvLoc_2,\EnvStore_2 \\*
-		\EnvLoc_2,\EnvStore_2 &\then \addr_i' = \alloc(\EnvStore_2) \\*
-	}{
-		\EnvLoc_2,\EnvStore_2\then \code{$i$ <- $\expr$} \Then \EnvLoc_2\env{i \mapsto \addr_i'},\EnvStore_2\env{\addr_i' \mapsto \val}
 	}
 \]
 
