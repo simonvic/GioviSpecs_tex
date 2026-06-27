@@ -34,10 +34,15 @@
 \newcommand{\addr}{\alpha}
 \newcommand{\expr}{\epsilon}
 \newcommand{\val}{\nu}
+\newcommand{\pattern}{p}
 \newcommand{\Id}{\mathcal{I}}
 \newcommand{\Expr}{\mathcal{E}}
 \newcommand{\Val}{\mathcal{V}}
 \newcommand{\Zero}{\mathcal{Z}}
+\newcommand{\Pattern}{\mathcal{P}}
+\newcommand{\PatternTerminal}{\Pattern_T}
+\newcommand{\PatternProduct}{\Pattern_P}
+\newcommand{\PatternIterator}{\Pattern_I}
 \newcommand{\Type}{\texttt{Type}}
 \newcommand{\Bool}{\texttt{Bool}}
 \newcommand{\Text}{\texttt{Text}}
@@ -2452,6 +2457,143 @@ immutability}
 		\EnvLoc_2,\EnvStore_2\then \code{alias $\expr$ as $i$} \Then \EnvLoc_2\env{i \mapsto \addr_\expr}
 	}
 \]
+
+\newpage
+
+\subsubsection{Patterns}
+
+\begin{definition}[Pattern]
+	A pattern is a special language construct that describes a structure of
+	data.
+\end{definition}
+
+Its main use is to perform the "deconstruction" of a value into the
+structure that the pattern describes.
+
+\subparagraph{Patterns kinds} There are five kinds of patterns:
+\begin{itemize}
+	\item Terminal patterns:
+		\begin{itemize}
+			\item \textbf{Placeholder pattern}\\*
+				\comment{TODO: rinominare. Sinkhole?}
+			\item \textbf{Unary pattern}
+		\end{itemize}
+	\item \textbf{Product pattern}
+	\item Iterator patterns:
+		\begin{itemize}
+			\item \textbf{List pattern}
+			\item \textbf{Map pattern}
+		\end{itemize}
+\end{itemize}
+
+\[
+	\begin{split}
+		\Pattern         &= \PatternTerminal \cup \PatternProduct \cup \PatternIterator\\*
+		\PatternTerminal &= \set{\pattern \mid \pattern := \text{any unary pattern or placeholder pattern}}\\*
+		\PatternProduct  &= \set{\pattern \mid \pattern := \text{any product pattern}}\\*
+		\PatternIterator &= \set{\pattern \mid \pattern := \text{any iterator pattern}}\\*
+	\end{split}
+\]
+
+\subparagraph{Limitations} Non-terminal patterns can have other patterns nested,
+albeit with few limitations:
+\begin{itemize}
+	\item Product patterns can only have terminal patterns (placeholder, unary)
+		or other product patterns nested
+	\item In map patterns, the pattern for the key can only be a terminal or a
+		product pattern; the pattern for the value can be of any kind (other
+		iterator patterns as well)
+\end{itemize}
+
+\subparagraph{Patterns compatibility} A value can be deconstructed with a
+pattern only when the pattern is "equal or narrower" than the value; the rules
+are similar to types widening rules.
+
+\paragraph{Placeholder pattern} A terminal pattern of the simplest kind is the
+placeholder pattern (denoted by an underscore \code{\_}).\\*
+It basically acts as a sinkhole; redirecting to it does nothing. It can be
+useful to explicitly discard a function return value, or when nested in other
+patterns.
+
+\[
+	\oprule{
+		\EnvLoc,\EnvStore \then \expr \in \Expr \Then \EnvLoc_2,\EnvStore_2
+	}{
+		\EnvLoc_2,\EnvStore_2 \then \code{$\expr$ -> \_} \Then \EnvLoc_2,\EnvStore_2
+	}
+\]
+
+\paragraph{Unary pattern} A terminal pattern that simply states a single "unit"
+to which the value is assigned to as a whole, without deconstruction.\\*
+The pattern is denoted by an identifier (the name) and an optional type.\\*
+The semantic rules are the same for redirections and variable declarations,
+because they're secretly the same thing.
+
+\paragraph{Product pattern} A product pattern describes the data structure of a
+product type, hence it is meant to be used with product values (tuples,
+records, structs).
+
+Like mentioned above, the patterns follow the same rules of types
+compatibility. In order to be able to deconstruct all product values, you are
+given the choice of two deconstruction approaches: positional and named.
+
+\subparagraph{Positional}
+
+With a positional product pattern, the members of a product value are
+deconstructed in the same order they're defined in the pattern.
+
+The positional product pattern can be used to deconstruct all product types.
+
+\comment{:D}
+
+\[
+	\oprule[aligned]{
+		\Env,\EnvLoc,\EnvStore &\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad \theta = \bigtimes_{i\in[1,n]}{\tau_i} \\*
+		\Env,\EnvLoc,\EnvStore &\then \forall_{i\in[1,n]}{\val_i:\tau_i} \quad \val = \bigtimes_{i \in [1,n]}{\val_i} \\*
+		\EnvLoc,\EnvStore      &\then m \geq n \quad \forall_{j\in[1,m]}{\pattern_j\in\PatternTerminal} \\*
+		\EnvLoc,\EnvStore      &\then \expr \equiv \val \Then \EnvLoc_2,\EnvStore_2 \\*
+		\EnvLoc_2,\EnvStore_2  &\then \forall_{j\in[1,m]}{\addr_j = \alloc(\EnvStore_2)} \\*
+	}{
+		\EnvLoc_2,\EnvStore_2 \then \code{$\expr$ -> <$\pattern_1$, $...$, $\pattern_m$>} \Then \EnvLoc_2\env{\forall_{j\in[1,m]}{\pattern_j\mapsto\addr_j}},\EnvStore_2\env{\forall_{j\in[1,m]}{\addr_j\mapsto\val_j}}
+	}
+\]
+
+\comment{TODO: o sostituisco $\pattern_j$ con un semplice identificatore,
+oppure definisco una funzione che descriva la decomposizione ricorsivamente}
+
+\subparagraph{Named}
+
+With the named approach you're deconstructing the value based on the member's
+names (the order won't matter), therefore the pattern labels must be the same
+of the member's names.
+
+Obviously, named product patterns can only be used with product types with
+named members (records, structs)
+
+\comment{TODO: aggiungere regola}
+% \[
+% 	\oprule{
+% 		\Env\then n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \quad \rho_1 = \tuple{a_1:\tau_1,...,a_n:\tau_n} \\*
+% 		\Env\then m \geq n \quad \forall_{j\in[1,m]}{b_j \in \mathcal{M} \subseteq \Id, \omega_i:\Type} \quad \rho_2 = \tuple{b_1:\omega_1,...,b_m:\omega_m} \\*
+% 	}{
+% 	}
+% \]
+
+\paragraph{Iterator patterns} Iterator patters can only be used in a for loop
+statement (hence the name). For each iteration of the loop, the iterated value
+is deconstructed into the specified pattern.
+
+\comment{TODO: aggiungere regola}
+
+\subparagraph{List pattern} The list pattern is used to iterate over a list;
+it's basically a unary pattern, but can be nested
+
+\comment{TODO: aggiungere regola}
+
+\subparagraph{Map pattern} The map pattern is used to iterate over maps; it's a
+pair of two patterns, one for the key and one for the value respectively.
+
+\comment{TODO: aggiungere regola}
 
 \newpage
 
