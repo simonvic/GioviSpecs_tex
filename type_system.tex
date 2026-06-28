@@ -567,7 +567,7 @@ type $\omega$ of $\sigma$ (struct name and fields names are ignored)
 \[
 	\infrule{
 		\Env\then n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \quad \rho_1 = \tuple{a_1:\tau_1,...,a_n:\tau_n} \\*
-		\Env\then m \geq n \quad \forall_{j\in[1,m]}{b_j \in \mathcal{M} \subseteq \Id, \omega_i:\Type} \quad \rho_2 = \tuple{b_1:\omega_1,...,b_m:\omega_m} \\*
+		\Env\then m \geq n \quad \forall_{j\in[1,m]}{b_j \in \mathcal{M} \subseteq \Id, \omega_j:\Type} \quad \rho_2 = \tuple{b_1:\omega_1,...,b_m:\omega_m} \\*
 		\Env\then \forall_{a':\tau'\in\mathcal{N}}{\exists_{b':\omega'\in\mathcal{M}}{a'=b' \land \tau' \narr \omega'}}
 	}{
 		\Env\then \rho_1 \narr \rho_2
