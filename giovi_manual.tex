@@ -164,10 +164,10 @@ is a term of type $T$".
 
 \subparagraph{Premise} Judgements can be made based on zero or more premises
 (space separated judgements).\\*
-For example, $\infrule{\Env\then t_1:T \quad \Delta\then
-t_2:T}{\Env,\Delta\then \code{$t_1$ + $t_2$}: T}$ means that with a premise
-that both judgements $\Env\then t_1:T$ and $\Delta\then t_2:T$ are true,
-then $\Env,\Delta\then \code{$t_1$ + $t_2$}: T$ is true.
+For example, $\infrule{\Env_1\then t_1:T \quad \Env_2\then
+t_2:T}{\Env_1,\Env_2\then \code{$t_1$ + $t_2$}: T}$ means that with a premise
+that both judgements $\Env_1\then t_1:T$ and $\Env_2\then t_2:T$ are true,
+then $\Env_1,\Env_2\then \code{$t_1$ + $t_2$}: T$ is true.
 
 \subparagraph{Code} Text written with \code{monospaced} font denotes the text
 as written in code verbatim. Some types may also be written with
@@ -191,7 +191,7 @@ types), meaning that they declare one or more type variable (a.k.a. type
 parameters).\\*
 The notation $T[\tau:=\sigma]$ describes a generic type $T$ with a type
 parameter $\tau$ of some type $\sigma$.\\*
-The notation $t : \exists\sigma.T$ means that the $t$ is a term of concrete
+The notation $t : \exists\sigma.T$ means that $t$ is a term of concrete
 type $T$ with the type parameter $\tau$ equal to $\sigma$
 
 \comment{TODO: tipi esistenziali? Rivedere notazione}
@@ -204,10 +204,10 @@ used to encompass all possible identifiers allowed by the grammar.
 \paragraph{Product types}
 
 \subparagraph{Tuple} A tuple is denoted with the cartesian product operator.\\*
-For example, $\tau \times \sigma \times \rho$ describes a product 3-tuple with
-three members of type $\tau, \sigma, \rho$.
+For example, $\tau_1 \times \tau_2 \times \tau_3$ describes a product 3-tuple with
+three members of type $\tau_1, \tau_2, \tau_3$.
 
-\subparagraph{Record} The notation $\tuple{a:\tau, b:\sigma}$ describes a
+\subparagraph{Record} The notation $\tuple{a_1:\tau_1, a_2:\tau_2}$ describes a
 record (a tuple whose members are named)
 
 \subparagraph{Struct} The notation $(\xi, \tuple{a_1:\tau_1, a_2:\tau_2})$
@@ -220,7 +220,7 @@ describes a struct (a pair of an identifier $\xi$ and a record)
 	by $N$ can also be described by $W$ without any loss of information.\\*
 	Conversely, a type $W$ is said to be "wider" than a type $N$ iff it can
 	describe any value described by $N$ without loss of information.\\*
-	A "narrower than" relationship is denoted using the $\narr$ operator 
+	A "narrower than" relationship is denoted using the $\narr$ operator $N<:W$
 \end{definition}
 
 The $\sqcap$ operator produces the least wide type for the operand types
@@ -315,12 +315,12 @@ The $\Env$ function can now be defined as follows
 		\end{cases}
 	\end{split}
 \]
-which formally describes the lookup order and priority of a generic symbol $i$
+which formally describes the lookup order and priority of a symbol $i$
 
 \paragraph{Environment extension} Given how scopes and symbols lookup work, it
 will be useful to define "new" type environments extending an existing
-environment. The notation $E\env{t:\tau}$ will be used to denote that the
-environment $E$ is extended with $\env{t:\tau}$.
+environment. The notation $E\env{t:\tau}$ will be used to denote a new
+environment that inherits from $E$ and extends it with $\env{t:\tau}$.
 
 Using the $\EnvVar$ variables environment as example
 \[
@@ -387,30 +387,30 @@ Using the $\EnvVar$ variables environment as example
 
 \subsection{Product types}
 
+\paragraph{Tuple}
 \[
-	\text{Tuple}\qquad
 	\infrule{
 		\Env\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type}
 	}{
-		\Env\then \code{tuple <$\tau_1,...,\tau_n$>} \equiv \tau_1 \times ... \times \tau_n
+		\Env\then \code{tuple <$\tau_1$, $...$, $\tau_n$>} \equiv \tau_1 \times ... \times \tau_n
 	}
 \]
 
+\paragraph{Record}
 \[
-	\text{Record}\qquad
 	\infrule{
 		\Env\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \Id}
 	}{
-		\Env\then \code{record <$a_1$ $\tau_1,...,a_n$ $\tau_n$>} \equiv \tuple{a_1:\tau_1, ..., a_n:\tau_n}
+		\Env\then \code{record <$a_1$ $\tau_1$, $...$, $a_n$ $\tau_n$>} \equiv \tuple{a_1:\tau_1, ..., a_n:\tau_n}
 	}
 \]
 
+\paragraph{Struct}
 \[
-	\text{Struct} \qquad
 	\infrule{
 		\Env\then \xi \in \Id \quad n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \Id}
 	}{
-		\Env,\code{struct $\xi$ <$a_1$ $\tau_1,...,a_n$ $\tau_n$>} \then \code{$\xi$} \equiv (\xi,\tuple{a_1:\tau_1,...,a_n:\tau_n})
+		\Env,\code{struct $\xi$ <$a_1$ $\tau_1$, $...$, $a_n$ $\tau_n$>} \then \code{$\xi$} \equiv (\xi,\tuple{a_1:\tau_1,...,a_n:\tau_n})
 	}
 \]
 
@@ -422,7 +422,7 @@ Using the $\EnvVar$ variables environment as example
 	\infrule{
 		\Env\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\Id} \quad \rho:\Type
 	}{
-		\Env\then \code{::($a_1 \tau_1,...,a_n \tau_n$) => $\rho$} \equiv (\tau_1,...,\tau_n) \to \rho
+		\Env\then \code{::($a_1$ $\tau_1$, $...$, $a_n$ $\tau_n$) => $\rho$} \equiv (\tau_1,...,\tau_n) \to \rho
 	}
 \]
 
@@ -430,7 +430,7 @@ Using the $\EnvVar$ variables environment as example
 	\infrule{
 		\Env\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\Id}
 	}{
-		\Env\then \code{::($a_1 \tau_1,...,a_n \tau_n$)} \equiv (\tau_1,...,\tau_n) \to \Void
+		\Env\then \code{::($a_1$ $\tau_1$, $...$, $a_n$ $\tau_n$)} \equiv (\tau_1,...,\tau_n) \to \Void
 	}
 \]
 
@@ -438,7 +438,7 @@ Using the $\EnvVar$ variables environment as example
 	\infrule{
 		\Env\then \xi \in \Id \quad n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\Id} \quad \rho:\Type
 	}{
-		\Env,\code{$\xi$($a_1 \tau_1,...,a_n \tau_n$) => $\rho$ \{\}} \then \code{$\xi$} : (\tau_1,...,\tau_n) \to \rho
+		\Env,\code{$\xi$($a_1$ $\tau_1$, $...$, $a_n$ $\tau_n$) => $\rho$ \{\}} \then \code{$\xi$} : (\tau_1,...,\tau_n) \to \rho
 	}
 \]
 
@@ -446,7 +446,7 @@ Using the $\EnvVar$ variables environment as example
 	\infrule{
 		\Env\then \xi \in \Id \quad n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\Id} \quad \rho:\Type
 	}{
-		\Env,\code{$\xi$($a_1 \tau_1,...,a_n \tau_n$) \{\}} \then \code{$\xi$} : (\tau_1,...,\tau_n) \to \Void
+		\Env,\code{$\xi$($a_1$ $\tau_1$, $...$, $a_n$ $\tau_n$) \{\}} \then \code{$\xi$} : (\tau_1,...,\tau_n) \to \Void
 	}
 \]
 
@@ -456,22 +456,22 @@ Using the $\EnvVar$ variables environment as example
 
 \subsection{Compatibility rules}
 
+\paragraph{Reflexivity}
 \[
 	\infrule{
 		\Env\then \tau:\Type
 	}{
 		\Env\then \tau \narr \tau
 	}
-	\qquad \text{Reflexivity}
 \]
 
+\paragraph{Transitivity}
 \[
 	\infrule{
 		\Env\then \tau_1 \narr \tau_2 \quad \tau_2 \narr \tau_3
 	}{
 		\Env\then \tau_1 \narr \tau_3
 	}
-	\qquad \text{Transitivity}
 \]
 
 \subsubsection{Primitive types}
@@ -535,7 +535,7 @@ types $\omega$ of $\theta_2$
 \[
 	\infrule{
 		\Env\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad \theta = \bigtimes_{i \in [1,n]}{\tau_i}\\*
-		\Env\then m \geq n \quad \forall_{j\in[1,m]}{\eta_j \in \Id, \omega_j:\Type} \quad \rho = \tuple{\eta_1:\omega_1,...,\eta_m:\omega_m} \\*
+		\Env\then m \geq n \quad \forall_{j\in[1,m]}{a_j \in \Id, \omega_j:\Type} \quad \rho = \tuple{a_1:\omega_1,...,a_m:\omega_m} \\*
 		\Env\then \forall_{i \in [1,n]}{\tau_i \narr \omega_i}
 	}{
 		\Env\then \theta \narr \rho
@@ -742,7 +742,7 @@ than $\omega'$.
 	\infrule{
 		\Env\then n \geq 1 \quad \tau:\Type \quad \forall_{i\in[1,n]}{\expr_i\in\Expr,\expr_i:\tau}
 	}{
-		\Env\then \code{[$\expr_1, ...,\expr_n$]}:\exists\tau.\List
+		\Env\then \code{[$\expr_1$, $...$, $\expr_n$]}:\exists\tau.\List
 	}
 \]
 
@@ -750,7 +750,7 @@ than $\omega'$.
 	\infrule{
 		\Env\then n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type,\expr_i\in\Expr,\expr_i:\tau_i} \quad \omega = \bigsqcap_{i=1}^{n}{\tau_i}
 	}{
-		\Env\then \code{[$\expr_1, ...,\expr_n$]}:\exists\omega.\List
+		\Env\then \code{[$\expr_1$, $...$, $\expr_n$]}:\exists\omega.\List
 	}
 \]
 
@@ -767,7 +767,7 @@ List of $\omega$ (widest among $\tau$)
 		\Env\then \kappa:\Type \quad \forall_{i\in[1,n]}{k_i\in\Expr,k_i:\kappa} \quad n \geq 1 \\*
 		\Env\then \nu:\Type \quad \forall_{i\in[1,n]}{v_i\in\Expr,v_i:\nu} \hfill
 	}{
-		\Env\then \code{[$k_1:v_1, ..., k_n:v_n$]}:\exists\kappa.\exists\nu.\Map
+		\Env\then \code{[$k_1$:$v_1$, $...$, $k_n$:$v_n$]}:\exists\kappa.\exists\nu.\Map
 	}
 \]
 
@@ -777,7 +777,7 @@ List of $\omega$ (widest among $\tau$)
 		\Env\then \forall_{i \in [1,n]}{\nu_i:\Type, v_i\in\Expr, v_i:\nu_i} \hfill\\*
 		\Env\then \omega_\kappa = \bigsqcap_{i=1}^{n}{\kappa_i} \quad \omega_\nu = \bigsqcap_{i=1}^{n}{\nu_i}
 	}{
-		\Env\then \code{[$k_1:v_1, ..., k_n:v_n$]}:\exists\omega_\kappa.\exists\omega_\nu.\Map
+		\Env\then \code{[$k_1$:$v_1$, $...$, $k_n$:$v_n$]}:\exists\omega_\kappa.\exists\omega_\nu.\Map
 	}
 \]
 
@@ -792,9 +792,9 @@ among $\nu$)
 
 \[
 	\infrule{
-		\Env\then n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type, \expr_i\in\Expr, \expr_i:\tau_i}
+		\Env\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type, \expr_i\in\Expr, \expr_i:\tau_i}
 	}{
-		\Env\then \code{<$\expr_1,...,\expr_n$>}:\tau_1 \times ... \times \tau_n
+		\Env\then \code{<$\expr_1$, $...$, $\expr_n$>}:\tau_1 \times ... \times \tau_n
 	}
 \]
 
@@ -804,7 +804,7 @@ among $\nu$)
 	\infrule{
 		\Env\then n \geq 1 \quad \forall_{i\in[1,n]}{a_i\in\Id, \tau_i:\Type, \expr_i\in\Expr, \expr_i:\tau_i}
 	}{
-		\Env\then \code{<$a_1:\expr_1,...,a_n:\expr_n$>}:\tuple{a_1:\tau_1,...,a_2:\tau_n}
+		\Env\then \code{<$a_1$:$\expr_1$, $...$, $a_n$:$\expr_n$>}:\tuple{a_1:\tau_1,...,a_2:\tau_n}
 	}
 \]
 
@@ -2031,17 +2031,17 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 
 \[
 	\infrule{
-		\Env\then i \in \Id \quad \tau:\Type \quad l:\exists\tau.\List
+		\Env\then i \in \Id \quad \tau:\Type \quad \expr:\exists\tau.\List
 	}{
-		\Env, \code{for $i$ in $l$ do} \then i:\tau
+		\Env, \code{for $i$ in $\expr$ do} \then i:\tau
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then k \in \Id \quad v \in \Id \quad \kappa:\Type \quad \nu:\Type \quad m:\exists\kappa.\exists\nu.\Map
+		\Env\then k \in \Id \quad v \in \Id \quad \kappa:\Type \quad \nu:\Type \quad \expr:\exists\kappa.\exists\nu.\Map
 	}{
-		\Env, \code{for $k$:$v$ in $m$ do} \then k:\kappa \quad v:\nu
+		\Env, \code{for $k$:$v$ in $\expr$ do} \then k:\kappa \quad v:\nu
 	}
 \]
 
@@ -2083,15 +2083,16 @@ Unless noted otherwise, $\val \in \Val$ is implied.
 		\[
 			\begin{split}
 				\EnvLoc: \Id \cup \Expr & \to \mathbb{Z}\\*
-				\EnvLoc(x) & \mapsto a
+				\EnvLoc(x) & \mapsto \addr
 			\end{split}
 		\]
+		An address will usually be denoted by $\addr$
 	\item $\EnvStore :=$ \textbf{store environment}. Describes the mappings
 		between a location in memory and its data content
 		\[
 			\begin{split}
 				\EnvStore : \mathbb{Z} & \to \Val \\*
-				\EnvStore(a) & \mapsto \val
+				\EnvStore(\addr) & \mapsto \val
 			\end{split}
 		\]
 \end{itemize}
@@ -2114,19 +2115,19 @@ data is effectively duplicated.
 
 \paragraph{Unmapped values} A slight abuse of notation is used to denote the
 lack of mapping in an environment via the $\varnothing$ symbol.\\*
-For example: $\EnvLoc(i) = \varnothing, \EnvStore(a) = \varnothing$
+For example: $\EnvLoc(i) = \varnothing, \EnvStore(\addr) = \varnothing$
 
 \paragraph{Environment extension} To denote a environment extending, modifying
-or overriding an existing one, this notation will be used $\EnvLoc\env{i \mapsto
-a}$ where it's defined as follows:
+or overriding an existing one, this notation will be used
+$\EnvLoc\env{i\mapsto\addr}$ where it's defined as follows:
 \[
-	\EnvLoc\env{i \mapsto a}(j) \mapsto \begin{cases}
-		a          &\text{ if } i = j\\
+	\EnvLoc\env{i\mapsto\addr}(j) \mapsto \begin{cases}
+		\addr      &\text{ if } i = j\\
 		\EnvLoc(j) &\text{ if } i \neq j\\
 	\end{cases}
 \]
 
-Multiple mappings may be specified: $\EnvLoc\env{i_1 \mapsto a_1, i_2 \mapsto a_2}$
+Multiple mappings may be specified: $\EnvLoc\env{i_1\mapsto\addr_1,i_2\mapsto\addr_2}$
 
 \subparagraph{The $\alloc()$ function} When store environment is extended with
 a mapping, it's implicit that it is added if it does not exist, and it is
@@ -2134,7 +2135,7 @@ updated if it already exists. In some cases, to improve clarity, the $\alloc()$
 function will be used to explicitly state that a new memory "address" is
 allocated in the specified environment. The $\alloc()$ function takes a store
 environment and returns the newly allocated address.\\*
-For example: $a = \alloc(\EnvStore)$
+For example: $\addr = \alloc(\EnvStore)$
 
 % \subparagraph{The $\copi()$ function} The language (almost) never pass values
 % by reference, hence many copies are made during an execution. The simplify the
@@ -2339,7 +2340,7 @@ dimensione iniziale}
 		\EnvLoc_2,\EnvStore_2 &\then \expr_2 \equiv \val_2 \Then \EnvLoc_3,\EnvStore_3 \\*
 		\EnvLoc_3,\EnvStore_3 &\then \val_3 = \val_1 \bop \val_2 \\*
 	}{
-		\EnvLoc_3,\EnvStore_3\then \code{$\expr_1$ $\bop$ $\expr$} \equiv \val_3 \Then \EnvStore_3\env{\alloc(\EnvStore_3) \mapsto \val_3}
+		\EnvLoc_3,\EnvStore_3\then \code{$\expr_1$ $\bop$ $\expr_2$} \equiv \val_3 \Then \EnvStore_3\env{\alloc(\EnvStore_3) \mapsto \val_3}
 	}
 \]
 
@@ -2390,8 +2391,8 @@ be evaluated
 		\Then \EnvLoc_2\env{i \mapsto \addr},\EnvStore_2\env{\addr \mapsto \val}
 	}
 \]
-It is semantically identical to a variable declaration followed by a
-redirection.
+It is semantically identical to a variable declaration statement followed by a
+different redirection statement.
 
 
 \subparagraph{Zero override} At (and only at) declaration, the zero value of a
@@ -2492,24 +2493,23 @@ A pattern is used in redirections (assignments) and for loops to perform the
 		\end{itemize}
 \end{itemize}
 
-\[
-	\begin{split}
-		\Pattern         &= \PatternTerminal \cup \PatternProduct \cup \PatternIterator\\*
-		\PatternTerminal &= \set{\pattern \mid \pattern := \text{any unary pattern or placeholder pattern}}\\*
-		\PatternProduct  &= \set{\pattern \mid \pattern := \text{any product pattern}}\\*
-		\PatternIterator &= \set{\pattern \mid \pattern := \text{any iterator pattern}}\\*
-	\end{split}
-\]
-
 \paragraph{Patterns compatibility} A value can be deconstructed with a
 pattern only when the pattern is "equal or narrower" than the value; the rules
 are similar to types widening rules.
 
 \paragraph{Nesting patterns} Non-terminal patterns can have other patterns
 nested.\\*
-An extreme example \code{[colorKey:[<r,\_,b>]]} is a map pattern with a unary
-pattern as key and a list pattern as value which itself has a positional
-product pattern nested, where the second member pattern is a placeholder
+An extreme example: a value of type \code{[Text:[tuple<Int,Int,Int>]]} (map
+with $\Text$ keys and a list of tuples as value) could be iterated with a
+pattern \code{[colorName:[<r,\_,b>]]} is a map pattern with a unary pattern as
+key and a list pattern as value which itself has a positional product pattern
+nested, where the second member pattern is a placeholder
+
+\nb{
+	Nesting iterator patterns effectively means nesting iterations.\\*
+	For example \code{for [[[i]]] in matrix3D do} would be equivalent of
+	writing three nested for loops
+}
 
 \subparagraph{Limitations}
 \begin{itemize}
@@ -2519,6 +2519,17 @@ product pattern nested, where the second member pattern is a placeholder
 		product pattern; the pattern for the value can be of any kind (other
 		iterator patterns as well)
 \end{itemize}
+
+\paragraph{Common sets} The following sets group patterns to make rules more
+readable
+\[
+	\begin{split}
+		\Pattern         &= \PatternTerminal \cup \PatternProduct \cup \PatternIterator\\*
+		\PatternTerminal &= \set{\pattern \mid \pattern := \text{any unary pattern or placeholder pattern}}\\*
+		\PatternProduct  &= \set{\pattern \mid \pattern := \text{any product pattern}}\\*
+		\PatternIterator &= \set{\pattern \mid \pattern := \text{any iterator pattern}}\\*
+	\end{split}
+\]
 
 \subsubsection{Terminal patterns}
 
@@ -2544,7 +2555,9 @@ The pattern is denoted by an identifier (the name) and an optional type.\\*
 The semantic rules are the same for redirections and variable declarations,
 because they're secretly the same thing.
 
-\subsubsection{Product pattern}
+\newpage
+
+\subsubsection{Product patterns}
 
 A product pattern describes the data structure of a product type, hence it is
 meant to be used with product values (tuples, records, structs).
