@@ -2460,29 +2460,33 @@ immutability}
 
 \newpage
 
-\subsubsection{Patterns}
+\subsection{Patterns}
 
 \begin{definition}[Pattern]
 	A pattern is a special language construct that describes a structure of
 	data.
 \end{definition}
 
-Its main use is to perform the "deconstruction" of a value into the
-structure that the pattern describes.
+A pattern is used in redirections (assignments) and for loops to perform the
+"deconstruction" of a value into the structure that the pattern describes.
 
-\subparagraph{Patterns kinds} There are five kinds of patterns:
+\paragraph{Patterns kinds} There are five kinds of patterns:
 \begin{itemize}
 	\item Terminal patterns:
 		\begin{itemize}
-			\item \textbf{Placeholder pattern}\\*
+			\item \textbf{Placeholder pattern}: \code{\_} (underscore)\\*
 				\comment{TODO: rinominare. Sinkhole?}
-			\item \textbf{Unary pattern}
+			\item \textbf{Unary pattern}: \code{someIdentifier}
 		\end{itemize}
-	\item \textbf{Product pattern}
+	\item \textbf{Product pattern}:
+		\begin{itemize}
+			\item \textbf{Positional}: \code{<a, b, c>}
+			\item \textbf{Named}: \code{<x:a, y:b, z:c>}
+		\end{itemize}
 	\item Iterator patterns:
 		\begin{itemize}
-			\item \textbf{List pattern}
-			\item \textbf{Map pattern}
+			\item \textbf{List pattern}: \code{[someIdentifier]}
+			\item \textbf{Map pattern}: \code{[key : value]}
 		\end{itemize}
 \end{itemize}
 
@@ -2495,8 +2499,17 @@ structure that the pattern describes.
 	\end{split}
 \]
 
-\subparagraph{Limitations} Non-terminal patterns can have other patterns nested,
-albeit with few limitations:
+\paragraph{Patterns compatibility} A value can be deconstructed with a
+pattern only when the pattern is "equal or narrower" than the value; the rules
+are similar to types widening rules.
+
+\paragraph{Nesting patterns} Non-terminal patterns can have other patterns
+nested.\\*
+An extreme example \code{[colorKey:[<r,\_,b>]]} is a map pattern with a unary
+pattern as key and a list pattern as value which itself has a positional
+product pattern nested, where the second member pattern is a placeholder
+
+\subparagraph{Limitations}
 \begin{itemize}
 	\item Product patterns can only have terminal patterns (placeholder, unary)
 		or other product patterns nested
@@ -2505,12 +2518,12 @@ albeit with few limitations:
 		iterator patterns as well)
 \end{itemize}
 
-\subparagraph{Patterns compatibility} A value can be deconstructed with a
-pattern only when the pattern is "equal or narrower" than the value; the rules
-are similar to types widening rules.
+\subsubsection{Terminal patterns}
 
-\paragraph{Placeholder pattern} A terminal pattern of the simplest kind is the
-placeholder pattern (denoted by an underscore \code{\_}).\\*
+A terminal pattern is called as such because it is not deconstructed further.
+
+\paragraph{Placeholder pattern} The simplest kind of pattern is the placeholder
+pattern (denoted by an underscore \code{\_}).\\*
 It basically acts as a sinkhole; redirecting to it does nothing. It can be
 useful to explicitly discard a function return value, or when nested in other
 patterns.
@@ -2529,22 +2542,21 @@ The pattern is denoted by an identifier (the name) and an optional type.\\*
 The semantic rules are the same for redirections and variable declarations,
 because they're secretly the same thing.
 
-\paragraph{Product pattern} A product pattern describes the data structure of a
-product type, hence it is meant to be used with product values (tuples,
-records, structs).
+\subsubsection{Product pattern}
+
+A product pattern describes the data structure of a product type, hence it is
+meant to be used with product values (tuples, records, structs).
 
 Like mentioned above, the patterns follow the same rules of types
 compatibility. In order to be able to deconstruct all product values, you are
 given the choice of two deconstruction approaches: positional and named.
 
-\subparagraph{Positional}
+\paragraph{Positional}
 
 With a positional product pattern, the members of a product value are
 deconstructed in the same order they're defined in the pattern.
 
 The positional product pattern can be used to deconstruct all product types.
-
-\comment{:D}
 
 \[
 	\oprule[aligned]{
@@ -2561,14 +2573,14 @@ The positional product pattern can be used to deconstruct all product types.
 \comment{TODO: o sostituisco $\pattern_j$ con un semplice identificatore,
 oppure definisco una funzione che descriva la decomposizione ricorsivamente}
 
-\subparagraph{Named}
+\paragraph{Named}
 
 With the named approach you're deconstructing the value based on the member's
 names (the order won't matter), therefore the pattern labels must be the same
 of the member's names.
 
 Obviously, named product patterns can only be used with product types with
-named members (records, structs)
+named members (i.e. records, structs)
 
 \[
 	\oprule[aligned]{
@@ -2587,21 +2599,39 @@ named members (records, structs)
 \comment{TODO: $\EnvStore(\EnvLoc(a'))$ è un abuso di notazione dato che $a'$ è
 il nome del membro del record}
 
-\paragraph{Iterator patterns} Iterator patters can only be used in a for loop
-statement (hence the name). For each iteration of the loop, the iterated value
-is deconstructed into the specified pattern.
+\comment{TODO: aggiungere regola per variante con identificatore membro
+implicito}
 
-\comment{TODO: aggiungere regola}
+\subsubsection{Iterator patterns}
 
-\subparagraph{List pattern} The list pattern is used to iterate over a list;
-it's basically a unary pattern, but can be nested
+Iterator patters can only be used in a for loop statement (hence the name). For
+each iteration of the loop, the iterated value is deconstructed into the
+specified pattern.
 
-\comment{TODO: aggiungere regola}
+\paragraph{List pattern} The list pattern is used to iterate over a list;
+it's basically a unary pattern, but allows nested patterns.
 
-\subparagraph{Map pattern} The map pattern is used to iterate over maps; it's a
+\comment{TODO: completare}
+\[
+	\oprule[aligned]{
+	}{
+		\EnvLoc,\EnvStore \then \code{for [$\pattern$] in $\expr$ do} \Then \EnvLoc_2,\EnvStore_2\\*
+	}
+\]
+
+
+\paragraph{Map pattern} The map pattern is used to iterate over maps; it's a
 pair of two patterns, one for the key and one for the value respectively.
 
-\comment{TODO: aggiungere regola}
+\comment{TODO: completare}
+\[
+	\oprule[aligned]{
+	}{
+		\EnvLoc,\EnvStore \then \code{for [$\pattern_k$:$\pattern_v$] in $\expr$ do} \Then \EnvLoc_2,\EnvStore_2\\*
+	}
+\]
+
+
 
 \newpage
 
