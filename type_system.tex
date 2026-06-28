@@ -2548,8 +2548,8 @@ The positional product pattern can be used to deconstruct all product types.
 
 \[
 	\oprule[aligned]{
-		\Env,\EnvLoc,\EnvStore &\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad \theta = \bigtimes_{i\in[1,n]}{\tau_i} \\*
-		\Env,\EnvLoc,\EnvStore &\then \forall_{i\in[1,n]}{\val_i:\tau_i} \quad \val = \bigtimes_{i \in [1,n]}{\val_i} \\*
+		\Env,\EnvLoc,\EnvStore &\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type,\val_i:\tau_i} \\*
+		\Env,\EnvLoc,\EnvStore &\then \theta = \bigtimes_{i\in[1,n]}{\tau_i} \quad \val:\theta \quad \val = \bigtimes_{i \in [1,n]}{\val_i} \\*
 		\EnvLoc,\EnvStore      &\then m \geq n \quad \forall_{j\in[1,m]}{\pattern_j\in\PatternTerminal} \\*
 		\EnvLoc,\EnvStore      &\then \expr \equiv \val \Then \EnvLoc_2,\EnvStore_2 \\*
 		\EnvLoc_2,\EnvStore_2  &\then \forall_{j\in[1,m]}{\addr_j = \alloc(\EnvStore_2)} \\*
