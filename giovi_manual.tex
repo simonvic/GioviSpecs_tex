@@ -43,7 +43,7 @@
 \newcommand{\PatternTerminal}{\Pattern_T}
 \newcommand{\PatternProduct}{\Pattern_P}
 \newcommand{\PatternIterator}{\Pattern_I}
-\newcommand{\decons}{\Xi}
+\newcommand{\decons}{\delta}
 \newcommand{\Type}{\texttt{Type}}
 \newcommand{\Bool}{\texttt{Bool}}
 \newcommand{\Text}{\texttt{Text}}
@@ -2539,11 +2539,11 @@ recursive function will be used to describe the deconstruction.
 	\begin{split}
 		\decons : (\Val,\Pattern) &\to (\EnvLoc,\EnvStore) \\*
 		\decons(\val, \pattern) &\mapsto \begin{cases}
-			\env{},\env{} &\text{ if } p = \code{\_} \\*
-			\env{a\mapsto\addr},\env{\addr\mapsto\val} &\text{ if } p = \code{$a$} \\*
-			\bigcup_{i\in[1,n]}{\decons(\pattern_i)} &\text{ if } p = \code{<$\pattern_1$, $...$, $\pattern_n$>} \\*
-			\decons(\pattern') &\text{ if } p = \code{[$\pattern'$]} \\*
-			\decons(\pattern_k)\cup\decons(\pattern_v) &\text{ if } p = \code{[$\pattern_k$:$\pattern_v$]} \\*
+			(\env{},\env{})                                          &\text{ if } \pattern = \code{\_} \\*
+			(\env{a\mapsto\addr},\env{\addr\mapsto\val})             &\text{ if } \pattern = \code{$a$} \\*
+			\bigcup_{i\in[1,n]}{\decons(\val_i,\pattern_i)}          &\text{ if } \pattern = \code{<$\pattern_1$, $...$, $\pattern_n$>} \land \val:\texttt{Product} \\*
+			\decons(\val',\pattern')                                 &\text{ if } \pattern = \code{[$\pattern'$]} \land \val:\List \\*
+			\decons(\val_k,\pattern_k)\cup\decons(\val_v,\pattern_v) &\text{ if } \pattern = \code{[$\pattern_k$:$\pattern_v$]} \land \val:\Map \\*
 		\end{cases}
 	\end{split}
 \]
