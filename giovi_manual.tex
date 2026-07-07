@@ -60,7 +60,7 @@
 \newcommand{\Range}{\texttt{Range}}
 % \newcommand{\Module}{\texttt{Module}}
 \newcommand{\env}[1]{[\![#1]\!]}
-\newcommand{\Env}{\Gamma}
+\newcommand{\EnvSym}{\Gamma}
 \newcommand{\EnvVar}{\Upsilon}
 \newcommand{\EnvConst}{\Pi}
 \newcommand{\EnvFunc}{\Phi}
@@ -160,15 +160,15 @@ For example, $t:T$ is a judgement telling that $t$ is a term of type $T$.
 \subparagraph{Assumptions} Zero or more assumptions (comma separated) can be
 used for a judgement; they're specified before the "turnstile" symbol
 $\then$.\\*
-For example, $\Env \then t:T$ can be read as "if $\Env$ is true, then $t$
+For example, $\EnvSym \then t:T$ can be read as "if $\EnvSym$ is true, then $t$
 is a term of type $T$".
 
 \subparagraph{Premise} Judgements can be made based on zero or more premises
 (space separated judgements).\\*
-For example, $\infrule{\Env_1\then t_1:T \quad \Env_2\then
-t_2:T}{\Env_1,\Env_2\then \code{$t_1$ + $t_2$}: T}$ means that with a premise
-that both judgements $\Env_1\then t_1:T$ and $\Env_2\then t_2:T$ are true,
-then $\Env_1,\Env_2\then \code{$t_1$ + $t_2$}: T$ is true.
+For example, $\infrule{\EnvSym_1\then t_1:T \quad \EnvSym_2\then
+t_2:T}{\EnvSym_1,\EnvSym_2\then \code{$t_1$ + $t_2$}: T}$ means that with a
+premise that both judgements $\EnvSym_1\then t_1:T$ and $\EnvSym_2\then t_2:T$
+are true, then $\EnvSym_1,\EnvSym_2\then \code{$t_1$ + $t_2$}: T$ is true.
 
 \subparagraph{Code} Text written with \code{monospaced} font denotes the text
 as written in code verbatim. Some types may also be written with
@@ -227,11 +227,11 @@ describes a struct (a pair of an identifier $\xi$ and a record)
 The $\sqcap$ operator produces the least wide type for the operand types
 \[
 	\infrule[aligned]{
-		\Env & \then \tau_1:\Type \quad \tau_2:\Type \\*
-		\Env & \then \exists_{\omega:\Type}{\tau_1\narr\omega \land \tau_2\narr\omega} \\*
-		\Env & \then \nexists_{\sigma:\Type}{\tau_1\narr\sigma \land \tau_2\narr\sigma \land \sigma\narr\omega}
+		\EnvSym & \then \tau_1:\Type \quad \tau_2:\Type \\*
+		\EnvSym & \then \exists_{\omega:\Type}{\tau_1\narr\omega \land \tau_2\narr\omega} \\*
+		\EnvSym & \then \nexists_{\sigma:\Type}{\tau_1\narr\sigma \land \tau_2\narr\sigma \land \sigma\narr\omega}
 	}{
-		\Env\then \tau_1 \sqcap \tau_2 = \omega
+		\EnvSym\then \tau_1 \sqcap \tau_2 = \omega
 	}
 \]
 
@@ -243,10 +243,10 @@ The definition of an expression type is done within a "context" (a.k.a. type
 environment) which describes the type of any identifier or any other
 expressions appearing in the described expression.
 
-The general type environment is denoted by $\Env$, a function that maps an
+The general type environment is denoted by $\EnvSym$, a function that maps an
 identifier to its type.
 
-To avoid ambiguities and to more clearly describe expressions, $\Env$ is
+To avoid ambiguities and to more clearly describe expressions, $\EnvSym$ is
 partioned in the $\EnvVar,\EnvConst,\EnvFunc,\EnvStucts$ environments:
 
 \begin{itemize}
@@ -303,11 +303,11 @@ partioned in the $\EnvVar,\EnvConst,\EnvFunc,\EnvStucts$ environments:
 
 \comment{TODO: formalizzare structs, funzioni e moduli}
 
-The $\Env$ function can now be defined as follows
+The $\EnvSym$ function can now be defined as follows
 \[
 	\begin{split}
-		\Env : \Id & \to \Type\\*
-		\Env(i) & \mapsto \begin{cases}
+		\EnvSym : \Id & \to \Type\\*
+		\EnvSym(i) & \mapsto \begin{cases}
 			\EnvStucts(i) &\text{ if } \EnvVar(i)=\varnothing \land \EnvConst(i)=\varnothing \land \EnvFunc(i)=\varnothing \\*
 			\EnvFunc(i) &\text{ if } \EnvVar(i)=\varnothing \land \EnvConst(i)=\varnothing \\*
 			\EnvConst(i) &\text{ if } \EnvVar(i)=\varnothing \\*
@@ -353,12 +353,12 @@ Using the $\EnvVar$ variables environment as example
 
 \[
 	\begin{split}
-		&\Env\then \Void:\Type \\
-		&\Env\then \Bool:\Type \\
-		&\Env\then \Natural:\Type \\
-		&\Env\then \Int:\Type \\
-		&\Env\then \Real:\Type \\
-		&\Env\then \Text:\Type \\
+		&\EnvSym\then \Void:\Type \\
+		&\EnvSym\then \Bool:\Type \\
+		&\EnvSym\then \Natural:\Type \\
+		&\EnvSym\then \Int:\Type \\
+		&\EnvSym\then \Real:\Type \\
+		&\EnvSym\then \Text:\Type \\
 	\end{split}
 \]
 
@@ -366,24 +366,24 @@ Using the $\EnvVar$ variables environment as example
 
 \[
 	\begin{split}
-		&\Env\then \List[\sigma:=\Type]:\Type \\
-		&\Env\then \Map[\kappa:=\Type,\nu:=\Type]:\Type \\
+		&\EnvSym\then \List[\sigma:=\Type]:\Type \\
+		&\EnvSym\then \Map[\kappa:=\Type,\nu:=\Type]:\Type \\
 	\end{split}
 \]
 
 \[
 	\infrule{
-		\Env\then \tau:\Type
+		\EnvSym\then \tau:\Type
 	}{
-		\Env\then \code{type.[$\tau$]} \equiv \exists\tau.\List
+		\EnvSym\then \code{type.[$\tau$]} \equiv \exists\tau.\List
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then \tau:\Type \quad \sigma:\Type
+		\EnvSym\then \tau:\Type \quad \sigma:\Type
 	}{
-		\Env\then \code{type.[$\tau$:$\sigma$]} \equiv \exists\tau.\exists\sigma.\Map
+		\EnvSym\then \code{type.[$\tau$:$\sigma$]} \equiv \exists\tau.\exists\sigma.\Map
 	}
 \]
 
@@ -392,27 +392,27 @@ Using the $\EnvVar$ variables environment as example
 \paragraph{Tuple}
 \[
 	\infrule{
-		\Env\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type}
+		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type}
 	}{
-		\Env\then \code{tuple <$\tau_1$, $...$, $\tau_n$>} \equiv \tau_1 \times ... \times \tau_n
+		\EnvSym\then \code{tuple <$\tau_1$, $...$, $\tau_n$>} \equiv \tau_1 \times ... \times \tau_n
 	}
 \]
 
 \paragraph{Record}
 \[
 	\infrule{
-		\Env\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \Id}
+		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \Id}
 	}{
-		\Env\then \code{record <$a_1$ $\tau_1$, $...$, $a_n$ $\tau_n$>} \equiv \tuple{a_1:\tau_1, ..., a_n:\tau_n}
+		\EnvSym\then \code{record <$a_1$ $\tau_1$, $...$, $a_n$ $\tau_n$>} \equiv \tuple{a_1:\tau_1, ..., a_n:\tau_n}
 	}
 \]
 
 \paragraph{Struct}
 \[
 	\infrule{
-		\Env\then \xi \in \Id \quad n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \Id}
+		\EnvSym\then \xi \in \Id \quad n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \Id}
 	}{
-		\Env,\code{struct $\xi$ <$a_1$ $\tau_1$, $...$, $a_n$ $\tau_n$>} \then \code{$\xi$} \equiv (\xi,\tuple{a_1:\tau_1,...,a_n:\tau_n})
+		\EnvSym,\code{struct $\xi$ <$a_1$ $\tau_1$, $...$, $a_n$ $\tau_n$>} \then \code{$\xi$} \equiv (\xi,\tuple{a_1:\tau_1,...,a_n:\tau_n})
 	}
 \]
 
@@ -422,33 +422,33 @@ Using the $\EnvVar$ variables environment as example
 
 \[
 	\infrule{
-		\Env\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\Id} \quad \rho:\Type
+		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\Id} \quad \rho:\Type
 	}{
-		\Env\then \code{::($a_1$ $\tau_1$, $...$, $a_n$ $\tau_n$) => $\rho$} \equiv (\tau_1,...,\tau_n) \to \rho
+		\EnvSym\then \code{::($a_1$ $\tau_1$, $...$, $a_n$ $\tau_n$) => $\rho$} \equiv (\tau_1,...,\tau_n) \to \rho
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\Id}
+		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\Id}
 	}{
-		\Env\then \code{::($a_1$ $\tau_1$, $...$, $a_n$ $\tau_n$)} \equiv (\tau_1,...,\tau_n) \to \Void
+		\EnvSym\then \code{::($a_1$ $\tau_1$, $...$, $a_n$ $\tau_n$)} \equiv (\tau_1,...,\tau_n) \to \Void
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then \xi \in \Id \quad n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\Id} \quad \rho:\Type
+		\EnvSym\then \xi \in \Id \quad n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\Id} \quad \rho:\Type
 	}{
-		\Env,\code{$\xi$($a_1$ $\tau_1$, $...$, $a_n$ $\tau_n$) => $\rho$ \{\}} \then \code{$\xi$} : (\tau_1,...,\tau_n) \to \rho
+		\EnvSym,\code{$\xi$($a_1$ $\tau_1$, $...$, $a_n$ $\tau_n$) => $\rho$ \{\}} \then \code{$\xi$} : (\tau_1,...,\tau_n) \to \rho
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then \xi \in \Id \quad n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\Id} \quad \rho:\Type
+		\EnvSym\then \xi \in \Id \quad n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\Id} \quad \rho:\Type
 	}{
-		\Env,\code{$\xi$($a_1$ $\tau_1$, $...$, $a_n$ $\tau_n$) \{\}} \then \code{$\xi$} : (\tau_1,...,\tau_n) \to \Void
+		\EnvSym,\code{$\xi$($a_1$ $\tau_1$, $...$, $a_n$ $\tau_n$) \{\}} \then \code{$\xi$} : (\tau_1,...,\tau_n) \to \Void
 	}
 \]
 
@@ -461,18 +461,18 @@ Using the $\EnvVar$ variables environment as example
 \paragraph{Reflexivity}
 \[
 	\infrule{
-		\Env\then \tau:\Type
+		\EnvSym\then \tau:\Type
 	}{
-		\Env\then \tau \narr \tau
+		\EnvSym\then \tau \narr \tau
 	}
 \]
 
 \paragraph{Transitivity}
 \[
 	\infrule{
-		\Env\then \tau_1 \narr \tau_2 \quad \tau_2 \narr \tau_3
+		\EnvSym\then \tau_1 \narr \tau_2 \quad \tau_2 \narr \tau_3
 	}{
-		\Env\then \tau_1 \narr \tau_3
+		\EnvSym\then \tau_1 \narr \tau_3
 	}
 \]
 
@@ -480,36 +480,36 @@ Using the $\EnvVar$ variables environment as example
 
 \[
 	\infrule{
-		\Env\then \tau : \Type
+		\EnvSym\then \tau : \Type
 	}{
-		\Env\then \Void \narr \tau
+		\EnvSym\then \Void \narr \tau
 	}
 \]
 
 \[
-	\Env\then \Natural \narr \Int
-	\qquad \Env\then \Int \narr \Real
+	\EnvSym\then \Natural \narr \Int
+	\qquad \EnvSym\then \Int \narr \Real
 \]
 
 \subsubsection{Composite types}
 
 \[
 	\infrule{
-		\Env\then \tau_1 = \List[\sigma_1:=\Type]\\*
-		\Env\then \tau_2 = \List[\sigma_2:=\Type]\\*
-		\Env\then \sigma_1 \narr \sigma_2
+		\EnvSym\then \tau_1 = \List[\sigma_1:=\Type]\\*
+		\EnvSym\then \tau_2 = \List[\sigma_2:=\Type]\\*
+		\EnvSym\then \sigma_1 \narr \sigma_2
 	}{
-		\Env\then \tau_1 \narr \tau_2
+		\EnvSym\then \tau_1 \narr \tau_2
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then \tau_1 = \Map[\kappa_1:=\Type, \nu_1:=\Type]\\*
-		\Env\then \tau_2 = \Map[\kappa_2:=\Type, \nu_2:=\Type]\\*
-		\Env\then \kappa_1 \narr \kappa_2 \land \nu_1 \narr \nu_2
+		\EnvSym\then \tau_1 = \Map[\kappa_1:=\Type, \nu_1:=\Type]\\*
+		\EnvSym\then \tau_2 = \Map[\kappa_2:=\Type, \nu_2:=\Type]\\*
+		\EnvSym\then \kappa_1 \narr \kappa_2 \land \nu_1 \narr \nu_2
 	}{
-		\Env\then \tau_1 \narr \tau_2
+		\EnvSym\then \tau_1 \narr \tau_2
 	}
 \]
 
@@ -521,11 +521,11 @@ Using the $\EnvVar$ variables environment as example
 
 \[
 	\infrule{
-		\Env\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad \theta_1 = \bigtimes_{i \in [1,n]}{\tau_i}\\*
-		\Env\then m \geq n \quad \forall_{i\in[1,m]}{\omega_i:\Type} \quad \theta_2 = \bigtimes_{j \in [1,m]}{\omega_j}\\*
-		\Env\then \forall_{i \in [1,n]}{\tau_i \narr \omega_i}
+		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad \theta_1 = \bigtimes_{i \in [1,n]}{\tau_i}\\*
+		\EnvSym\then m \geq n \quad \forall_{i\in[1,m]}{\omega_i:\Type} \quad \theta_2 = \bigtimes_{j \in [1,m]}{\omega_j}\\*
+		\EnvSym\then \forall_{i \in [1,n]}{\tau_i \narr \omega_i}
 	}{
-		\Env\then \theta_1 \narr \theta_2
+		\EnvSym\then \theta_1 \narr \theta_2
 	}
 \]
 A tuple type $\theta_1$ is narrower than the tuple type $\theta_2$ if the first
@@ -536,11 +536,11 @@ types $\omega$ of $\theta_2$
 
 \[
 	\infrule{
-		\Env\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad \theta = \bigtimes_{i \in [1,n]}{\tau_i}\\*
-		\Env\then m \geq n \quad \forall_{j\in[1,m]}{a_j \in \Id, \omega_j:\Type} \quad \rho = \tuple{a_1:\omega_1,...,a_m:\omega_m} \\*
-		\Env\then \forall_{i \in [1,n]}{\tau_i \narr \omega_i}
+		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad \theta = \bigtimes_{i \in [1,n]}{\tau_i}\\*
+		\EnvSym\then m \geq n \quad \forall_{j\in[1,m]}{a_j \in \Id, \omega_j:\Type} \quad \rho = \tuple{a_1:\omega_1,...,a_m:\omega_m} \\*
+		\EnvSym\then \forall_{i \in [1,n]}{\tau_i \narr \omega_i}
 	}{
-		\Env\then \theta \narr \rho
+		\EnvSym\then \theta \narr \rho
 	}
 \]
 A tuple type $\theta$ is narrower than the record type $\rho$ if the first $n$
@@ -551,11 +551,11 @@ $\omega$ of $\rho$ (fields names are ignored)
 
 \[
 	\infrule{
-		\Env\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad \theta = \bigtimes_{i \in [1,n]}{\tau_i}\\*
-		\Env\then \xi \in \Id \quad m \geq n \quad \forall_{j\in[1,m]}{a_j \in \Id, \omega_j:\Type} \quad \sigma = (\xi, \tuple{a_1:\omega_1,...,a_m:\omega_m}) \\*
-		\Env\then \forall_{i \in [1,n]}{\tau_i \narr \omega_i}
+		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad \theta = \bigtimes_{i \in [1,n]}{\tau_i}\\*
+		\EnvSym\then \xi \in \Id \quad m \geq n \quad \forall_{j\in[1,m]}{a_j \in \Id, \omega_j:\Type} \quad \sigma = (\xi, \tuple{a_1:\omega_1,...,a_m:\omega_m}) \\*
+		\EnvSym\then \forall_{i \in [1,n]}{\tau_i \narr \omega_i}
 	}{
-		\Env\then \theta \narr \sigma
+		\EnvSym\then \theta \narr \sigma
 	}
 \]
 A tuple type $\theta$ is narrower than the struct type $\sigma$ if the first
@@ -570,11 +570,11 @@ type $\omega$ of $\sigma$ (struct name and fields names are ignored)
 
 \[
 	\infrule{
-		\Env\then n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \quad \rho_1 = \tuple{a_1:\tau_1,...,a_n:\tau_n} \\*
-		\Env\then m \geq n \quad \forall_{j\in[1,m]}{b_j \in \mathcal{M} \subseteq \Id, \omega_j:\Type} \quad \rho_2 = \tuple{b_1:\omega_1,...,b_m:\omega_m} \\*
-		\Env\then \forall_{a':\tau'\in\mathcal{N}}{\exists_{b':\omega'\in\mathcal{M}}{a'=b' \land \tau' \narr \omega'}}
+		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \quad \rho_1 = \tuple{a_1:\tau_1,...,a_n:\tau_n} \\*
+		\EnvSym\then m \geq n \quad \forall_{j\in[1,m]}{b_j \in \mathcal{M} \subseteq \Id, \omega_j:\Type} \quad \rho_2 = \tuple{b_1:\omega_1,...,b_m:\omega_m} \\*
+		\EnvSym\then \forall_{a':\tau'\in\mathcal{N}}{\exists_{b':\omega'\in\mathcal{M}}{a'=b' \land \tau' \narr \omega'}}
 	}{
-		\Env\then \rho_1 \narr \rho_2
+		\EnvSym\then \rho_1 \narr \rho_2
 	}
 \]
 A record type $\rho_1$ is narrower than a record type $\rho_2$ if, for all
@@ -585,11 +585,11 @@ $b'$ of type $\omega'$ in $\rho_2$, where $\tau'$ is narrower than $\omega'$
 
 \[
 	\infrule{
-		\Env\then n \geq 0 \quad \forall_{i\in[1,n]}{a \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \quad \rho = \tuple{a_1:\tau_1,...,a_n:\tau_n} \\*
-		\Env\then \xi \in \Id \quad m \geq n \quad \forall_{j\in[1,m]}{b_j \in \Id, \omega_j:\Type} \quad \sigma = (\xi, \tuple{b_1:\omega_1,...,b_m:\omega_m}) \\*
-		\Env\then \forall_{a':\tau'\in\mathcal{N}}{\exists_{b':\omega'\in\mathcal{M}}{a'=b' \land \tau' \narr \omega'}}
+		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{a \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \quad \rho = \tuple{a_1:\tau_1,...,a_n:\tau_n} \\*
+		\EnvSym\then \xi \in \Id \quad m \geq n \quad \forall_{j\in[1,m]}{b_j \in \Id, \omega_j:\Type} \quad \sigma = (\xi, \tuple{b_1:\omega_1,...,b_m:\omega_m}) \\*
+		\EnvSym\then \forall_{a':\tau'\in\mathcal{N}}{\exists_{b':\omega'\in\mathcal{M}}{a'=b' \land \tau' \narr \omega'}}
 	}{
-		\Env\then \rho \narr \sigma
+		\EnvSym\then \rho \narr \sigma
 	}
 \]
 A record type $\rho$ is narrower than a struct type $\sigma$ if, for all fields
@@ -601,13 +601,13 @@ name is ignored)
 
 \[
 	\infrule{
-		\Env\then \xi_1 \in \Id \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \Id, \tau_i:\Type} \\*
-		\Env\then \sigma_1 = (\xi_1, \tuple{a_1:\tau_1,...,a_n:\tau_n}) \\*
-		\Env\then \xi_2 \in \Id \quad m \geq n \quad \forall_{j\in[1,m]}{b_j \in \Id, \omega_j:\Type} \\*
-		\Env\then \sigma_2 = (\xi_2, \tuple{b_1:\omega_1,...,b_m:\omega_m}) \\*
-		\Env\then \xi_1 = \xi_2
+		\EnvSym\then \xi_1 \in \Id \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \Id, \tau_i:\Type} \\*
+		\EnvSym\then \sigma_1 = (\xi_1, \tuple{a_1:\tau_1,...,a_n:\tau_n}) \\*
+		\EnvSym\then \xi_2 \in \Id \quad m \geq n \quad \forall_{j\in[1,m]}{b_j \in \Id, \omega_j:\Type} \\*
+		\EnvSym\then \sigma_2 = (\xi_2, \tuple{b_1:\omega_1,...,b_m:\omega_m}) \\*
+		\EnvSym\then \xi_1 = \xi_2
 	}{
-		\Env\then \sigma_1 \narr \sigma_2
+		\EnvSym\then \sigma_1 \narr \sigma_2
 	}
 \]
 A struct type $\sigma_1$ is narrower than a struct type $\sigma_2$ if and only
@@ -623,14 +623,14 @@ construction).
 
 \[
 	\infrule{
-		\Env\then \rho_1:\Type \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \\*
-		\Env\then \phi_1 = (a_1:\tau_1,...,a_n:\tau_n) \to \rho_1 \\*
-		\Env\then \rho_2:\Type \quad m \geq n  \quad \forall_{j\in[1,m]}{b_j \in \mathcal{M} \subseteq \Id, \omega_i:\Type} \\*
-		\Env\then \phi_2 = (b_1:\omega_1,...,b_m:\omega_m) \to \rho_1 \\*
-		\Env\then \rho_1 \narr \rho_2 \\*
-		\Env\then \forall_{a':\tau'}{\exists_{b':\omega'}{a'=b' \land \tau' \narr \omega'}}
+		\EnvSym\then \rho_1:\Type \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \\*
+		\EnvSym\then \phi_1 = (a_1:\tau_1,...,a_n:\tau_n) \to \rho_1 \\*
+		\EnvSym\then \rho_2:\Type \quad m \geq n  \quad \forall_{j\in[1,m]}{b_j \in \mathcal{M} \subseteq \Id, \omega_i:\Type} \\*
+		\EnvSym\then \phi_2 = (b_1:\omega_1,...,b_m:\omega_m) \to \rho_1 \\*
+		\EnvSym\then \rho_1 \narr \rho_2 \\*
+		\EnvSym\then \forall_{a':\tau'}{\exists_{b':\omega'}{a'=b' \land \tau' \narr \omega'}}
 	}{
-		\Env\then \phi_1 \narr \phi_2
+		\EnvSym\then \phi_1 \narr \phi_2
 	}
 \]
 A function type $\phi_1$ is narrower than a function type $\phi_2$ if the
@@ -665,17 +665,17 @@ than $\omega'$.
 \subsubsection{Bool}
 
 \[
-	\Env\then \code{true}:\Bool \qquad \Env \then \code{false}:\Bool
+	\EnvSym\then \code{true}:\Bool \qquad \EnvSym \then \code{false}:\Bool
 \]
 
 \subsubsection{Int}
 
 \[
 	\infrule{
-		\Env\then x \in \mathbb{Z} \quad x \in [-2^{31}, 2^{31} - 1]
+		\EnvSym\then x \in \mathbb{Z} \quad x \in [-2^{31}, 2^{31} - 1]
 	}{
-		\Env\then \code{$x$} : \Int \\*
-		\land \Env\then \code{$x$i} : \Int
+		\EnvSym\then \code{$x$} : \Int \\*
+		\land \EnvSym\then \code{$x$i} : \Int
 	}
 \]
 
@@ -685,9 +685,9 @@ than $\omega'$.
 
 \[
 	\infrule{
-		\Env\then x \in \mathbb{N} \quad x \in [0, 2^{31}]
+		\EnvSym\then x \in \mathbb{N} \quad x \in [0, 2^{31}]
 	}{
-		\Env\then \code{$x$n} : \Natural
+		\EnvSym\then \code{$x$n} : \Natural
 	}
 \]
 
@@ -697,10 +697,10 @@ than $\omega'$.
 
 \[
 	\infrule{
-		\Env\then x \in \mathbb{R}
+		\EnvSym\then x \in \mathbb{R}
 	}{
-		\Env\then \code{$x$} : \Real \\*
-		\land \Env\then \code{$x$r} : \Real
+		\EnvSym\then \code{$x$} : \Real \\*
+		\land \EnvSym\then \code{$x$r} : \Real
 	}
 \]
 
@@ -710,19 +710,19 @@ than $\omega'$.
 
 \[
 	\infrule{
-		\Env\then x \in \text{Unicode} \setminus \set{"\backslash n", "\backslash r"} \quad n \geq 0
+		\EnvSym\then x \in \text{Unicode} \setminus \set{"\backslash n", "\backslash r"} \quad n \geq 0
 	}{
-		\Env\then \code{"$x_1...x_n$"} : \Text \\*
-		\land \Env\then \code{'$x_1...x_n$'} : \Text
+		\EnvSym\then \code{"$x_1...x_n$"} : \Text \\*
+		\land \EnvSym\then \code{'$x_1...x_n$'} : \Text
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then x \in \text{Unicode} \quad n \geq 0
+		\EnvSym\then x \in \text{Unicode} \quad n \geq 0
 	}{
-		\Env\then \code{"\{$x_1...x_n$\}"} : \Text \\*
-		\land \Env\then \code{'\{$x_1...x_n$\}'} : \Text
+		\EnvSym\then \code{"\{$x_1...x_n$\}"} : \Text \\*
+		\land \EnvSym\then \code{'\{$x_1...x_n$\}'} : \Text
 	}
 \]
 
@@ -737,22 +737,22 @@ than $\omega'$.
 \subsubsection{List}
 
 \[
-	\Env\then \code{[]}:\exists\Void.\List
+	\EnvSym\then \code{[]}:\exists\Void.\List
 \]
 
 \[
 	\infrule{
-		\Env\then n \geq 1 \quad \tau:\Type \quad \forall_{i\in[1,n]}{\expr_i\in\Expr,\expr_i:\tau}
+		\EnvSym\then n \geq 1 \quad \tau:\Type \quad \forall_{i\in[1,n]}{\expr_i\in\Expr,\expr_i:\tau}
 	}{
-		\Env\then \code{[$\expr_1$, $...$, $\expr_n$]}:\exists\tau.\List
+		\EnvSym\then \code{[$\expr_1$, $...$, $\expr_n$]}:\exists\tau.\List
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type,\expr_i\in\Expr,\expr_i:\tau_i} \quad \omega = \bigsqcap_{i=1}^{n}{\tau_i}
+		\EnvSym\then n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type,\expr_i\in\Expr,\expr_i:\tau_i} \quad \omega = \bigsqcap_{i=1}^{n}{\tau_i}
 	}{
-		\Env\then \code{[$\expr_1$, $...$, $\expr_n$]}:\exists\omega.\List
+		\EnvSym\then \code{[$\expr_1$, $...$, $\expr_n$]}:\exists\omega.\List
 	}
 \]
 
@@ -761,25 +761,25 @@ List of $\omega$ (widest among $\tau$)
 \subsubsection{Map}
 
 \[
-	\Env\then \code{[:]}:\exists\Void.\exists\Void.\Map
+	\EnvSym\then \code{[:]}:\exists\Void.\exists\Void.\Map
 \]
 
 \[
 	\infrule{
-		\Env\then \kappa:\Type \quad \forall_{i\in[1,n]}{k_i\in\Expr,k_i:\kappa} \quad n \geq 1 \\*
-		\Env\then \nu:\Type \quad \forall_{i\in[1,n]}{v_i\in\Expr,v_i:\nu} \hfill
+		\EnvSym\then \kappa:\Type \quad \forall_{i\in[1,n]}{k_i\in\Expr,k_i:\kappa} \quad n \geq 1 \\*
+		\EnvSym\then \nu:\Type \quad \forall_{i\in[1,n]}{v_i\in\Expr,v_i:\nu} \hfill
 	}{
-		\Env\then \code{[$k_1$:$v_1$, $...$, $k_n$:$v_n$]}:\exists\kappa.\exists\nu.\Map
+		\EnvSym\then \code{[$k_1$:$v_1$, $...$, $k_n$:$v_n$]}:\exists\kappa.\exists\nu.\Map
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then \forall_{i \in [1,n]}{\kappa_i:\Type, k_i\in\Expr, k_i:\kappa_i} \quad n \geq 1 \\*
-		\Env\then \forall_{i \in [1,n]}{\nu_i:\Type, v_i\in\Expr, v_i:\nu_i} \hfill\\*
-		\Env\then \omega_\kappa = \bigsqcap_{i=1}^{n}{\kappa_i} \quad \omega_\nu = \bigsqcap_{i=1}^{n}{\nu_i}
+		\EnvSym\then \forall_{i \in [1,n]}{\kappa_i:\Type, k_i\in\Expr, k_i:\kappa_i} \quad n \geq 1 \\*
+		\EnvSym\then \forall_{i \in [1,n]}{\nu_i:\Type, v_i\in\Expr, v_i:\nu_i} \hfill\\*
+		\EnvSym\then \omega_\kappa = \bigsqcap_{i=1}^{n}{\kappa_i} \quad \omega_\nu = \bigsqcap_{i=1}^{n}{\nu_i}
 	}{
-		\Env\then \code{[$k_1$:$v_1$, $...$, $k_n$:$v_n$]}:\exists\omega_\kappa.\exists\omega_\nu.\Map
+		\EnvSym\then \code{[$k_1$:$v_1$, $...$, $k_n$:$v_n$]}:\exists\omega_\kappa.\exists\omega_\nu.\Map
 	}
 \]
 
@@ -794,9 +794,9 @@ among $\nu$)
 
 \[
 	\infrule{
-		\Env\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type, \expr_i\in\Expr, \expr_i:\tau_i}
+		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type, \expr_i\in\Expr, \expr_i:\tau_i}
 	}{
-		\Env\then \code{<$\expr_1$, $...$, $\expr_n$>}:\tau_1 \times ... \times \tau_n
+		\EnvSym\then \code{<$\expr_1$, $...$, $\expr_n$>}:\tau_1 \times ... \times \tau_n
 	}
 \]
 
@@ -804,9 +804,9 @@ among $\nu$)
 
 \[
 	\infrule{
-		\Env\then n \geq 1 \quad \forall_{i\in[1,n]}{a_i\in\Id, \tau_i:\Type, \expr_i\in\Expr, \expr_i:\tau_i}
+		\EnvSym\then n \geq 1 \quad \forall_{i\in[1,n]}{a_i\in\Id, \tau_i:\Type, \expr_i\in\Expr, \expr_i:\tau_i}
 	}{
-		\Env\then \code{<$a_1$:$\expr_1$, $...$, $a_n$:$\expr_n$>}:\tuple{a_1:\tau_1,...,a_2:\tau_n}
+		\EnvSym\then \code{<$a_1$:$\expr_1$, $...$, $a_n$:$\expr_n$>}:\tuple{a_1:\tau_1,...,a_2:\tau_n}
 	}
 \]
 
@@ -814,9 +814,9 @@ among $\nu$)
 
 \[
 	\infrule{
-		\Env\then \xi \in \Id \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \Id, \tau_i:\Type} \quad \sigma_1 = (\xi, \tuple{a_1:\tau_1,...,a_n:\tau_n}) \\*
+		\EnvSym\then \xi \in \Id \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \Id, \tau_i:\Type} \quad \sigma_1 = (\xi, \tuple{a_1:\tau_1,...,a_n:\tau_n}) \\*
 	}{
-		\Env\then \code{$\xi$.<>} : \sigma \\*
+		\EnvSym\then \code{$\xi$.<>} : \sigma \\*
 	}
 \]
 
@@ -826,23 +826,23 @@ among $\nu$)
 
 \[
 	\infrule{
-		\Env\then \tau_1 \in \texttt{Number} \quad \expr_1\in\Expr \quad \expr_1:\tau_1\\*
-		\Env\then \tau_2 \in \texttt{Number} \quad \expr_2\in\Expr \quad \expr_2:\tau_2 \\*
-		\Env\then \omega = \tau_1 \sqcap \tau_2
+		\EnvSym\then \tau_1 \in \texttt{Number} \quad \expr_1\in\Expr \quad \expr_1:\tau_1\\*
+		\EnvSym\then \tau_2 \in \texttt{Number} \quad \expr_2\in\Expr \quad \expr_2:\tau_2 \\*
+		\EnvSym\then \omega = \tau_1 \sqcap \tau_2
 	}{
-		\Env\then \code{$\expr_1$..$\expr_2$} : \exists\omega.\Range
+		\EnvSym\then \code{$\expr_1$..$\expr_2$} : \exists\omega.\Range
 	}
 \]
 Range from $\expr_1$ (begin) to $\expr_2$ (end)
 
 \[
 	\infrule{
-		\Env\then \tau_1 \in \texttt{Number} \quad \expr_1\in\Expr \quad \expr_1:\tau_1\\*
-		\Env\then \tau_2 \in \texttt{Number} \quad \expr_2\in\Expr \quad \expr_2:\tau_2 \\*
-		\Env\then \tau_3 \in \texttt{Number} \quad \expr_3\in\Expr \quad \expr_3:\tau_3 \\*
-		\Env\then \omega = \tau_1 \sqcap \tau_2 \sqcap \tau_3
+		\EnvSym\then \tau_1 \in \texttt{Number} \quad \expr_1\in\Expr \quad \expr_1:\tau_1\\*
+		\EnvSym\then \tau_2 \in \texttt{Number} \quad \expr_2\in\Expr \quad \expr_2:\tau_2 \\*
+		\EnvSym\then \tau_3 \in \texttt{Number} \quad \expr_3\in\Expr \quad \expr_3:\tau_3 \\*
+		\EnvSym\then \omega = \tau_1 \sqcap \tau_2 \sqcap \tau_3
 	}{
-		\Env\then \code{$\expr_1$..$\expr_2$..$\expr_3$} : \exists\omega.\Range
+		\EnvSym\then \code{$\expr_1$..$\expr_2$..$\expr_3$} : \exists\omega.\Range
 	}
 \]
 
@@ -856,9 +856,9 @@ Range from $\expr_1$ (begin) to $\expr_2$ (end) with a step $\expr_3$
 
 \[
 	\infrule{
-		\Env\then \tau:\Type \quad \expr\in\Expr \quad \expr:\tau
+		\EnvSym\then \tau:\Type \quad \expr\in\Expr \quad \expr:\tau
 	}{
-		\Env\then \code{\{$\expr$\}} : \tau
+		\EnvSym\then \code{\{$\expr$\}} : \tau
 	}
 \]
 
@@ -866,10 +866,10 @@ Range from $\expr_1$ (begin) to $\expr_2$ (end) with a step $\expr_3$
 
 \[
 	\infrule{
-		\Env\then \rho:\Type \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \Id, \tau_i:\Type} \quad \phi = (a_1:\tau_1,...,a_n:\tau_n) \to \rho \\*
-		\Env\then f : \phi
+		\EnvSym\then \rho:\Type \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \Id, \tau_i:\Type} \quad \phi = (a_1:\tau_1,...,a_n:\tau_n) \to \rho \\*
+		\EnvSym\then f : \phi
 	}{
-		\Env\then \code{$f$($...$)} : \rho
+		\EnvSym\then \code{$f$($...$)} : \rho
 	}
 \]
 
@@ -881,10 +881,10 @@ Range from $\expr_1$ (begin) to $\expr_2$ (end) with a step $\expr_3$
 
 \[
 	\infrule{
-		\Env\then a \in \Id \\*
-		\Env\then \rho:\Type \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \Id, \tau_i:\Type} \quad \phi = (a_1:\tau_1,...,a_n:\tau_n) \to \rho \\*
+		\EnvSym\then a \in \Id \\*
+		\EnvSym\then \rho:\Type \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \Id, \tau_i:\Type} \quad \phi = (a_1:\tau_1,...,a_n:\tau_n) \to \rho \\*
 	}{
-		\Env,\code{$a$ $\phi$}\then \code{::$a$} : \phi
+		\EnvSym,\code{$a$ $\phi$}\then \code{::$a$} : \phi
 	}
 \]
 
@@ -940,20 +940,20 @@ Range from $\expr_1$ (begin) to $\expr_2$ (end) with a step $\expr_3$
 
 \[
 	\infrule{
-		\Env\then \tau:\Type \quad l:\tau \\*
-		\Env\then \sigma:\Type \quad \tau \narr \sigma \quad r:\sigma
+		\EnvSym\then \tau:\Type \quad l:\tau \\*
+		\EnvSym\then \sigma:\Type \quad \tau \narr \sigma \quad r:\sigma
 	}{
-		\Env\then \code{$l$ = $r$} : \Bool
+		\EnvSym\then \code{$l$ = $r$} : \Bool
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then \tau:\Type \quad l:\tau \\*
-		\Env\then \sigma:\Type \quad r:\sigma \\*
-		\Env\then \code{$l$ = $r$} : \Bool
+		\EnvSym\then \tau:\Type \quad l:\tau \\*
+		\EnvSym\then \sigma:\Type \quad r:\sigma \\*
+		\EnvSym\then \code{$l$ = $r$} : \Bool
 	}{
-		\Env\then \code{$l$ != $r$} : \Bool
+		\EnvSym\then \code{$l$ != $r$} : \Bool
 	}
 \]
 
@@ -963,11 +963,11 @@ If the "equal" operator is defined, the "not equal" operator is also defined
 
 \[
 	\infrule{
-		\Env\then \tau:\Type \quad l:\tau \\*
-		\Env\then \sigma:\Type \quad r:\sigma \\*
-		\Env\then \code{$l$ =\~{} $r$}: \Bool
+		\EnvSym\then \tau:\Type \quad l:\tau \\*
+		\EnvSym\then \sigma:\Type \quad r:\sigma \\*
+		\EnvSym\then \code{$l$ =\~{} $r$}: \Bool
 	}{
-		\Env\then \code{$r$ \~{}= $l$}: \Bool
+		\EnvSym\then \code{$r$ \~{}= $l$}: \Bool
 	}
 \]
 
@@ -981,9 +981,9 @@ If the "contains" operator is defined, the "contained" operator is also defined
 
 \[
 	\infrule{
-		\Env\then l:\texttt{Number} \quad \tau \in \texttt{Number}
+		\EnvSym\then l:\texttt{Number} \quad \tau \in \texttt{Number}
 	}{
-		\Env\then \code{$l$ as $\tau$}: \tau
+		\EnvSym\then \code{$l$ as $\tau$}: \tau
 	}
 \]
 
@@ -992,26 +992,26 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then \tau \in \texttt{Number} \quad x:\tau
+		\EnvSym\then \tau \in \texttt{Number} \quad x:\tau
 	}{
-		\Env\then \code{+$x$}: \tau
+		\EnvSym\then \code{+$x$}: \tau
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then \tau \in \texttt{Number}\setminus\set{\Natural} \quad x:\tau
+		\EnvSym\then \tau \in \texttt{Number}\setminus\set{\Natural} \quad x:\tau
 	}{
-		\Env\then \code{-$x$}: \tau
+		\EnvSym\then \code{-$x$}: \tau
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then \tau \in \texttt{Number} \quad l:\tau \quad r:\tau\\*
+		\EnvSym\then \tau \in \texttt{Number} \quad l:\tau \quad r:\tau\\*
 		\bop = \set{\code{=}, \code{!=}, \code{<}, \code{<=}, \code{>=}, \code{>=}, \code{>}}
 	}{
-		\Env\then \code{$l$ $\bop$ $r$}: \Bool
+		\EnvSym\then \code{$l$ $\bop$ $r$}: \Bool
 	}
 \]
 
@@ -1027,18 +1027,18 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then x:\Bool
+		\EnvSym\then x:\Bool
 	}{
-		\Env\then \code{!$x$}:\Bool
+		\EnvSym\then \code{!$x$}:\Bool
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then l:\Bool \quad r:\Bool \\*
+		\EnvSym\then l:\Bool \quad r:\Bool \\*
 		\bop = \set{\code{and}, \code{\&}, \code{or}, \code{|}}
 	}{
-		\Env\then \code{$l$ $\bop$ $r$}:\Bool
+		\EnvSym\then \code{$l$ $\bop$ $r$}:\Bool
 	}
 \]
 
@@ -1048,25 +1048,25 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Natural \quad r:\Natural
+		\EnvSym\then l:\Natural \quad r:\Natural
 	}{
-		\Env\then \code{$l$ + $r$} : \Natural
+		\EnvSym\then \code{$l$ + $r$} : \Natural
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then l:\Natural \quad r:\Int
+		\EnvSym\then l:\Natural \quad r:\Int
 	}{
-		\Env\then \code{$l$ + $r$} : \Int
+		\EnvSym\then \code{$l$ + $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then l:\Natural \quad r:\Real
+		\EnvSym\then l:\Natural \quad r:\Real
 	}{
-		\Env\then \code{$l$ + $r$} : \Real
+		\EnvSym\then \code{$l$ + $r$} : \Real
 	}
 \]
 
@@ -1074,9 +1074,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Natural \quad r:\Natural
+		\EnvSym\then l:\Natural \quad r:\Natural
 	}{
-		\Env\then \code{$l$ - $r$} : \Int
+		\EnvSym\then \code{$l$ - $r$} : \Int
 	}
 \]
 
@@ -1084,17 +1084,17 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Natural \quad r:\Int
+		\EnvSym\then l:\Natural \quad r:\Int
 	}{
-		\Env\then \code{$l$ - $r$} : \Int
+		\EnvSym\then \code{$l$ - $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then l:\Natural \quad r:\Real
+		\EnvSym\then l:\Natural \quad r:\Real
 	}{
-		\Env\then \code{$l$ - $r$} : \Real
+		\EnvSym\then \code{$l$ - $r$} : \Real
 	}
 \]
 
@@ -1102,26 +1102,26 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Natural \quad r:\Natural
+		\EnvSym\then l:\Natural \quad r:\Natural
 	}{
-		\Env\then \code{$l$ * $r$} : \Natural
+		\EnvSym\then \code{$l$ * $r$} : \Natural
 	}
 \]
 
 
 \[
 	\infrule{
-		\Env\then l:\Natural \quad r:\Int
+		\EnvSym\then l:\Natural \quad r:\Int
 	}{
-		\Env\then \code{$l$ * $r$} : \Int
+		\EnvSym\then \code{$l$ * $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then l:\Natural \quad r:\Real
+		\EnvSym\then l:\Natural \quad r:\Real
 	}{
-		\Env\then \code{$l$ * $r$} : \Real
+		\EnvSym\then \code{$l$ * $r$} : \Real
 	}
 \]
 
@@ -1129,25 +1129,25 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Natural \quad r:\Natural
+		\EnvSym\then l:\Natural \quad r:\Natural
 	}{
-		\Env\then \code{$l$ / $r$} : \Real
+		\EnvSym\then \code{$l$ / $r$} : \Real
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then l:\Natural \quad r:\Int
+		\EnvSym\then l:\Natural \quad r:\Int
 	}{
-		\Env\then \code{$l$ / $r$} : \Real
+		\EnvSym\then \code{$l$ / $r$} : \Real
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then l:\Natural \quad r:\Real
+		\EnvSym\then l:\Natural \quad r:\Real
 	}{
-		\Env\then \code{$l$ / $r$} : \Real
+		\EnvSym\then \code{$l$ / $r$} : \Real
 	}
 \]
 
@@ -1155,25 +1155,25 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Natural \quad r:\Natural
+		\EnvSym\then l:\Natural \quad r:\Natural
 	}{
-		\Env\then \code{$l$ \% $r$} : \Natural
+		\EnvSym\then \code{$l$ \% $r$} : \Natural
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then l:\Natural \quad r:\Int
+		\EnvSym\then l:\Natural \quad r:\Int
 	}{
-		\Env\then \code{$l$ \% $r$} : \Int
+		\EnvSym\then \code{$l$ \% $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then l:\Natural \quad r:\Real
+		\EnvSym\then l:\Natural \quad r:\Real
 	}{
-		\Env\then \code{$l$ \% $r$} : \Real
+		\EnvSym\then \code{$l$ \% $r$} : \Real
 	}
 \]
 
@@ -1181,25 +1181,25 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Natural \quad r:\Natural
+		\EnvSym\then l:\Natural \quad r:\Natural
 	}{
-		\Env\then \code{$l$ \^{} $r$} : \Natural
+		\EnvSym\then \code{$l$ \^{} $r$} : \Natural
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then l:\Natural \quad r:\Int
+		\EnvSym\then l:\Natural \quad r:\Int
 	}{
-		\Env\then \code{$l$ \^{} $r$} : \Int
+		\EnvSym\then \code{$l$ \^{} $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then l:\Natural \quad r:\Real
+		\EnvSym\then l:\Natural \quad r:\Real
 	}{
-		\Env\then \code{$l$ \^{} $r$} : \Real
+		\EnvSym\then \code{$l$ \^{} $r$} : \Real
 	}
 \]
 
@@ -1209,9 +1209,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then x:\Int
+		\EnvSym\then x:\Int
 	}{
-		\Env\then \code{!!$x$} : \Int
+		\EnvSym\then \code{!!$x$} : \Int
 	}
 \]
 
@@ -1219,17 +1219,17 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad r:\Natural
+		\EnvSym\then l:\Int \quad r:\Natural
 	}{
-		\Env\then \code{$l$ \&\& $r$} : \Int
+		\EnvSym\then \code{$l$ \&\& $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad r:\Int
+		\EnvSym\then l:\Int \quad r:\Int
 	}{
-		\Env\then \code{$l$ \&\& $r$} : \Int
+		\EnvSym\then \code{$l$ \&\& $r$} : \Int
 	}
 \]
 
@@ -1237,17 +1237,17 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad r:\Natural
+		\EnvSym\then l:\Int \quad r:\Natural
 	}{
-		\Env\then \code{$l$ || $r$} : \Int
+		\EnvSym\then \code{$l$ || $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad r:\Int
+		\EnvSym\then l:\Int \quad r:\Int
 	}{
-		\Env\then \code{$l$ || $r$} : \Int
+		\EnvSym\then \code{$l$ || $r$} : \Int
 	}
 \]
 
@@ -1255,17 +1255,17 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad r:\Natural
+		\EnvSym\then l:\Int \quad r:\Natural
 	}{
-		\Env\then \code{$l$ ||| $r$} : \Int
+		\EnvSym\then \code{$l$ ||| $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad r:\Int
+		\EnvSym\then l:\Int \quad r:\Int
 	}{
-		\Env\then \code{$l$ ||| $r$} : \Int
+		\EnvSym\then \code{$l$ ||| $r$} : \Int
 	}
 \]
 
@@ -1273,17 +1273,17 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad r:\Natural
+		\EnvSym\then l:\Int \quad r:\Natural
 	}{
-		\Env\then \code{$l$ \{<\} $r$} : \Int
+		\EnvSym\then \code{$l$ \{<\} $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad r:\Int
+		\EnvSym\then l:\Int \quad r:\Int
 	}{
-		\Env\then \code{$l$ \{<\} $r$} : \Int
+		\EnvSym\then \code{$l$ \{<\} $r$} : \Int
 	}
 \]
 
@@ -1291,17 +1291,17 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad r:\Natural
+		\EnvSym\then l:\Int \quad r:\Natural
 	}{
-		\Env\then \code{$l$ \{>\} $r$} : \Int
+		\EnvSym\then \code{$l$ \{>\} $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad r:\Int
+		\EnvSym\then l:\Int \quad r:\Int
 	}{
-		\Env\then \code{$l$ \{>\} $r$} : \Int
+		\EnvSym\then \code{$l$ \{>\} $r$} : \Int
 	}
 \]
 
@@ -1309,17 +1309,17 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad r:\Natural
+		\EnvSym\then l:\Int \quad r:\Natural
 	}{
-		\Env\then \code{$l$ \{>>\} $r$} : \Int
+		\EnvSym\then \code{$l$ \{>>\} $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad r:\Int
+		\EnvSym\then l:\Int \quad r:\Int
 	}{
-		\Env\then \code{$l$ \{>>\} $r$} : \Int
+		\EnvSym\then \code{$l$ \{>>\} $r$} : \Int
 	}
 \]
 
@@ -1327,25 +1327,25 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad r:\Natural
+		\EnvSym\then l:\Int \quad r:\Natural
 	}{
-		\Env\then \code{$l$ + $r$} : \Int
+		\EnvSym\then \code{$l$ + $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad r:\Int
+		\EnvSym\then l:\Int \quad r:\Int
 	}{
-		\Env\then \code{$l$ + $r$} : \Int
+		\EnvSym\then \code{$l$ + $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad r:\Real
+		\EnvSym\then l:\Int \quad r:\Real
 	}{
-		\Env\then \code{$l$ + $r$} : \Real
+		\EnvSym\then \code{$l$ + $r$} : \Real
 	}
 \]
 
@@ -1353,25 +1353,25 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad r:\Natural
+		\EnvSym\then l:\Int \quad r:\Natural
 	}{
-		\Env\then \code{$l$ - $r$} : \Int
+		\EnvSym\then \code{$l$ - $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad r:\Int
+		\EnvSym\then l:\Int \quad r:\Int
 	}{
-		\Env\then \code{$l$ - $r$} : \Int
+		\EnvSym\then \code{$l$ - $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad r:\Real
+		\EnvSym\then l:\Int \quad r:\Real
 	}{
-		\Env\then \code{$l$ - $r$} : \Real
+		\EnvSym\then \code{$l$ - $r$} : \Real
 	}
 \]
 
@@ -1379,25 +1379,25 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad r:\Natural
+		\EnvSym\then l:\Int \quad r:\Natural
 	}{
-		\Env\then \code{$l$ * $r$} : \Int
+		\EnvSym\then \code{$l$ * $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad r:\Int
+		\EnvSym\then l:\Int \quad r:\Int
 	}{
-		\Env\then \code{$l$ * $r$} : \Int
+		\EnvSym\then \code{$l$ * $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad r:\Real
+		\EnvSym\then l:\Int \quad r:\Real
 	}{
-		\Env\then \code{$l$ * $r$} : \Real
+		\EnvSym\then \code{$l$ * $r$} : \Real
 	}
 \]
 
@@ -1405,25 +1405,25 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad r:\Natural
+		\EnvSym\then l:\Int \quad r:\Natural
 	}{
-		\Env\then \code{$l$ / $r$} : \Real
+		\EnvSym\then \code{$l$ / $r$} : \Real
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad r:\Int
+		\EnvSym\then l:\Int \quad r:\Int
 	}{
-		\Env\then \code{$l$ / $r$} : \Real
+		\EnvSym\then \code{$l$ / $r$} : \Real
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad r:\Real
+		\EnvSym\then l:\Int \quad r:\Real
 	}{
-		\Env\then \code{$l$ / $r$} : \Real
+		\EnvSym\then \code{$l$ / $r$} : \Real
 	}
 \]
 
@@ -1431,25 +1431,25 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad r:\Natural
+		\EnvSym\then l:\Int \quad r:\Natural
 	}{
-		\Env\then \code{$l$ \% $r$} : \Int
+		\EnvSym\then \code{$l$ \% $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad r:\Int
+		\EnvSym\then l:\Int \quad r:\Int
 	}{
-		\Env\then \code{$l$ \% $r$} : \Int
+		\EnvSym\then \code{$l$ \% $r$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad r:\Real
+		\EnvSym\then l:\Int \quad r:\Real
 	}{
-		\Env\then \code{$l$ \% $r$} : \Real
+		\EnvSym\then \code{$l$ \% $r$} : \Real
 	}
 \]
 
@@ -1457,25 +1457,25 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad r:\Natural
+		\EnvSym\then l:\Int \quad r:\Natural
 	}{
-		\Env\then \code{$l$ \^{} $r$} : \Real
+		\EnvSym\then \code{$l$ \^{} $r$} : \Real
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad r:\Int
+		\EnvSym\then l:\Int \quad r:\Int
 	}{
-		\Env\then \code{$l$ \^{} $r$} : \Real
+		\EnvSym\then \code{$l$ \^{} $r$} : \Real
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad r:\Real
+		\EnvSym\then l:\Int \quad r:\Real
 	}{
-		\Env\then \code{$l$ \^{} $r$} : \Real
+		\EnvSym\then \code{$l$ \^{} $r$} : \Real
 	}
 \]
 
@@ -1485,9 +1485,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad \tau \in \texttt{Number} \quad r:\tau
+		\EnvSym\then l:\Int \quad \tau \in \texttt{Number} \quad r:\tau
 	}{
-		\Env\then \code{$l$ + $r$} : \Real
+		\EnvSym\then \code{$l$ + $r$} : \Real
 	}
 \]
 
@@ -1495,9 +1495,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad \tau \in \texttt{Number} \quad r:\tau
+		\EnvSym\then l:\Int \quad \tau \in \texttt{Number} \quad r:\tau
 	}{
-		\Env\then \code{$l$ - $r$} : \Real
+		\EnvSym\then \code{$l$ - $r$} : \Real
 	}
 \]
 
@@ -1505,9 +1505,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad \tau \in \texttt{Number} \quad r:\tau
+		\EnvSym\then l:\Int \quad \tau \in \texttt{Number} \quad r:\tau
 	}{
-		\Env\then \code{$l$ * $r$} : \Real
+		\EnvSym\then \code{$l$ * $r$} : \Real
 	}
 \]
 
@@ -1515,9 +1515,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad \tau \in \texttt{Number} \quad r:\tau
+		\EnvSym\then l:\Int \quad \tau \in \texttt{Number} \quad r:\tau
 	}{
-		\Env\then \code{$l$ / $r$} : \Real
+		\EnvSym\then \code{$l$ / $r$} : \Real
 	}
 \]
 
@@ -1525,9 +1525,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad \tau \in \texttt{Number} \quad r:\tau
+		\EnvSym\then l:\Int \quad \tau \in \texttt{Number} \quad r:\tau
 	}{
-		\Env\then \code{$l$ \% $r$} : \Real
+		\EnvSym\then \code{$l$ \% $r$} : \Real
 	}
 \]
 
@@ -1535,9 +1535,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Int \quad \tau \in \texttt{Number} \quad r:\tau
+		\EnvSym\then l:\Int \quad \tau \in \texttt{Number} \quad r:\tau
 	}{
-		\Env\then \code{$l$ \^{} $r$} : \Real
+		\EnvSym\then \code{$l$ \^{} $r$} : \Real
 	}
 \]
 
@@ -1547,9 +1547,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Text \quad \tau \in \texttt{Number} \cup \set{\Text, \Bool}
+		\EnvSym\then l:\Text \quad \tau \in \texttt{Number} \cup \set{\Text, \Bool}
 	}{
-		\Env\then \code{$l$ as $\tau$}: \tau
+		\EnvSym\then \code{$l$ as $\tau$}: \tau
 	}
 \]
 
@@ -1557,9 +1557,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Text \quad \tau:\Type \quad r:\tau
+		\EnvSym\then l:\Text \quad \tau:\Type \quad r:\tau
 	}{
-		\Env\then \code{$l$ + $r$}: \Text
+		\EnvSym\then \code{$l$ + $r$}: \Text
 	}
 \]
 
@@ -1567,9 +1567,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Text \quad r:\Text
+		\EnvSym\then l:\Text \quad r:\Text
 	}{
-		\Env\then \code{$l$ - $r$}: \Text
+		\EnvSym\then \code{$l$ - $r$}: \Text
 	}
 \]
 
@@ -1577,9 +1577,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Text \quad \tau \in \texttt{Number} \quad r:\tau
+		\EnvSym\then l:\Text \quad \tau \in \texttt{Number} \quad r:\tau
 	}{
-		\Env\then \code{$l$ \^{} $r$}: \Text
+		\EnvSym\then \code{$l$ \^{} $r$}: \Text
 	}
 \]
 
@@ -1589,9 +1589,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Text \quad r:\Text
+		\EnvSym\then l:\Text \quad r:\Text
 	}{
-		\Env\then \code{$l$ / $r$}: \exists\Text.\List
+		\EnvSym\then \code{$l$ / $r$}: \exists\Text.\List
 	}
 \]
 
@@ -1599,9 +1599,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Text \quad r:\Text
+		\EnvSym\then l:\Text \quad r:\Text
 	}{
-		\Env\then \code{$l$ = $r$}: \Bool
+		\EnvSym\then \code{$l$ = $r$}: \Bool
 	}
 \]
 
@@ -1609,9 +1609,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Text \quad r:\Text
+		\EnvSym\then l:\Text \quad r:\Text
 	}{
-		\Env\then \code{$l$ < $r$}: \Bool
+		\EnvSym\then \code{$l$ < $r$}: \Bool
 	}
 \]
 
@@ -1619,9 +1619,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Text \quad r:\Text
+		\EnvSym\then l:\Text \quad r:\Text
 	}{
-		\Env\then \code{$l$ <= $r$}: \Bool
+		\EnvSym\then \code{$l$ <= $r$}: \Bool
 	}
 \]
 
@@ -1629,9 +1629,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Text \quad r:\Text
+		\EnvSym\then l:\Text \quad r:\Text
 	}{
-		\Env\then \code{$l$ >= $r$}: \Bool
+		\EnvSym\then \code{$l$ >= $r$}: \Bool
 	}
 \]
 
@@ -1639,9 +1639,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Text \quad r:\Text
+		\EnvSym\then l:\Text \quad r:\Text
 	}{
-		\Env\then \code{$l$ > $r$}: \Bool
+		\EnvSym\then \code{$l$ > $r$}: \Bool
 	}
 \]
 
@@ -1649,9 +1649,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then l:\Text \quad r:\Text
+		\EnvSym\then l:\Text \quad r:\Text
 	}{
-		\Env\then \code{$l$ =\~{} $r$}: \Bool
+		\EnvSym\then \code{$l$ =\~{} $r$}: \Bool
 	}
 \]
 
@@ -1660,18 +1660,18 @@ Dovrebbe?}
 \[
 	\text{Index access}\quad
 	\infrule{
-		\Env\then l:\Text \quad r:\Int
+		\EnvSym\then l:\Text \quad r:\Int
 	}{
-		\Env\then \code{$l$ @ $r$}: \Text
+		\EnvSym\then \code{$l$ @ $r$}: \Text
 	}
 \]
 
 \[
 	\text{"Substring"}\quad
 	\infrule{
-		\Env\then l:\Text \quad r:\exists\Int.\Range
+		\EnvSym\then l:\Text \quad r:\exists\Int.\Range
 	}{
-		\Env\then \code{$l$ @ $r$}: \Text
+		\EnvSym\then \code{$l$ @ $r$}: \Text
 	}
 \]
 
@@ -1680,27 +1680,27 @@ Dovrebbe?}
 \[
 	\text{Count access}\quad
 	\infrule{
-		\Env\then l:\Text
+		\EnvSym\then l:\Text
 	}{
-		\Env\then \code{$l$ @ \%}: \Int
+		\EnvSym\then \code{$l$ @ \%}: \Int
 	}
 \]
 
 \[
 	\text{Range access}\quad
 	\infrule{
-		\Env\then l:\Text
+		\EnvSym\then l:\Text
 	}{
-		\Env\then \code{$l$ @ @}: \exists\Int.\Range
+		\EnvSym\then \code{$l$ @ @}: \exists\Int.\Range
 	}
 \]
 
 \[
 	\text{Values access}\quad
 	\infrule{
-		\Env\then l:\Text
+		\EnvSym\then l:\Text
 	}{
-		\Env\then \code{$l$ @ *}: \exists\Text.\List
+		\EnvSym\then \code{$l$ @ *}: \exists\Text.\List
 	}
 \]
 
@@ -1716,12 +1716,12 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\Env\then \tau_1 = \List[\sigma_1 := \Type] \\*
-		\Env\then \tau_2 = \List[\sigma_2 := \Type] \\*
-		\Env\then l:\tau_1 \quad x:\sigma_1 \\*
-		\Env\then \code{$x$ as $\sigma_2$} : \sigma_2
+		\EnvSym\then \tau_1 = \List[\sigma_1 := \Type] \\*
+		\EnvSym\then \tau_2 = \List[\sigma_2 := \Type] \\*
+		\EnvSym\then l:\tau_1 \quad x:\sigma_1 \\*
+		\EnvSym\then \code{$x$ as $\sigma_2$} : \sigma_2
 	}{
-		\Env\then \code{$l$ as $\tau_2$} : \tau_2
+		\EnvSym\then \code{$l$ as $\tau_2$} : \tau_2
 	}
 \]
 
@@ -1732,10 +1732,10 @@ $\sigma_1$ can be casted to a list of $\sigma_2$
 
 \[
 	\infrule{
-		\Env\then \tau_1:\Type \quad l:\exists\tau_1.\List \\*
-		\Env\then \tau_2:\Type \quad \tau_2 \narr \tau_1 \quad r:\tau_2
+		\EnvSym\then \tau_1:\Type \quad l:\exists\tau_1.\List \\*
+		\EnvSym\then \tau_2:\Type \quad \tau_2 \narr \tau_1 \quad r:\tau_2
 	}{
-		\Env\then \code{$l$ =\~{} $r$} : \Bool
+		\EnvSym\then \code{$l$ =\~{} $r$} : \Bool
 	}
 \]
 
@@ -1743,10 +1743,10 @@ A list of $\tau_1$ contains an element of type $\tau_2$ (narrower than $\tau_1$)
 
 \[
 	\infrule{
-		\Env\then \tau_1:\Type \quad l:\exists\tau_1.\List\\*
-		\Env\then \tau_2:\Type \quad \tau_2 \narr \tau_1 \quad r:\exists\tau_2.\List
+		\EnvSym\then \tau_1:\Type \quad l:\exists\tau_1.\List\\*
+		\EnvSym\then \tau_2:\Type \quad \tau_2 \narr \tau_1 \quad r:\exists\tau_2.\List
 	}{
-		\Env\then \code{$l$ =\~{} $r$} : \Bool
+		\EnvSym\then \code{$l$ =\~{} $r$} : \Bool
 	}
 \]
 
@@ -1758,39 +1758,39 @@ $\tau_1$)
 \[
 	\text{Index access}\quad
 	\infrule{
-		\Env\then \tau:\Type
+		\EnvSym\then \tau:\Type
 		\quad l:\exists\tau.\List
 		\quad r:\Int
 	}{
-		\Env\then \code{$l$ @ $r$}: \tau
+		\EnvSym\then \code{$l$ @ $r$}: \tau
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then \tau : \Type
+		\EnvSym\then \tau : \Type
 		\quad l:\exists\tau.\List
 		\quad r:\exists\Int.\Range
 	}{
-		\Env\then \code{$l$ @ $r$}: \tau
+		\EnvSym\then \code{$l$ @ $r$}: \tau
 	}
 \]
 
 \[
 	\text{Count access}\quad
 	\infrule{
-		\Env\then \tau:\Type \quad l:\exists\tau.\List
+		\EnvSym\then \tau:\Type \quad l:\exists\tau.\List
 	}{
-		\Env\then \code{$l$ @ \%}: \Int
+		\EnvSym\then \code{$l$ @ \%}: \Int
 	}
 \]
 
 \[
 	\text{Range access}\quad
 	\infrule{
-		\Env\then l:\Text
+		\EnvSym\then l:\Text
 	}{
-		\Env\then \code{$l$ @ @}: \exists\Int.\Range
+		\EnvSym\then \code{$l$ @ @}: \exists\Int.\Range
 	}
 \]
 
@@ -1802,12 +1802,12 @@ $\tau_1$)
 
 \[
 	\infrule{
-		\Env\then \tau_1 = \Map[\kappa_1:=\Type,\nu_1:=\Type] \\*
-		\Env\then \tau_2 = \Map[\kappa_2:=\Type,\nu_2:=\Type] \\*
-		\Env\then l:\tau_1 \quad k:\kappa_1 \quad v:\nu_1 \\*
-		\Env\then \code{$k$ as $\kappa_2$} : \kappa_2 \land \code{$v$ as $\nu_2$} : \nu_2
+		\EnvSym\then \tau_1 = \Map[\kappa_1:=\Type,\nu_1:=\Type] \\*
+		\EnvSym\then \tau_2 = \Map[\kappa_2:=\Type,\nu_2:=\Type] \\*
+		\EnvSym\then l:\tau_1 \quad k:\kappa_1 \quad v:\nu_1 \\*
+		\EnvSym\then \code{$k$ as $\kappa_2$} : \kappa_2 \land \code{$v$ as $\nu_2$} : \nu_2
 	}{
-		\Env\then \code{$l$ as $\tau_2$} : \tau_2
+		\EnvSym\then \code{$l$ as $\tau_2$} : \tau_2
 	}
 \]
 
@@ -1820,10 +1820,10 @@ can be casted to the type $\tau_2$
 
 \[
 	\infrule{
-		\Env\then \tau = \Map[\kappa_1:=\Type,\nu:=\Type] \quad l:\tau \\*
-		\Env\then \kappa_2:\Type \quad \kappa_2 \narr \kappa_1 \quad r:\kappa_2
+		\EnvSym\then \tau = \Map[\kappa_1:=\Type,\nu:=\Type] \quad l:\tau \\*
+		\EnvSym\then \kappa_2:\Type \quad \kappa_2 \narr \kappa_1 \quad r:\kappa_2
 	}{
-		\Env\then \code{$l$ =\~{} $r$} : \Bool
+		\EnvSym\then \code{$l$ =\~{} $r$} : \Bool
 	}
 \]
 
@@ -1832,11 +1832,11 @@ $\kappa_1$)
 
 \[
 	\infrule{
-		\Env\then \tau_1 = \Map[\kappa_1:=\Type,\nu_1:=\Type] \quad l:\tau_1 \\*
-		\Env\then \tau_2 = \Map[\kappa_2:=\Type,\nu_2:=\Type] \quad r:\tau_2 \\*
-		\Env\then \kappa_2 \narr \kappa_1 \land \nu_2 \narr \nu_1
+		\EnvSym\then \tau_1 = \Map[\kappa_1:=\Type,\nu_1:=\Type] \quad l:\tau_1 \\*
+		\EnvSym\then \tau_2 = \Map[\kappa_2:=\Type,\nu_2:=\Type] \quad r:\tau_2 \\*
+		\EnvSym\then \kappa_2 \narr \kappa_1 \land \nu_2 \narr \nu_1
 	}{
-		\Env\then \code{$l$ =\~{} $r$} : \Bool
+		\EnvSym\then \code{$l$ =\~{} $r$} : \Bool
 	}
 \]
 
@@ -1849,37 +1849,37 @@ of type $\tau_2$
 \[
 	\text{Access by key}\quad
 	\infrule{
-		\Env\then \tau = \Map[\kappa_1:=\Type,\nu:=\Type] \quad l:\tau \\*
-		\Env\then \kappa_2 = \Type \quad \kappa_2 \narr \kappa_1 \quad r:\kappa_2
+		\EnvSym\then \tau = \Map[\kappa_1:=\Type,\nu:=\Type] \quad l:\tau \\*
+		\EnvSym\then \kappa_2 = \Type \quad \kappa_2 \narr \kappa_1 \quad r:\kappa_2
 	}{
-		\Env\then \code{$l$ @ $r$}: \nu
+		\EnvSym\then \code{$l$ @ $r$}: \nu
 	}
 \]
 
 \[
 	\text{Count access}\quad
 	\infrule{
-		\Env\then \tau = \Map[\kappa:=\Type,\nu:=\Type] \quad l:\tau \\*
+		\EnvSym\then \tau = \Map[\kappa:=\Type,\nu:=\Type] \quad l:\tau \\*
 	}{
-		\Env\then \code{$l$ @ \%}: \Int
+		\EnvSym\then \code{$l$ @ \%}: \Int
 	}
 \]
 
 \[
 	\text{Keys access}\quad
 	\infrule{
-		\Env\then \tau = \Map[\kappa:=\Type,\nu:=\Type] \quad l:\tau \\*
+		\EnvSym\then \tau = \Map[\kappa:=\Type,\nu:=\Type] \quad l:\tau \\*
 	}{
-		\Env\then \code{$l$ @ @}: \exists\kappa.\List
+		\EnvSym\then \code{$l$ @ @}: \exists\kappa.\List
 	}
 \]
 
 \[
 	\text{Values access}\quad
 	\infrule{
-		\Env\then \tau = \Map[\kappa:=\Type,\nu:=\Type] \quad l:\tau \\*
+		\EnvSym\then \tau = \Map[\kappa:=\Type,\nu:=\Type] \quad l:\tau \\*
 	}{
-		\Env\then \code{$l$ @ @}: \exists\nu.\List
+		\EnvSym\then \code{$l$ @ @}: \exists\nu.\List
 	}
 \]
 
@@ -1891,10 +1891,10 @@ of type $\tau_2$
 
 \[
 	\infrule{
-		\Env\then \tau \in \texttt{Products} \quad l:\tau \\*
-		\Env\then \sigma \in \texttt{Products} \quad r:\sigma
+		\EnvSym\then \tau \in \texttt{Products} \quad l:\tau \\*
+		\EnvSym\then \sigma \in \texttt{Products} \quad r:\sigma
 	}{
-		\Env\then \code{$l$ = $r$}: \Bool
+		\EnvSym\then \code{$l$ = $r$}: \Bool
 	}
 \]
 
@@ -1906,10 +1906,10 @@ of type $\tau_2$
 \[
 	\text{"Slice" access}\quad
 	\infrule{
-		\Env\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad l:\tau_1 \times ... \times \tau_n \\*
-		\Env\then r:\exists\Int.\Range
+		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad l:\tau_1 \times ... \times \tau_n \\*
+		\EnvSym\then r:\exists\Int.\Range
 	}{
-		\Env\then \code{$l$ @ $r$}: \bigtimes_{i \in r} \tau_i
+		\EnvSym\then \code{$l$ @ $r$}: \bigtimes_{i \in r} \tau_i
 	}
 \]
 
@@ -1922,20 +1922,20 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 \[
 	\text{Access by index}\quad
 	\infrule{
-		\Env\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad l:\tau_1 \times ... \times \tau_n \\*
-		\Env\then r:\Int \quad r \in [1,n]
+		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad l:\tau_1 \times ... \times \tau_n \\*
+		\EnvSym\then r:\Int \quad r \in [1,n]
 	}{
-		\Env\then \code{$l$ @ $r$}: \tau_r
+		\EnvSym\then \code{$l$ @ $r$}: \tau_r
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad l:\tau_1 \times ... \times \tau_n \\*
+		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad l:\tau_1 \times ... \times \tau_n \\*
 	}{
 		\begin{aligned}
-			\text{(Count access)} \qquad & \Env\then \code{$l$ @ \%}: \Int                           \\
-			\text{(Range access)} \qquad & \land\Env\then \code{$l$ @ @}: \exists\Int.\Range 
+			\text{(Count access)} \qquad & \EnvSym\then \code{$l$ @ \%}: \Int                           \\
+			\text{(Range access)} \qquad & \land\EnvSym\then \code{$l$ @ @}: \exists\Int.\Range 
 		\end{aligned}
 	}
 \]
@@ -1947,11 +1947,11 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 \[
 	\text{Access by index}\quad
 	\infrule{
-		\Env\then n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type, x_i:\tau_i, a_i \in \Id} \\*
-		\Env\then l:\tuple{a_1:\tau_1,...,a_n:\tau_n}\\*
-		\Env\then r:\Int \quad r \in [1,n]
+		\EnvSym\then n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type, x_i:\tau_i, a_i \in \Id} \\*
+		\EnvSym\then l:\tuple{a_1:\tau_1,...,a_n:\tau_n}\\*
+		\EnvSym\then r:\Int \quad r \in [1,n]
 	}{
-		\Env\then \code{$l$ @ $r$}: \tau_r
+		\EnvSym\then \code{$l$ @ $r$}: \tau_r
 	}
 \]
 
@@ -1959,13 +1959,13 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 
 \[
 	\infrule{
-		\Env\then n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type, x_i:\tau_i, a_i \in \Id} \\*
-		\Env\then l:\tuple{a_1:\tau_1,...,a_n:\tau_n}\\*
+		\EnvSym\then n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type, x_i:\tau_i, a_i \in \Id} \\*
+		\EnvSym\then l:\tuple{a_1:\tau_1,...,a_n:\tau_n}\\*
 	}{
 		\begin{aligned}
-			\text{(Count access)} \qquad & \Env\then \code{$l$ @ \%}: \Int                     \\*
-			\text{(Range access)} \qquad & \land\Env\then \code{$l$ @ @}: \exists\Int.\Range\\*
-			\text{(Fields access)} \qquad & \land\Env\then \code{$l$ @ *}: \exists\Text.\List
+			\text{(Count access)} \qquad & \EnvSym\then \code{$l$ @ \%}: \Int                     \\*
+			\text{(Range access)} \qquad & \land\EnvSym\then \code{$l$ @ @}: \exists\Int.\Range\\*
+			\text{(Fields access)} \qquad & \land\EnvSym\then \code{$l$ @ *}: \exists\Text.\List
 		\end{aligned}
 	}
 \]
@@ -1975,11 +1975,11 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 \[
 	\text{Access by name}\quad
 	\infrule{
-		\Env\then n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type, x_i:\tau_i, a_i \in \Id} \\*
-		\Env\then l:\tuple{a_1:\tau_1,...,a_n:\tau_n}\\*
-		\Env\then r \in \Id \quad \exists_j a_j = r
+		\EnvSym\then n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type, x_i:\tau_i, a_i \in \Id} \\*
+		\EnvSym\then l:\tuple{a_1:\tau_1,...,a_n:\tau_n}\\*
+		\EnvSym\then r \in \Id \quad \exists_j a_j = r
 	}{
-		\Env\then \code{$l$ @ $r$}: \tau_j
+		\EnvSym\then \code{$l$ @ $r$}: \tau_j
 	}
 \]
 
@@ -2000,9 +2000,9 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 
 \[
 	\infrule{
-		\Env\then i \in \Id \quad \tau:\Type
+		\EnvSym\then i \in \Id \quad \tau:\Type
 	}{
-		\Env, \code{$i$ $\tau$} \then i:\tau
+		\EnvSym, \code{$i$ $\tau$} \then i:\tau
 	}
 \]
 
@@ -2012,10 +2012,10 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 
 \[
 	\infrule{
-		\Env\then i \in \Id \quad \expr \in \Expr \quad \tau:\Type \quad \expr:\tau
+		\EnvSym\then i \in \Id \quad \expr \in \Expr \quad \tau:\Type \quad \expr:\tau
 	}{
-		\Env, \code{const $i$ $\tau$ <- $\expr$} \then i:\tau \qquad \text{(esplicit type)} \\*
-		\land \Env, \code{const $i$ <- $\expr$} \then i:\tau \qquad \text{(implicit type)}
+		\EnvSym, \code{const $i$ $\tau$ <- $\expr$} \then i:\tau \qquad \text{(esplicit type)} \\*
+		\land \EnvSym, \code{const $i$ <- $\expr$} \then i:\tau \qquad \text{(implicit type)}
 	}
 \]
 
@@ -2023,9 +2023,9 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 
 \[
 	\infrule{
-		\Env\then i \in \Id \quad \expr \in \Expr \quad \tau:\Type \quad \expr:\tau
+		\EnvSym\then i \in \Id \quad \expr \in \Expr \quad \tau:\Type \quad \expr:\tau
 	}{
-		\Env, \code{alias $e$ as $i$} \then i:\tau
+		\EnvSym, \code{alias $e$ as $i$} \then i:\tau
 	}
 \]
 
@@ -2033,17 +2033,17 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 
 \[
 	\infrule{
-		\Env\then i \in \Id \quad \tau:\Type \quad \expr:\exists\tau.\List
+		\EnvSym\then i \in \Id \quad \tau:\Type \quad \expr:\exists\tau.\List
 	}{
-		\Env, \code{for $i$ in $\expr$ do} \then i:\tau
+		\EnvSym, \code{for $i$ in $\expr$ do} \then i:\tau
 	}
 \]
 
 \[
 	\infrule{
-		\Env\then k \in \Id \quad v \in \Id \quad \kappa:\Type \quad \nu:\Type \quad \expr:\exists\kappa.\exists\nu.\Map
+		\EnvSym\then k \in \Id \quad v \in \Id \quad \kappa:\Type \quad \nu:\Type \quad \expr:\exists\kappa.\exists\nu.\Map
 	}{
-		\Env, \code{for $k$:$v$ in $\expr$ do} \then k:\kappa \quad v:\nu
+		\EnvSym, \code{for $k$:$v$ in $\expr$ do} \then k:\kappa \quad v:\nu
 	}
 \]
 
@@ -2173,7 +2173,7 @@ function can be applied on an identifier
 		\Zero : \Id &\to \Val \\*
 		\Zero(i) &\mapsto \begin{cases}
 			\val             &\text{ if default overridden } \\*
-			\Zero(\Env(i)) &
+			\Zero(\EnvSym(i)) &
 		\end{cases}
 	\end{split}
 \]
@@ -2182,13 +2182,13 @@ function can be applied on an identifier
 
 \[
 	\begin{split}
-		\Env\then \Zero(\Bool)    &= \Bool(\texttt{false}) \\*
-		\Env\then \Zero(\Text)    &= \Text(\texttt{""}) \\*
-		\Env\then \Zero(\Natural) &= \Natural(\texttt{0}) \\*
-		\Env\then \Zero(\Int)     &= \Int(\texttt{0}) \\*
-		\Env\then \Zero(\Real)    &= \Real(\texttt{0}) \\*
-		\Env\then \Zero(\Type)    &= \Type(\Void) \\*
-		\Env\then \Zero(\Void)    &= \Void() \\*
+		\EnvSym\then \Zero(\Bool)    &= \Bool(\texttt{false}) \\*
+		\EnvSym\then \Zero(\Text)    &= \Text(\texttt{""}) \\*
+		\EnvSym\then \Zero(\Natural) &= \Natural(\texttt{0}) \\*
+		\EnvSym\then \Zero(\Int)     &= \Int(\texttt{0}) \\*
+		\EnvSym\then \Zero(\Real)    &= \Real(\texttt{0}) \\*
+		\EnvSym\then \Zero(\Type)    &= \Type(\Void) \\*
+		\EnvSym\then \Zero(\Void)    &= \Void() \\*
 	\end{split}
 \]
 
@@ -2197,7 +2197,7 @@ function can be applied on an identifier
 \subparagraph{List}
 
 \[
-	\Env\then \Zero(\List[\sigma:=\Type]) = \List(0, \Zero(\sigma))
+	\EnvSym\then \Zero(\List[\sigma:=\Type]) = \List(0, \Zero(\sigma))
 \]
 
 \comment{TODO: se eventualmente formalizzo l'operatore \code{**}, aggiornare
@@ -2206,7 +2206,7 @@ dimensione iniziale}
 \subparagraph{Map}
 
 \[
-	\Env\then \Zero(\Map[\kappa:=\Type,\nu:=\Type]) = \Map(\Zero(\kappa), \Zero(\nu))
+	\EnvSym\then \Zero(\Map[\kappa:=\Type,\nu:=\Type]) = \Map(\Zero(\kappa), \Zero(\nu))
 \]
 
 \subsubsection{Product types}
@@ -2217,9 +2217,9 @@ dimensione iniziale}
 
 \[
 	\infrule{
-		\Env\then \forall_{i\in[1,n]}{\tau_i:\Type} \quad n \geq 0
+		\EnvSym\then \forall_{i\in[1,n]}{\tau_i:\Type} \quad n \geq 0
 	}{
-		\Env\then \Zero(\tau_1 \times ... \times \tau_n) = \Zero(\tau_1) \times ... \times \Zero(\tau_n)
+		\EnvSym\then \Zero(\tau_1 \times ... \times \tau_n) = \Zero(\tau_1) \times ... \times \Zero(\tau_n)
 	}
 \]
 
@@ -2227,9 +2227,9 @@ dimensione iniziale}
 
 \[
 	\infrule{
-		\Env\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \Id}
+		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \Id}
 	}{
-		\Env\then \Zero(\tuple{a_1:\tau_1,...,a_n:\tau_n}) = \tuple{a_1:\Zero(\tau_1), ..., a_n:\Zero(\tau_n)}
+		\EnvSym\then \Zero(\tuple{a_1:\tau_1,...,a_n:\tau_n}) = \tuple{a_1:\Zero(\tau_1), ..., a_n:\Zero(\tau_n)}
 	}
 \]
 
@@ -2242,7 +2242,7 @@ dimensione iniziale}
 \subsubsection{Function}
 
 \[
-	\Env\then \Zero(\Function) = () \to \Void
+	\EnvSym\then \Zero(\Function) = () \to \Void
 \]
 
 % \[
@@ -2257,7 +2257,7 @@ dimensione iniziale}
 \subsubsection{Range}
 
 \[
-	\Env\then \Zero(\Range) = \Range(0, 0, 1)
+	\EnvSym\then \Zero(\Range) = \Range(0, 0, 1)
 \]
 
 \newpage
@@ -2370,11 +2370,11 @@ be evaluated
 
 \[
 	\oprule[aligned]{
-		\Env            &\then i \in \Id \quad \tau : \Type \\*
+		\EnvSym            &\then i \in \Id \quad \tau : \Type \\*
 		\EnvLoc,\EnvStore &\then \EnvLoc(i) = \varnothing \\*
 		\EnvLoc,\EnvStore &\then \addr = \alloc(\EnvStore)
 	}{
-		\Env,\EnvLoc,\EnvStore \then \code{$i$ $\tau$}
+		\EnvSym,\EnvLoc,\EnvStore \then \code{$i$ $\tau$}
 		\Then \EnvLoc\env{i \mapsto \addr},\EnvStore\env{\addr \mapsto \Zero(\tau)}
 	}
 \]
@@ -2382,7 +2382,7 @@ be evaluated
 \subparagraph{Initialization} A variable can be initialized at declaration
 \[
 	\oprule[aligned]{
-		\Env                  &\then i \in \Id \quad \tau : \Type \\*
+		\EnvSym                  &\then i \in \Id \quad \tau : \Type \\*
 		\EnvLoc,\EnvStore     &\then \EnvLoc(i) = \varnothing \\*
 		\EnvLoc,\EnvStore     &\then \expr \equiv \val \Then \EnvLoc_2,\EnvStore_2 \\*
 		\EnvLoc_2,\EnvStore_2 &\then \addr = \alloc(\EnvStore_2) \\*
@@ -2399,7 +2399,7 @@ different redirection statement.
 variable can be overridden
 \[
 	\oprule[aligned]{
-		\Env                  &\then i \in \Id \quad \tau : \Type \\*
+		\EnvSym                  &\then i \in \Id \quad \tau : \Type \\*
 		\EnvLoc,\EnvStore     &\then \EnvLoc(i) = \varnothing \\*
 		\EnvLoc,\EnvStore     &\then \expr \equiv \val \Then \EnvLoc_2,\EnvStore_2 \\*
 		\EnvLoc_2,\EnvStore_2 &\then \addr = \alloc(\EnvStore_2) \\*
@@ -2421,7 +2421,7 @@ override may seem identical, but they do two different things:
 Both can be performed in a single statement
 \[
 	\oprule[aligned]{
-		\Env                  &\then i \in \Id \quad \tau : \Type \\*
+		\EnvSym                  &\then i \in \Id \quad \tau : \Type \\*
 		\EnvLoc,\EnvStore     &\then \EnvLoc(i) = \varnothing \\*
 		\EnvLoc,\EnvStore     &\then \expr_z \equiv \val_z \Then \EnvLoc_2,\EnvStore_2 \\*
 		\EnvLoc_2,\EnvStore_2 &\then \expr \equiv \val \Then \EnvLoc_3,\EnvStore_3 \\*
@@ -2593,8 +2593,8 @@ The positional product pattern can be used to deconstruct all product types.
 
 \[
 	\oprule[aligned]{
-		\Env,\EnvLoc,\EnvStore &\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type,\val_i:\tau_i} \\*
-		\Env,\EnvLoc,\EnvStore &\then \theta = \bigtimes_{i\in[1,n]}{\tau_i} \quad \val:\theta \quad \val = \bigtimes_{i \in [1,n]}{\val_i} \\*
+		\EnvSym,\EnvLoc,\EnvStore &\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type,\val_i:\tau_i} \\*
+		\EnvSym,\EnvLoc,\EnvStore &\then \theta = \bigtimes_{i\in[1,n]}{\tau_i} \quad \val:\theta \quad \val = \bigtimes_{i \in [1,n]}{\val_i} \\*
 		\EnvLoc,\EnvStore      &\then m \geq n \quad \forall_{j\in[1,m]}{\pattern_j\in\PatternTerminal} \\*
 		\EnvLoc,\EnvStore      &\then \expr \equiv \val \Then \EnvLoc_2,\EnvStore_2 \\*
 		\EnvLoc_2,\EnvStore_2  &\then \forall_{j\in[1,m]}{\addr_j = \alloc(\EnvStore_2)} \\*
@@ -2617,10 +2617,10 @@ named members (i.e. records, structs)
 
 \[
 	\oprule[aligned]{
-		\Env,\EnvLoc,\EnvStore  &\then n \geq 0 \quad \forall_{i\in[1,n]}{a_i\in\mathcal{N}\subseteq\Id, \tau_i:\Type, \val_i:\tau_i} \\*
-		\Env,\EnvLoc,\EnvStore  &\then \rho = \tuple{a_1:\tau_1,...,a_n:\tau_n} \quad \val:\rho \quad \val = \tuple{a_1:\val_1,...,a_n:\val_n} \\*
-		\Env,\EnvLoc,\EnvStore  &\then m \geq n \quad \forall_{j\in[1,m]}{b_j\in\mathcal{M}\subseteq\mathcal{N},\pattern_j\in\Pattern} \\*
-		\Env,\EnvLoc,\EnvStore  &\then \expr \equiv \val \Then \EnvLoc_2,\EnvStore_2 \\*
+		\EnvSym,\EnvLoc,\EnvStore  &\then n \geq 0 \quad \forall_{i\in[1,n]}{a_i\in\mathcal{N}\subseteq\Id, \tau_i:\Type, \val_i:\tau_i} \\*
+		\EnvSym,\EnvLoc,\EnvStore  &\then \rho = \tuple{a_1:\tau_1,...,a_n:\tau_n} \quad \val:\rho \quad \val = \tuple{a_1:\val_1,...,a_n:\val_n} \\*
+		\EnvSym,\EnvLoc,\EnvStore  &\then m \geq n \quad \forall_{j\in[1,m]}{b_j\in\mathcal{M}\subseteq\mathcal{N},\pattern_j\in\Pattern} \\*
+		\EnvSym,\EnvLoc,\EnvStore  &\then \expr \equiv \val \Then \EnvLoc_2,\EnvStore_2 \\*
 		\EnvLoc_2,\EnvStore_2   &\then \forall_{j\in[1,m]}{\addr_j = \alloc(\EnvStore_2)} \\*
 		\EnvLoc_3   &= \EnvLoc_2\env{\forall_{j\in[1,m]}{\pattern_j\mapsto\addr_j}}\\*
 		\EnvStore_3 &= \EnvStore_2\env{\forall_{j\in[1,m]}{\exists_{a'\in\mathcal{N}=b_j\in\mathcal{M}}{\quad\addr_j\mapsto\EnvStore(\EnvLoc(a'))}}}\\*
