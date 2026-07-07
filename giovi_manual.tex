@@ -395,7 +395,7 @@ Using the $\EnvVar$ variables environment as example
 	\infrule{
 		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type}
 	}{
-		\EnvSym\then \code{tuple <$\tau_1$, $...$, $\tau_n$>} \equiv \tau_1 \times ... \times \tau_n
+		\EnvSym\then \code{tuple <$\tau_1$, $\dotsc$, $\tau_n$>} \equiv \tau_1 \times \dotsb \times \tau_n
 	}
 \]
 
@@ -404,7 +404,7 @@ Using the $\EnvVar$ variables environment as example
 	\infrule{
 		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \Id}
 	}{
-		\EnvSym\then \code{record <$a_1$ $\tau_1$, $...$, $a_n$ $\tau_n$>} \equiv \tuple{a_1:\tau_1, ..., a_n:\tau_n}
+		\EnvSym\then \code{record <$a_1$ $\tau_1$, $\dotsc$, $a_n$ $\tau_n$>} \equiv \tuple{a_1:\tau_1, \dotsc, a_n:\tau_n}
 	}
 \]
 
@@ -413,7 +413,7 @@ Using the $\EnvVar$ variables environment as example
 	\infrule{
 		\EnvSym\then \xi \in \Id \quad n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \Id}
 	}{
-		\EnvSym,\code{struct $\xi$ <$a_1$ $\tau_1$, $...$, $a_n$ $\tau_n$>} \then \code{$\xi$} \equiv (\xi,\tuple{a_1:\tau_1,...,a_n:\tau_n})
+		\EnvSym,\code{struct $\xi$ <$a_1$ $\tau_1$, $\dotsc$, $a_n$ $\tau_n$>} \then \code{$\xi$} \equiv (\xi,\tuple{a_1:\tau_1,\dotsc,a_n:\tau_n})
 	}
 \]
 
@@ -425,7 +425,7 @@ Using the $\EnvVar$ variables environment as example
 	\infrule{
 		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\Id} \quad \rho:\Type
 	}{
-		\EnvSym\then \code{::($a_1$ $\tau_1$, $...$, $a_n$ $\tau_n$) => $\rho$} \equiv (\tau_1,...,\tau_n) \to \rho
+		\EnvSym\then \code{::($a_1$ $\tau_1$, $\dotsc$, $a_n$ $\tau_n$) => $\rho$} \equiv (\tau_1,\dotsc,\tau_n) \to \rho
 	}
 \]
 
@@ -433,7 +433,7 @@ Using the $\EnvVar$ variables environment as example
 	\infrule{
 		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\Id}
 	}{
-		\EnvSym\then \code{::($a_1$ $\tau_1$, $...$, $a_n$ $\tau_n$)} \equiv (\tau_1,...,\tau_n) \to \Void
+		\EnvSym\then \code{::($a_1$ $\tau_1$, $\dotsc$, $a_n$ $\tau_n$)} \equiv (\tau_1,\dotsc,\tau_n) \to \Void
 	}
 \]
 
@@ -441,7 +441,7 @@ Using the $\EnvVar$ variables environment as example
 	\infrule{
 		\EnvSym\then \xi \in \Id \quad n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\Id} \quad \rho:\Type
 	}{
-		\EnvSym,\code{$\xi$($a_1$ $\tau_1$, $...$, $a_n$ $\tau_n$) => $\rho$ \{\}} \then \code{$\xi$} : (\tau_1,...,\tau_n) \to \rho
+		\EnvSym,\code{$\xi$($a_1$ $\tau_1$, $\dotsc$, $a_n$ $\tau_n$) => $\rho$ \{\}} \then \code{$\xi$} : (\tau_1,\dotsc,\tau_n) \to \rho
 	}
 \]
 
@@ -449,7 +449,7 @@ Using the $\EnvVar$ variables environment as example
 	\infrule{
 		\EnvSym\then \xi \in \Id \quad n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\Id} \quad \rho:\Type
 	}{
-		\EnvSym,\code{$\xi$($a_1$ $\tau_1$, $...$, $a_n$ $\tau_n$) \{\}} \then \code{$\xi$} : (\tau_1,...,\tau_n) \to \Void
+		\EnvSym,\code{$\xi$($a_1$ $\tau_1$, $\dotsc$, $a_n$ $\tau_n$) \{\}} \then \code{$\xi$} : (\tau_1,\dotsc,\tau_n) \to \Void
 	}
 \]
 
@@ -538,7 +538,7 @@ types $\omega$ of $\theta_2$
 \[
 	\infrule{
 		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad \theta = \bigtimes_{i \in [1,n]}{\tau_i}\\*
-		\EnvSym\then m \geq n \quad \forall_{j\in[1,m]}{a_j \in \Id, \omega_j:\Type} \quad \rho = \tuple{a_1:\omega_1,...,a_m:\omega_m} \\*
+		\EnvSym\then m \geq n \quad \forall_{j\in[1,m]}{a_j \in \Id, \omega_j:\Type} \quad \rho = \tuple{a_1:\omega_1,\dotsc,a_m:\omega_m} \\*
 		\EnvSym\then \forall_{i \in [1,n]}{\tau_i \narr \omega_i}
 	}{
 		\EnvSym\then \theta \narr \rho
@@ -553,7 +553,7 @@ $\omega$ of $\rho$ (fields names are ignored)
 \[
 	\infrule{
 		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad \theta = \bigtimes_{i \in [1,n]}{\tau_i}\\*
-		\EnvSym\then \xi \in \Id \quad m \geq n \quad \forall_{j\in[1,m]}{a_j \in \Id, \omega_j:\Type} \quad \sigma = (\xi, \tuple{a_1:\omega_1,...,a_m:\omega_m}) \\*
+		\EnvSym\then \xi \in \Id \quad m \geq n \quad \forall_{j\in[1,m]}{a_j \in \Id, \omega_j:\Type} \quad \sigma = (\xi, \tuple{a_1:\omega_1,\dotsc,a_m:\omega_m}) \\*
 		\EnvSym\then \forall_{i \in [1,n]}{\tau_i \narr \omega_i}
 	}{
 		\EnvSym\then \theta \narr \sigma
@@ -571,8 +571,8 @@ type $\omega$ of $\sigma$ (struct name and fields names are ignored)
 
 \[
 	\infrule{
-		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \quad \rho_1 = \tuple{a_1:\tau_1,...,a_n:\tau_n} \\*
-		\EnvSym\then m \geq n \quad \forall_{j\in[1,m]}{b_j \in \mathcal{M} \subseteq \Id, \omega_j:\Type} \quad \rho_2 = \tuple{b_1:\omega_1,...,b_m:\omega_m} \\*
+		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \quad \rho_1 = \tuple{a_1:\tau_1,\dotsc,a_n:\tau_n} \\*
+		\EnvSym\then m \geq n \quad \forall_{j\in[1,m]}{b_j \in \mathcal{M} \subseteq \Id, \omega_j:\Type} \quad \rho_2 = \tuple{b_1:\omega_1,\dotsc,b_m:\omega_m} \\*
 		\EnvSym\then \forall_{a':\tau'\in\mathcal{N}}{\exists_{b':\omega'\in\mathcal{M}}{a'=b' \land \tau' \narr \omega'}}
 	}{
 		\EnvSym\then \rho_1 \narr \rho_2
@@ -586,8 +586,8 @@ $b'$ of type $\omega'$ in $\rho_2$, where $\tau'$ is narrower than $\omega'$
 
 \[
 	\infrule{
-		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{a \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \quad \rho = \tuple{a_1:\tau_1,...,a_n:\tau_n} \\*
-		\EnvSym\then \xi \in \Id \quad m \geq n \quad \forall_{j\in[1,m]}{b_j \in \Id, \omega_j:\Type} \quad \sigma = (\xi, \tuple{b_1:\omega_1,...,b_m:\omega_m}) \\*
+		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{a \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \quad \rho = \tuple{a_1:\tau_1,\dotsc,a_n:\tau_n} \\*
+		\EnvSym\then \xi \in \Id \quad m \geq n \quad \forall_{j\in[1,m]}{b_j \in \Id, \omega_j:\Type} \quad \sigma = (\xi, \tuple{b_1:\omega_1,\dotsc,b_m:\omega_m}) \\*
 		\EnvSym\then \forall_{a':\tau'\in\mathcal{N}}{\exists_{b':\omega'\in\mathcal{M}}{a'=b' \land \tau' \narr \omega'}}
 	}{
 		\EnvSym\then \rho \narr \sigma
@@ -603,9 +603,9 @@ name is ignored)
 \[
 	\infrule{
 		\EnvSym\then \xi_1 \in \Id \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \Id, \tau_i:\Type} \\*
-		\EnvSym\then \sigma_1 = (\xi_1, \tuple{a_1:\tau_1,...,a_n:\tau_n}) \\*
+		\EnvSym\then \sigma_1 = (\xi_1, \tuple{a_1:\tau_1,\dotsc,a_n:\tau_n}) \\*
 		\EnvSym\then \xi_2 \in \Id \quad m \geq n \quad \forall_{j\in[1,m]}{b_j \in \Id, \omega_j:\Type} \\*
-		\EnvSym\then \sigma_2 = (\xi_2, \tuple{b_1:\omega_1,...,b_m:\omega_m}) \\*
+		\EnvSym\then \sigma_2 = (\xi_2, \tuple{b_1:\omega_1,\dotsc,b_m:\omega_m}) \\*
 		\EnvSym\then \xi_1 = \xi_2
 	}{
 		\EnvSym\then \sigma_1 \narr \sigma_2
@@ -625,9 +625,9 @@ construction).
 \[
 	\infrule{
 		\EnvSym\then \rho_1:\Type \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \\*
-		\EnvSym\then \phi_1 = (a_1:\tau_1,...,a_n:\tau_n) \to \rho_1 \\*
+		\EnvSym\then \phi_1 = (a_1:\tau_1,\dotsc,a_n:\tau_n) \to \rho_1 \\*
 		\EnvSym\then \rho_2:\Type \quad m \geq n  \quad \forall_{j\in[1,m]}{b_j \in \mathcal{M} \subseteq \Id, \omega_i:\Type} \\*
-		\EnvSym\then \phi_2 = (b_1:\omega_1,...,b_m:\omega_m) \to \rho_1 \\*
+		\EnvSym\then \phi_2 = (b_1:\omega_1,\dotsc,b_m:\omega_m) \to \rho_1 \\*
 		\EnvSym\then \rho_1 \narr \rho_2 \\*
 		\EnvSym\then \forall_{a':\tau'}{\exists_{b':\omega'}{a'=b' \land \tau' \narr \omega'}}
 	}{
@@ -713,8 +713,8 @@ than $\omega'$.
 	\infrule{
 		\EnvSym\then x \in \text{Unicode} \setminus \set{"\backslash n", "\backslash r"} \quad n \geq 0
 	}{
-		\EnvSym\then \code{"$x_1...x_n$"} : \Text \\*
-		\land \EnvSym\then \code{'$x_1...x_n$'} : \Text
+		\EnvSym\then \code{"$x_1 \dotsc x_n$"} : \Text \\*
+		\land \EnvSym\then \code{'$x_1 \dotsc x_n$'} : \Text
 	}
 \]
 
@@ -722,8 +722,8 @@ than $\omega'$.
 	\infrule{
 		\EnvSym\then x \in \text{Unicode} \quad n \geq 0
 	}{
-		\EnvSym\then \code{"\{$x_1...x_n$\}"} : \Text \\*
-		\land \EnvSym\then \code{'\{$x_1...x_n$\}'} : \Text
+		\EnvSym\then \code{"\{$x_1 \dotsc x_n$\}"} : \Text \\*
+		\land \EnvSym\then \code{'\{$x_1 \dotsc x_n$\}'} : \Text
 	}
 \]
 
@@ -745,7 +745,7 @@ than $\omega'$.
 	\infrule{
 		\EnvSym\then n \geq 1 \quad \tau:\Type \quad \forall_{i\in[1,n]}{\expr_i\in\Expr,\expr_i:\tau}
 	}{
-		\EnvSym\then \code{[$\expr_1$, $...$, $\expr_n$]}:\exists\tau.\List
+		\EnvSym\then \code{[$\expr_1$, $\dotsc$, $\expr_n$]}:\exists\tau.\List
 	}
 \]
 
@@ -753,7 +753,7 @@ than $\omega'$.
 	\infrule{
 		\EnvSym\then n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type,\expr_i\in\Expr,\expr_i:\tau_i} \quad \omega = \bigsqcap_{i=1}^{n}{\tau_i}
 	}{
-		\EnvSym\then \code{[$\expr_1$, $...$, $\expr_n$]}:\exists\omega.\List
+		\EnvSym\then \code{[$\expr_1$, $\dotsc$, $\expr_n$]}:\exists\omega.\List
 	}
 \]
 
@@ -770,7 +770,7 @@ List of $\omega$ (widest among $\tau$)
 		\EnvSym\then \kappa:\Type \quad \forall_{i\in[1,n]}{k_i\in\Expr,k_i:\kappa} \quad n \geq 1 \\*
 		\EnvSym\then \nu:\Type \quad \forall_{i\in[1,n]}{v_i\in\Expr,v_i:\nu} \hfill
 	}{
-		\EnvSym\then \code{[$k_1$:$v_1$, $...$, $k_n$:$v_n$]}:\exists\kappa.\exists\nu.\Map
+		\EnvSym\then \code{[$k_1$:$v_1$, $\dotsc$, $k_n$:$v_n$]}:\exists\kappa.\exists\nu.\Map
 	}
 \]
 
@@ -780,7 +780,7 @@ List of $\omega$ (widest among $\tau$)
 		\EnvSym\then \forall_{i \in [1,n]}{\nu_i:\Type, v_i\in\Expr, v_i:\nu_i} \hfill\\*
 		\EnvSym\then \omega_\kappa = \bigsqcap_{i=1}^{n}{\kappa_i} \quad \omega_\nu = \bigsqcap_{i=1}^{n}{\nu_i}
 	}{
-		\EnvSym\then \code{[$k_1$:$v_1$, $...$, $k_n$:$v_n$]}:\exists\omega_\kappa.\exists\omega_\nu.\Map
+		\EnvSym\then \code{[$k_1$:$v_1$, $\dotsc$, $k_n$:$v_n$]}:\exists\omega_\kappa.\exists\omega_\nu.\Map
 	}
 \]
 
@@ -797,7 +797,7 @@ among $\nu$)
 	\infrule{
 		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type, \expr_i\in\Expr, \expr_i:\tau_i}
 	}{
-		\EnvSym\then \code{<$\expr_1$, $...$, $\expr_n$>}:\tau_1 \times ... \times \tau_n
+		\EnvSym\then \code{<$\expr_1$, $\dotsc$, $\expr_n$>}:\tau_1 \times \dotsc \times \tau_n
 	}
 \]
 
@@ -807,7 +807,7 @@ among $\nu$)
 	\infrule{
 		\EnvSym\then n \geq 1 \quad \forall_{i\in[1,n]}{a_i\in\Id, \tau_i:\Type, \expr_i\in\Expr, \expr_i:\tau_i}
 	}{
-		\EnvSym\then \code{<$a_1$:$\expr_1$, $...$, $a_n$:$\expr_n$>}:\tuple{a_1:\tau_1,...,a_2:\tau_n}
+		\EnvSym\then \code{<$a_1$:$\expr_1$, $\dotsc$, $a_n$:$\expr_n$>}:\tuple{a_1:\tau_1,\dotsc,a_2:\tau_n}
 	}
 \]
 
@@ -815,7 +815,7 @@ among $\nu$)
 
 \[
 	\infrule{
-		\EnvSym\then \xi \in \Id \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \Id, \tau_i:\Type} \quad \sigma_1 = (\xi, \tuple{a_1:\tau_1,...,a_n:\tau_n}) \\*
+		\EnvSym\then \xi \in \Id \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \Id, \tau_i:\Type} \quad \sigma_1 = (\xi, \tuple{a_1:\tau_1,\dotsc,a_n:\tau_n}) \\*
 	}{
 		\EnvSym\then \code{$\xi$.<>} : \sigma \\*
 	}
@@ -867,10 +867,10 @@ Range from $\expr_1$ (begin) to $\expr_2$ (end) with a step $\expr_3$
 
 \[
 	\infrule{
-		\EnvSym\then \rho:\Type \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \Id, \tau_i:\Type} \quad \phi = (a_1:\tau_1,...,a_n:\tau_n) \to \rho \\*
+		\EnvSym\then \rho:\Type \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \Id, \tau_i:\Type} \quad \phi = (a_1:\tau_1,\dotsc,a_n:\tau_n) \to \rho \\*
 		\EnvSym\then f : \phi
 	}{
-		\EnvSym\then \code{$f$($...$)} : \rho
+		\EnvSym\then \code{$f$($\dotsc$)} : \rho
 	}
 \]
 
@@ -883,7 +883,7 @@ Range from $\expr_1$ (begin) to $\expr_2$ (end) with a step $\expr_3$
 \[
 	\infrule{
 		\EnvSym\then a \in \Id \\*
-		\EnvSym\then \rho:\Type \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \Id, \tau_i:\Type} \quad \phi = (a_1:\tau_1,...,a_n:\tau_n) \to \rho \\*
+		\EnvSym\then \rho:\Type \quad n \geq 0 \quad \forall_{i\in[1,n]}{a_i \in \Id, \tau_i:\Type} \quad \phi = (a_1:\tau_1,\dotsc,a_n:\tau_n) \to \rho \\*
 	}{
 		\EnvSym,\code{$a$ $\phi$}\then \code{::$a$} : \phi
 	}
@@ -1907,7 +1907,7 @@ of type $\tau_2$
 \[
 	\text{"Slice" access}\quad
 	\infrule{
-		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad l:\tau_1 \times ... \times \tau_n \\*
+		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad l:\tau_1 \times \dotsb \times \tau_n \\*
 		\EnvSym\then r:\exists\Int.\Range
 	}{
 		\EnvSym\then \code{$l$ @ $r$}: \bigtimes_{i \in r} \tau_i
@@ -1923,7 +1923,7 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 \[
 	\text{Access by index}\quad
 	\infrule{
-		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad l:\tau_1 \times ... \times \tau_n \\*
+		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad l:\tau_1 \times \dotsb \times \tau_n \\*
 		\EnvSym\then r:\Int \quad r \in [1,n]
 	}{
 		\EnvSym\then \code{$l$ @ $r$}: \tau_r
@@ -1932,7 +1932,7 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 
 \[
 	\infrule{
-		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad l:\tau_1 \times ... \times \tau_n \\*
+		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type} \quad l:\tau_1 \times \dotsb \times \tau_n \\*
 	}{
 		\begin{aligned}
 			\text{(Count access)} \qquad & \EnvSym\then \code{$l$ @ \%}: \Int                           \\
@@ -1949,7 +1949,7 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 	\text{Access by index}\quad
 	\infrule{
 		\EnvSym\then n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type, x_i:\tau_i, a_i \in \Id} \\*
-		\EnvSym\then l:\tuple{a_1:\tau_1,...,a_n:\tau_n}\\*
+		\EnvSym\then l:\tuple{a_1:\tau_1,\dotsc,a_n:\tau_n}\\*
 		\EnvSym\then r:\Int \quad r \in [1,n]
 	}{
 		\EnvSym\then \code{$l$ @ $r$}: \tau_r
@@ -1961,7 +1961,7 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 \[
 	\infrule{
 		\EnvSym\then n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type, x_i:\tau_i, a_i \in \Id} \\*
-		\EnvSym\then l:\tuple{a_1:\tau_1,...,a_n:\tau_n}\\*
+		\EnvSym\then l:\tuple{a_1:\tau_1,\dotsc,a_n:\tau_n}\\*
 	}{
 		\begin{aligned}
 			\text{(Count access)} \qquad & \EnvSym\then \code{$l$ @ \%}: \Int                     \\*
@@ -1977,7 +1977,7 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 	\text{Access by name}\quad
 	\infrule{
 		\EnvSym\then n \geq 1 \quad \forall_{i\in[1,n]}{\tau_i:\Type, x_i:\tau_i, a_i \in \Id} \\*
-		\EnvSym\then l:\tuple{a_1:\tau_1,...,a_n:\tau_n}\\*
+		\EnvSym\then l:\tuple{a_1:\tau_1,\dotsc,a_n:\tau_n}\\*
 		\EnvSym\then r \in \Id \quad \exists_j a_j = r
 	}{
 		\EnvSym\then \code{$l$ @ $r$}: \tau_j
@@ -2220,7 +2220,7 @@ dimensione iniziale}
 	\infrule{
 		\EnvSym\then \forall_{i\in[1,n]}{\tau_i:\Type} \quad n \geq 0
 	}{
-		\EnvSym\then \Zero(\tau_1 \times ... \times \tau_n) = \Zero(\tau_1) \times ... \times \Zero(\tau_n)
+		\EnvSym\then \Zero(\tau_1 \times \dotsb \times \tau_n) = \Zero(\tau_1) \times \dotsb \times \Zero(\tau_n)
 	}
 \]
 
@@ -2230,7 +2230,7 @@ dimensione iniziale}
 	\infrule{
 		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \Id}
 	}{
-		\EnvSym\then \Zero(\tuple{a_1:\tau_1,...,a_n:\tau_n}) = \tuple{a_1:\Zero(\tau_1), ..., a_n:\Zero(\tau_n)}
+		\EnvSym\then \Zero(\tuple{a_1:\tau_1,\dotsc,a_n:\tau_n}) = \tuple{a_1:\Zero(\tau_1), \dotsc, a_n:\Zero(\tau_n)}
 	}
 \]
 
@@ -2249,7 +2249,7 @@ dimensione iniziale}
 % \[
 % 	\infrule{
 % 		\Env\then n \in \mathbb{N} \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\Id} \quad \rho:\Type \\*
-% 		\Env\then \phi : (\tau_1,...,\tau_n) \to \rho
+% 		\Env\then \phi : (\tau_1,\dotsc,\tau_n) \to \rho
 % 	}{
 % 		\Env\then \Zero(\phi()) = \Zero(\rho)
 % 	}
@@ -2545,7 +2545,7 @@ recursive function will be used to describe the deconstruction.
 			(\EnvLoc\env{},\EnvStore\env{})                                                              &\text{ if } \pattern = \code{\_} \\*
 			(\EnvLoc\env{a\mapsto\addr},\EnvStore\env{\addr\mapsto\val})                                 &\text{ if } \pattern = \code{$a$} \\*
 			\bigcup_{i\in[1,n]}{\decons(\EnvLoc,\EnvStore,\val_i,\pattern_i)}                            &\text{ if } \val:\texttt{Product} \\*
-																										 &\quad\land \pattern = \code{<$\pattern_1$, $...$, $\pattern_n$>} \\*
+																										 &\quad\land \pattern = \code{<$\pattern_1$, $\dotsc$, $\pattern_n$>} \\*
 			\decons(\EnvLoc,\EnvStore,\val',\pattern')                                                   &\text{ if } \val:\List \\*
 																										 &\quad\land \pattern = \code{[$\pattern'$]} \\*
 			\decons(\EnvLoc,\EnvStore,\val_k,\pattern_k)\cup\decons(\EnvLoc,\EnvStore,\val_v,\pattern_v) &\text{ if } \val:\Map \\*
@@ -2632,7 +2632,7 @@ In case only terminal patterns are used:
 \[
 	\oprule[aligned]{
 		\EnvLoc,\EnvStore      &\then n \geq 0 \quad \forall_{i\in[1,n]}{\val_i\in\Val} \quad \val = \bigtimes_{i \in [1,n]}{\val_i} \\*
-		\EnvLoc,\EnvStore      &\then m \leq n \quad \forall_{j\in[1,m]}{\pattern_j\in\PatternTerminal} \quad \pattern = \code{<$\pattern_1$, $...$, $\pattern_m$>} \\*
+		\EnvLoc,\EnvStore      &\then m \leq n \quad \forall_{j\in[1,m]}{\pattern_j\in\PatternTerminal} \quad \pattern = \code{<$\pattern_1$, $\dotsc$, $\pattern_m$>} \\*
 		\EnvLoc,\EnvStore      &\then \expr \equiv \val \Then \EnvLoc_2,\EnvStore_2 \\*
 		\EnvLoc_2,\EnvStore_2  &\then \forall_{j\in[1,m]}{\addr_j = \alloc(\EnvStore_2)} \\*
 	}{
@@ -2646,7 +2646,7 @@ More formally, in case of nested patterns
 \[
 	\oprule[aligned]{
 		\EnvLoc,\EnvStore &\then n \geq 0 \quad \forall_{i\in[1,n]}{\val_i\in\Val} \quad \val = \bigtimes_{i \in [1,n]}{\val_i} \\*
-		\EnvLoc,\EnvStore &\then m \leq n \quad \forall_{j\in[1,m]}{\pattern_j\in\PatternTerminal\cup\PatternProduct} \quad \pattern = \code{<$\pattern_1$, $...$, $\pattern_m$>} \\*
+		\EnvLoc,\EnvStore &\then m \leq n \quad \forall_{j\in[1,m]}{\pattern_j\in\PatternTerminal\cup\PatternProduct} \quad \pattern = \code{<$\pattern_1$, $\dotsc$, $\pattern_m$>} \\*
 		\EnvLoc,\EnvStore &\then \expr \equiv \val \Then \EnvLoc_2,\EnvStore_2 \\*
 	}{
 		\EnvLoc_2,\EnvStore_2 \then \code{$\expr$ -> $\pattern$} \Then \decons(\EnvLoc_2,\EnvStore_2,\val,\pattern)
@@ -2668,9 +2668,9 @@ named members (i.e. records, structs)
 In case only terminal patterns are used:
 \[
 	\oprule[aligned]{
-		\EnvLoc,\EnvStore  &\then n \geq 0 \quad \forall_{i\in[1,n]}{a_i\in\mathcal{N}\subseteq\Id, \val_i\in\Val} \quad \val = \tuple{a_1:\val_1,...,a_n:\val_n} \\*
+		\EnvLoc,\EnvStore  &\then n \geq 0 \quad \forall_{i\in[1,n]}{a_i\in\mathcal{N}\subseteq\Id, \val_i\in\Val} \quad \val = \tuple{a_1:\val_1,\dotsc,a_n:\val_n} \\*
 		\EnvLoc,\EnvStore  &\then m \leq n \quad \forall_{j\in[1,m]}{b_j\in\mathcal{M}\subseteq\mathcal{N},\pattern_j\in\PatternTerminal} \\*
-		\EnvLoc,\EnvStore  &\then \pattern = \code{<$b_1$:$\pattern_1$, $...$, $b_m$:$\pattern_m$>} \\*
+		\EnvLoc,\EnvStore  &\then \pattern = \code{<$b_1$:$\pattern_1$, $\dotsc$, $b_m$:$\pattern_m$>} \\*
 		\EnvLoc,\EnvStore  &\then \expr \equiv \val \Then \EnvLoc_2,\EnvStore_2 \\*
 		\EnvLoc_2,\EnvStore_2   &\then \forall_{j\in[1,m]}{\addr_j = \alloc(\EnvStore_2)} \\*
 		\EnvLoc_3   &= \EnvLoc_2\env{\forall_{j\in[1,m]}{\pattern_j\mapsto\addr_j}}\\*
@@ -2690,9 +2690,9 @@ In case only terminal patterns are used:
 More formally, in case of nested patterns
 \[
 	\oprule[aligned]{
-		\EnvLoc,\EnvStore  &\then n \geq 0 \quad \forall_{i\in[1,n]}{a_i\in\mathcal{N}\subseteq\Id, \val_i\in\Val} \quad \val = \tuple{a_1:\val_1,...,a_n:\val_n} \\*
+		\EnvLoc,\EnvStore  &\then n \geq 0 \quad \forall_{i\in[1,n]}{a_i\in\mathcal{N}\subseteq\Id, \val_i\in\Val} \quad \val = \tuple{a_1:\val_1,\dotsc,a_n:\val_n} \\*
 		\EnvLoc,\EnvStore  &\then m \leq n \quad \forall_{j\in[1,m]}{b_j\in\mathcal{M}\subseteq\mathcal{N},\pattern_j\in\PatternTerminal\cup\PatternProduct} \\*
-		\EnvLoc,\EnvStore  &\then \pattern = \code{<$b_1$:$\pattern_1$, $...$, $b_m$:$\pattern_m$>} \\*
+		\EnvLoc,\EnvStore  &\then \pattern = \code{<$b_1$:$\pattern_1$, $\dotsc$, $b_m$:$\pattern_m$>} \\*
 		\EnvLoc,\EnvStore  &\then \expr \equiv \val \Then \EnvLoc_2,\EnvStore_2 \\*
 	}{
 		\EnvLoc_2,\EnvStore_2 \then \code{$\expr$ -> $\pattern$} \Then \decons(\EnvLoc_2,\EnvStore_2,\val,\pattern)
@@ -2707,9 +2707,9 @@ In this case, the identifier of the unary pattern will be used for the member
 lookup of the product value
 \[
 	\oprule[aligned]{
-		\EnvLoc,\EnvStore  &\then n \geq 0 \quad \forall_{i\in[1,n]}{a_i\in\mathcal{N}\subseteq\Id, \val_i\in\Val} \quad \val = \tuple{a_1:\val_1,...,a_n:\val_n} \\*
+		\EnvLoc,\EnvStore  &\then n \geq 0 \quad \forall_{i\in[1,n]}{a_i\in\mathcal{N}\subseteq\Id, \val_i\in\Val} \quad \val = \tuple{a_1:\val_1,\dotsc,a_n:\val_n} \\*
 		\EnvLoc,\EnvStore  &\then m \leq n \quad \forall_{j\in[1,m]}{\pattern_j\in\PatternTerminal\setminus\set{\code{\_}}} \\*
-		\EnvLoc,\EnvStore  &\then \pattern = \code{<:$\pattern_1$, $...$, :$\pattern_m$>} \\*
+		\EnvLoc,\EnvStore  &\then \pattern = \code{<:$\pattern_1$, $\dotsc$, :$\pattern_m$>} \\*
 		\EnvLoc,\EnvStore  &\then \expr \equiv \val \Then \EnvLoc_2,\EnvStore_2 \\*
 		\EnvLoc_2,\EnvStore_2   &\then \forall_{j\in[1,m]}{\addr_j = \alloc(\EnvStore_2)} \\*
 		\EnvLoc_3   &= \EnvLoc_2\env{\forall_{j\in[1,m]}{\pattern_j\mapsto\addr_j}}\\*
