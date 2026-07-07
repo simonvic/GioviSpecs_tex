@@ -2751,7 +2751,80 @@ pair of two patterns, one for the key and one for the value respectively.
 	}
 \]
 
+\chapter{Notation}
 
+\section{Commonly used symbols}
+
+\resizebox{0.55\linewidth}{!}{
+\begin{tabular}{rll}
+	Symbol                                  & Use                              & Examples\\\hline
+	$\bop$                                  & Generic binary operator          & $x \bop y$\\\hline
+	$\narr$                                 & "Narrower than" operator         & $\Int \narr \Real$ \\\hline
+	$\sqcap$                                & "Least wide type" operator       & $\Int \sqcap \Real$ \\\hline
+	$\then$                                 & Assumptions suffix               & $\EnvSym \then \val:\tau$ \\\hline
+	$\Then$                                 & Environments modification prefix & $\expr \Then \EnvStore$\\\hline
+	$\tau$                                  & \multirow{2}{*}{A type} \\
+	or any lowercase greek letter           &                                  & $\tau = \Int$\\\hline
+	$\phi$                                  & Function type                    & \\\hline
+	$\theta$                                & Tuple type                       & \\\hline
+	$\rho$                                  & Record type                      & \\\hline
+	$\sigma$                                & Struct type                      & \\\hline
+	$\equiv$                                & "Evaluates to" operator          & $\expr\equiv\val$\\\hline
+	$\addr$                                 & Memory address                   & $\addr = 69$\\\hline
+	$\Id$                                   & Identifiers set                  & \\\hline
+	lower case latin letter (a,b,c...)      & Identifier                       & \\\hline
+	$\Expr$                                 & Expressions set                  & \\\hline
+	$\expr$                                 & Expression                       & \\\hline
+	$\Val$                                  & Values set                       & \\\hline
+	$\val$                                  & Value                            & \\\hline
+	$\Zero$                                 & Zero set/function                & \\\hline
+	$\Pattern$                              & Patterns set                     & \\\hline
+	$\pattern$                              & Pattern                          & \\\hline
+	$\PatternTerminal$                      & Terminal patterns set            & \\\hline
+	$\PatternProduct$                       & Product patterns set             & \\\hline
+	$\PatternIterator$                      & Iterator patterns set            & \\\hline
+	$\Env$                                  & Environments set                 & \\\hline
+	$\EnvSym$                               & General type environment         & \\\hline
+	$\EnvVar$                               & Variables type environment       & \\\hline
+	$\EnvConst$                             & Constants type environment       & \\\hline
+	$\EnvFunc$                              & Functions type environment       & \\\hline
+	$\EnvStucts$                            & Structs type environment         & \\\hline
+	% $\EnvModules$                         & Modules type environment         & \\\hline
+	$\EnvLoc$                               & Locations environment            & \\\hline
+	$\EnvStore$                             & Store environment (memory)       & \\\hline
+\end{tabular}
+}
+
+\section{Notations}
+
+\resizebox{0.9\linewidth}{!}{
+\begin{tabular}{rl}
+	\multirow{2}{*}{Symbol}                                        & Use \\
+											                       & Example \\\hline
+	\multirow{2}{*}{$\code{monospace}$}                            & Verbatim code \\
+											                       & \code{59 + 10} \\\hline
+	\multirow{2}{*}{$\val : \tau$}                                 & "$\val$ is a term of type $\tau$"\\
+											                       & \code{69} : \Int \\\hline
+	\multirow{2}{*}{$\expr \equiv \val$}                           & "$\expr$ is evaluated to be equal to $\val$"\\
+											                       & $\code{59 + 10} \equiv 69$ \\\hline
+	\multirow{2}{*}{$T[\tau:=\sigma]$}                             & "$T$ is a existential type with a type parameter $\tau$ of some type $\sigma$"\\
+											                       & $\Map[\kappa:=\tau_\kappa,\nu:=\tau_\nu]$ \\\hline
+	\multirow{2}{*}{$\exists\sigma.T$}                             & Concrete type $T$ with type parameter equal to $\sigma$\\
+											                       & $\exists\Text.\exists\Int.\Map$ \\\hline
+	\multirow{2}{*}{$(\tau_1,\dotsc,\tau_n) \to \tau_{n+1}$}       & Function type with $n$ formal parameters $\tau_i$ and return type $\tau_{n+1}$\\
+											                       & $(\Int,\Real) \to \Real$ \\\hline
+	\multirow{2}{*}{$\tau_1 \times \dotsb \times \tau_n$}          & A Tuple type with $n$ members of type $\tau_i$\\
+											                       & $\Real \times \Real \times \Text$ \\\hline
+	\multirow{2}{*}{$\tuple{a_1:\tau_1,\dotsc,a_n:\tau_n}$}        & A record type with $n$ members with name $a_i$ and type $\tau_i$\\
+											                       & $\tuple{\text{x}:\Real, \text{y}:\Real, \text{label}:\Text}$\\\hline
+	\multirow{2}{*}{$(\xi, \tuple{a_1:\tau_1,\dotsc,a_n:\tau_n})$} & A struct type with typename $\xi$, and $n$ members with name $a_i$ and type $\tau_i$\\
+											                       & $(\text{Point}, \tuple{\text{x}:\Real, \text{y}:\Real, \text{label}:\Text})$\\\hline
+	\multirow{2}{*}{$\env{x \mapsto y}$}                           & An environment in which $x$ maps to $y$\\
+											                       & $\env{\addr \mapsto 69}$\\\hline
+	\multirow{2}{*}{$E\env{}$}                                     & Environment "extension" (shorthand for $E\cup\env{}$)\\
+											                       & $\EnvStore\env{\addr \mapsto 69}$\\\hline
+\end{tabular}
+}
 
 \newpage
 
