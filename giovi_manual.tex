@@ -2631,11 +2631,11 @@ deconstructed in the same order they're defined in the pattern.
 
 The positional product pattern can be used to deconstruct all product types.
 
-In case only terminal patterns are used:
+In case only unary patterns are used:
 \[
 	\oprule[aligned]{
 		\EnvLoc,\EnvStore      &\then n \geq 0 \semiq \forall_{i\in[1,n]}{\val_i\in\Val} \semiq \val = \bigtimes_{i \in [1,n]}{\val_i} \\*
-		\EnvLoc,\EnvStore      &\then m \leq n \semiq \forall_{j\in[1,m]}{\pattern_j\in\PatternTerminal} \semiq \pattern = \code{<$\pattern_1$, $\dotsc$, $\pattern_m$>} \\*
+		\EnvLoc,\EnvStore      &\then m \leq n \semiq \forall_{j\in[1,m]}{\pattern_j\in\PatternTerminal\setminus\set{\code{\_}}} \semiq \pattern = \code{<$\pattern_1$, $\dotsc$, $\pattern_m$>} \\*
 		\EnvLoc,\EnvStore      &\then \expr \eval \val \Then \EnvLoc_2,\EnvStore_2 \\*
 		\EnvLoc_2,\EnvStore_2  &\then \forall_{j\in[1,m]}{\addr_j = \alloc(\EnvStore_2)} \\*
 	}{
@@ -2668,11 +2668,11 @@ of the member's names.
 Obviously, named product patterns can only be used with product types with
 named members (i.e. records, structs)
 
-In case only terminal patterns are used:
+In case only unary patterns are used:
 \[
 	\oprule[aligned]{
 		\EnvLoc,\EnvStore  &\then n \geq 0 \semiq \forall_{i\in[1,n]}{a_i\in\mathcal{N}\subseteq\Id, \val_i\in\Val} \semiq \val = \tuple{a_1:\val_1,\dotsc,a_n:\val_n} \\*
-		\EnvLoc,\EnvStore  &\then m \leq n \semiq \forall_{j\in[1,m]}{b_j\in\mathcal{M}\subseteq\mathcal{N},\pattern_j\in\PatternTerminal} \\*
+		\EnvLoc,\EnvStore  &\then m \leq n \semiq \forall_{j\in[1,m]}{b_j\in\mathcal{M}\subseteq\mathcal{N},\pattern_j\in\PatternTerminal\setminus\set{\code{\_}}} \\*
 		\EnvLoc,\EnvStore  &\then \pattern = \code{<$b_1$:$\pattern_1$, $\dotsc$, $b_m$:$\pattern_m$>} \\*
 		\EnvLoc,\EnvStore  &\then \expr \eval \val \Then \EnvLoc_2,\EnvStore_2 \\*
 		\EnvLoc_2,\EnvStore_2   &\then \forall_{j\in[1,m]}{\addr_j = \alloc(\EnvStore_2)} \\*
