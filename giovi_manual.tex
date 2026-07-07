@@ -2057,7 +2057,7 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 
 This section provides a semi-formal definition of the operational semantics of
 the language, definining the state and context and how they mutate with every
-expression.
+expression or statement.
 
 \section{Notation and terminology}
 
@@ -2123,9 +2123,9 @@ data is effectively duplicated.
 lack of mapping in an environment via the $\varnothing$ symbol.\\*
 For example: $\EnvLoc(i) = \varnothing, \EnvStore(\addr) = \varnothing$
 
-\paragraph{Environment extension} To denote a environment extending, modifying
-or overriding an existing one, this notation will be used
-$\EnvLoc\env{i\mapsto\addr}$ where it's defined as follows:
+\paragraph{Environment extension} Like in type inference rules, to denote an
+environment extending, modifying or overriding an existing one, this notation
+will be used $\EnvLoc\env{i\mapsto\addr}$ where it's defined as follows:
 \[
 	\EnvLoc\env{i\mapsto\addr}(j) \mapsto \begin{cases}
 		\addr      &\text{ if } i = j\\
