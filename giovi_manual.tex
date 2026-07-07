@@ -28,6 +28,7 @@
 \newcommand{\code}[1]{\texttt{\colorbox{gray!10}{#1}}}
 \newcommand{\nb}[1]{\textbf{N.B. } #1}
 \newcommand{\narr}{<:}
+\newcommand{\eval}{\equiv}
 \newcommand{\bop}{\diamond}
 \newcommand{\alloc}{\mathrm{alloc}}
 % \newcommand{\copi}{\mathrm{copy}}
@@ -179,8 +180,8 @@ If the code evaluates to some value, to denote its type the
 $:\texttt{SomeType}$ notation will be used.\\*
 For example: $\code{59 + 10} : \Int$
 
-To denote to what the value evaluates to, the $\equiv$ symbol will be used.\\*
-For example: $\code{59 + 10} \equiv 69$
+To denote to what the value evaluates to, the $\eval$ symbol will be used.\\*
+For example: $\code{59 + 10} \eval 69$
 
 \subparagraph{Functions} Functions are denoted by a list of zero or more input
 arguments followed by an output argument.\\*
@@ -376,7 +377,7 @@ Using the $\EnvVar$ variables environment as example
 	\infrule{
 		\EnvSym\then \tau:\Type
 	}{
-		\EnvSym\then \code{type.[$\tau$]} \equiv \exists\tau.\List
+		\EnvSym\then \code{type.[$\tau$]} \eval \exists\tau.\List
 	}
 \]
 
@@ -384,7 +385,7 @@ Using the $\EnvVar$ variables environment as example
 	\infrule{
 		\EnvSym\then \tau:\Type \quad \sigma:\Type
 	}{
-		\EnvSym\then \code{type.[$\tau$:$\sigma$]} \equiv \exists\tau.\exists\sigma.\Map
+		\EnvSym\then \code{type.[$\tau$:$\sigma$]} \eval \exists\tau.\exists\sigma.\Map
 	}
 \]
 
@@ -395,7 +396,7 @@ Using the $\EnvVar$ variables environment as example
 	\infrule{
 		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type}
 	}{
-		\EnvSym\then \code{tuple <$\tau_1$, $\dotsc$, $\tau_n$>} \equiv \tau_1 \times \dotsb \times \tau_n
+		\EnvSym\then \code{tuple <$\tau_1$, $\dotsc$, $\tau_n$>} \eval \tau_1 \times \dotsb \times \tau_n
 	}
 \]
 
@@ -404,7 +405,7 @@ Using the $\EnvVar$ variables environment as example
 	\infrule{
 		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \Id}
 	}{
-		\EnvSym\then \code{record <$a_1$ $\tau_1$, $\dotsc$, $a_n$ $\tau_n$>} \equiv \tuple{a_1:\tau_1, \dotsc, a_n:\tau_n}
+		\EnvSym\then \code{record <$a_1$ $\tau_1$, $\dotsc$, $a_n$ $\tau_n$>} \eval \tuple{a_1:\tau_1, \dotsc, a_n:\tau_n}
 	}
 \]
 
@@ -413,7 +414,7 @@ Using the $\EnvVar$ variables environment as example
 	\infrule{
 		\EnvSym\then \xi \in \Id \quad n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \Id}
 	}{
-		\EnvSym,\code{struct $\xi$ <$a_1$ $\tau_1$, $\dotsc$, $a_n$ $\tau_n$>} \then \code{$\xi$} \equiv (\xi,\tuple{a_1:\tau_1,\dotsc,a_n:\tau_n})
+		\EnvSym,\code{struct $\xi$ <$a_1$ $\tau_1$, $\dotsc$, $a_n$ $\tau_n$>} \then \code{$\xi$} \eval (\xi,\tuple{a_1:\tau_1,\dotsc,a_n:\tau_n})
 	}
 \]
 
@@ -425,7 +426,7 @@ Using the $\EnvVar$ variables environment as example
 	\infrule{
 		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\Id} \quad \rho:\Type
 	}{
-		\EnvSym\then \code{::($a_1$ $\tau_1$, $\dotsc$, $a_n$ $\tau_n$) => $\rho$} \equiv (\tau_1,\dotsc,\tau_n) \to \rho
+		\EnvSym\then \code{::($a_1$ $\tau_1$, $\dotsc$, $a_n$ $\tau_n$) => $\rho$} \eval (\tau_1,\dotsc,\tau_n) \to \rho
 	}
 \]
 
@@ -433,7 +434,7 @@ Using the $\EnvVar$ variables environment as example
 	\infrule{
 		\EnvSym\then n \geq 0 \quad \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\Id}
 	}{
-		\EnvSym\then \code{::($a_1$ $\tau_1$, $\dotsc$, $a_n$ $\tau_n$)} \equiv (\tau_1,\dotsc,\tau_n) \to \Void
+		\EnvSym\then \code{::($a_1$ $\tau_1$, $\dotsc$, $a_n$ $\tau_n$)} \eval (\tau_1,\dotsc,\tau_n) \to \Void
 	}
 \]
 
@@ -2072,10 +2073,10 @@ invocation etc.).\\*
 Unless noted otherwise, $\expr \in \Expr$ is implied.
 
 \subparagraph{Expression's value} To denote to what value an expression evaluates
-to, the $\equiv$ symbol will be used, for example: $\expr \equiv \val$\\*
+to, the $\eval$ symbol will be used, for example: $\expr \eval \val$\\*
 To specify the value along with its type, the notation $\tau(\val)$ will be
 used, where $\tau:\Type$ and $\val\in\Val$, for example:
-$\expr\equiv\Int(\val)$\\*
+$\expr\eval\Int(\val)$\\*
 Unless noted otherwise, $\val \in \Val$ is implied.
 
 \paragraph{Environments} Two environments will be used:
@@ -2108,7 +2109,7 @@ Unless noted otherwise, $\val \in \Val$ is implied.
 \paragraph{Expression's location} The expression location and its value
 mappings in the environment is implied
 \[
-	\expr\equiv\val
+	\expr\eval\val
 	\implies \exists_\addr{\EnvLoc(\expr)=\addr \land \EnvStore(\addr)=\val}
 \]
 
@@ -2275,7 +2276,7 @@ dimensione iniziale}
 	\oprule{
 		b \in \set{\texttt{true}, \texttt{false}}
 	}{
-		\EnvLoc,\EnvStore\then \code{$b$} \equiv \texttt{Bool($b$)}
+		\EnvLoc,\EnvStore\then \code{$b$} \eval \texttt{Bool($b$)}
 	}
 \]
 
@@ -2285,7 +2286,7 @@ dimensione iniziale}
 	\oprule{
 		n := \text{ natural literal }
 	}{
-		\EnvLoc,\EnvStore\then \code{$n$} \equiv \texttt{Natural($n$)}
+		\EnvLoc,\EnvStore\then \code{$n$} \eval \texttt{Natural($n$)}
 	}
 \]
 
@@ -2295,7 +2296,7 @@ dimensione iniziale}
 	\oprule{
 		i := \text{ integer literal }
 	}{
-		\EnvLoc,\EnvStore\then \code{$i$} \equiv \texttt{Int($i$)}
+		\EnvLoc,\EnvStore\then \code{$i$} \eval \texttt{Int($i$)}
 	}
 \]
 
@@ -2305,7 +2306,7 @@ dimensione iniziale}
 	\oprule{
 		r := \text{ real literal }
 	}{
-		\EnvLoc,\EnvStore\then \code{$r$} \equiv \texttt{Real($r$)}
+		\EnvLoc,\EnvStore\then \code{$r$} \eval \texttt{Real($r$)}
 	}
 \]
 
@@ -2316,7 +2317,7 @@ dimensione iniziale}
 	\oprule{
 		t := \text{ text literal }
 	}{
-		\EnvLoc,\EnvStore\then \code{$t$} \equiv \texttt{Text($t$)}
+		\EnvLoc,\EnvStore\then \code{$t$} \eval \texttt{Text($t$)}
 	}
 \]
 
@@ -2328,7 +2329,7 @@ dimensione iniziale}
 	\oprule{
 		i \in \Id \quad \EnvLoc(i) = \addr \quad \EnvStore(\addr) = \val
 	}{
-		\EnvLoc,\EnvStore\then \code{$i$} \equiv \val
+		\EnvLoc,\EnvStore\then \code{$i$} \eval \val
 	}
 \]
 
@@ -2337,11 +2338,11 @@ dimensione iniziale}
 \[
 	\oprule[aligned]{
 		&\bop = \text{any binary operator} \\*
-		\EnvLoc,\EnvStore     &\then \expr_1 \equiv \val_1 \Then \EnvLoc_2,\EnvStore_2 \\*
-		\EnvLoc_2,\EnvStore_2 &\then \expr_2 \equiv \val_2 \Then \EnvLoc_3,\EnvStore_3 \\*
+		\EnvLoc,\EnvStore     &\then \expr_1 \eval \val_1 \Then \EnvLoc_2,\EnvStore_2 \\*
+		\EnvLoc_2,\EnvStore_2 &\then \expr_2 \eval \val_2 \Then \EnvLoc_3,\EnvStore_3 \\*
 		\EnvLoc_3,\EnvStore_3 &\then \val_3 = \val_1 \bop \val_2 \\*
 	}{
-		\EnvLoc_3,\EnvStore_3\then \code{$\expr_1$ $\bop$ $\expr_2$} \equiv \val_3 \Then \EnvStore_3\env{\alloc(\EnvStore_3) \mapsto \val_3}
+		\EnvLoc_3,\EnvStore_3\then \code{$\expr_1$ $\bop$ $\expr_2$} \eval \val_3 \Then \EnvStore_3\env{\alloc(\EnvStore_3) \mapsto \val_3}
 	}
 \]
 
@@ -2360,7 +2361,7 @@ be evaluated
 \[
 	\oprule[aligned]{
 		\EnvLoc,\EnvStore     &\then i \in \Id \quad \EnvLoc(i) = \addr_i \quad \EnvStore(\addr_i) = \val_i \\*
-		\EnvLoc,\EnvStore     &\then \expr \equiv \val \Then \EnvLoc_2,\EnvStore_2 \\*
+		\EnvLoc,\EnvStore     &\then \expr \eval \val \Then \EnvLoc_2,\EnvStore_2 \\*
 		\EnvLoc_2,\EnvStore_2 &\then \addr_i' = \alloc(\EnvStore_2) \\*
 	}{
 		\EnvLoc_2,\EnvStore_2\then \code{$i$ <- $\expr$} \Then \EnvLoc_2\env{i \mapsto \addr_i'},\EnvStore_2\env{\addr_i' \mapsto \val}
@@ -2385,7 +2386,7 @@ be evaluated
 	\oprule[aligned]{
 		\EnvSym                  &\then i \in \Id \quad \tau : \Type \\*
 		\EnvLoc,\EnvStore     &\then \EnvLoc(i) = \varnothing \\*
-		\EnvLoc,\EnvStore     &\then \expr \equiv \val \Then \EnvLoc_2,\EnvStore_2 \\*
+		\EnvLoc,\EnvStore     &\then \expr \eval \val \Then \EnvLoc_2,\EnvStore_2 \\*
 		\EnvLoc_2,\EnvStore_2 &\then \addr = \alloc(\EnvStore_2) \\*
 	}{
 		\EnvLoc_2,\EnvStore_2 \then \code{$i$ $\tau$ <- $\expr$}
@@ -2402,7 +2403,7 @@ variable can be overridden
 	\oprule[aligned]{
 		\EnvSym                  &\then i \in \Id \quad \tau : \Type \\*
 		\EnvLoc,\EnvStore     &\then \EnvLoc(i) = \varnothing \\*
-		\EnvLoc,\EnvStore     &\then \expr \equiv \val \Then \EnvLoc_2,\EnvStore_2 \\*
+		\EnvLoc,\EnvStore     &\then \expr \eval \val \Then \EnvLoc_2,\EnvStore_2 \\*
 		\EnvLoc_2,\EnvStore_2 &\then \addr = \alloc(\EnvStore_2) \\*
 	}{
 		\EnvLoc_2,\EnvStore_2 \then \code{$i$ $\tau$ default $\expr$}
@@ -2424,14 +2425,14 @@ Both can be performed in a single statement
 	\oprule[aligned]{
 		\EnvSym                  &\then i \in \Id \quad \tau : \Type \\*
 		\EnvLoc,\EnvStore     &\then \EnvLoc(i) = \varnothing \\*
-		\EnvLoc,\EnvStore     &\then \expr_z \equiv \val_z \Then \EnvLoc_2,\EnvStore_2 \\*
-		\EnvLoc_2,\EnvStore_2 &\then \expr \equiv \val \Then \EnvLoc_3,\EnvStore_3 \\*
+		\EnvLoc,\EnvStore     &\then \expr_z \eval \val_z \Then \EnvLoc_2,\EnvStore_2 \\*
+		\EnvLoc_2,\EnvStore_2 &\then \expr \eval \val \Then \EnvLoc_3,\EnvStore_3 \\*
 		\EnvLoc_3,\EnvStore_3 &\then \addr_z = \alloc(\EnvStore_3) \\*
 		\EnvLoc_3,\EnvStore_3 &\then \addr = \alloc(\EnvStore_3) \\*
 	}{
 		\EnvLoc_3,\EnvStore_3 \then \code{$i$ $\tau$ default $\expr_z$ <- $\expr$}
 		\Then \EnvLoc_3\env{i \mapsto \addr},\EnvStore\env{\addr \mapsto \val,\addr_z \mapsto \val_z} \\*
-		\hfill\implies \code{$i$} \equiv \val \land \Zero(i) = \val_z
+		\hfill\implies \code{$i$} \eval \val \land \Zero(i) = \val_z
 	}
 \]
 
@@ -2440,7 +2441,7 @@ Both can be performed in a single statement
 \[
 	\oprule[aligned]{
 		\EnvLoc,\EnvStore     &\then i \in \Id \quad \EnvLoc(i) = \varnothing \\*
-		\EnvLoc,\EnvStore     &\then \expr \equiv \val \Then \EnvLoc_2,\EnvStore_2 \\*
+		\EnvLoc,\EnvStore     &\then \expr \eval \val \Then \EnvLoc_2,\EnvStore_2 \\*
 		\EnvLoc_2,\EnvStore_2 &\then \EnvLoc_2(\expr) = \addr_\expr \quad \EnvStore_2(\addr_\expr) = \val \\*
 	}{
 		\EnvLoc_2,\EnvStore_2\then \code{const $i$ <- $\expr$} \Then \EnvLoc_2\env{i \mapsto \addr_\expr}
@@ -2455,7 +2456,7 @@ immutability}
 \[
 	\oprule[aligned]{
 		\EnvLoc,\EnvStore     &\then i \in \Id \quad \EnvLoc(i) = \varnothing \\*
-		\EnvLoc,\EnvStore     &\then \expr \equiv \val \Then \EnvLoc_2,\EnvStore_2 \\*
+		\EnvLoc,\EnvStore     &\then \expr \eval \val \Then \EnvLoc_2,\EnvStore_2 \\*
 		\EnvLoc_2,\EnvStore_2 &\then \EnvLoc_2(\expr) = \addr_\expr \quad \EnvStore_2(\addr_\expr) = \val \\*
 	}{
 		\EnvLoc_2,\EnvStore_2\then \code{alias $\expr$ as $i$} \Then \EnvLoc_2\env{i \mapsto \addr_\expr}
@@ -2597,7 +2598,7 @@ More formally, using the deconstruction function
 \[
 	\oprule{
 		\pattern = \code{\_} \\*
-		\EnvLoc,\EnvStore \then \expr\equiv\val \Then \EnvLoc_2,\EnvStore_2 \\*
+		\EnvLoc,\EnvStore \then \expr\eval\val \Then \EnvLoc_2,\EnvStore_2 \\*
 	}{
 		\EnvLoc_2,\EnvStore_2 \then \code{$\expr$ -> $\pattern$} \Then \decons(\EnvLoc_2,\EnvStore_2,\val,\pattern) \\*
 	}
@@ -2633,7 +2634,7 @@ In case only terminal patterns are used:
 	\oprule[aligned]{
 		\EnvLoc,\EnvStore      &\then n \geq 0 \quad \forall_{i\in[1,n]}{\val_i\in\Val} \quad \val = \bigtimes_{i \in [1,n]}{\val_i} \\*
 		\EnvLoc,\EnvStore      &\then m \leq n \quad \forall_{j\in[1,m]}{\pattern_j\in\PatternTerminal} \quad \pattern = \code{<$\pattern_1$, $\dotsc$, $\pattern_m$>} \\*
-		\EnvLoc,\EnvStore      &\then \expr \equiv \val \Then \EnvLoc_2,\EnvStore_2 \\*
+		\EnvLoc,\EnvStore      &\then \expr \eval \val \Then \EnvLoc_2,\EnvStore_2 \\*
 		\EnvLoc_2,\EnvStore_2  &\then \forall_{j\in[1,m]}{\addr_j = \alloc(\EnvStore_2)} \\*
 	}{
 		\EnvLoc_2,\EnvStore_2 \then \code{$\expr$ -> $\pattern$} \Then \EnvLoc_2\env{\forall_{j\in[1,m]}{\pattern_j\mapsto\addr_j}},\EnvStore_2\env{\forall_{j\in[1,m]}{\addr_j\mapsto\val_j}}
@@ -2647,7 +2648,7 @@ More formally, in case of nested patterns
 	\oprule[aligned]{
 		\EnvLoc,\EnvStore &\then n \geq 0 \quad \forall_{i\in[1,n]}{\val_i\in\Val} \quad \val = \bigtimes_{i \in [1,n]}{\val_i} \\*
 		\EnvLoc,\EnvStore &\then m \leq n \quad \forall_{j\in[1,m]}{\pattern_j\in\PatternTerminal\cup\PatternProduct} \quad \pattern = \code{<$\pattern_1$, $\dotsc$, $\pattern_m$>} \\*
-		\EnvLoc,\EnvStore &\then \expr \equiv \val \Then \EnvLoc_2,\EnvStore_2 \\*
+		\EnvLoc,\EnvStore &\then \expr \eval \val \Then \EnvLoc_2,\EnvStore_2 \\*
 	}{
 		\EnvLoc_2,\EnvStore_2 \then \code{$\expr$ -> $\pattern$} \Then \decons(\EnvLoc_2,\EnvStore_2,\val,\pattern)
 		% \EnvLoc_2\env{\forall_{j\in[1,m]}{\pattern_j\mapsto\addr_j}},\EnvStore_2\env{\forall_{j\in[1,m]}{\addr_j\mapsto\val_j}}
@@ -2671,7 +2672,7 @@ In case only terminal patterns are used:
 		\EnvLoc,\EnvStore  &\then n \geq 0 \quad \forall_{i\in[1,n]}{a_i\in\mathcal{N}\subseteq\Id, \val_i\in\Val} \quad \val = \tuple{a_1:\val_1,\dotsc,a_n:\val_n} \\*
 		\EnvLoc,\EnvStore  &\then m \leq n \quad \forall_{j\in[1,m]}{b_j\in\mathcal{M}\subseteq\mathcal{N},\pattern_j\in\PatternTerminal} \\*
 		\EnvLoc,\EnvStore  &\then \pattern = \code{<$b_1$:$\pattern_1$, $\dotsc$, $b_m$:$\pattern_m$>} \\*
-		\EnvLoc,\EnvStore  &\then \expr \equiv \val \Then \EnvLoc_2,\EnvStore_2 \\*
+		\EnvLoc,\EnvStore  &\then \expr \eval \val \Then \EnvLoc_2,\EnvStore_2 \\*
 		\EnvLoc_2,\EnvStore_2   &\then \forall_{j\in[1,m]}{\addr_j = \alloc(\EnvStore_2)} \\*
 		\EnvLoc_3   &= \EnvLoc_2\env{\forall_{j\in[1,m]}{\pattern_j\mapsto\addr_j}}\\*
 		\EnvStore_3 &= \EnvStore_2\env{\forall_{j\in[1,m]}{\exists_{a'\in\mathcal{N}=b_j\in\mathcal{M}}{\quad\addr_j\mapsto\EnvStore_2(\EnvLoc_2(v_{a'}))}}}\\*
@@ -2693,7 +2694,7 @@ More formally, in case of nested patterns
 		\EnvLoc,\EnvStore  &\then n \geq 0 \quad \forall_{i\in[1,n]}{a_i\in\mathcal{N}\subseteq\Id, \val_i\in\Val} \quad \val = \tuple{a_1:\val_1,\dotsc,a_n:\val_n} \\*
 		\EnvLoc,\EnvStore  &\then m \leq n \quad \forall_{j\in[1,m]}{b_j\in\mathcal{M}\subseteq\mathcal{N},\pattern_j\in\PatternTerminal\cup\PatternProduct} \\*
 		\EnvLoc,\EnvStore  &\then \pattern = \code{<$b_1$:$\pattern_1$, $\dotsc$, $b_m$:$\pattern_m$>} \\*
-		\EnvLoc,\EnvStore  &\then \expr \equiv \val \Then \EnvLoc_2,\EnvStore_2 \\*
+		\EnvLoc,\EnvStore  &\then \expr \eval \val \Then \EnvLoc_2,\EnvStore_2 \\*
 	}{
 		\EnvLoc_2,\EnvStore_2 \then \code{$\expr$ -> $\pattern$} \Then \decons(\EnvLoc_2,\EnvStore_2,\val,\pattern)
 	}
@@ -2710,7 +2711,7 @@ lookup of the product value
 		\EnvLoc,\EnvStore  &\then n \geq 0 \quad \forall_{i\in[1,n]}{a_i\in\mathcal{N}\subseteq\Id, \val_i\in\Val} \quad \val = \tuple{a_1:\val_1,\dotsc,a_n:\val_n} \\*
 		\EnvLoc,\EnvStore  &\then m \leq n \quad \forall_{j\in[1,m]}{\pattern_j\in\PatternTerminal\setminus\set{\code{\_}}} \\*
 		\EnvLoc,\EnvStore  &\then \pattern = \code{<:$\pattern_1$, $\dotsc$, :$\pattern_m$>} \\*
-		\EnvLoc,\EnvStore  &\then \expr \equiv \val \Then \EnvLoc_2,\EnvStore_2 \\*
+		\EnvLoc,\EnvStore  &\then \expr \eval \val \Then \EnvLoc_2,\EnvStore_2 \\*
 		\EnvLoc_2,\EnvStore_2   &\then \forall_{j\in[1,m]}{\addr_j = \alloc(\EnvStore_2)} \\*
 		\EnvLoc_3   &= \EnvLoc_2\env{\forall_{j\in[1,m]}{\pattern_j\mapsto\addr_j}}\\*
 		\EnvStore_3 &= \EnvStore_2\env{\forall_{j\in[1,m]}{\exists_{a'\in\mathcal{N}=p_j\in\mathcal{M}}{\quad\addr_j\mapsto\EnvStore_2(\EnvLoc_2(v_{a'}))}}}\\*
@@ -2769,7 +2770,7 @@ pair of two patterns, one for the key and one for the value respectively.
 	$\theta$                                & Tuple type                       & \\\hline
 	$\rho$                                  & Record type                      & \\\hline
 	$\sigma$                                & Struct type                      & \\\hline
-	$\equiv$                                & "Evaluates to" operator          & $\expr\equiv\val$\\\hline
+	$\eval$                                 & "Evaluates to" operator          & $\expr\eval\val$\\\hline
 	$\addr$                                 & Memory address                   & $\addr = 69$\\\hline
 	$\Id$                                   & Identifiers set                  & \\\hline
 	lower case latin letter (a,b,c...)      & Identifier                       & \\\hline
@@ -2805,8 +2806,8 @@ pair of two patterns, one for the key and one for the value respectively.
 											                       & \code{59 + 10} \\\hline
 	\multirow{2}{*}{$\val : \tau$}                                 & "$\val$ is a term of type $\tau$"\\
 											                       & \code{69} : \Int \\\hline
-	\multirow{2}{*}{$\expr \equiv \val$}                           & "$\expr$ is evaluated to be equal to $\val$"\\
-											                       & $\code{59 + 10} \equiv 69$ \\\hline
+	\multirow{2}{*}{$\expr \eval \val$}                            & "$\expr$ is evaluated to be equal to $\val$"\\
+											                       & $\code{59 + 10} \eval 69$ \\\hline
 	\multirow{2}{*}{$T[\tau:=\sigma]$}                             & "$T$ is a existential type with a type parameter $\tau$ of some type $\sigma$"\\
 											                       & $\Map[\kappa:=\tau_\kappa,\nu:=\tau_\nu]$ \\\hline
 	\multirow{2}{*}{$\exists\sigma.T$}                             & Concrete type $T$ with type parameter equal to $\sigma$\\
