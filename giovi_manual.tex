@@ -60,6 +60,7 @@
 \newcommand{\Range}{\texttt{Range}}
 % \newcommand{\Module}{\texttt{Module}}
 \newcommand{\env}[1]{[\![#1]\!]}
+\newcommand{\Env}{\Xi}
 \newcommand{\EnvSym}{\Gamma}
 \newcommand{\EnvVar}{\Upsilon}
 \newcommand{\EnvConst}{\Pi}
@@ -2531,23 +2532,46 @@ readable
 	\end{split}
 \]
 
-\comment{
+\paragraph{The environment set} The $\Env$ will be used to denote a set of
+environments.\\*
+For example, $\Env_\EnvLoc$ will denote the set of location environments
+
 \paragraph{Deconstruction function} Given how patterns can be nested, a
 recursive function will be used to describe the deconstruction.
 \[
 	\begin{split}
-		\decons : (\Val,\Pattern) &\to (\EnvLoc,\EnvStore) \\*
-		\decons(\val, \pattern) &\mapsto \begin{cases}
-			(\env{},\env{})                                          &\text{ if } \pattern = \code{\_} \\*
-			(\env{a\mapsto\addr},\env{\addr\mapsto\val})             &\text{ if } \pattern = \code{$a$} \\*
-			\bigcup_{i\in[1,n]}{\decons(\val_i,\pattern_i)}          &\text{ if } \pattern = \code{<$\pattern_1$, $...$, $\pattern_n$>} \land \val:\texttt{Product} \\*
-			\decons(\val',\pattern')                                 &\text{ if } \pattern = \code{[$\pattern'$]} \land \val:\List \\*
-			\decons(\val_k,\pattern_k)\cup\decons(\val_v,\pattern_v) &\text{ if } \pattern = \code{[$\pattern_k$:$\pattern_v$]} \land \val:\Map \\*
+		\decons& : (\Env_\EnvLoc,\Env_\EnvStore,\Val,\Pattern) \to (\Env_\EnvLoc,\Env_\EnvStore) \\*
+		\decons&(\EnvLoc,\EnvStore,\val, \pattern) \mapsto \begin{cases}
+			(\EnvLoc\env{},\EnvStore\env{})                                                              &\text{ if } \pattern = \code{\_} \\*
+			(\EnvLoc\env{a\mapsto\addr},\EnvStore\env{\addr\mapsto\val})                                 &\text{ if } \pattern = \code{$a$} \\*
+			\bigcup_{i\in[1,n]}{\decons(\EnvLoc,\EnvStore,\val_i,\pattern_i)}                            &\text{ if } \val:\texttt{Product} \\*
+																										 &\quad\land \pattern = \code{<$\pattern_1$, $...$, $\pattern_n$>} \\*
+			\decons(\EnvLoc,\EnvStore,\val',\pattern')                                                   &\text{ if } \val:\List \\*
+																										 &\quad\land \pattern = \code{[$\pattern'$]} \\*
+			\decons(\EnvLoc,\EnvStore,\val_k,\pattern_k)\cup\decons(\EnvLoc,\EnvStore,\val_v,\pattern_v) &\text{ if } \val:\Map \\*
+																										 &\quad\land \pattern = \code{[$\pattern_k$:$\pattern_v$]} \\*
 		\end{cases}
 	\end{split}
 \]
-TODO: completare
-}
+
+In other words, the function tells that:
+\begin{itemize}
+	\item for a placeholder pattern, the resulting environments will be the
+		same
+	\item for a unary pattern, the resulting environments will be extended with
+		a new mapping for the specified value
+	\item for product pattern, the resulting environments will be extended with
+		the mappings produced from applying the deconstruction function to
+		every member of the product value
+	\item for a list pattern, the resulting environments will be extended with
+		the mappings produced from applying the deconstruction function to a
+		list's entry value
+	\item for a map pattern, the resulting environments will be extended with
+		the mappings produced from applying the deconstruction function to a
+		map's entry key and value pair
+\end{itemize}
+
+\newpage
 
 \subsubsection{Terminal patterns}
 
