@@ -1701,8 +1701,8 @@ Dovrebbe?}
 \paragraph{Access}
 
 \[
-	\text{Index access}\semiq
 	\infrule{
+		\text{Index access}\\*
 		\EnvSym\then \expr_1:\Text \semiq \expr_2:\Int
 	}{
 		\EnvSym\then \code{$\expr_1$ @ $\expr_2$}: \Text
@@ -1710,8 +1710,8 @@ Dovrebbe?}
 \]
 
 \[
-	\text{"Substring"}\semiq
 	\infrule{
+		\text{"Substring"}\\*
 		\EnvSym\then \expr_1:\Text \semiq \expr_2:\exists\Int.\Range
 	}{
 		\EnvSym\then \code{$\expr_1$ @ $\expr_2$}: \Text
@@ -1721,8 +1721,8 @@ Dovrebbe?}
 \comment{TODO: specificare parametri range}
 
 \[
-	\text{Count access}\semiq
 	\infrule{
+		\text{Count access}\\*
 		\EnvSym\then \expr_1:\Text
 	}{
 		\EnvSym\then \code{$\expr_1$ @ \%}: \Int
@@ -1730,8 +1730,8 @@ Dovrebbe?}
 \]
 
 \[
-	\text{Range access}\semiq
 	\infrule{
+		\text{Range access}\\*
 		\EnvSym\then \expr_1:\Text
 	}{
 		\EnvSym\then \code{$\expr_1$ @ @}: \exists\Int.\Range
@@ -1739,8 +1739,8 @@ Dovrebbe?}
 \]
 
 \[
-	\text{Values access}\semiq
 	\infrule{
+		\text{Values access}\\*
 		\EnvSym\then \expr_1:\Text
 	}{
 		\EnvSym\then \code{$\expr_1$ @ *}: \exists\Text.\List
@@ -1797,8 +1797,8 @@ $\tau_1$).
 \paragraph{Access}
 
 \[
-	\text{Index access}\semiq
 	\infrule{
+		\text{Index access}\\*
 		\EnvSym\then \tau:\Type
 		\semiq \expr_1:\exists\tau.\List
 		\semiq \expr_2:\Int
@@ -1809,6 +1809,7 @@ $\tau_1$).
 
 \[
 	\infrule{
+		\text{Sublist}\\*
 		\EnvSym\then \tau : \Type
 		\semiq \expr_1:\exists\tau.\List
 		\semiq \expr_2:\exists\Int.\Range
@@ -1818,8 +1819,8 @@ $\tau_1$).
 \]
 
 \[
-	\text{Count access}\semiq
 	\infrule{
+		\text{Count access}\\*
 		\EnvSym\then \tau:\Type \semiq \expr:\exists\tau.\List
 	}{
 		\EnvSym\then \code{$\expr$ @ \%}: \Int
@@ -1827,8 +1828,8 @@ $\tau_1$).
 \]
 
 \[
-	\text{Range access}\semiq
 	\infrule{
+		\text{Range access}\\*
 		\EnvSym\then \expr:\Text
 	}{
 		\EnvSym\then \code{$\expr$ @ @}: \exists\Int.\Range
@@ -1886,8 +1887,8 @@ $\expr_2$ of type $\tau_2$.
 \paragraph{Access}
 
 \[
-	\text{Access by key}\semiq
 	\infrule{
+		\text{Access by key}\\*
 		\EnvSym\then \tau = \Map[\kappa_1:=\Type,\nu:=\Type] \semiq \expr_1:\tau \\*
 		\EnvSym\then \kappa_2 = \Type \semiq \kappa_2 \narr \kappa_1 \semiq \expr_2:\kappa_2
 	}{
@@ -1896,8 +1897,8 @@ $\expr_2$ of type $\tau_2$.
 \]
 
 \[
-	\text{Count access}\semiq
 	\infrule{
+		\text{Count access}\\*
 		\EnvSym\then \tau = \Map[\kappa:=\Type,\nu:=\Type] \semiq \expr:\tau \\*
 	}{
 		\EnvSym\then \code{$\expr$ @ \%}: \Int
@@ -1905,8 +1906,8 @@ $\expr_2$ of type $\tau_2$.
 \]
 
 \[
-	\text{Keys access}\semiq
 	\infrule{
+		\text{Keys access}\\*
 		\EnvSym\then \tau = \Map[\kappa:=\Type,\nu:=\Type] \semiq \expr:\tau \\*
 	}{
 		\EnvSym\then \code{$\expr$ @ @}: \exists\kappa.\List
@@ -1914,8 +1915,8 @@ $\expr_2$ of type $\tau_2$.
 \]
 
 \[
-	\text{Values access}\semiq
 	\infrule{
+		\text{Values access}\\*
 		\EnvSym\then \tau = \Map[\kappa:=\Type,\nu:=\Type] \semiq \expr:\tau \\*
 	}{
 		\EnvSym\then \code{$\expr$ @ @}: \exists\nu.\List
@@ -1943,8 +1944,8 @@ $\expr_2$ of type $\tau_2$.
 \paragraph{Access}
 
 \[
-	\text{"Slice" access}\semiq
 	\infrule{
+		\text{"Slice" access}\\*
 		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type} \semiq \expr_1:\tau_1 \times \dotsb \times \tau_n \\*
 		\EnvSym\then \expr_2:\exists\Int.\Range
 	}{
@@ -1959,8 +1960,8 @@ With step: \code{<0,1,2,3,4,5> @ 0..5..2 = <0 2 4>}
 Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 
 \[
-	\text{Access by index}\semiq
 	\infrule{
+		\text{Access by index}\\*
 		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type} \semiq \expr_1:\tau_1 \times \dotsb \times \tau_n \\*
 		\EnvSym\then \expr_2:\Int \semiq \expr_2 \in [1,n]
 	}{
