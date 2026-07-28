@@ -47,6 +47,8 @@
 \newcommand{\PatternProduct}{\Pattern_P}
 \newcommand{\PatternIterator}{\Pattern_I}
 \newcommand{\decons}{\delta}
+\newcommand{\Number}{\texttt{Number}}
+\newcommand{\Product}{\texttt{Product}}
 \newcommand{\Type}{\texttt{Type}}
 \newcommand{\Bool}{\texttt{Bool}}
 \newcommand{\Text}{\texttt{Text}}
@@ -873,8 +875,8 @@ expression $\expr_i$ of type $\tau'_i$ (narrower than $\tau_i$).
 
 \[
 	\infrule{
-		\EnvSym\then \tau_1 \in \texttt{Number} \semiq \expr_1\in\Expr \semiq \expr_1:\tau_1\\*
-		\EnvSym\then \tau_2 \in \texttt{Number} \semiq \expr_2\in\Expr \semiq \expr_2:\tau_2 \\*
+		\EnvSym\then \tau_1 \in \Number \semiq \expr_1\in\Expr \semiq \expr_1:\tau_1\\*
+		\EnvSym\then \tau_2 \in \Number \semiq \expr_2\in\Expr \semiq \expr_2:\tau_2 \\*
 		\EnvSym\then \omega = \tau_1 \sqcap \tau_2
 	}{
 		\EnvSym\then \code{$\expr_1$..$\expr_2$} : \exists\omega.\Range
@@ -884,9 +886,9 @@ Range from $\expr_1$ (begin) to $\expr_2$ (end).
 
 \[
 	\infrule{
-		\EnvSym\then \tau_1 \in \texttt{Number} \semiq \expr_1\in\Expr \semiq \expr_1:\tau_1\\*
-		\EnvSym\then \tau_2 \in \texttt{Number} \semiq \expr_2\in\Expr \semiq \expr_2:\tau_2 \\*
-		\EnvSym\then \tau_3 \in \texttt{Number} \semiq \expr_3\in\Expr \semiq \expr_3:\tau_3 \\*
+		\EnvSym\then \tau_1 \in \Number \semiq \expr_1\in\Expr \semiq \expr_1:\tau_1\\*
+		\EnvSym\then \tau_2 \in \Number \semiq \expr_2\in\Expr \semiq \expr_2:\tau_2 \\*
+		\EnvSym\then \tau_3 \in \Number \semiq \expr_3\in\Expr \semiq \expr_3:\tau_3 \\*
 		\EnvSym\then \omega = \tau_1 \sqcap \tau_2 \sqcap \tau_3
 	}{
 		\EnvSym\then \code{$\expr_1$..$\expr_2$..$\expr_3$} : \exists\omega.\Range
@@ -1019,12 +1021,12 @@ defined.
 \vspace{\baselineskip}
 
 \[
-	\texttt{Number} = \set{\Natural, \Int, \Real}
+	\Number = \set{\Natural, \Int, \Real}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then \expr:\texttt{Number} \semiq \tau \in \texttt{Number}
+		\EnvSym\then \expr:\Number \semiq \tau \in \Number
 	}{
 		\EnvSym\then \code{$\expr$ as $\tau$}: \tau
 	}
@@ -1035,7 +1037,7 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then \tau \in \texttt{Number} \semiq \expr:\tau
+		\EnvSym\then \tau \in \Number \semiq \expr:\tau
 	}{
 		\EnvSym\then \code{+$\expr$}: \tau
 	}
@@ -1043,7 +1045,7 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then \tau \in \texttt{Number}\setminus\set{\Natural} \semiq \expr:\tau
+		\EnvSym\then \tau \in \Number\setminus\set{\Natural} \semiq \expr:\tau
 	}{
 		\EnvSym\then \code{-$\expr$}: \tau
 	}
@@ -1051,7 +1053,7 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then \tau_1,\tau_2 \in \texttt{Number} \semiq \expr_1:\tau_1 \semiq \expr_2:\tau_2\\*
+		\EnvSym\then \tau_1,\tau_2 \in \Number \semiq \expr_1:\tau_1 \semiq \expr_2:\tau_2\\*
 		\bop = \set{\code{=}, \code{!=}, \code{<}, \code{<=}, \code{>=}, \code{>=}, \code{>}}
 	}{
 		\EnvSym\then \code{$\expr_1$ $\bop$ $\expr_2$}: \Bool
@@ -1528,7 +1530,7 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then \expr_1:\Int \semiq \tau \in \texttt{Number} \semiq \expr_2:\tau
+		\EnvSym\then \expr_1:\Int \semiq \tau \in \Number \semiq \expr_2:\tau
 	}{
 		\EnvSym\then \code{$\expr_1$ + $\expr_2$} : \Real
 	}
@@ -1538,7 +1540,7 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then \expr_1:\Int \semiq \tau \in \texttt{Number} \semiq \expr_2:\tau
+		\EnvSym\then \expr_1:\Int \semiq \tau \in \Number \semiq \expr_2:\tau
 	}{
 		\EnvSym\then \code{$\expr_1$ - $\expr_2$} : \Real
 	}
@@ -1548,7 +1550,7 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then \expr_1:\Int \semiq \tau \in \texttt{Number} \semiq \expr_2:\tau
+		\EnvSym\then \expr_1:\Int \semiq \tau \in \Number \semiq \expr_2:\tau
 	}{
 		\EnvSym\then \code{$\expr_1$ * $\expr_2$} : \Real
 	}
@@ -1558,7 +1560,7 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then \expr_1:\Int \semiq \tau \in \texttt{Number} \semiq \expr_2:\tau
+		\EnvSym\then \expr_1:\Int \semiq \tau \in \Number \semiq \expr_2:\tau
 	}{
 		\EnvSym\then \code{$\expr_1$ / $\expr_2$} : \Real
 	}
@@ -1568,7 +1570,7 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then \expr_1:\Int \semiq \tau \in \texttt{Number} \semiq \expr_2:\tau
+		\EnvSym\then \expr_1:\Int \semiq \tau \in \Number \semiq \expr_2:\tau
 	}{
 		\EnvSym\then \code{$\expr_1$ \% $\expr_2$} : \Real
 	}
@@ -1578,7 +1580,7 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then \expr_1:\Int \semiq \tau \in \texttt{Number} \semiq \expr_2:\tau
+		\EnvSym\then \expr_1:\Int \semiq \tau \in \Number \semiq \expr_2:\tau
 	}{
 		\EnvSym\then \code{$\expr_1$ \^{} $\expr_2$} : \Real
 	}
@@ -1590,7 +1592,7 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then \expr_1:\Text \semiq \tau \in \texttt{Number} \cup \set{\Text, \Bool}
+		\EnvSym\then \expr_1:\Text \semiq \tau \in \Number \cup \set{\Text, \Bool}
 	}{
 		\EnvSym\then \code{$\expr_1$ as $\tau$}: \tau
 	}
@@ -1620,7 +1622,7 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then \expr_1:\Text \semiq \tau \in \texttt{Number} \semiq \expr_2:\tau
+		\EnvSym\then \expr_1:\Text \semiq \tau \in \Number \semiq \expr_2:\tau
 	}{
 		\EnvSym\then \code{$\expr_1$ \^{} $\expr_2$}: \Text
 	}
@@ -1926,13 +1928,13 @@ $\expr_2$ of type $\tau_2$.
 \subsection{Product types}
 
 \[
-	\texttt{Products} = \set{\texttt{Tuple, Record, Struct}}
+	\Product = \set{\texttt{Tuple, Record, Struct}}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then \tau_1 \in \texttt{Products} \semiq \expr_1:\tau_1 \\*
-		\EnvSym\then \tau_2 \in \texttt{Products} \semiq \expr_2:\tau_2
+		\EnvSym\then \tau_1 \in \Product \semiq \expr_1:\tau_1 \\*
+		\EnvSym\then \tau_2 \in \Product \semiq \expr_2:\tau_2
 	}{
 		\EnvSym\then \code{$\expr_1$ = $\expr_2$}: \Bool
 	}
@@ -2579,7 +2581,7 @@ recursive function will be used to describe the deconstruction.
 		\decons&(\EnvLoc,\EnvStore,\val, \pattern) \mapsto \begin{cases}
 			(\EnvLoc\env{},\EnvStore\env{})                                                              &\text{ if } \pattern = \code{\_} \\*
 			(\EnvLoc\env{a\mapsto\addr},\EnvStore\env{\addr\mapsto\val})                                 &\text{ if } \pattern = \code{$a$} \\*
-			\bigcup_{i\in[1,n]}{\decons(\EnvLoc,\EnvStore,\val_i,\pattern_i)}                            &\text{ if } \val:\texttt{Product} \\*
+			\bigcup_{i\in[1,n]}{\decons(\EnvLoc,\EnvStore,\val_i,\pattern_i)}                            &\text{ if } \val:\Product \\*
 																										 &\quad\land \pattern = \code{<$\pattern_1$, $\dotsc$, $\pattern_n$>} \\*
 			\decons(\EnvLoc,\EnvStore,\val',\pattern')                                                   &\text{ if } \val:\List \\*
 																										 &\quad\land \pattern = \code{[$\pattern'$]} \\*
