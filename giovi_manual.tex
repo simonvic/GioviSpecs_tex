@@ -980,26 +980,24 @@ Range from $\expr_1$ (begin) to $\expr_2$ (end) with a step $\expr_3$.
 
 \newpage
 
-\comment{TODO: usare $\expr$ con $\Expr$}
-
 \paragraph{General rules}
 
 \[
 	\infrule{
-		\EnvSym\then \tau:\Type \semiq l:\tau \\*
-		\EnvSym\then \sigma:\Type \semiq \tau \narr \sigma \semiq r:\sigma
+		\EnvSym\then \tau_1:\Type \semiq \expr_1:\tau \\*
+		\EnvSym\then \tau_2:\Type \semiq \tau_1 \narr \tau_2 \semiq \expr_2:\tau_2
 	}{
-		\EnvSym\then \code{$l$ = $r$} : \Bool
+		\EnvSym\then \code{$\expr_1$ = $\expr_2$} : \Bool
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then \tau:\Type \semiq l:\tau \\*
-		\EnvSym\then \sigma:\Type \semiq r:\sigma \\*
-		\EnvSym\then \code{$l$ = $r$} : \Bool
+		\EnvSym\then \tau_1:\Type \semiq \expr_1:\tau_1 \\*
+		\EnvSym\then \tau_2:\Type \semiq \expr_2:\tau_2 \\*
+		\EnvSym\then \code{$\expr_1$ = $\expr_2$} : \Bool
 	}{
-		\EnvSym\then \code{$l$ != $r$} : \Bool
+		\EnvSym\then \code{$\expr_1$ != $\expr_2$} : \Bool
 	}
 \]
 If the "equal" operator is defined, the "not equal" operator is also defined.
@@ -1008,11 +1006,11 @@ If the "equal" operator is defined, the "not equal" operator is also defined.
 
 \[
 	\infrule{
-		\EnvSym\then \tau:\Type \semiq l:\tau \\*
-		\EnvSym\then \sigma:\Type \semiq r:\sigma \\*
-		\EnvSym\then \code{$l$ =\~{} $r$}: \Bool
+		\EnvSym\then \tau_1:\Type \semiq \expr_1:\tau_1 \\*
+		\EnvSym\then \tau_2:\Type \semiq \expr_2:\tau_2 \\*
+		\EnvSym\then \code{$\expr_1$ =\~{} $\expr_2$}: \Bool
 	}{
-		\EnvSym\then \code{$r$ \~{}= $l$}: \Bool
+		\EnvSym\then \code{$\expr_2$ \~{}= $\expr_1$}: \Bool
 	}
 \]
 If the "contains" operator is defined, the "contained" operator is also
@@ -1026,9 +1024,9 @@ defined.
 
 \[
 	\infrule{
-		\EnvSym\then l:\texttt{Number} \semiq \tau \in \texttt{Number}
+		\EnvSym\then \expr:\texttt{Number} \semiq \tau \in \texttt{Number}
 	}{
-		\EnvSym\then \code{$l$ as $\tau$}: \tau
+		\EnvSym\then \code{$\expr$ as $\tau$}: \tau
 	}
 \]
 
@@ -1037,26 +1035,26 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then \tau \in \texttt{Number} \semiq x:\tau
+		\EnvSym\then \tau \in \texttt{Number} \semiq \expr:\tau
 	}{
-		\EnvSym\then \code{+$x$}: \tau
+		\EnvSym\then \code{+$\expr$}: \tau
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then \tau \in \texttt{Number}\setminus\set{\Natural} \semiq x:\tau
+		\EnvSym\then \tau \in \texttt{Number}\setminus\set{\Natural} \semiq \expr:\tau
 	}{
-		\EnvSym\then \code{-$x$}: \tau
+		\EnvSym\then \code{-$\expr$}: \tau
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then \tau \in \texttt{Number} \semiq l:\tau \semiq r:\tau\\*
+		\EnvSym\then \tau_1,\tau_2 \in \texttt{Number} \semiq \expr_1:\tau_1 \semiq \expr_2:\tau_2\\*
 		\bop = \set{\code{=}, \code{!=}, \code{<}, \code{<=}, \code{>=}, \code{>=}, \code{>}}
 	}{
-		\EnvSym\then \code{$l$ $\bop$ $r$}: \Bool
+		\EnvSym\then \code{$\expr_1$ $\bop$ $\expr_2$}: \Bool
 	}
 \]
 
@@ -1072,18 +1070,18 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then x:\Bool
+		\EnvSym\then \expr:\Bool
 	}{
-		\EnvSym\then \code{!$x$}:\Bool
+		\EnvSym\then \code{!$\expr$}:\Bool
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then l:\Bool \semiq r:\Bool \\*
+		\EnvSym\then \expr_1:\Bool \semiq \expr_2:\Bool \\*
 		\bop = \set{\code{and}, \code{\&}, \code{or}, \code{|}}
 	}{
-		\EnvSym\then \code{$l$ $\bop$ $r$}:\Bool
+		\EnvSym\then \code{$\expr_1$ $\bop$ $\expr_2$}:\Bool
 	}
 \]
 
@@ -1093,25 +1091,25 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Natural \semiq r:\Natural
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Natural
 	}{
-		\EnvSym\then \code{$l$ + $r$} : \Natural
+		\EnvSym\then \code{$\expr_1$ + $\expr_2$} : \Natural
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then l:\Natural \semiq r:\Int
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Int
 	}{
-		\EnvSym\then \code{$l$ + $r$} : \Int
+		\EnvSym\then \code{$\expr_1$ + $\expr_2$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then l:\Natural \semiq r:\Real
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Real
 	}{
-		\EnvSym\then \code{$l$ + $r$} : \Real
+		\EnvSym\then \code{$\expr_1$ + $\expr_2$} : \Real
 	}
 \]
 
@@ -1119,9 +1117,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Natural \semiq r:\Natural
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Natural
 	}{
-		\EnvSym\then \code{$l$ - $r$} : \Int
+		\EnvSym\then \code{$\expr_1$ - $\expr_2$} : \Int
 	}
 \]
 
@@ -1129,17 +1127,17 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Natural \semiq r:\Int
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Int
 	}{
-		\EnvSym\then \code{$l$ - $r$} : \Int
+		\EnvSym\then \code{$\expr_1$ - $\expr_2$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then l:\Natural \semiq r:\Real
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Real
 	}{
-		\EnvSym\then \code{$l$ - $r$} : \Real
+		\EnvSym\then \code{$\expr_1$ - $\expr_2$} : \Real
 	}
 \]
 
@@ -1147,26 +1145,26 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Natural \semiq r:\Natural
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Natural
 	}{
-		\EnvSym\then \code{$l$ * $r$} : \Natural
+		\EnvSym\then \code{$\expr_1$ * $\expr_2$} : \Natural
 	}
 \]
 
 
 \[
 	\infrule{
-		\EnvSym\then l:\Natural \semiq r:\Int
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Int
 	}{
-		\EnvSym\then \code{$l$ * $r$} : \Int
+		\EnvSym\then \code{$\expr_1$ * $\expr_2$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then l:\Natural \semiq r:\Real
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Real
 	}{
-		\EnvSym\then \code{$l$ * $r$} : \Real
+		\EnvSym\then \code{$\expr_1$ * $\expr_2$} : \Real
 	}
 \]
 
@@ -1174,25 +1172,25 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Natural \semiq r:\Natural
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Natural
 	}{
-		\EnvSym\then \code{$l$ / $r$} : \Real
+		\EnvSym\then \code{$\expr_1$ / $\expr_2$} : \Real
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then l:\Natural \semiq r:\Int
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Int
 	}{
-		\EnvSym\then \code{$l$ / $r$} : \Real
+		\EnvSym\then \code{$\expr_1$ / $\expr_2$} : \Real
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then l:\Natural \semiq r:\Real
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Real
 	}{
-		\EnvSym\then \code{$l$ / $r$} : \Real
+		\EnvSym\then \code{$\expr_1$ / $\expr_2$} : \Real
 	}
 \]
 
@@ -1200,25 +1198,25 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Natural \semiq r:\Natural
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Natural
 	}{
-		\EnvSym\then \code{$l$ \% $r$} : \Natural
+		\EnvSym\then \code{$\expr_1$ \% $\expr_2$} : \Natural
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then l:\Natural \semiq r:\Int
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Int
 	}{
-		\EnvSym\then \code{$l$ \% $r$} : \Int
+		\EnvSym\then \code{$\expr_1$ \% $\expr_2$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then l:\Natural \semiq r:\Real
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Real
 	}{
-		\EnvSym\then \code{$l$ \% $r$} : \Real
+		\EnvSym\then \code{$\expr_1$ \% $\expr_2$} : \Real
 	}
 \]
 
@@ -1226,25 +1224,25 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Natural \semiq r:\Natural
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Natural
 	}{
-		\EnvSym\then \code{$l$ \^{} $r$} : \Natural
+		\EnvSym\then \code{$\expr_1$ \^{} $\expr_2$} : \Natural
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then l:\Natural \semiq r:\Int
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Int
 	}{
-		\EnvSym\then \code{$l$ \^{} $r$} : \Int
+		\EnvSym\then \code{$\expr_1$ \^{} $\expr_2$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then l:\Natural \semiq r:\Real
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Real
 	}{
-		\EnvSym\then \code{$l$ \^{} $r$} : \Real
+		\EnvSym\then \code{$\expr_1$ \^{} $\expr_2$} : \Real
 	}
 \]
 
@@ -1254,9 +1252,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then x:\Int
+		\EnvSym\then \expr:\Int
 	}{
-		\EnvSym\then \code{!!$x$} : \Int
+		\EnvSym\then \code{!!$\expr$} : \Int
 	}
 \]
 
@@ -1264,17 +1262,17 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq r:\Natural
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Natural
 	}{
-		\EnvSym\then \code{$l$ \&\& $r$} : \Int
+		\EnvSym\then \code{$\expr_1$ \&\& $\expr_2$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq r:\Int
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Int
 	}{
-		\EnvSym\then \code{$l$ \&\& $r$} : \Int
+		\EnvSym\then \code{$\expr_1$ \&\& $\expr_2$} : \Int
 	}
 \]
 
@@ -1282,17 +1280,17 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq r:\Natural
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Natural
 	}{
-		\EnvSym\then \code{$l$ || $r$} : \Int
+		\EnvSym\then \code{$\expr_1$ || $\expr_2$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq r:\Int
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Int
 	}{
-		\EnvSym\then \code{$l$ || $r$} : \Int
+		\EnvSym\then \code{$\expr_1$ || $\expr_2$} : \Int
 	}
 \]
 
@@ -1300,17 +1298,17 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq r:\Natural
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Natural
 	}{
-		\EnvSym\then \code{$l$ ||| $r$} : \Int
+		\EnvSym\then \code{$\expr_1$ ||| $\expr_2$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq r:\Int
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Int
 	}{
-		\EnvSym\then \code{$l$ ||| $r$} : \Int
+		\EnvSym\then \code{$\expr_1$ ||| $\expr_2$} : \Int
 	}
 \]
 
@@ -1318,17 +1316,17 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq r:\Natural
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Natural
 	}{
-		\EnvSym\then \code{$l$ \{<\} $r$} : \Int
+		\EnvSym\then \code{$\expr_1$ \{<\} $\expr_2$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq r:\Int
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Int
 	}{
-		\EnvSym\then \code{$l$ \{<\} $r$} : \Int
+		\EnvSym\then \code{$\expr_1$ \{<\} $\expr_2$} : \Int
 	}
 \]
 
@@ -1336,17 +1334,17 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq r:\Natural
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Natural
 	}{
-		\EnvSym\then \code{$l$ \{>\} $r$} : \Int
+		\EnvSym\then \code{$\expr_1$ \{>\} $\expr_2$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq r:\Int
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Int
 	}{
-		\EnvSym\then \code{$l$ \{>\} $r$} : \Int
+		\EnvSym\then \code{$\expr_1$ \{>\} $\expr_2$} : \Int
 	}
 \]
 
@@ -1354,17 +1352,17 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq r:\Natural
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Natural
 	}{
-		\EnvSym\then \code{$l$ \{>>\} $r$} : \Int
+		\EnvSym\then \code{$\expr_1$ \{>>\} $\expr_2$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq r:\Int
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Int
 	}{
-		\EnvSym\then \code{$l$ \{>>\} $r$} : \Int
+		\EnvSym\then \code{$\expr_1$ \{>>\} $\expr_2$} : \Int
 	}
 \]
 
@@ -1372,25 +1370,25 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq r:\Natural
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Natural
 	}{
-		\EnvSym\then \code{$l$ + $r$} : \Int
+		\EnvSym\then \code{$\expr_1$ + $\expr_2$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq r:\Int
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Int
 	}{
-		\EnvSym\then \code{$l$ + $r$} : \Int
+		\EnvSym\then \code{$\expr_1$ + $\expr_2$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq r:\Real
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Real
 	}{
-		\EnvSym\then \code{$l$ + $r$} : \Real
+		\EnvSym\then \code{$\expr_1$ + $\expr_2$} : \Real
 	}
 \]
 
@@ -1398,25 +1396,25 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq r:\Natural
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Natural
 	}{
-		\EnvSym\then \code{$l$ - $r$} : \Int
+		\EnvSym\then \code{$\expr_1$ - $\expr_2$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq r:\Int
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Int
 	}{
-		\EnvSym\then \code{$l$ - $r$} : \Int
+		\EnvSym\then \code{$\expr_1$ - $\expr_2$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq r:\Real
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Real
 	}{
-		\EnvSym\then \code{$l$ - $r$} : \Real
+		\EnvSym\then \code{$\expr_1$ - $\expr_2$} : \Real
 	}
 \]
 
@@ -1424,25 +1422,25 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq r:\Natural
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Natural
 	}{
-		\EnvSym\then \code{$l$ * $r$} : \Int
+		\EnvSym\then \code{$\expr_1$ * $\expr_2$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq r:\Int
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Int
 	}{
-		\EnvSym\then \code{$l$ * $r$} : \Int
+		\EnvSym\then \code{$\expr_1$ * $\expr_2$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq r:\Real
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Real
 	}{
-		\EnvSym\then \code{$l$ * $r$} : \Real
+		\EnvSym\then \code{$\expr_1$ * $\expr_2$} : \Real
 	}
 \]
 
@@ -1450,25 +1448,25 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq r:\Natural
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Natural
 	}{
-		\EnvSym\then \code{$l$ / $r$} : \Real
+		\EnvSym\then \code{$\expr_1$ / $\expr_2$} : \Real
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq r:\Int
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Int
 	}{
-		\EnvSym\then \code{$l$ / $r$} : \Real
+		\EnvSym\then \code{$\expr_1$ / $\expr_2$} : \Real
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq r:\Real
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Real
 	}{
-		\EnvSym\then \code{$l$ / $r$} : \Real
+		\EnvSym\then \code{$\expr_1$ / $\expr_2$} : \Real
 	}
 \]
 
@@ -1476,25 +1474,25 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq r:\Natural
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Natural
 	}{
-		\EnvSym\then \code{$l$ \% $r$} : \Int
+		\EnvSym\then \code{$\expr_1$ \% $\expr_2$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq r:\Int
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Int
 	}{
-		\EnvSym\then \code{$l$ \% $r$} : \Int
+		\EnvSym\then \code{$\expr_1$ \% $\expr_2$} : \Int
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq r:\Real
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Real
 	}{
-		\EnvSym\then \code{$l$ \% $r$} : \Real
+		\EnvSym\then \code{$\expr_1$ \% $\expr_2$} : \Real
 	}
 \]
 
@@ -1502,25 +1500,25 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq r:\Natural
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Natural
 	}{
-		\EnvSym\then \code{$l$ \^{} $r$} : \Real
+		\EnvSym\then \code{$\expr_1$ \^{} $\expr_2$} : \Real
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq r:\Int
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Int
 	}{
-		\EnvSym\then \code{$l$ \^{} $r$} : \Real
+		\EnvSym\then \code{$\expr_1$ \^{} $\expr_2$} : \Real
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq r:\Real
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Real
 	}{
-		\EnvSym\then \code{$l$ \^{} $r$} : \Real
+		\EnvSym\then \code{$\expr_1$ \^{} $\expr_2$} : \Real
 	}
 \]
 
@@ -1530,9 +1528,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq \tau \in \texttt{Number} \semiq r:\tau
+		\EnvSym\then \expr_1:\Int \semiq \tau \in \texttt{Number} \semiq \expr_2:\tau
 	}{
-		\EnvSym\then \code{$l$ + $r$} : \Real
+		\EnvSym\then \code{$\expr_1$ + $\expr_2$} : \Real
 	}
 \]
 
@@ -1540,9 +1538,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq \tau \in \texttt{Number} \semiq r:\tau
+		\EnvSym\then \expr_1:\Int \semiq \tau \in \texttt{Number} \semiq \expr_2:\tau
 	}{
-		\EnvSym\then \code{$l$ - $r$} : \Real
+		\EnvSym\then \code{$\expr_1$ - $\expr_2$} : \Real
 	}
 \]
 
@@ -1550,9 +1548,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq \tau \in \texttt{Number} \semiq r:\tau
+		\EnvSym\then \expr_1:\Int \semiq \tau \in \texttt{Number} \semiq \expr_2:\tau
 	}{
-		\EnvSym\then \code{$l$ * $r$} : \Real
+		\EnvSym\then \code{$\expr_1$ * $\expr_2$} : \Real
 	}
 \]
 
@@ -1560,9 +1558,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq \tau \in \texttt{Number} \semiq r:\tau
+		\EnvSym\then \expr_1:\Int \semiq \tau \in \texttt{Number} \semiq \expr_2:\tau
 	}{
-		\EnvSym\then \code{$l$ / $r$} : \Real
+		\EnvSym\then \code{$\expr_1$ / $\expr_2$} : \Real
 	}
 \]
 
@@ -1570,9 +1568,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq \tau \in \texttt{Number} \semiq r:\tau
+		\EnvSym\then \expr_1:\Int \semiq \tau \in \texttt{Number} \semiq \expr_2:\tau
 	}{
-		\EnvSym\then \code{$l$ \% $r$} : \Real
+		\EnvSym\then \code{$\expr_1$ \% $\expr_2$} : \Real
 	}
 \]
 
@@ -1580,9 +1578,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Int \semiq \tau \in \texttt{Number} \semiq r:\tau
+		\EnvSym\then \expr_1:\Int \semiq \tau \in \texttt{Number} \semiq \expr_2:\tau
 	}{
-		\EnvSym\then \code{$l$ \^{} $r$} : \Real
+		\EnvSym\then \code{$\expr_1$ \^{} $\expr_2$} : \Real
 	}
 \]
 
@@ -1592,9 +1590,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Text \semiq \tau \in \texttt{Number} \cup \set{\Text, \Bool}
+		\EnvSym\then \expr_1:\Text \semiq \tau \in \texttt{Number} \cup \set{\Text, \Bool}
 	}{
-		\EnvSym\then \code{$l$ as $\tau$}: \tau
+		\EnvSym\then \code{$\expr_1$ as $\tau$}: \tau
 	}
 \]
 
@@ -1602,9 +1600,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Text \semiq \tau:\Type \semiq r:\tau
+		\EnvSym\then \expr_1:\Text \semiq \tau:\Type \semiq \expr_2:\tau
 	}{
-		\EnvSym\then \code{$l$ + $r$}: \Text
+		\EnvSym\then \code{$\expr_1$ + $\expr_2$}: \Text
 	}
 \]
 
@@ -1612,9 +1610,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Text \semiq r:\Text
+		\EnvSym\then \expr_1:\Text \semiq \expr_2:\Text
 	}{
-		\EnvSym\then \code{$l$ - $r$}: \Text
+		\EnvSym\then \code{$\expr_1$ - $\expr_2$}: \Text
 	}
 \]
 
@@ -1622,9 +1620,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Text \semiq \tau \in \texttt{Number} \semiq r:\tau
+		\EnvSym\then \expr_1:\Text \semiq \tau \in \texttt{Number} \semiq \expr_2:\tau
 	}{
-		\EnvSym\then \code{$l$ \^{} $r$}: \Text
+		\EnvSym\then \code{$\expr_1$ \^{} $\expr_2$}: \Text
 	}
 \]
 
@@ -1634,9 +1632,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Text \semiq r:\Text
+		\EnvSym\then \expr_1:\Text \semiq \expr_2:\Text
 	}{
-		\EnvSym\then \code{$l$ / $r$}: \exists\Text.\List
+		\EnvSym\then \code{$\expr_1$ / $\expr_2$}: \exists\Text.\List
 	}
 \]
 
@@ -1644,9 +1642,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Text \semiq r:\Text
+		\EnvSym\then \expr_1:\Text \semiq \expr_2:\Text
 	}{
-		\EnvSym\then \code{$l$ = $r$}: \Bool
+		\EnvSym\then \code{$\expr_1$ = $\expr_2$}: \Bool
 	}
 \]
 
@@ -1654,9 +1652,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Text \semiq r:\Text
+		\EnvSym\then \expr_1:\Text \semiq \expr_2:\Text
 	}{
-		\EnvSym\then \code{$l$ < $r$}: \Bool
+		\EnvSym\then \code{$\expr_1$ < $\expr_2$}: \Bool
 	}
 \]
 
@@ -1664,9 +1662,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Text \semiq r:\Text
+		\EnvSym\then \expr_1:\Text \semiq \expr_2:\Text
 	}{
-		\EnvSym\then \code{$l$ <= $r$}: \Bool
+		\EnvSym\then \code{$\expr_1$ <= $\expr_2$}: \Bool
 	}
 \]
 
@@ -1674,9 +1672,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Text \semiq r:\Text
+		\EnvSym\then \expr_1:\Text \semiq \expr_2:\Text
 	}{
-		\EnvSym\then \code{$l$ >= $r$}: \Bool
+		\EnvSym\then \code{$\expr_1$ >= $\expr_2$}: \Bool
 	}
 \]
 
@@ -1684,9 +1682,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Text \semiq r:\Text
+		\EnvSym\then \expr_1:\Text \semiq \expr_2:\Text
 	}{
-		\EnvSym\then \code{$l$ > $r$}: \Bool
+		\EnvSym\then \code{$\expr_1$ > $\expr_2$}: \Bool
 	}
 \]
 
@@ -1694,9 +1692,9 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then l:\Text \semiq r:\Text
+		\EnvSym\then \expr_1:\Text \semiq \expr_2:\Text
 	}{
-		\EnvSym\then \code{$l$ =\~{} $r$}: \Bool
+		\EnvSym\then \code{$\expr_1$ =\~{} $\expr_2$}: \Bool
 	}
 \]
 
@@ -1705,18 +1703,18 @@ Dovrebbe?}
 \[
 	\text{Index access}\semiq
 	\infrule{
-		\EnvSym\then l:\Text \semiq r:\Int
+		\EnvSym\then \expr_1:\Text \semiq \expr_2:\Int
 	}{
-		\EnvSym\then \code{$l$ @ $r$}: \Text
+		\EnvSym\then \code{$\expr_1$ @ $\expr_2$}: \Text
 	}
 \]
 
 \[
 	\text{"Substring"}\semiq
 	\infrule{
-		\EnvSym\then l:\Text \semiq r:\exists\Int.\Range
+		\EnvSym\then \expr_1:\Text \semiq \expr_2:\exists\Int.\Range
 	}{
-		\EnvSym\then \code{$l$ @ $r$}: \Text
+		\EnvSym\then \code{$\expr_1$ @ $\expr_2$}: \Text
 	}
 \]
 
@@ -1725,27 +1723,27 @@ Dovrebbe?}
 \[
 	\text{Count access}\semiq
 	\infrule{
-		\EnvSym\then l:\Text
+		\EnvSym\then \expr_1:\Text
 	}{
-		\EnvSym\then \code{$l$ @ \%}: \Int
+		\EnvSym\then \code{$\expr_1$ @ \%}: \Int
 	}
 \]
 
 \[
 	\text{Range access}\semiq
 	\infrule{
-		\EnvSym\then l:\Text
+		\EnvSym\then \expr_1:\Text
 	}{
-		\EnvSym\then \code{$l$ @ @}: \exists\Int.\Range
+		\EnvSym\then \code{$\expr_1$ @ @}: \exists\Int.\Range
 	}
 \]
 
 \[
 	\text{Values access}\semiq
 	\infrule{
-		\EnvSym\then l:\Text
+		\EnvSym\then \expr_1:\Text
 	}{
-		\EnvSym\then \code{$l$ @ *}: \exists\Text.\List
+		\EnvSym\then \code{$\expr_1$ @ *}: \exists\Text.\List
 	}
 \]
 
@@ -1763,10 +1761,10 @@ Dovrebbe?}
 	\infrule{
 		\EnvSym\then \tau_1 = \List[\sigma_1 := \Type] \\*
 		\EnvSym\then \tau_2 = \List[\sigma_2 := \Type] \\*
-		\EnvSym\then l:\tau_1 \semiq x:\sigma_1 \\*
+		\EnvSym\then \expr:\tau_1 \semiq x:\sigma_1 \\*
 		\EnvSym\then \code{$x$ as $\sigma_2$} : \sigma_2
 	}{
-		\EnvSym\then \code{$l$ as $\tau_2$} : \tau_2
+		\EnvSym\then \code{$\expr$ as $\tau_2$} : \tau_2
 	}
 \]
 If a term of type $\sigma_1$ can be casted to type $\sigma_2$ $\implies$ A list
@@ -1776,10 +1774,10 @@ of $\sigma_1$ can be casted to a list of $\sigma_2$.
 
 \[
 	\infrule{
-		\EnvSym\then \tau_1:\Type \semiq l:\exists\tau_1.\List \\*
-		\EnvSym\then \tau_2:\Type \semiq \tau_2 \narr \tau_1 \semiq r:\tau_2
+		\EnvSym\then \tau_1:\Type \semiq \expr_1:\exists\tau_1.\List \\*
+		\EnvSym\then \tau_2:\Type \semiq \tau_2 \narr \tau_1 \semiq \expr_2:\tau_2
 	}{
-		\EnvSym\then \code{$l$ =\~{} $r$} : \Bool
+		\EnvSym\then \code{$\expr_1$ =\~{} $\expr_2$} : \Bool
 	}
 \]
 A list of $\tau_1$ contains an element of type $\tau_2$ (narrower than
@@ -1787,10 +1785,10 @@ $\tau_1$).
 
 \[
 	\infrule{
-		\EnvSym\then \tau_1:\Type \semiq l:\exists\tau_1.\List\\*
-		\EnvSym\then \tau_2:\Type \semiq \tau_2 \narr \tau_1 \semiq r:\exists\tau_2.\List
+		\EnvSym\then \tau_1:\Type \semiq \expr_1:\exists\tau_1.\List\\*
+		\EnvSym\then \tau_2:\Type \semiq \tau_2 \narr \tau_1 \semiq \expr_2:\exists\tau_2.\List
 	}{
-		\EnvSym\then \code{$l$ =\~{} $r$} : \Bool
+		\EnvSym\then \code{$\expr_1$ =\~{} $\expr_2$} : \Bool
 	}
 \]
 A list of $\tau_1$ contains the elements of a list of $\tau_2$ (narrower than
@@ -1802,38 +1800,38 @@ $\tau_1$).
 	\text{Index access}\semiq
 	\infrule{
 		\EnvSym\then \tau:\Type
-		\semiq l:\exists\tau.\List
-		\semiq r:\Int
+		\semiq \expr_1:\exists\tau.\List
+		\semiq \expr_2:\Int
 	}{
-		\EnvSym\then \code{$l$ @ $r$}: \tau
+		\EnvSym\then \code{$\expr_1$ @ $\expr_2$}: \tau
 	}
 \]
 
 \[
 	\infrule{
 		\EnvSym\then \tau : \Type
-		\semiq l:\exists\tau.\List
-		\semiq r:\exists\Int.\Range
+		\semiq \expr_1:\exists\tau.\List
+		\semiq \expr_2:\exists\Int.\Range
 	}{
-		\EnvSym\then \code{$l$ @ $r$}: \tau
+		\EnvSym\then \code{$\expr_1$ @ $\expr_2$}: \tau
 	}
 \]
 
 \[
 	\text{Count access}\semiq
 	\infrule{
-		\EnvSym\then \tau:\Type \semiq l:\exists\tau.\List
+		\EnvSym\then \tau:\Type \semiq \expr:\exists\tau.\List
 	}{
-		\EnvSym\then \code{$l$ @ \%}: \Int
+		\EnvSym\then \code{$\expr$ @ \%}: \Int
 	}
 \]
 
 \[
 	\text{Range access}\semiq
 	\infrule{
-		\EnvSym\then l:\Text
+		\EnvSym\then \expr:\Text
 	}{
-		\EnvSym\then \code{$l$ @ @}: \exists\Int.\Range
+		\EnvSym\then \code{$\expr$ @ @}: \exists\Int.\Range
 	}
 \]
 
@@ -1847,10 +1845,10 @@ $\tau_1$).
 	\infrule{
 		\EnvSym\then \tau_1 = \Map[\kappa_1:=\Type,\nu_1:=\Type] \\*
 		\EnvSym\then \tau_2 = \Map[\kappa_2:=\Type,\nu_2:=\Type] \\*
-		\EnvSym\then l:\tau_1 \semiq k:\kappa_1 \semiq v:\nu_1 \\*
-		\EnvSym\then \code{$k$ as $\kappa_2$} : \kappa_2 \land \code{$v$ as $\nu_2$} : \nu_2
+		\EnvSym\then \expr:\tau_1 \semiq \expr_k:\kappa_1 \semiq \expr_v:\nu_1 \\*
+		\EnvSym\then \code{$\expr_k$ as $\kappa_2$} : \kappa_2 \land \code{$\expr_v$ as $\nu_2$} : \nu_2
 	}{
-		\EnvSym\then \code{$l$ as $\tau_2$} : \tau_2
+		\EnvSym\then \code{$\expr$ as $\tau_2$} : \tau_2
 	}
 \]
 
@@ -1863,64 +1861,64 @@ can be casted to the type $\tau_2$.
 
 \[
 	\infrule{
-		\EnvSym\then \tau = \Map[\kappa_1:=\Type,\nu:=\Type] \semiq l:\tau \\*
-		\EnvSym\then \kappa_2:\Type \semiq \kappa_2 \narr \kappa_1 \semiq r:\kappa_2
+		\EnvSym\then \tau = \Map[\kappa_1:=\Type,\nu:=\Type] \semiq \expr_1:\tau \\*
+		\EnvSym\then \kappa_2:\Type \semiq \kappa_2 \narr \kappa_1 \semiq \expr_2:\kappa_2
 	}{
-		\EnvSym\then \code{$l$ =\~{} $r$} : \Bool
+		\EnvSym\then \code{$\expr_1$ =\~{} $\expr_2$} : \Bool
 	}
 \]
-A map $l$ of type $\tau$ contains a key of type $\kappa_2$ (narrower than
+A map $\expr_1$ of type $\tau$ contains a key of type $\kappa_2$ (narrower than
 $\kappa_1$).
 
 \[
 	\infrule{
-		\EnvSym\then \tau_1 = \Map[\kappa_1:=\Type,\nu_1:=\Type] \semiq l:\tau_1 \\*
-		\EnvSym\then \tau_2 = \Map[\kappa_2:=\Type,\nu_2:=\Type] \semiq r:\tau_2 \\*
+		\EnvSym\then \tau_1 = \Map[\kappa_1:=\Type,\nu_1:=\Type] \semiq \expr_1:\tau_1 \\*
+		\EnvSym\then \tau_2 = \Map[\kappa_2:=\Type,\nu_2:=\Type] \semiq \expr_2:\tau_2 \\*
 		\EnvSym\then \kappa_2 \narr \kappa_1 \land \nu_2 \narr \nu_1
 	}{
-		\EnvSym\then \code{$l$ =\~{} $r$} : \Bool
+		\EnvSym\then \code{$\expr_1$ =\~{} $\expr_2$} : \Bool
 	}
 \]
-A map $l$ of type $\tau_1$ contais the key-value pairs of type $\kappa_2$
-(narrower than $\kappa_1$) and $\nu_2$ (narrower than $\nu_1$) of the map $r$
-of type $\tau_2$.
+A map $\expr_1$ of type $\tau_1$ contais the key-value pairs of type $\kappa_2$
+(narrower than $\kappa_1$) and $\nu_2$ (narrower than $\nu_1$) of the map
+$\expr_2$ of type $\tau_2$.
 
 \paragraph{Access}
 
 \[
 	\text{Access by key}\semiq
 	\infrule{
-		\EnvSym\then \tau = \Map[\kappa_1:=\Type,\nu:=\Type] \semiq l:\tau \\*
-		\EnvSym\then \kappa_2 = \Type \semiq \kappa_2 \narr \kappa_1 \semiq r:\kappa_2
+		\EnvSym\then \tau = \Map[\kappa_1:=\Type,\nu:=\Type] \semiq \expr_1:\tau \\*
+		\EnvSym\then \kappa_2 = \Type \semiq \kappa_2 \narr \kappa_1 \semiq \expr_2:\kappa_2
 	}{
-		\EnvSym\then \code{$l$ @ $r$}: \nu
+		\EnvSym\then \code{$\expr_1$ @ $\expr_2$}: \nu
 	}
 \]
 
 \[
 	\text{Count access}\semiq
 	\infrule{
-		\EnvSym\then \tau = \Map[\kappa:=\Type,\nu:=\Type] \semiq l:\tau \\*
+		\EnvSym\then \tau = \Map[\kappa:=\Type,\nu:=\Type] \semiq \expr:\tau \\*
 	}{
-		\EnvSym\then \code{$l$ @ \%}: \Int
+		\EnvSym\then \code{$\expr$ @ \%}: \Int
 	}
 \]
 
 \[
 	\text{Keys access}\semiq
 	\infrule{
-		\EnvSym\then \tau = \Map[\kappa:=\Type,\nu:=\Type] \semiq l:\tau \\*
+		\EnvSym\then \tau = \Map[\kappa:=\Type,\nu:=\Type] \semiq \expr:\tau \\*
 	}{
-		\EnvSym\then \code{$l$ @ @}: \exists\kappa.\List
+		\EnvSym\then \code{$\expr$ @ @}: \exists\kappa.\List
 	}
 \]
 
 \[
 	\text{Values access}\semiq
 	\infrule{
-		\EnvSym\then \tau = \Map[\kappa:=\Type,\nu:=\Type] \semiq l:\tau \\*
+		\EnvSym\then \tau = \Map[\kappa:=\Type,\nu:=\Type] \semiq \expr:\tau \\*
 	}{
-		\EnvSym\then \code{$l$ @ @}: \exists\nu.\List
+		\EnvSym\then \code{$\expr$ @ @}: \exists\nu.\List
 	}
 \]
 
@@ -1932,10 +1930,10 @@ of type $\tau_2$.
 
 \[
 	\infrule{
-		\EnvSym\then \tau \in \texttt{Products} \semiq l:\tau \\*
-		\EnvSym\then \sigma \in \texttt{Products} \semiq r:\sigma
+		\EnvSym\then \tau_1 \in \texttt{Products} \semiq \expr_1:\tau_1 \\*
+		\EnvSym\then \tau_2 \in \texttt{Products} \semiq \expr_2:\tau_2
 	}{
-		\EnvSym\then \code{$l$ = $r$}: \Bool
+		\EnvSym\then \code{$\expr_1$ = $\expr_2$}: \Bool
 	}
 \]
 
@@ -1947,10 +1945,10 @@ of type $\tau_2$.
 \[
 	\text{"Slice" access}\semiq
 	\infrule{
-		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type} \semiq l:\tau_1 \times \dotsb \times \tau_n \\*
-		\EnvSym\then r:\exists\Int.\Range
+		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type} \semiq \expr_1:\tau_1 \times \dotsb \times \tau_n \\*
+		\EnvSym\then \expr_2:\exists\Int.\Range
 	}{
-		\EnvSym\then \code{$l$ @ $r$}: \bigtimes_{i \in r} \tau_i
+		\EnvSym\then \code{$\expr_1$ @ $\expr_2$}: \bigtimes_{i \in \expr_2} \tau_i
 	}
 \]
 
@@ -1963,20 +1961,20 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 \[
 	\text{Access by index}\semiq
 	\infrule{
-		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type} \semiq l:\tau_1 \times \dotsb \times \tau_n \\*
-		\EnvSym\then r:\Int \semiq r \in [1,n]
+		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type} \semiq \expr_1:\tau_1 \times \dotsb \times \tau_n \\*
+		\EnvSym\then \expr_2:\Int \semiq \expr_2 \in [1,n]
 	}{
-		\EnvSym\then \code{$l$ @ $r$}: \tau_r
+		\EnvSym\then \code{$\expr_1$ @ $\expr_2$}: \tau_{\expr_2}
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type} \semiq l:\tau_1 \times \dotsb \times \tau_n \\*
+		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type} \semiq \expr:\tau_1 \times \dotsb \times \tau_n \\*
 	}{
 		\begin{aligned}
-			\text{(Count access)} \qquad & \EnvSym\then \code{$l$ @ \%}: \Int                           \\
-			\text{(Range access)} \qquad & \land\EnvSym\then \code{$l$ @ @}: \exists\Int.\Range 
+			\text{(Count access)} \qquad & \EnvSym\then \code{$\expr$ @ \%}: \Int                           \\
+			\text{(Range access)} \qquad & \land\EnvSym\then \code{$\expr$ @ @}: \exists\Int.\Range 
 		\end{aligned}
 	}
 \]
@@ -1986,13 +1984,12 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 \paragraph{Access}
 
 \[
-	\text{Access by index}\semiq
 	\infrule{
-		\EnvSym\then n \geq 1 \semiq \forall_{i\in[1,n]}{\tau_i:\Type, x_i:\tau_i, a_i \in \Id} \\*
-		\EnvSym\then l:\tuple{a_1:\tau_1,\dotsc,a_n:\tau_n}\\*
-		\EnvSym\then r:\Int \semiq r \in [1,n]
+		\text{Access by index} \\*
+		\EnvSym\then n \geq 1 \semiq \forall_{i\in[1,n]}{\tau_i:\Type, a_i\in\Id} \semiq \expr_1:\tuple{a_1:\tau_1,\dotsc,a_n:\tau_n}\\*
+		\EnvSym\then \expr_2:\Int \semiq \expr_2 \in [1,n]
 	}{
-		\EnvSym\then \code{$l$ @ $r$}: \tau_r
+		\EnvSym\then \code{$\expr_1$ @ $\expr_2$}: \tau_{\expr_2}
 	}
 \]
 
@@ -2000,13 +1997,12 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 
 \[
 	\infrule{
-		\EnvSym\then n \geq 1 \semiq \forall_{i\in[1,n]}{\tau_i:\Type, x_i:\tau_i, a_i \in \Id} \\*
-		\EnvSym\then l:\tuple{a_1:\tau_1,\dotsc,a_n:\tau_n}\\*
+		\EnvSym\then n \geq 1 \semiq \forall_{i\in[1,n]}{\tau_i:\Type, a_i\in\Id} \semiq \expr:\tuple{a_1:\tau_1,\dotsc,a_n:\tau_n} \\*
 	}{
 		\begin{aligned}
-			\text{(Count access)} \qquad & \EnvSym\then \code{$l$ @ \%}: \Int                     \\*
-			\text{(Range access)} \qquad & \land\EnvSym\then \code{$l$ @ @}: \exists\Int.\Range\\*
-			\text{(Fields access)} \qquad & \land\EnvSym\then \code{$l$ @ *}: \exists\Text.\List
+			\text{(Count access)} \qquad & \EnvSym\then \code{$\expr$ @ \%}: \Int \\*
+			\text{(Range access)} \qquad & \land\EnvSym\then \code{$\expr$ @ @}: \exists\Int.\Range \\*
+			\text{(Fields access)} \qquad & \land\EnvSym\then \code{$\expr$ @ *}: \exists\Text.\List
 		\end{aligned}
 	}
 \]
@@ -2014,16 +2010,14 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 \paragraph{Dot access}
 
 \[
-	\text{Access by name}\semiq
 	\infrule{
-		\EnvSym\then n \geq 1 \semiq \forall_{i\in[1,n]}{\tau_i:\Type, x_i:\tau_i, a_i \in \Id} \\*
-		\EnvSym\then l:\tuple{a_1:\tau_1,\dotsc,a_n:\tau_n}\\*
-		\EnvSym\then r \in \Id \semiq \exists_j a_j = r
+		\text{Access by name}\\*
+		\EnvSym\then n \geq 1 \semiq \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \Id} \semiq \expr_1:\tuple{a_1:\tau_1,\dotsc,a_n:\tau_n} \\*
+		\EnvSym\then \expr_2 \in \Id \semiq \exists_{j\in[1,n]} a_j = \expr_2
 	}{
-		\EnvSym\then \code{$l$ @ $r$}: \tau_j
+		\EnvSym\then \code{$\expr_1$ @ $\expr_2$}: \tau_j
 	}
 \]
-
 
 \subsubsection{Struct}
 
