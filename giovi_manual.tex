@@ -1940,6 +1940,32 @@ $\expr_2$ of type $\tau_2$.
 	}
 \]
 
+\[
+	\infrule{
+		\text{Count access} \\*
+		\EnvSym\then \tau\in\Product \semiq \expr:\tau
+	}{
+		\EnvSym\then \code{$\expr$ @ \%}: \Int
+	}
+\]
+
+\[
+	\infrule{
+		\text{Range access} \\*
+		\EnvSym\then \tau\in\Product \semiq \expr:\tau
+	}{
+		\EnvSym\then \code{$\expr$ @ @}: \exists\Int.\Range
+	}
+\]
+
+\[
+	\infrule{
+		\text{Fields access} \\*
+		\EnvSym\then \tau\in\set{\Record,\Struct} \semiq \expr:\tau
+	}{
+		\EnvSym\then \code{$\expr$ @ *}: \exists\Text.\List
+	}
+\]
 
 \subsubsection{Tuple}
 
@@ -1971,17 +1997,6 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 	}
 \]
 
-\[
-	\infrule{
-		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type} \semiq \expr:\tau_1 \times \dotsb \times \tau_n \\*
-	}{
-		\begin{aligned}
-			\text{(Count access)} \qquad & \EnvSym\then \code{$\expr$ @ \%}: \Int                           \\
-			\text{(Range access)} \qquad & \land\EnvSym\then \code{$\expr$ @ @}: \exists\Int.\Range 
-		\end{aligned}
-	}
-\]
-
 \subsubsection{Record}
 
 \paragraph{Access}
@@ -2000,13 +2015,12 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 
 \[
 	\infrule{
-		\EnvSym\then n \geq 1 \semiq \forall_{i\in[1,n]}{\tau_i:\Type, a_i\in\Id} \semiq \expr:\tuple{a_1:\tau_1,\dotsc,a_n:\tau_n} \\*
+		\text{"Slice" access}\\*
+		\EnvSym\then n \geq 1 \semiq \forall_{i\in[1,n]}{\tau_i:\Type, a_i\in\Id} \semiq \rho=\tuple{a_1:\tau_1,\dotsc,a_n:\tau_n} \semiq \expr_1:\rho\\*
+		\EnvSym\then \expr_2:\exists\Int.\Range \\*
+		\EnvSym\then \forall_{i\in\expr_2}{\rho'=\tuple{a_j:\tau_j, \dotsc, a_j:\tau_j}}
 	}{
-		\begin{aligned}
-			\text{(Count access)} \qquad & \EnvSym\then \code{$\expr$ @ \%}: \Int \\*
-			\text{(Range access)} \qquad & \land\EnvSym\then \code{$\expr$ @ @}: \exists\Int.\Range \\*
-			\text{(Fields access)} \qquad & \land\EnvSym\then \code{$\expr$ @ *}: \exists\Text.\List
-		\end{aligned}
+		\EnvSym\then \code{$\expr_1$ @ $\expr_2$}: \rho'
 	}
 \]
 
@@ -2015,10 +2029,10 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 \[
 	\infrule{
 		\text{Access by name}\\*
-		\EnvSym\then n \geq 1 \semiq \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \Id} \semiq \expr_1:\tuple{a_1:\tau_1,\dotsc,a_n:\tau_n} \\*
-		\EnvSym\then \expr_2 \in \Id \semiq \exists_{j\in[1,n]} a_j = \expr_2
+		\EnvSym\then n \geq 1 \semiq \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \Id} \semiq \expr:\tuple{a_1:\tau_1,\dotsc,a_n:\tau_n} \\*
+		\EnvSym\then a' \in \Id \semiq \exists_{j\in[1,n]} a_j = a'
 	}{
-		\EnvSym\then \code{$\expr_1$ @ $\expr_2$}: \tau_j
+		\EnvSym\then \code{$\expr$.$a'$}: \tau_j
 	}
 \]
 
