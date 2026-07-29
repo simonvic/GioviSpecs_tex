@@ -19,6 +19,8 @@
 \renewcommand{\arraystretch}{1.5} % increase space between table rows
 
 \newcommand{\set}[1]{\left\{#1\right\}}
+\newcommand{\glist}[1]{\left[#1\right]}
+\newcommand{\map}[1]{\left[#1\right]}
 \newcommand{\infrule}[3][gathered]{\frac{\begin{#1}#2\end{#1}}{\begin{gathered}#3\end{gathered}}}
 \newcommand{\oprule}[3][gathered]{\frac{\begin{#1}#2\end{#1}}{\begin{gathered}#3\end{gathered}}}
 % \newcommand{\infrule}[2]{\colorbox{gray!2}{$\frac{\begin{gathered}#1\end{gathered}}{\begin{gathered}#2\end{gathered}}$}}
@@ -202,6 +204,16 @@ The notation $t : \exists\sigma.T$ means that $t$ is a term of concrete
 type $T$ with the type parameter $\tau$ equal to $\sigma$.
 
 \comment{TODO: tipi esistenziali? Rivedere notazione}
+
+\subparagraph{List} To denote a list type, the existential type notation will
+be used $\List[\sigma:=\Type]$.\\*
+To denote a value, for example of type $\exists\Int.\List$, this notation will
+be used: $\glist{1,2,3}$
+
+\subparagraph{Map} To denote a map type, the existential type notation will
+be used $\Map[\kappa:=\Type,\nu:=\Type]$.\\*
+To denote a value, for example of type $\exists\Text.\exists\Int.\Map$, this
+notation will be used: $\map{a\mapsto1,b\mapsto2,c\mapsto3}$
 
 \subparagraph{Identifiers set} A set $\Id=\set{i\mid i:=\text{identifier}}$ is
 used to encompass all possible identifiers allowed by the grammar.
@@ -2986,6 +2998,10 @@ pair of two patterns, one for the key and one for the value respectively.
 											                       & $\Map[\kappa:=\tau_\kappa,\nu:=\tau_\nu]$ \\\hline
 	\multirow{2}{*}{$\exists\sigma.T$}                             & Concrete type $T$ with type parameter equal to $\sigma$\\
 											                       & $\exists\Text.\exists\Int.\Map$ \\\hline
+	\multirow{2}{*}{$\glist{\expr_1,\dotsc,\expr_n}$}              & A list of $n$ elements \\
+											                       & $\glist{1,2,3}$ \\\hline
+	\multirow{2}{*}{$\map{\expr_{k_1}\mapsto\expr_{v_1},\dotsc,\expr_{k_n}\mapsto\expr_{v_n}}$} & A Map of $n$ key-value pairs \\
+											                                                    & $\map{a\mapsto1,b\mapsto2,c\mapsto3}$ \\\hline
 	\multirow{2}{*}{$(\tau_1,\dotsc,\tau_n) \to \tau_{n+1}$}       & Function type with $n$ formal parameters $\tau_i$ and return type $\tau_{n+1}$\\
 											                       & $(\Int,\Real) \to \Real$ \\\hline
 	\multirow{2}{*}{$\tau_1 \times \dotsb \times \tau_n$}          & A Tuple type with $n$ members of type $\tau_i$\\
