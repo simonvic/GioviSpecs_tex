@@ -2918,25 +2918,31 @@ specified pattern.
 \paragraph{List pattern} The list pattern is used to iterate over a list;
 it's basically a unary pattern, but allows nested patterns.
 
-\comment{TODO: completare}
 \[
 	\oprule[aligned]{
+		\EnvLoc,\EnvStore &\then n \geq 0 \semiq \expr\eval\glist{\val_1,\dotsc,\val_n} \Then \EnvLoc_2,\EnvStore_2 \\*
+						  &\forall_{i\in[1,n]}{(\EnvLoc_i,\EnvStore_i) = \decons(\EnvLoc_2,\EnvStore_2,\val_i,\pattern)}
 	}{
-		\EnvLoc,\EnvStore \then \code{for [$\pattern$] in $\expr$ do} \Then \EnvLoc_2,\EnvStore_2\\*
+		\EnvLoc_2,\EnvStore_2 \then \code{for [$\pattern$] in $\expr$ do} \Then \EnvLoc_i,\EnvStore_i\\*
 	}
 \]
+At each iteration $i$, the $i$-th entry of the list gets deconstructed with
+the pattern $\pattern$
 
 
 \paragraph{Map pattern} The map pattern is used to iterate over maps; it's a
 pair of two patterns, one for the key and one for the value respectively.
 
-\comment{TODO: completare}
 \[
 	\oprule[aligned]{
+		\EnvLoc,\EnvStore &\then n \geq 0 \semiq \expr\eval\map{\val_{k_1}\mapsto\val_{v_1},\dotsc,\val_{k_n}\mapsto\val_{v_n}} \Then \EnvLoc_2,\EnvStore_2 \\*
+						  &\forall_{i\in[1,n]}{(\EnvLoc_i,\EnvStore_i) = \decons(\EnvLoc_2,\EnvStore_2,\val_{k_i},\pattern_k)} \cup \decons(\EnvLoc_2,\EnvStore_2,\val_{v_i},\pattern_v)
 	}{
-		\EnvLoc,\EnvStore \then \code{for [$\pattern_k$:$\pattern_v$] in $\expr$ do} \Then \EnvLoc_2,\EnvStore_2\\*
+		\EnvLoc_2,\EnvStore_2 \then \code{for [$\pattern_k$:$\pattern_v$] in $\expr$ do} \Then \EnvLoc_i,\EnvStore_i\\*
 	}
 \]
+At each iteration $i$, the $i$-th key-value pair of the map gets deconstructed
+with the patterns $\pattern_k$ and $\pattern_v$ respectively
 
 \chapter{Notation}
 
