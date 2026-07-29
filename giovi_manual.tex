@@ -1801,6 +1801,52 @@ Dovrebbe?}
 If a term of type $\sigma_1$ can be casted to type $\sigma_2$ $\implies$ A list
 of $\sigma_1$ can be casted to a list of $\sigma_2$.
 
+\paragraph{Plus}
+
+\[
+	\infrule{
+		\EnvSym\then \tau_1=\List \semiq \expr_1:\tau_1 \\*
+		\EnvSym\then \tau_2=\List \semiq \expr_2:\tau_2 \\*
+		\EnvSym\then \tau_2 \narr \tau_1
+	}{
+		\EnvSym\then \code{$\expr_1$ + $\expr_2$} : \tau_1
+	}
+\]
+\comment{TODO: chiarire. Il tipo della concatenazione dovrebbe essere deciso da
+lhs o dovrebbe essere il widest tra i due?}
+
+\[
+	\infrule{
+		\EnvSym\then \tau=\List[\sigma_1:=\Type] \semiq \expr_1:\tau \\*
+		\EnvSym\then \sigma_2:\Type \semiq \sigma_2\narr\sigma_1 \semiq \expr_2:\sigma_2
+	}{
+		\EnvSym\then \code{$\expr_1$ + $\expr_2$} : \tau
+	}
+\]
+
+\paragraph{Minus}
+
+\[
+	\infrule{
+		\EnvSym\then \tau_1=\List \semiq \expr_1:\tau_1 \\*
+		\EnvSym\then \tau_2=\List \semiq \expr_2:\tau_2 \\*
+		\EnvSym\then \tau_2 \narr \tau_1
+	}{
+		\EnvSym\then \code{$\expr_1$ - $\expr_2$} : \tau_1
+	}
+\]
+\comment{TODO: chiarire. Il tipo dell'intersezione dovrebbe essere deciso da
+lhs o dovrebbe essere il widest tra i due?}
+
+\[
+	\infrule{
+		\EnvSym\then \tau=\List[\sigma_1:=\Type] \semiq \expr_1:\tau \\*
+		\EnvSym\then \sigma_2:\Type \semiq \sigma_2\narr\sigma_1 \semiq \expr_2:\sigma_2
+	}{
+		\EnvSym\then \code{$\expr_1$ - $\expr_2$} : \tau
+	}
+\]
+
 \paragraph{Contains}
 
 \[
@@ -1883,10 +1929,46 @@ $\tau_1$).
 		\EnvSym\then \code{$\expr$ as $\tau_2$} : \tau_2
 	}
 \]
-
 If a term of type $\kappa_1$ and be casted to type $\kappa_2$ $\land$ A term of
 type $\nu_1$ can be casted to type $\nu_2$ $\implies$ A map of type $\tau_1$
 can be casted to the type $\tau_2$.
+
+\paragraph{Plus}
+
+\[
+	\infrule{
+		\EnvSym\then \tau_1=\Map \semiq \expr_1:\tau_1 \\*
+		\EnvSym\then \tau_2=\Map \semiq \expr_2:\tau_2 \\*
+		\EnvSym\then \tau_2 \narr \tau_1
+	}{
+		\EnvSym\then \code{$\expr_1$ + $\expr_2$} : \tau_1
+	}
+\]
+\comment{TODO: chiarire. Il tipo della concatenazione dovrebbe essere deciso da
+lhs o dovrebbe essere il widest tra i due?}
+
+\paragraph{Minus}
+
+\[
+	\infrule{
+		\EnvSym\then \tau_1=\Map \semiq \expr_1:\tau_1 \\*
+		\EnvSym\then \tau_2=\Map \semiq \expr_2:\tau_2 \\*
+		\EnvSym\then \tau_2 \narr \tau_1
+	}{
+		\EnvSym\then \code{$\expr_1$ - $\expr_2$} : \tau_1
+	}
+\]
+\comment{TODO: chiarire. Il tipo dell'intersezione dovrebbe essere deciso da
+lhs o dovrebbe essere il widest tra i due?}
+
+\[
+	\infrule{
+		\EnvSym\then \tau=\Map[\kappa_1:=\Type] \semiq \expr_1:\tau \\*
+		\EnvSym\then \kappa_2:\Type \semiq \kappa_2\narr\kappa_1 \semiq \expr_2:\kappa_2
+	}{
+		\EnvSym\then \code{$\expr_1$ - $\expr_2$} : \tau
+	}
+\]
 
 
 \paragraph{Contains}
@@ -2556,6 +2638,8 @@ immutability}
 \newpage
 
 \subsection{Patterns}
+
+\comment{TODO: muovere definizioni in Part specifica}
 
 \begin{definition}[Pattern]
 	A pattern is a special language construct that describes a structure of
