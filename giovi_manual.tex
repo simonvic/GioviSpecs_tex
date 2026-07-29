@@ -1942,7 +1942,7 @@ $\expr_2$ of type $\tau_2$.
 
 \[
 	\infrule{
-		\text{Count access} \\*
+		\text{Fields count access} \\*
 		\EnvSym\then \tau\in\Product \semiq \expr:\tau
 	}{
 		\EnvSym\then \code{$\expr$ @ \%}: \Int
@@ -1951,7 +1951,7 @@ $\expr_2$ of type $\tau_2$.
 
 \[
 	\infrule{
-		\text{Range access} \\*
+		\text{Fields range access} \\*
 		\EnvSym\then \tau\in\Product \semiq \expr:\tau
 	}{
 		\EnvSym\then \code{$\expr$ @ @}: \exists\Int.\Range
@@ -1960,7 +1960,7 @@ $\expr_2$ of type $\tau_2$.
 
 \[
 	\infrule{
-		\text{Fields access} \\*
+		\text{Fields names access} \\*
 		\EnvSym\then \tau\in\set{\Record,\Struct} \semiq \expr:\tau
 	}{
 		\EnvSym\then \code{$\expr$ @ *}: \exists\Text.\List
