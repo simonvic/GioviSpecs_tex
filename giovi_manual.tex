@@ -395,12 +395,24 @@ Using the $\EnvVar$ variables environment as example
 	}
 \]
 
+\nb{
+	When the type parameters are not needed in the rule, they will be omitted.
+	For example: $\tau=\List$, $\expr:\Map$
+}
+
 \subsection{Product types}
 
 \paragraph{Tuple}
+
 \[
 	\EnvSym\then \Tuple : \Type
 \]
+
+\nb{
+	When the whole definition of a tuple type is not needed, the type will
+	simply be denoted by \Tuple.
+}
+
 \[
 	\infrule{
 		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type}
@@ -408,13 +420,18 @@ Using the $\EnvVar$ variables environment as example
 		\EnvSym\then \code{tuple <$\tau_1$, $\dotsc$, $\tau_n$>} \eval \tau_1 \times \dotsb \times \tau_n
 	}
 \]
-When the whole definition of a tuple type is not needed, the type will simply
-be denoted by \Tuple.
 
 \paragraph{Record}
+
 \[
 	\EnvSym\then \Record : \Type
 \]
+
+\nb{
+	When the whole definition of a record type is not needed, the type will
+	simply be denoted by \Record.
+}
+
 \[
 	\infrule{
 		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \Id}
@@ -422,13 +439,18 @@ be denoted by \Tuple.
 		\EnvSym\then \code{record <$a_1$ $\tau_1$, $\dotsc$, $a_n$ $\tau_n$>} \eval \tuple{a_1:\tau_1, \dotsc, a_n:\tau_n}
 	}
 \]
-When the whole definition of a record type is not needed, the type will simply
-be denoted by \Record.
 
 \paragraph{Struct}
+
 \[
 	\EnvSym\then \Struct : \Type
 \]
+
+\nb{
+	When the whole definition of a struct type is not needed, the type will
+	simply be denoted by \Struct.
+}
+
 \[
 	\infrule{
 		\EnvSym\then \xi \in \Id \semiq n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \Id}
@@ -436,8 +458,6 @@ be denoted by \Record.
 		\EnvSym,\code{struct $\xi$ <$a_1$ $\tau_1$, $\dotsc$, $a_n$ $\tau_n$>} \then \code{$\xi$} \eval (\xi,\tuple{a_1:\tau_1,\dotsc,a_n:\tau_n})
 	}
 \]
-When the whole definition of a struct type is not needed, the type will simply
-be denoted by \Struct.
 
 \comment{TODO: che notazione usare per \Struct???}
 
