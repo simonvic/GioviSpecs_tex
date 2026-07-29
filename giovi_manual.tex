@@ -2058,6 +2058,16 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 	}
 \]
 
+\[
+	\infrule{
+		\EnvSym\then i\in\Id \semiq \tau:\Type \\*
+		\EnvSym\then \tau_\expr:\Type \semiq \tau_\expr\narr\tau \semiq \expr\in\Expr \semiq \expr:\tau_\expr
+	}{
+		\EnvSym, \code{var $i$ $\tau$ <- $\expr$} \then i:\tau \qquad \text{(esplicit type)} \\*
+		\land \EnvSym, \code{var $i$ <- $\expr$} \then i:\tau \qquad \text{(implicit type)}
+	}
+\]
+
 \comment{TODO: specificare il tipo Var come da implementazione?}
 
 \subsection{Constant declaration}
