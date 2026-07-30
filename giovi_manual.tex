@@ -39,7 +39,7 @@
 \newcommand{\addr}{\alpha}
 \newcommand{\expr}{\epsilon}
 \newcommand{\val}{\nu}
-\newcommand{\pattern}{p}
+\newcommand{\pattern}{p} % eventually use pi
 \newcommand{\Id}{\mathcal{I}}
 \newcommand{\Expr}{\mathcal{E}}
 \newcommand{\Val}{\mathcal{V}}
@@ -2880,7 +2880,7 @@ lookup of the product value
 		\EnvLoc,\EnvStore       &\then \expr \eval \val \Then \EnvLoc_2,\EnvStore_2 \\*
 		\EnvLoc_2,\EnvStore_2   &\then \forall_{j\in[1,m]}{\addr_j = \alloc(\EnvStore_2)} \\*
 		                        &\EnvLoc_3   = \EnvLoc_2\env{\forall_{j\in[1,m]}{\pattern_j\mapsto\addr_j}}\\*
-		                        &\EnvStore_3 = \EnvStore_2\env{\forall_{j\in[1,m]}{\exists_{x'\in\mathcal{N}=p_j\in\mathcal{M}}{\semiq\addr_j\mapsto\EnvStore_2(\EnvLoc_2(x'))}}}\\*
+		                        &\EnvStore_3 = \EnvStore_2\env{\forall_{j\in[1,m]}{\exists_{x'\in\mathcal{N}=\pattern_j\in\mathcal{M}}{\semiq\addr_j\mapsto\EnvStore_2(\EnvLoc_2(x'))}}}\\*
 	}{
 		\EnvLoc_2,\EnvStore_2 \then \code{$\expr$ -> $\pattern$} \Then \EnvLoc_3,\EnvStore_3\\*
 	}
