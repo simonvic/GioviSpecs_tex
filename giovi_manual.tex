@@ -3032,20 +3032,21 @@ name $y_j$ is bound to the formal parameter whose label is $l_i=y_j$.
 	$\sqcap$                                & "Least wide type" operator       & $\Int \sqcap \Real$ \\\hline
 	$\then$                                 & Assumptions suffix               & $\EnvSym \then \val:\tau$ \\\hline
 	$\Then$                                 & Environments modification prefix & $\expr \Then \EnvStore$\\\hline
-	$\tau$                                  & \multirow{2}{*}{A type} \\
+	$\tau,\omega,\kappa,\nu$                & \multirow{2}{*}{A type}          & \\
 	or any lowercase greek letter           &                                  & $\tau = \Int$\\\hline
-	$\phi$                                  & Function type                    & \\\hline
-	$\theta$                                & Tuple type                       & \\\hline
-	$\rho$                                  & Record type                      & \\\hline
-	$\sigma$                                & Struct type                      & \\\hline
+	$\phi$                                  & Function type                    & $\phi=(\tau_1)\to\tau_2$\\\hline
+	$\theta$                                & Tuple type                       & $\theta=\tau_1\times\tau_2$\\\hline
+	$\rho$                                  & Record type                      & $\rho=\tuple{x:\tau_1,y:\tau_2}$\\\hline
+	$\sigma$                                & Struct type                      & $\sigma=(\xi, \tuple{x:\tau_1,y:\tau_2})$\\\hline
 	$\eval$                                 & "Evaluates to" operator          & $\expr\eval\val$\\\hline
 	$\addr$                                 & Memory address                   & $\addr = 69$\\\hline
 	$\Id$                                   & Identifiers set                  & \\\hline
-	lower case latin letter (a,b,x,y,... )  & Identifier                       & \\\hline
+	$a,b,x,y$                               & \multirow{2}{*}{Identifier}      & \\
+	or any lower case latin letter          &                                  & \\\hline
 	$\Expr$                                 & Expressions set                  & \\\hline
-	$\expr$                                 & Expression                       & \\\hline
+	$\expr$                                 & Expression                       & $\expr=\code{10 + 59}$\\\hline
 	$\Val$                                  & Values set                       & \\\hline
-	$\val$                                  & Value                            & \\\hline
+	$\val$                                  & Value                            & $\val=69$\\\hline
 	$\Zero$                                 & Zero set/function                & \\\hline
 	$\Pattern$                              & Patterns set                     & \\\hline
 	$\pattern$                              & Pattern                          & \\\hline
