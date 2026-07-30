@@ -915,33 +915,6 @@ expression $\expr_j$ of type $\eta_j$ (narrower than $\tau_i$).
 
 \newpage
 
-\subsection{Range}
-
-\[
-	\infrule{
-		\EnvSym\then \tau_1 \in \Number \semiq \expr_1\in\Expr \semiq \expr_1:\tau_1\\*
-		\EnvSym\then \tau_2 \in \Number \semiq \expr_2\in\Expr \semiq \expr_2:\tau_2 \\*
-		\EnvSym\then \omega = \tau_1 \sqcap \tau_2
-	}{
-		\EnvSym\then \code{$\expr_1$..$\expr_2$} : \exists\omega.\Range
-	}
-\]
-Range from $\expr_1$ (begin) to $\expr_2$ (end).
-
-\[
-	\infrule{
-		\EnvSym\then \tau_1 \in \Number \semiq \expr_1\in\Expr \semiq \expr_1:\tau_1\\*
-		\EnvSym\then \tau_2 \in \Number \semiq \expr_2\in\Expr \semiq \expr_2:\tau_2 \\*
-		\EnvSym\then \tau_3 \in \Number \semiq \expr_3\in\Expr \semiq \expr_3:\tau_3 \\*
-		\EnvSym\then \omega = \tau_1 \sqcap \tau_2 \sqcap \tau_3
-	}{
-		\EnvSym\then \code{$\expr_1$..$\expr_2$..$\expr_3$} : \exists\omega.\Range
-	}
-\]
-Range from $\expr_1$ (begin) to $\expr_2$ (end) with a step $\expr_3$.
-
-\newpage
-
 \subsection{Parenthesized expression}
 
 \[
@@ -996,6 +969,31 @@ Range from $\expr_1$ (begin) to $\expr_2$ (end) with a step $\expr_3$.
 \]
 
 \newpage
+
+\subsection{Range}
+
+\[
+	\infrule{
+		\EnvSym\then \tau_1 \in \Number \semiq \expr_1\in\Expr \semiq \expr_1:\tau_1\\*
+		\EnvSym\then \tau_2 \in \Number \semiq \expr_2\in\Expr \semiq \expr_2:\tau_2 \\*
+		\EnvSym\then \omega = \tau_1 \sqcap \tau_2
+	}{
+		\EnvSym\then \code{$\expr_1$..$\expr_2$} : \exists\omega.\Range
+	}
+\]
+Range from $\expr_1$ (begin) to $\expr_2$ (end).
+
+\[
+	\infrule{
+		\EnvSym\then \tau_1 \in \Number \semiq \expr_1\in\Expr \semiq \expr_1:\tau_1\\*
+		\EnvSym\then \tau_2 \in \Number \semiq \expr_2\in\Expr \semiq \expr_2:\tau_2 \\*
+		\EnvSym\then \tau_3 \in \Number \semiq \expr_3\in\Expr \semiq \expr_3:\tau_3 \\*
+		\EnvSym\then \omega = \tau_1 \sqcap \tau_2 \sqcap \tau_3
+	}{
+		\EnvSym\then \code{$\expr_1$..$\expr_2$..$\expr_3$} : \exists\omega.\Range
+	}
+\]
+Range from $\expr_1$ (begin) to $\expr_2$ (end) with a step $\expr_3$.
 
 \section{Operators}
 
@@ -2181,7 +2179,7 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 
 \comment{TODO: ...}
 
-\subsubsection{Function}
+\subsection{Function}
 
 \comment{TODO: ...}
 
