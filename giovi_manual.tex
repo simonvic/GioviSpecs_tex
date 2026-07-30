@@ -3008,8 +3008,8 @@ with the patterns $\pattern_k$ and $\pattern_v$ respectively
 	                                                                                            & $\glist{1,2,3}$ \\\hline
 	\multirow{2}{*}{$\map{\expr_{k_1}\mapsto\expr_{v_1},\dotsc,\expr_{k_n}\mapsto\expr_{v_n}}$} & A Map of $n$ key-value pairs \\
 	                                                                                            & $\map{a\mapsto1,b\mapsto2,c\mapsto3}$ \\\hline
-	\multirow{2}{*}{$(\tau_1,\dotsc,\tau_n) \to \tau_{n+1}$}                                    & Function type with $n$ formal parameters $\tau_i$ and return type $\tau_{n+1}$\\
-	                                                                                            & $(\Int,\Real) \to \Real$ \\\hline
+	$(\tau_1,\dotsc,\tau_n) \to \tau_{n+1}$                                                     & Function type with $n$ formal parameters $\tau_i$ and return type $\tau_{n+1}$\\
+	$(x_1:\tau_1,\dotsc,x_n:\tau_n) \to \tau_{n+1}$                                             & $(\Int,\Real) \to \Real$ \\\hline
 	\multirow{2}{*}{$\tau_1 \times \dotsb \times \tau_n$}                                       & A Tuple type with $n$ members of type $\tau_i$\\
 	                                                                                            & $\Real \times \Real \times \Text$ \\\hline
 	\multirow{2}{*}{$\tuple{x_1:\tau_1,\dotsc,x_n:\tau_n}$}                                     & A record type with $n$ members with name $x_i$ and type $\tau_i$\\
