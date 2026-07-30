@@ -225,10 +225,10 @@ used to encompass all possible identifiers allowed by the grammar.
 \subparagraph{Tuple} A tuple type is denoted with the cartesian product
 operator.\\*
 For example, $\tau_1 \times \tau_2 \times \tau_3$ describes a 3-tuple type
-with three members of type $\tau_1, \tau_2, \tau_3$.
+with three fields of type $\tau_1, \tau_2, \tau_3$.
 
 \subparagraph{Record} The notation $\tuple{x_1:\tau_1, x_2:\tau_2}$ describes a
-record type (a tuple whose members are named).
+record type (a tuple whose fields are named).
 
 \subparagraph{Struct} The notation $(\xi, \tuple{x_1:\tau_1, x_2:\tau_2})$
 describes a struct type (a pair of an identifier $\xi$ and a record type).
@@ -2341,7 +2341,7 @@ The concept of a "default" value (a.k.a. zero value) is very important since
 the language has no concept of (nor models) a "null" value or uninitialized
 memory.
 
-Every variable, constant, function parameter, product types member etc. gets
+Every variable, constant, function parameter, product types fields etc. gets
 automatically initialized to its type's zero value.
 
 Every type has a zero value and will be described using $\Zero$
@@ -2670,7 +2670,7 @@ An extreme example: a value of type \code{[Text:[tuple<Int,Int,Int>]]} (map
 with $\Text$ keys and a list of tuples as value) could be iterated with a
 pattern \code{[colorName:[<r,\_,b>]]} is a map pattern with a unary pattern as
 key and a list pattern as value which itself has a positional product pattern
-nested, where the second member pattern is a placeholder.
+nested, where the second field pattern is a placeholder.
 
 \nb{
 	Nesting iterator patterns effectively means nesting iterations.\\*
@@ -2728,7 +2728,7 @@ In other words, the function tells that:
 		a new mapping for the specified value.
 	\item for product pattern, the resulting environments will be extended with
 		the mappings produced from applying the deconstruction function to
-		every member of the product value.
+		every field of the product value.
 	\item for a list pattern, the resulting environments will be extended with
 		the mappings produced from applying the deconstruction function to a
 		list's entry value.
@@ -2789,7 +2789,7 @@ given the choice of two deconstruction approaches: positional and named.
 
 \paragraph{Positional}
 
-With a positional product pattern, the members of a product value are
+With a positional product pattern, the fields of a product value are
 deconstructed in the same order they're defined in the pattern.
 
 The positional product pattern can be used to deconstruct all product types.
@@ -2824,12 +2824,12 @@ More formally, in case of nested patterns
 
 \paragraph{Named}
 
-With the named approach you're deconstructing the value based on the member's
+With the named approach you're deconstructing the value based on the fields'
 names (the order won't matter), therefore the pattern labels must be the same
-of the member's names.
+of the fields' names.
 
 Obviously, named product patterns can only be used with product types with
-named members (i.e. records, structs).
+named fields (i.e. records, structs).
 
 In case only unary patterns are used:
 \[
@@ -2848,7 +2848,7 @@ In case only unary patterns are used:
 
 \nb{
 	A notation abuse is used for $\EnvStore_2(\EnvLoc_2(x'))$, which describes
-	the value in memory of the member named $x'$ of the record $\val$.
+	the value in memory of the field named $x'$ of the record $\val$.
 }
 
 \vspace{\baselineskip}
@@ -2869,7 +2869,7 @@ More formally, in case of nested patterns
 deconstruct a named product value into a pattern whose variables share the same
 names. A shorthand syntax is available for such scenario; however, only unary
 patterns are allowed.\\*
-In this case, the identifier of the unary pattern will be used for the member
+In this case, the identifier of the unary pattern will be used for the field
 lookup of the product value
 \[
 	\oprule[aligned]{
@@ -3013,11 +3013,11 @@ be evaluated.
 	                                                                                            & $\map{a\mapsto1,b\mapsto2,c\mapsto3}$ \\\hline
 	$(\tau_1,\dotsc,\tau_n) \to \tau_{n+1}$                                                     & Function type with $n$ formal parameters $\tau_i$ and return type $\tau_{n+1}$\\
 	$(x_1:\tau_1,\dotsc,x_n:\tau_n) \to \tau_{n+1}$                                             & $(\Int,\Real) \to \Real$ \\\hline
-	\multirow{2}{*}{$\tau_1 \times \dotsb \times \tau_n$}                                       & A Tuple type with $n$ members of type $\tau_i$\\
+	\multirow{2}{*}{$\tau_1 \times \dotsb \times \tau_n$}                                       & A Tuple type with $n$ fields of type $\tau_i$\\
 	                                                                                            & $\Real \times \Real \times \Text$ \\\hline
-	\multirow{2}{*}{$\tuple{x_1:\tau_1,\dotsc,x_n:\tau_n}$}                                     & A record type with $n$ members with name $x_i$ and type $\tau_i$\\
+	\multirow{2}{*}{$\tuple{x_1:\tau_1,\dotsc,x_n:\tau_n}$}                                     & A record type with $n$ fields with name $x_i$ and type $\tau_i$\\
 	                                                                                            & $\tuple{\text{x}:\Real, \text{y}:\Real, \text{label}:\Text}$\\\hline
-	\multirow{2}{*}{$(\xi, \tuple{x_1:\tau_1,\dotsc,x_n:\tau_n})$}                              & A struct type with typename $\xi$, and $n$ members with name $x_i$ and type $\tau_i$\\
+	\multirow{2}{*}{$(\xi, \tuple{x_1:\tau_1,\dotsc,x_n:\tau_n})$}                              & A struct type with typename $\xi$, and $n$ fields with name $x_i$ and type $\tau_i$\\
 	                                                                                            & $(\text{Point}, \tuple{\text{x}:\Real, \text{y}:\Real, \text{label}:\Text})$\\\hline
 	\multirow{2}{*}{$\env{x \mapsto y}$}                                                        & An environment in which $x$ maps to $y$\\
 	                                                                                            & $\env{\addr \mapsto 69}$\\\hline
