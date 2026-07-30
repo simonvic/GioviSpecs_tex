@@ -227,10 +227,10 @@ operator.\\*
 For example, $\tau_1 \times \tau_2 \times \tau_3$ describes a 3-tuple type
 with three members of type $\tau_1, \tau_2, \tau_3$.
 
-\subparagraph{Record} The notation $\tuple{a_1:\tau_1, a_2:\tau_2}$ describes a
+\subparagraph{Record} The notation $\tuple{x_1:\tau_1, x_2:\tau_2}$ describes a
 record type (a tuple whose members are named).
 
-\subparagraph{Struct} The notation $(\xi, \tuple{a_1:\tau_1, a_2:\tau_2})$
+\subparagraph{Struct} The notation $(\xi, \tuple{x_1:\tau_1, x_2:\tau_2})$
 describes a struct type (a pair of an identifier $\xi$ and a record type).
 
 \comment{TODO: rivedere notazione struct}
@@ -446,9 +446,9 @@ Using the $\EnvVar$ variables environment as example
 
 \[
 	\infrule{
-		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \Id}
+		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type, x_i \in \Id}
 	}{
-		\EnvSym\then \code{record <$a_1$ $\tau_1$, $\dotsc$, $a_n$ $\tau_n$>} \eval \tuple{a_1:\tau_1, \dotsc, a_n:\tau_n}
+		\EnvSym\then \code{record <$x_1$ $\tau_1$, $\dotsc$, $x_n$ $\tau_n$>} \eval \tuple{x_1:\tau_1, \dotsc, x_n:\tau_n}
 	}
 \]
 
@@ -465,9 +465,9 @@ Using the $\EnvVar$ variables environment as example
 
 \[
 	\infrule{
-		\EnvSym\then \xi \in \Id \semiq n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \Id}
+		\EnvSym\then \xi \in \Id \semiq n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type, x_i \in \Id}
 	}{
-		\EnvSym,\code{struct $\xi$ <$a_1$ $\tau_1$, $\dotsc$, $a_n$ $\tau_n$>} \then \code{$\xi$} \eval (\xi,\tuple{a_1:\tau_1,\dotsc,a_n:\tau_n})
+		\EnvSym,\code{struct $\xi$ <$x_1$ $\tau_1$, $\dotsc$, $x_n$ $\tau_n$>} \then \code{$\xi$} \eval (\xi,\tuple{x_1:\tau_1,\dotsc,x_n:\tau_n})
 	}
 \]
 
@@ -486,33 +486,33 @@ Using the $\EnvVar$ variables environment as example
 
 \[
 	\infrule{
-		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\Id} \semiq \rho:\Type
+		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type,x_i\in\Id} \semiq \rho:\Type
 	}{
-		\EnvSym\then \code{::($a_1$ $\tau_1$, $\dotsc$, $a_n$ $\tau_n$) => $\rho$} \eval (\tau_1,\dotsc,\tau_n) \to \rho
+		\EnvSym\then \code{::($x_1$ $\tau_1$, $\dotsc$, $x_n$ $\tau_n$) => $\rho$} \eval (\tau_1,\dotsc,\tau_n) \to \rho
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\Id}
+		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type,x_i\in\Id}
 	}{
-		\EnvSym\then \code{::($a_1$ $\tau_1$, $\dotsc$, $a_n$ $\tau_n$)} \eval (\tau_1,\dotsc,\tau_n) \to \Void
+		\EnvSym\then \code{::($x_1$ $\tau_1$, $\dotsc$, $x_n$ $\tau_n$)} \eval (\tau_1,\dotsc,\tau_n) \to \Void
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then \xi \in \Id \semiq n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\Id} \semiq \rho:\Type
+		\EnvSym\then \xi \in \Id \semiq n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type,x_i\in\Id} \semiq \rho:\Type
 	}{
-		\EnvSym,\code{$\xi$($a_1$ $\tau_1$, $\dotsc$, $a_n$ $\tau_n$) => $\rho$ \{\}} \then \code{$\xi$} : (\tau_1,\dotsc,\tau_n) \to \rho
+		\EnvSym,\code{$\xi$($x_1$ $\tau_1$, $\dotsc$, $x_n$ $\tau_n$) => $\rho$ \{\}} \then \code{$\xi$} : (\tau_1,\dotsc,\tau_n) \to \rho
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then \xi \in \Id \semiq n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\Id} \semiq \rho:\Type
+		\EnvSym\then \xi \in \Id \semiq n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type,x_i\in\Id} \semiq \rho:\Type
 	}{
-		\EnvSym,\code{$\xi$($a_1$ $\tau_1$, $\dotsc$, $a_n$ $\tau_n$) \{\}} \then \code{$\xi$} : (\tau_1,\dotsc,\tau_n) \to \Void
+		\EnvSym,\code{$\xi$($x_1$ $\tau_1$, $\dotsc$, $x_n$ $\tau_n$) \{\}} \then \code{$\xi$} : (\tau_1,\dotsc,\tau_n) \to \Void
 	}
 \]
 
@@ -601,7 +601,7 @@ types $\omega$ of $\theta_2$.
 \[
 	\infrule{
 		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type} \semiq \theta = \bigtimes_{i \in [1,n]}{\tau_i}\\*
-		\EnvSym\then m \geq n \semiq \forall_{j\in[1,m]}{a_j \in \Id, \omega_j:\Type} \semiq \rho = \tuple{a_1:\omega_1,\dotsc,a_m:\omega_m} \\*
+		\EnvSym\then m \geq n \semiq \forall_{j\in[1,m]}{x_j \in \Id, \omega_j:\Type} \semiq \rho = \tuple{x_1:\omega_1,\dotsc,x_m:\omega_m} \\*
 		\EnvSym\then \forall_{i \in [1,n]}{\tau_i \narr \omega_i}
 	}{
 		\EnvSym\then \theta \narr \rho
@@ -616,7 +616,7 @@ $\omega$ of $\rho$ (fields names are ignored).
 \[
 	\infrule{
 		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type} \semiq \theta = \bigtimes_{i \in [1,n]}{\tau_i}\\*
-		\EnvSym\then \xi \in \Id \semi m \geq n \semi \forall_{j\in[1,m]}{a_j \in \Id, \omega_j:\Type} \semi \sigma = (\xi, \tuple{a_1:\omega_1,\dotsc,a_m:\omega_m}) \\*
+		\EnvSym\then \xi \in \Id \semi m \geq n \semi \forall_{j\in[1,m]}{x_j \in \Id, \omega_j:\Type} \semi \sigma = (\xi, \tuple{x_1:\omega_1,\dotsc,x_m:\omega_m}) \\*
 		\EnvSym\then \forall_{i \in [1,n]}{\tau_i \narr \omega_i}
 	}{
 		\EnvSym\then \theta \narr \sigma
@@ -634,30 +634,30 @@ type $\omega$ of $\sigma$ (struct name and fields names are ignored).
 
 \[
 	\infrule{
-		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{a_i \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \semiq \rho_1 = \tuple{a_1:\tau_1,\dotsc,a_n:\tau_n} \\*
-		\EnvSym\then m \geq n \semiq \forall_{j\in[1,m]}{b_j \in \mathcal{M} \subseteq \Id, \omega_j:\Type} \semiq \rho_2 = \tuple{b_1:\omega_1,\dotsc,b_m:\omega_m} \\*
-		\EnvSym\then \forall_{a':\tau'\in\mathcal{N}}{\exists_{b':\omega'\in\mathcal{M}}{a'=b' \land \tau' \narr \omega'}}
+		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{x_i \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \semiq \rho_1 = \tuple{x_1:\tau_1,\dotsc,x_n:\tau_n} \\*
+		\EnvSym\then m \geq n \semiq \forall_{j\in[1,m]}{y_j \in \mathcal{M} \subseteq \Id, \omega_j:\Type} \semiq \rho_2 = \tuple{y_1:\omega_1,\dotsc,y_m:\omega_m} \\*
+		\EnvSym\then \forall_{x':\tau'\in\mathcal{N}}{\exists_{y':\omega'\in\mathcal{M}}{x'=y' \land \tau' \narr \omega'}}
 	}{
 		\EnvSym\then \rho_1 \narr \rho_2
 	}
 \]
 A record type $\rho_1$ is narrower than a record type $\rho_2$ if, for all
-fields $a'$ of type $\tau'$ in $\rho_1$, there is a field with the same name
-$b'$ of type $\omega'$ in $\rho_2$, where $\tau'$ is narrower than $\omega'$.
+fields $x'$ of type $\tau'$ in $\rho_1$, there is a field with the same name
+$y'$ of type $\omega'$ in $\rho_2$, where $\tau'$ is narrower than $\omega'$.
 
 \vspace{\baselineskip}
 
 \[
 	\infrule{
-		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{a \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \semiq \rho = \tuple{a_1:\tau_1,\dotsc,a_n:\tau_n} \\*
-		\EnvSym\then \xi \in \Id \semi m \geq n \semi \forall_{j\in[1,m]}{b_j \in \Id, \omega_j:\Type} \semiq \sigma = (\xi, \tuple{b_1:\omega_1,\dotsc,b_m:\omega_m}) \\*
-		\EnvSym\then \forall_{a':\tau'\in\mathcal{N}}{\exists_{b':\omega'\in\mathcal{M}}{a'=b' \land \tau' \narr \omega'}}
+		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{x \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \semiq \rho = \tuple{x_1:\tau_1,\dotsc,x_n:\tau_n} \\*
+		\EnvSym\then \xi \in \Id \semi m \geq n \semi \forall_{j\in[1,m]}{y_j \in \Id, \omega_j:\Type} \semiq \sigma = (\xi, \tuple{y_1:\omega_1,\dotsc,y_m:\omega_m}) \\*
+		\EnvSym\then \forall_{x':\tau'\in\mathcal{N}}{\exists_{y':\omega'\in\mathcal{M}}{x'=y' \land \tau' \narr \omega'}}
 	}{
 		\EnvSym\then \rho \narr \sigma
 	}
 \]
 A record type $\rho$ is narrower than a struct type $\sigma$ if, for all fields
-$a'$ of type $\tau'$ in $\rho$, there is a field with the same name $b'$ of
+$x'$ of type $\tau'$ in $\rho$, there is a field with the same name $y'$ of
 type $\omega'$ in $\sigma$, where $\tau'$ is narrower than $\omega'$ (struct
 name is ignored).
 
@@ -665,10 +665,10 @@ name is ignored).
 
 \[
 	\infrule{
-		\EnvSym\then \xi_1 \in \Id \semiq n \geq 0 \semiq \forall_{i\in[1,n]}{a_i \in \Id, \tau_i:\Type} \\*
-		\EnvSym\then \sigma_1 = (\xi_1, \tuple{a_1:\tau_1,\dotsc,a_n:\tau_n}) \\*
-		\EnvSym\then \xi_2 \in \Id \semiq m \geq n \semiq \forall_{j\in[1,m]}{b_j \in \Id, \omega_j:\Type} \\*
-		\EnvSym\then \sigma_2 = (\xi_2, \tuple{b_1:\omega_1,\dotsc,b_m:\omega_m}) \\*
+		\EnvSym\then \xi_1 \in \Id \semiq n \geq 0 \semiq \forall_{i\in[1,n]}{x_i \in \Id, \tau_i:\Type} \\*
+		\EnvSym\then \sigma_1 = (\xi_1, \tuple{x_1:\tau_1,\dotsc,x_n:\tau_n}) \\*
+		\EnvSym\then \xi_2 \in \Id \semiq m \geq n \semiq \forall_{j\in[1,m]}{y_j \in \Id, \omega_j:\Type} \\*
+		\EnvSym\then \sigma_2 = (\xi_2, \tuple{y_1:\omega_1,\dotsc,y_m:\omega_m}) \\*
 		\EnvSym\then \xi_1 = \xi_2
 	}{
 		\EnvSym\then \sigma_1 \narr \sigma_2
@@ -687,20 +687,20 @@ construction).
 
 \[
 	\infrule{
-		\EnvSym\then \rho_1:\Type \semiq n \geq 0 \semiq \forall_{i\in[1,n]}{a_i \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \\*
-		\EnvSym\then \phi_1 = (a_1:\tau_1,\dotsc,a_n:\tau_n) \to \rho_1 \\*
-		\EnvSym\then \rho_2:\Type \semiq m \geq n  \semiq \forall_{j\in[1,m]}{b_j \in \mathcal{M} \subseteq \Id, \omega_i:\Type} \\*
-		\EnvSym\then \phi_2 = (b_1:\omega_1,\dotsc,b_m:\omega_m) \to \rho_1 \\*
+		\EnvSym\then \rho_1:\Type \semiq n \geq 0 \semiq \forall_{i\in[1,n]}{x_i \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \\*
+		\EnvSym\then \phi_1 = (x_1:\tau_1,\dotsc,x_n:\tau_n) \to \rho_1 \\*
+		\EnvSym\then \rho_2:\Type \semiq m \geq n  \semiq \forall_{j\in[1,m]}{y_j \in \mathcal{M} \subseteq \Id, \omega_i:\Type} \\*
+		\EnvSym\then \phi_2 = (y_1:\omega_1,\dotsc,y_m:\omega_m) \to \rho_1 \\*
 		\EnvSym\then \rho_1 \narr \rho_2 \\*
-		\EnvSym\then \forall_{a':\tau'}{\exists_{b':\omega'}{a'=b' \land \tau' \narr \omega'}}
+		\EnvSym\then \forall_{x':\tau'}{\exists_{y':\omega'}{x'=y' \land \tau' \narr \omega'}}
 	}{
 		\EnvSym\then \phi_1 \narr \phi_2
 	}
 \]
 A function type $\phi_1$ is narrower than a function type $\phi_2$ if the
 return type $\rho_1$ is narrower than the other return type $\rho_2$, and if,
-for all parameters $a'$ of type $\tau'$ in $\phi_1$, there is a parameter with
-the same name $b'$ of type $\omega'$ in $\phi_2$, where $\tau'$ is narrower
+for all parameters $x'$ of type $\tau'$ in $\phi_1$, there is a parameter with
+the same name $y'$ of type $\omega'$ in $\phi_2$, where $\tau'$ is narrower
 than $\omega'$.
 
 \comment{TODO: è gia un casino cosi :D, ma includere anche opzionalità dei parametri}
@@ -868,9 +868,9 @@ among $\nu$).
 
 \[
 	\infrule{
-		\EnvSym\then n \geq 1 \semiq \forall_{i\in[1,n]}{a_i\in\Id, \tau_i:\Type, \expr_i\in\Expr, \expr_i:\tau_i}
+		\EnvSym\then n \geq 1 \semiq \forall_{i\in[1,n]}{x_i\in\Id, \tau_i:\Type, \expr_i\in\Expr, \expr_i:\tau_i}
 	}{
-		\EnvSym\then \code{<$a_1$:$\expr_1$, $\dotsc$, $a_n$:$\expr_n$>}:\tuple{a_1:\tau_1,\dotsc,a_2:\tau_n}
+		\EnvSym\then \code{<$x_1$:$\expr_1$, $\dotsc$, $x_n$:$\expr_n$>}:\tuple{x_1:\tau_1,\dotsc,x_2:\tau_n}
 	}
 \]
 
@@ -878,7 +878,7 @@ among $\nu$).
 
 \[
 	\infrule{
-		\EnvSym\then \xi \in \Id \semiq n \geq 0 \semiq \forall_{i\in[1,n]}{a_i \in \Id, \tau_i:\Type} \semiq \sigma = (\xi, \tuple{a_1:\tau_1,\dotsc,a_n:\tau_n}) \\*
+		\EnvSym\then \xi \in \Id \semiq n \geq 0 \semiq \forall_{i\in[1,n]}{x_i \in \Id, \tau_i:\Type} \semiq \sigma = (\xi, \tuple{x_1:\tau_1,\dotsc,x_n:\tau_n}) \\*
 	}{
 		\EnvSym\then \code{$\xi$.<>} : \sigma \\*
 	}
@@ -887,7 +887,7 @@ This expression initializes a struct $\xi$ of type $\sigma$.
 
 \[
 	\infrule{
-		\EnvSym\then \xi \in \Id \semiq n \geq 0 \semiq \forall_{i\in[1,n]}{a_i \in \Id, \tau_i:\Type} \semiq \sigma = (\xi, \tuple{a_1:\tau_1,\dotsc,a_n:\tau_n}) \\*
+		\EnvSym\then \xi \in \Id \semiq n \geq 0 \semiq \forall_{i\in[1,n]}{x_i \in \Id, \tau_i:\Type} \semiq \sigma = (\xi, \tuple{x_1:\tau_1,\dotsc,x_n:\tau_n}) \\*
 		\EnvSym\then \forall_{i\in[1,n]}{\tau'_i:\Type,\tau'_i\narr\tau_i,\expr_i:\tau'_i} \\*
 	}{
 		\EnvSym\then \code{$\xi$.<$\expr_1$, $\dotsc$, $\expr_n$>} : \sigma \\*
@@ -899,15 +899,15 @@ $\expr_i$ of type $\tau'_i$ (narrower than $\tau_i$).
 
 \[
 	\infrule{
-		\EnvSym\then \xi \in \Id \semi n \geq 0 \semi \forall_{i\in[1,n]}{a_i\in\mathcal{N}\subseteq\Id, \tau_i:\Type} \semi \sigma = (\xi, \tuple{a_1:\tau_1,\dotsc,a_n:\tau_n}) \\*
-		\EnvSym\then m \leq n \semi \forall_{j\in[1,m]}{a'_j\in\mathcal{M}\subseteq\mathcal{N}, \tau'_j:\Type, \expr_j:\tau'_j} \\*
-		\EnvSym\then \forall_{a':\tau'\in\mathcal{M}}{\exists_{a:\tau\in\mathcal{N}}{a'=a \land \tau'\narr\tau}}
+		\EnvSym\then \xi \in \Id \semi n \geq 0 \semi \forall_{i\in[1,n]}{x_i\in\mathcal{N}\subseteq\Id, \tau_i:\Type} \semi \sigma = (\xi, \tuple{x_1:\tau_1,\dotsc,x_n:\tau_n}) \\*
+		\EnvSym\then m \leq n \semi \forall_{j\in[1,m]}{x'_j\in\mathcal{M}\subseteq\mathcal{N}, \tau'_j:\Type, \expr_j:\tau'_j} \\*
+		\EnvSym\then \forall_{x':\tau'\in\mathcal{M}}{\exists_{x:\tau\in\mathcal{N}}{x'=x \land \tau'\narr\tau}}
 	}{
-		\EnvSym\then \code{$\xi$.<$a'_1$:$\expr_1$, $\dotsc$, $a'_n$:$\expr_n$>} : \sigma \\*
+		\EnvSym\then \code{$\xi$.<$x'_1$:$\expr_1$, $\dotsc$, $x'_n$:$\expr_n$>} : \sigma \\*
 	}
 \]
 This expression initializes a struct $\xi$ of type $\sigma$ by using a
-record-like notation, where each field $a'_i$ gets initialized with the
+record-like notation, where each field $x'_i$ gets initialized with the
 expression $\expr_i$ of type $\tau'_i$ (narrower than $\tau_i$).
 
 \newpage
@@ -955,7 +955,7 @@ Range from $\expr_1$ (begin) to $\expr_2$ (end) with a step $\expr_3$.
 
 \[
 	\infrule{
-		\EnvSym\then \rho:\Type \semi n \geq 0 \semi \forall_{i\in[1,n]}{a_i \in \Id, \tau_i:\Type} \semiq \phi = (a_1:\tau_1,\dotsc,a_n:\tau_n) \to \rho \\*
+		\EnvSym\then \rho:\Type \semi n \geq 0 \semi \forall_{i\in[1,n]}{x_i \in \Id, \tau_i:\Type} \semi \phi = (x_1:\tau_1,\dotsc,x_n:\tau_n) \to \rho \\*
 		\EnvSym\then f : \phi
 	}{
 		\EnvSym\then \code{$f$($\dotsc$)} : \rho
@@ -970,10 +970,10 @@ Range from $\expr_1$ (begin) to $\expr_2$ (end) with a step $\expr_3$.
 
 \[
 	\infrule{
-		\EnvSym\then a \in \Id \\*
-		\EnvSym\then \rho:\Type \semi n \geq 0 \semi \forall_{i\in[1,n]}{a_i \in \Id, \tau_i:\Type} \semiq \phi = (a_1:\tau_1,\dotsc,a_n:\tau_n) \to \rho \\*
+		\EnvSym\then x \in \Id \\*
+		\EnvSym\then \rho:\Type \semi n \geq 0 \semi \forall_{i\in[1,n]}{x_i \in \Id, \tau_i:\Type} \semi \phi = (x_1:\tau_1,\dotsc,x_n:\tau_n) \to \rho \\*
 	}{
-		\EnvSym,\code{$a$ $\phi$}\then \code{::$a$} : \phi
+		\EnvSym,\code{$x$ $\phi$}\then \code{::$x$} : \phi
 	}
 \]
 
@@ -2127,7 +2127,7 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 \[
 	\infrule{
 		\text{Access by index} \\*
-		\EnvSym\then n \geq 1 \semiq \forall_{i\in[1,n]}{\tau_i:\Type, a_i\in\Id} \semiq \expr_1:\tuple{a_1:\tau_1,\dotsc,a_n:\tau_n}\\*
+		\EnvSym\then n \geq 1 \semiq \forall_{i\in[1,n]}{\tau_i:\Type, x_i\in\Id} \semiq \expr_1:\tuple{x_1:\tau_1,\dotsc,x_n:\tau_n}\\*
 		\EnvSym\then \expr_2:\Int \semiq \expr_2 \in [1,n]
 	}{
 		\EnvSym\then \code{$\expr_1$ @ $\expr_2$}: \tau_{\expr_2}
@@ -2139,9 +2139,9 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 \[
 	\infrule{
 		\text{"Slice" access}\\*
-		\EnvSym\then n \geq 1 \semiq \forall_{i\in[1,n]}{\tau_i:\Type, a_i\in\Id} \semiq \rho=\tuple{a_1:\tau_1,\dotsc,a_n:\tau_n} \semiq \expr_1:\rho\\*
+		\EnvSym\then n \geq 1 \semiq \forall_{i\in[1,n]}{\tau_i:\Type, x_i\in\Id} \semiq \rho=\tuple{x_1:\tau_1,\dotsc,x_n:\tau_n} \semiq \expr_1:\rho\\*
 		\EnvSym\then \expr_2:\exists\Int.\Range \\*
-		\EnvSym\then \forall_{i\in\expr_2}{\rho'=\tuple{a_j:\tau_j, \dotsc, a_j:\tau_j}}
+		\EnvSym\then \forall_{i\in\expr_2}{\rho'=\tuple{x_j:\tau_j, \dotsc, x_j:\tau_j}}
 	}{
 		\EnvSym\then \code{$\expr_1$ @ $\expr_2$}: \rho'
 	}
@@ -2152,10 +2152,10 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 \[
 	\infrule{
 		\text{Access by name}\\*
-		\EnvSym\then n \geq 1 \semiq \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \Id} \semiq \expr:\tuple{a_1:\tau_1,\dotsc,a_n:\tau_n} \\*
-		\EnvSym\then a' \in \Id \semiq \exists_{j\in[1,n]} a_j = a'
+		\EnvSym\then n \geq 1 \semiq \forall_{i\in[1,n]}{\tau_i:\Type, x_i \in \Id} \semiq \expr:\tuple{x_1:\tau_1,\dotsc,x_n:\tau_n} \\*
+		\EnvSym\then x' \in \Id \semiq \exists_{j\in[1,n]} x_j = x'
 	}{
-		\EnvSym\then \code{$\expr$.$a'$}: \tau_j
+		\EnvSym\then \code{$\expr$.$x'$}: \tau_j
 	}
 \]
 
@@ -2175,19 +2175,19 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 
 \[
 	\infrule{
-		\EnvSym\then i \in \Id \semiq \tau:\Type
+		\EnvSym\then x \in \Id \semiq \tau:\Type
 	}{
-		\EnvSym, \code{$i$ $\tau$} \then i:\tau
+		\EnvSym, \code{$x$ $\tau$} \then x:\tau
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then i\in\Id \semiq \tau:\Type \\*
+		\EnvSym\then x\in\Id \semiq \tau:\Type \\*
 		\EnvSym\then \tau_\expr:\Type \semiq \tau_\expr\narr\tau \semiq \expr\in\Expr \semiq \expr:\tau_\expr
 	}{
-		\EnvSym, \code{var $i$ $\tau$ <- $\expr$} \then i:\tau \qquad \text{(esplicit type)} \\*
-		\land \EnvSym, \code{var $i$ <- $\expr$} \then i:\tau \qquad \text{(implicit type)}
+		\EnvSym, \code{var $x$ $\tau$ <- $\expr$} \then x:\tau \qquad \text{(esplicit type)} \\*
+		\land \EnvSym, \code{var $x$ <- $\expr$} \then x:\tau \qquad \text{(implicit type)}
 	}
 \]
 
@@ -2197,11 +2197,11 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 
 \[
 	\infrule{
-		\EnvSym\then i\in\Id \semiq \tau:\Type \\*
+		\EnvSym\then x\in\Id \semiq \tau:\Type \\*
 		\EnvSym\then \tau_\expr:\Type \semiq \tau_\expr\narr\tau \semiq \expr\in\Expr \semiq \expr:\tau_\expr
 	}{
-		\EnvSym, \code{const $i$ $\tau$ <- $\expr$} \then i:\tau \qquad \text{(esplicit type)} \\*
-		\land \EnvSym, \code{const $i$ <- $\expr$} \then i:\tau \qquad \text{(implicit type)}
+		\EnvSym, \code{const $x$ $\tau$ <- $\expr$} \then x:\tau \qquad \text{(esplicit type)} \\*
+		\land \EnvSym, \code{const $x$ <- $\expr$} \then x:\tau \qquad \text{(implicit type)}
 	}
 \]
 
@@ -2209,9 +2209,9 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 
 \[
 	\infrule{
-		\EnvSym\then i \in \Id \semiq \expr \in \Expr \semiq \tau:\Type \semiq \expr:\tau
+		\EnvSym\then x \in \Id \semiq \expr \in \Expr \semiq \tau:\Type \semiq \expr:\tau
 	}{
-		\EnvSym, \code{alias $e$ as $i$} \then i:\tau
+		\EnvSym, \code{alias $e$ as $x$} \then x:\tau
 	}
 \]
 
@@ -2219,9 +2219,9 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 
 \[
 	\infrule{
-		\EnvSym\then i \in \Id \semiq \tau:\Type \semiq \expr:\exists\tau.\List
+		\EnvSym\then x \in \Id \semiq \tau:\Type \semiq \expr:\exists\tau.\List
 	}{
-		\EnvSym, \code{for $i$ in $\expr$ do} \then i:\tau
+		\EnvSym, \code{for $x$ in $\expr$ do} \then x:\tau
 	}
 \]
 
@@ -2413,9 +2413,9 @@ dimensione iniziale}
 
 \[
 	\infrule{
-		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type, a_i \in \Id}
+		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type, x_i \in \Id}
 	}{
-		\EnvSym\then \Zero(\tuple{a_1:\tau_1,\dotsc,a_n:\tau_n}) = \tuple{a_1:\Zero(\tau_1), \dotsc, a_n:\Zero(\tau_n)}
+		\EnvSym\then \Zero(\tuple{x_1:\tau_1,\dotsc,x_n:\tau_n}) = \tuple{x_1:\Zero(\tau_1), \dotsc, x_n:\Zero(\tau_n)}
 	}
 \]
 
@@ -2433,7 +2433,7 @@ dimensione iniziale}
 
 % \[
 % 	\infrule{
-% 		\Env\then n \in \mathbb{N} \semiq \forall_{i\in[1,n]}{\tau_i:\Type,a_i\in\Id} \semiq \rho:\Type \\*
+% 		\Env\then n \in \mathbb{N} \semiq \forall_{i\in[1,n]}{\tau_i:\Type,x_i\in\Id} \semiq \rho:\Type \\*
 % 		\Env\then \phi : (\tau_1,\dotsc,\tau_n) \to \rho
 % 	}{
 % 		\Env\then \Zero(\phi()) = \Zero(\rho)
@@ -2511,9 +2511,9 @@ dimensione iniziale}
 
 \[
 	\oprule{
-		i \in \Id \semiq \EnvLoc(i) = \addr \semiq \EnvStore(\addr) = \val
+		x \in \Id \semiq \EnvLoc(x) = \addr \semiq \EnvStore(\addr) = \val
 	}{
-		\EnvLoc,\EnvStore\then \code{$i$} \eval \val
+		\EnvLoc,\EnvStore\then \code{$x$} \eval \val
 	}
 \]
 
@@ -2544,11 +2544,11 @@ be evaluated.
 
 \[
 	\oprule[aligned]{
-		\EnvLoc,\EnvStore     &\then i \in \Id \semiq \EnvLoc(i) = \addr_i \semiq \EnvStore(\addr_i) = \val_i \\*
+		\EnvLoc,\EnvStore     &\then x \in \Id \semiq \EnvLoc(x) = \addr_x \semiq \EnvStore(\addr_x) = \val_x \\*
 		\EnvLoc,\EnvStore     &\then \expr \eval \val \Then \EnvLoc_2,\EnvStore_2 \\*
-		\EnvLoc_2,\EnvStore_2 &\then \addr_i' = \alloc(\EnvStore_2) \\*
+		\EnvLoc_2,\EnvStore_2 &\then \addr_x' = \alloc(\EnvStore_2) \\*
 	}{
-		\EnvLoc_2,\EnvStore_2\then \code{$i$ <- $\expr$} \Then \EnvLoc_2\env{i \mapsto \addr_i'},\EnvStore_2\env{\addr_i' \mapsto \val}
+		\EnvLoc_2,\EnvStore_2\then \code{$x$ <- $\expr$} \Then \EnvLoc_2\env{x \mapsto \addr_x'},\EnvStore_2\env{\addr_x' \mapsto \val}
 	}
 \]
 
@@ -2556,25 +2556,25 @@ be evaluated.
 
 \[
 	\oprule[aligned]{
-		\EnvSym            &\then i \in \Id \semiq \tau : \Type \\*
-		\EnvLoc,\EnvStore &\then \EnvLoc(i) = \varnothing \\*
+		\EnvSym           &\then x \in \Id \semiq \tau : \Type \\*
+		\EnvLoc,\EnvStore &\then \EnvLoc(x) = \varnothing \\*
 		\EnvLoc,\EnvStore &\then \addr = \alloc(\EnvStore)
 	}{
-		\EnvSym,\EnvLoc,\EnvStore \then \code{$i$ $\tau$}
-		\Then \EnvLoc\env{i \mapsto \addr},\EnvStore\env{\addr \mapsto \Zero(\tau)}
+		\EnvSym,\EnvLoc,\EnvStore \then \code{$x$ $\tau$}
+		\Then \EnvLoc\env{x \mapsto \addr},\EnvStore\env{\addr \mapsto \Zero(\tau)}
 	}
 \]
 
 \subparagraph{Initialization} A variable can be initialized at declaration
 \[
 	\oprule[aligned]{
-		\EnvSym                  &\then i \in \Id \semiq \tau : \Type \\*
-		\EnvLoc,\EnvStore     &\then \EnvLoc(i) = \varnothing \\*
+		\EnvSym               &\then x \in \Id \semiq \tau : \Type \\*
+		\EnvLoc,\EnvStore     &\then \EnvLoc(x) = \varnothing \\*
 		\EnvLoc,\EnvStore     &\then \expr \eval \val \Then \EnvLoc_2,\EnvStore_2 \\*
 		\EnvLoc_2,\EnvStore_2 &\then \addr = \alloc(\EnvStore_2) \\*
 	}{
-		\EnvLoc_2,\EnvStore_2 \then \code{$i$ $\tau$ <- $\expr$}
-		\Then \EnvLoc_2\env{i \mapsto \addr},\EnvStore_2\env{\addr \mapsto \val}
+		\EnvLoc_2,\EnvStore_2 \then \code{$x$ $\tau$ <- $\expr$}
+		\Then \EnvLoc_2\env{x \mapsto \addr},\EnvStore_2\env{\addr \mapsto \val}
 	}
 \]
 It is semantically identical to a variable declaration statement followed by a
@@ -2585,13 +2585,13 @@ different redirection statement.
 variable can be overridden
 \[
 	\oprule[aligned]{
-		\EnvSym                  &\then i \in \Id \semiq \tau : \Type \\*
-		\EnvLoc,\EnvStore     &\then \EnvLoc(i) = \varnothing \\*
+		\EnvSym               &\then x \in \Id \semiq \tau : \Type \\*
+		\EnvLoc,\EnvStore     &\then \EnvLoc(x) = \varnothing \\*
 		\EnvLoc,\EnvStore     &\then \expr \eval \val \Then \EnvLoc_2,\EnvStore_2 \\*
 		\EnvLoc_2,\EnvStore_2 &\then \addr = \alloc(\EnvStore_2) \\*
 	}{
-		\EnvLoc_2,\EnvStore_2 \then \code{$i$ $\tau$ default $\expr$}
-		\Then \EnvLoc_2\env{i \mapsto \addr},\EnvStore\env{\addr \mapsto \val}
+		\EnvLoc_2,\EnvStore_2 \then \code{$x$ $\tau$ default $\expr$}
+		\Then \EnvLoc_2\env{x \mapsto \addr},\EnvStore\env{\addr \mapsto \val}
 	}
 \]
 
@@ -2607,16 +2607,16 @@ override may seem identical, but they do two different things:
 Both can be performed in a single statement
 \[
 	\oprule[aligned]{
-		\EnvSym                  &\then i \in \Id \semiq \tau : \Type \\*
-		\EnvLoc,\EnvStore     &\then \EnvLoc(i) = \varnothing \\*
+		\EnvSym               &\then x \in \Id \semiq \tau : \Type \\*
+		\EnvLoc,\EnvStore     &\then \EnvLoc(x) = \varnothing \\*
 		\EnvLoc,\EnvStore     &\then \expr_z \eval \val_z \Then \EnvLoc_2,\EnvStore_2 \\*
 		\EnvLoc_2,\EnvStore_2 &\then \expr \eval \val \Then \EnvLoc_3,\EnvStore_3 \\*
 		\EnvLoc_3,\EnvStore_3 &\then \addr_z = \alloc(\EnvStore_3) \\*
 		\EnvLoc_3,\EnvStore_3 &\then \addr = \alloc(\EnvStore_3) \\*
 	}{
-		\EnvLoc_3,\EnvStore_3 \then \code{$i$ $\tau$ default $\expr_z$ <- $\expr$}
-		\Then \EnvLoc_3\env{i \mapsto \addr},\EnvStore\env{\addr \mapsto \val,\addr_z \mapsto \val_z} \\*
-		\hfill\implies \code{$i$} \eval \val \land \Zero(i) = \val_z
+		\EnvLoc_3,\EnvStore_3 \then \code{$x$ $\tau$ default $\expr_z$ <- $\expr$}
+		\Then \EnvLoc_3\env{x \mapsto \addr},\EnvStore\env{\addr \mapsto \val,\addr_z \mapsto \val_z} \\*
+		\hfill\implies \code{$x$} \eval \val \land \Zero(x) = \val_z
 	}
 \]
 
@@ -2624,11 +2624,11 @@ Both can be performed in a single statement
 
 \[
 	\oprule[aligned]{
-		\EnvLoc,\EnvStore     &\then i \in \Id \semiq \EnvLoc(i) = \varnothing \\*
+		\EnvLoc,\EnvStore     &\then x \in \Id \semiq \EnvLoc(x) = \varnothing \\*
 		\EnvLoc,\EnvStore     &\then \expr \eval \val \Then \EnvLoc_2,\EnvStore_2 \\*
 		\EnvLoc_2,\EnvStore_2 &\then \EnvLoc_2(\expr) = \addr_\expr \semiq \EnvStore_2(\addr_\expr) = \val \\*
 	}{
-		\EnvLoc_2,\EnvStore_2\then \code{const $i$ <- $\expr$} \Then \EnvLoc_2\env{i \mapsto \addr_\expr}
+		\EnvLoc_2,\EnvStore_2\then \code{const $x$ <- $\expr$} \Then \EnvLoc_2\env{x \mapsto \addr_\expr}
 	}
 \]
 
@@ -2639,11 +2639,11 @@ immutability}
 
 \[
 	\oprule[aligned]{
-		\EnvLoc,\EnvStore     &\then i \in \Id \semiq \EnvLoc(i) = \varnothing \\*
+		\EnvLoc,\EnvStore     &\then x \in \Id \semiq \EnvLoc(x) = \varnothing \\*
 		\EnvLoc,\EnvStore     &\then \expr \eval \val \Then \EnvLoc_2,\EnvStore_2 \\*
 		\EnvLoc_2,\EnvStore_2 &\then \EnvLoc_2(\expr) = \addr_\expr \semiq \EnvStore_2(\addr_\expr) = \val \\*
 	}{
-		\EnvLoc_2,\EnvStore_2\then \code{alias $\expr$ as $i$} \Then \EnvLoc_2\env{i \mapsto \addr_\expr}
+		\EnvLoc_2,\EnvStore_2\then \code{alias $\expr$ as $x$} \Then \EnvLoc_2\env{x \mapsto \addr_\expr}
 	}
 \]
 
@@ -2855,21 +2855,21 @@ named members (i.e. records, structs).
 In case only unary patterns are used:
 \[
 	\oprule[aligned]{
-		\EnvLoc,\EnvStore  &\then n \geq 0 \semiq \forall_{i\in[1,n]}{a_i\in\mathcal{N}\subseteq\Id, \val_i\in\Val} \semiq \val = \tuple{a_1:\val_1,\dotsc,a_n:\val_n} \\*
-		\EnvLoc,\EnvStore  &\then m \leq n \semiq \forall_{j\in[1,m]}{b_j\in\mathcal{M}\subseteq\mathcal{N},\pattern_j\in\PatternTerminal\setminus\set{\code{\_}}} \\*
-		\EnvLoc,\EnvStore  &\then \pattern = \code{<$b_1$:$\pattern_1$, $\dotsc$, $b_m$:$\pattern_m$>} \\*
-		\EnvLoc,\EnvStore  &\then \expr \eval \val \Then \EnvLoc_2,\EnvStore_2 \\*
-		\EnvLoc_2,\EnvStore_2   &\then \forall_{j\in[1,m]}{\addr_j = \alloc(\EnvStore_2)} \\*
-		\EnvLoc_3   &= \EnvLoc_2\env{\forall_{j\in[1,m]}{\pattern_j\mapsto\addr_j}}\\*
-		\EnvStore_3 &= \EnvStore_2\env{\forall_{j\in[1,m]}{\exists_{a'\in\mathcal{N}=b_j\in\mathcal{M}}{\semiq\addr_j\mapsto\EnvStore_2(\EnvLoc_2(v_{a'}))}}}\\*
+		\EnvLoc,\EnvStore     &\then n \geq 0 \semiq \forall_{i\in[1,n]}{x_i\in\mathcal{N}\subseteq\Id, \val_i\in\Val} \semiq \val = \tuple{x_1:\val_1,\dotsc,x_n:\val_n} \\*
+		\EnvLoc,\EnvStore     &\then m \leq n \semiq \forall_{j\in[1,m]}{y_j\in\mathcal{M}\subseteq\mathcal{N},\pattern_j\in\PatternTerminal\setminus\set{\code{\_}}} \\*
+		\EnvLoc,\EnvStore     &\then \pattern = \code{<$y_1$:$\pattern_1$, $\dotsc$, $y_m$:$\pattern_m$>} \\*
+		\EnvLoc,\EnvStore     &\then \expr \eval \val \Then \EnvLoc_2,\EnvStore_2 \\*
+		\EnvLoc_2,\EnvStore_2 &\then \forall_{j\in[1,m]}{\addr_j = \alloc(\EnvStore_2)} \\*
+		                      &\EnvLoc_3   = \EnvLoc_2\env{\forall_{j\in[1,m]}{\pattern_j\mapsto\addr_j}}\\*
+		                      &\EnvStore_3 = \EnvStore_2\env{\forall_{j\in[1,m]}{\exists_{x'\in\mathcal{N}=y_j\in\mathcal{M}}{\quad\addr_j\mapsto\EnvStore_2(\EnvLoc_2(x'))}}}\\*
 	}{
 		\EnvLoc_2,\EnvStore_2 \then \code{$\expr$ -> $\pattern$} \Then \EnvLoc_3,\EnvStore_3\\*
 	}
 \]
 
 \nb{
-	A notation abuse is used for $\EnvStore_2(\EnvLoc_2(a'))$, which describes
-	the value in memory of the member named $a'$ of the record $\val$.
+	A notation abuse is used for $\EnvStore_2(\EnvLoc_2(x'))$, which describes
+	the value in memory of the member named $x'$ of the record $\val$.
 }
 
 \vspace{\baselineskip}
@@ -2877,9 +2877,9 @@ In case only unary patterns are used:
 More formally, in case of nested patterns
 \[
 	\oprule[aligned]{
-		\EnvLoc,\EnvStore  &\then n \geq 0 \semiq \forall_{i\in[1,n]}{a_i\in\mathcal{N}\subseteq\Id, \val_i\in\Val} \semiq \val = \tuple{a_1:\val_1,\dotsc,a_n:\val_n} \\*
-		\EnvLoc,\EnvStore  &\then m \leq n \semiq \forall_{j\in[1,m]}{b_j\in\mathcal{M}\subseteq\mathcal{N},\pattern_j\in\PatternTerminal\cup\PatternProduct} \\*
-		\EnvLoc,\EnvStore  &\then \pattern = \code{<$b_1$:$\pattern_1$, $\dotsc$, $b_m$:$\pattern_m$>} \\*
+		\EnvLoc,\EnvStore  &\then n \geq 0 \semiq \forall_{i\in[1,n]}{x_i\in\mathcal{N}\subseteq\Id, \val_i\in\Val} \semiq \val = \tuple{x_1:\val_1,\dotsc,x_n:\val_n} \\*
+		\EnvLoc,\EnvStore  &\then m \leq n \semiq \forall_{j\in[1,m]}{y_j\in\mathcal{M}\subseteq\mathcal{N},\pattern_j\in\PatternTerminal\cup\PatternProduct} \\*
+		\EnvLoc,\EnvStore  &\then \pattern = \code{<$y_1$:$\pattern_1$, $\dotsc$, $y_m$:$\pattern_m$>} \\*
 		\EnvLoc,\EnvStore  &\then \expr \eval \val \Then \EnvLoc_2,\EnvStore_2 \\*
 	}{
 		\EnvLoc_2,\EnvStore_2 \then \code{$\expr$ -> $\pattern$} \Then \decons(\EnvLoc_2,\EnvStore_2,\val,\pattern)
@@ -2894,13 +2894,13 @@ In this case, the identifier of the unary pattern will be used for the member
 lookup of the product value
 \[
 	\oprule[aligned]{
-		\EnvLoc,\EnvStore  &\then n \geq 0 \semiq \forall_{i\in[1,n]}{a_i\in\mathcal{N}\subseteq\Id, \val_i\in\Val} \semiq \val = \tuple{a_1:\val_1,\dotsc,a_n:\val_n} \\*
-		\EnvLoc,\EnvStore  &\then m \leq n \semiq \forall_{j\in[1,m]}{\pattern_j\in\PatternTerminal\setminus\set{\code{\_}}} \\*
-		\EnvLoc,\EnvStore  &\then \pattern = \code{<:$\pattern_1$, $\dotsc$, :$\pattern_m$>} \\*
-		\EnvLoc,\EnvStore  &\then \expr \eval \val \Then \EnvLoc_2,\EnvStore_2 \\*
+		\EnvLoc,\EnvStore       &\then n \geq 0 \semiq \forall_{i\in[1,n]}{x_i\in\mathcal{N}\subseteq\Id, \val_i\in\Val} \semiq \val = \tuple{x_1:\val_1,\dotsc,x_n:\val_n} \\*
+		\EnvLoc,\EnvStore       &\then m \leq n \semiq \forall_{j\in[1,m]}{\pattern_j\in\PatternTerminal\setminus\set{\code{\_}}} \\*
+		\EnvLoc,\EnvStore       &\then \pattern = \code{<:$\pattern_1$, $\dotsc$, :$\pattern_m$>} \\*
+		\EnvLoc,\EnvStore       &\then \expr \eval \val \Then \EnvLoc_2,\EnvStore_2 \\*
 		\EnvLoc_2,\EnvStore_2   &\then \forall_{j\in[1,m]}{\addr_j = \alloc(\EnvStore_2)} \\*
-		\EnvLoc_3   &= \EnvLoc_2\env{\forall_{j\in[1,m]}{\pattern_j\mapsto\addr_j}}\\*
-		\EnvStore_3 &= \EnvStore_2\env{\forall_{j\in[1,m]}{\exists_{a'\in\mathcal{N}=p_j\in\mathcal{M}}{\semiq\addr_j\mapsto\EnvStore_2(\EnvLoc_2(v_{a'}))}}}\\*
+		                        &\EnvLoc_3   = \EnvLoc_2\env{\forall_{j\in[1,m]}{\pattern_j\mapsto\addr_j}}\\*
+		                        &\EnvStore_3 = \EnvStore_2\env{\forall_{j\in[1,m]}{\exists_{x'\in\mathcal{N}=p_j\in\mathcal{M}}{\semiq\addr_j\mapsto\EnvStore_2(\EnvLoc_2(x'))}}}\\*
 	}{
 		\EnvLoc_2,\EnvStore_2 \then \code{$\expr$ -> $\pattern$} \Then \EnvLoc_3,\EnvStore_3\\*
 	}
@@ -2965,7 +2965,7 @@ with the patterns $\pattern_k$ and $\pattern_v$ respectively
 	$\eval$                                 & "Evaluates to" operator          & $\expr\eval\val$\\\hline
 	$\addr$                                 & Memory address                   & $\addr = 69$\\\hline
 	$\Id$                                   & Identifiers set                  & \\\hline
-	lower case latin letter (a,b,c...)      & Identifier                       & \\\hline
+	lower case latin letter (a,b,x,y,... )  & Identifier                       & \\\hline
 	$\Expr$                                 & Expressions set                  & \\\hline
 	$\expr$                                 & Expression                       & \\\hline
 	$\Val$                                  & Values set                       & \\\hline
@@ -3012,9 +3012,9 @@ with the patterns $\pattern_k$ and $\pattern_v$ respectively
 											                                                    & $(\Int,\Real) \to \Real$ \\\hline
 	\multirow{2}{*}{$\tau_1 \times \dotsb \times \tau_n$}                                       & A Tuple type with $n$ members of type $\tau_i$\\
 											                                                    & $\Real \times \Real \times \Text$ \\\hline
-	\multirow{2}{*}{$\tuple{a_1:\tau_1,\dotsc,a_n:\tau_n}$}                                     & A record type with $n$ members with name $a_i$ and type $\tau_i$\\
+	\multirow{2}{*}{$\tuple{x_1:\tau_1,\dotsc,x_n:\tau_n}$}                                     & A record type with $n$ members with name $x_i$ and type $\tau_i$\\
 											                                                    & $\tuple{\text{x}:\Real, \text{y}:\Real, \text{label}:\Text}$\\\hline
-	\multirow{2}{*}{$(\xi, \tuple{a_1:\tau_1,\dotsc,a_n:\tau_n})$}                              & A struct type with typename $\xi$, and $n$ members with name $a_i$ and type $\tau_i$\\
+	\multirow{2}{*}{$(\xi, \tuple{x_1:\tau_1,\dotsc,x_n:\tau_n})$}                              & A struct type with typename $\xi$, and $n$ members with name $x_i$ and type $\tau_i$\\
 											                                                    & $(\text{Point}, \tuple{\text{x}:\Real, \text{y}:\Real, \text{label}:\Text})$\\\hline
 	\multirow{2}{*}{$\env{x \mapsto y}$}                                                        & An environment in which $x$ maps to $y$\\
 											                                                    & $\env{\addr \mapsto 69}$\\\hline
