@@ -890,27 +890,27 @@ This expression initializes a struct $\xi$ of type $\sigma$.
 \[
 	\infrule{
 		\EnvSym\then \xi \in \Id \semiq n \geq 0 \semiq \forall_{i\in[1,n]}{x_i \in \Id, \tau_i:\Type} \semiq \sigma = (\xi, \tuple{x_1:\tau_1,\dotsc,x_n:\tau_n}) \\*
-		\EnvSym\then \forall_{i\in[1,n]}{\tau'_i:\Type,\tau'_i\narr\tau_i,\expr_i:\tau'_i} \\*
+		\EnvSym\then \forall_{i\in[1,n]}{\eta_i:\Type,\eta_i\narr\tau_i,\expr_i:\eta_i} \\*
 	}{
 		\EnvSym\then \code{$\xi$.<$\expr_1$, $\dotsc$, $\expr_n$>} : \sigma \\*
 	}
 \]
 This expression initializes a struct $\xi$ of type $\sigma$ by using a
 tuple-like notation, where each field gets initialized with the expression
-$\expr_i$ of type $\tau'_i$ (narrower than $\tau_i$).
+$\expr_i$ of type $\eta_i$ (narrower than $\tau_i$).
 
 \[
 	\infrule{
 		\EnvSym\then \xi \in \Id \semi n \geq 0 \semi \forall_{i\in[1,n]}{x_i\in\mathcal{N}\subseteq\Id, \tau_i:\Type} \semi \sigma = (\xi, \tuple{x_1:\tau_1,\dotsc,x_n:\tau_n}) \\*
-		\EnvSym\then m \leq n \semi \forall_{j\in[1,m]}{x'_j\in\mathcal{M}\subseteq\mathcal{N}, \tau'_j:\Type, \expr_j:\tau'_j} \\*
-		\EnvSym\then \forall_{x':\tau'\in\mathcal{M}}{\exists_{x:\tau\in\mathcal{N}}{x'=x \land \tau'\narr\tau}}
+		\EnvSym\then m \leq n \semi \forall_{j\in[1,m]}{x'_j\in\mathcal{M}\subseteq\mathcal{N}, \eta_j:\Type, \expr_j:\eta_j} \\*
+		\EnvSym\then \forall_{x':\eta\in\mathcal{M}}{\exists_{x:\tau\in\mathcal{N}}{x'=x \land \eta\narr\tau}}
 	}{
 		\EnvSym\then \code{$\xi$.<$x'_1$:$\expr_1$, $\dotsc$, $x'_n$:$\expr_n$>} : \sigma \\*
 	}
 \]
 This expression initializes a struct $\xi$ of type $\sigma$ by using a
 record-like notation, where each field $x'_i$ gets initialized with the
-expression $\expr_i$ of type $\tau'_i$ (narrower than $\tau_i$).
+expression $\expr_i$ of type $\eta_i$ (narrower than $\tau_i$).
 
 \newpage
 
