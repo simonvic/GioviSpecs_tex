@@ -953,12 +953,28 @@ Range from $\expr_1$ (begin) to $\expr_2$ (end) with a step $\expr_3$.
 
 \subsection{Invocation}
 
+\paragraph{Positional}
+
 \[
 	\infrule{
-		\EnvSym\then n \geq 0 \semi \forall_{i\in[1,n]}{\tau_i:\Type} \semi \tau_{n+1}\Type \semiq \phi = (x_1:\tau_1,\dotsc,x_n:\tau_n)\to\tau_{n+1} \\*
-		\EnvSym\then f : \phi
+		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type} \semiq \tau_{n+1}:\Type \\*
+		\EnvSym\then \phi = (\tau_1,\dotsc,\tau_n)\to\tau_{n+1} \semiq  f : \phi \\*
+		\EnvSym\then \forall_{i\in[1,n]}{\eta_i:\Type,\eta_i\narr\tau_i,\expr_i:\eta_i}
 	}{
-		\EnvSym\then \code{$f$($\dotsc$)} : \tau_{n+1}
+		\EnvSym\then \code{$f$($\expr_1$,$\dotsc$,$\expr_n$)} : \tau_{n+1}
+	}
+\]
+
+\paragraph{Named}
+
+\[
+	\infrule{
+		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{x\in\mathcal{N}\subseteq\Id,\tau_i:\Type} \semiq \tau_{n+1}:\Type \\*
+		\EnvSym\then \phi = (x_1:\tau_1,\dotsc,x_n:\tau_n)\to\tau_{n+1} \semiq  f : \phi \\*
+		\EnvSym\then \forall_{j\in[1,n]}{y\in\mathcal{N},\eta_j:\Type,\expr_j:\eta_j} \\*
+		\EnvSym\then \forall_{j\in[1,n]}{\exists_{i\in[1,n]}{y_j=x_i,\eta_j\narr\tau_i}}
+	}{
+		\EnvSym\then \code{$f$($y_1$:$\expr_1$,$\dotsc$,$y_n$:$\expr_n$)} : \tau_{n+1}
 	}
 \]
 
