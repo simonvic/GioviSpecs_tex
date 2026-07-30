@@ -251,7 +251,7 @@ The $\sqcap$ operator produces the least wide type for the operand types
 	\infrule[aligned]{
 		\EnvSym & \then \tau_1:\Type \semiq \tau_2:\Type \\*
 		\EnvSym & \then \exists_{\omega:\Type}{\tau_1\narr\omega \land \tau_2\narr\omega} \\*
-		\EnvSym & \then \nexists_{\sigma:\Type}{\tau_1\narr\sigma \land \tau_2\narr\sigma \land \sigma\narr\omega}
+		\EnvSym & \then \nexists_{\omega'\Type}{\tau_1\narr\omega' \land \tau_2\narr\omega' \land \omega'\narr\omega}
 	}{
 		\EnvSym\then \tau_1 \sqcap \tau_2 = \omega
 	}
@@ -3033,8 +3033,8 @@ name $y_j$ is bound to the formal parameter whose label is $l_i=y_j$.
 	$\sqcap$                                & "Least wide type" operator       & $\Int \sqcap \Real$ \\\hline
 	$\then$                                 & Assumptions suffix               & $\EnvSym \then \val:\tau$ \\\hline
 	$\Then$                                 & Environments modification prefix & $\expr \Then \EnvStore$\\\hline
-	$\tau,\omega,\kappa,\nu$                & \multirow{2}{*}{A type}          & \\
-	or any lowercase greek letter           &                                  & $\tau = \Int$\\\hline
+	$\tau,\omega,\eta,\kappa,\nu$           & \multirow{2}{*}{A type}          & $\tau = \Int$\\
+	or any lowercase greek letter           &                                  & $\eta=\Int \narr \omega=\Real$\\\hline
 	$\phi$                                  & Function type                    & $\phi=(\tau_1)\to\tau_2$\\\hline
 	$\theta$                                & Tuple type                       & $\theta=\tau_1\times\tau_2$\\\hline
 	$\rho$                                  & Record type                      & $\rho=\tuple{x:\tau_1,y:\tau_2}$\\\hline
