@@ -49,6 +49,8 @@
 \newcommand{\PatternProduct}{\Pattern_P}
 \newcommand{\PatternIterator}{\Pattern_I}
 \newcommand{\decons}{\delta}
+\newcommand{\self}{\texttt{self}}
+\newcommand{\Self}{\texttt{Self}}
 \newcommand{\Number}{\texttt{Number}}
 \newcommand{\Product}{\texttt{Product}}
 \newcommand{\Type}{\texttt{Type}}
@@ -2946,6 +2948,74 @@ expressions may be "short-circuited" (they won't be evaluated).\\*
 For example: \code{false and someFunction()}, \texttt{someFunction()} will not
 be evaluated.
 
+
+\paragraph{Invocation}
+
+A function can be invoked using two approaches:
+\begin{itemize}
+	\item Positional \code{$f$($\expr_1$,$\dotsc$,$\expr_n$)}
+	\item Named \code{$f$($x_1$:$\expr_1$,$\dotsc$,$x_n$:$\expr_n$)}
+\end{itemize}
+
+\subparagraph{Positional}
+
+\[
+	\oprule[aligned]{
+		\EnvSym               &\then n \geq 0 \semiq \forall_{i\in[1,n]}{x_i \in \Id, \tau_i:\Type} \semiq \rho:\Type \\*
+		\EnvSym               &\then \phi = (x_1:\tau_1,\dotsc,x_n:\tau_n) \to \rho \\*
+		\EnvLoc,\EnvStore     &\then f\in\Expr \semiq f \eval \phi \Then \EnvLoc_2,\EnvStore_2 \\*
+		\EnvLoc_2,\EnvStore_2 &\then \forall_{i\in[1,n]}{\expr_i\eval\val_i} \Then \EnvLoc_3,\EnvStore_3 \\*
+		\EnvLoc_3,\EnvStore_3 &\then \forall_{i\in[1,n]}{\addr_i=\alloc(\EnvStore_3)} \\*
+		                      &\EnvLoc_4 = \EnvLoc_3\env{\forall_{i\in[1,n]}{x_i\mapsto\addr_i}} \\*
+		                      &\EnvStore_4 = \EnvStore_3\env{\forall_{i\in[1,n]}{\addr_i\mapsto\val_i}} \\*
+	}{
+		\EnvLoc_3,\EnvStore_3 \then \code{$f$($\expr_1$,$\dotsc$,$\expr_n$)} \eval \val_\rho \Then \EnvLoc_4,\EnvStore_4\env{\alloc(\EnvStore_4)\mapsto\val_\rho}
+	}
+\]
+First, the expression $f$ to be invoked is evaluated (any expression that
+evaluates to a function can be invoked); then all actual parameters $\expr_i$
+are evaluated and bound to the respective formal parameter $x_i$.
+
+\subparagraph{Named}
+
+\[
+	\oprule[aligned]{
+		\EnvSym               &\then n \geq 0 \semiq \forall_{i\in[1,n]}{x_i\in\mathcal{N}\subseteq\Id, \tau_i:\Type} \semiq \rho:\Type \\*
+		\EnvSym               &\then \phi = (x_1:\tau_1,\dotsc,x_n:\tau_n) \to \rho \\*
+		\EnvLoc,\EnvStore     &\then f\in\Expr \semiq f \eval \phi \Then \EnvLoc_2,\EnvStore_2 \\*
+		\EnvLoc_2,\EnvStore_2 &\then \forall_{i\in[1,n]}{y_i\in\mathcal{N},\expr_i\eval\val_i} \Then \EnvLoc_3,\EnvStore_3 \\*
+		\EnvLoc_3,\EnvStore_3 &\then \forall_{i\in[1,n]}{\addr_i=\alloc(\EnvStore_3)} \\*
+		                      &\EnvLoc_4 = \EnvLoc_3\env{\forall_{i\in[1,n]}{\exists_{j\in[1,n]}{y_j=x_i \quad x_i\mapsto\addr_i}}} \\*
+		                      &\EnvStore_4 = \EnvStore_3\env{\forall_{i\in[1,n]}{\exists_{j\in[1,n]}{y_j=x_i \quad \addr_i\mapsto\val_i}}} \\*
+	}{
+		\EnvLoc_3,\EnvStore_3 \then \code{$f$($y_1$:$\expr_1$,$\dotsc$,$y_m$:$\expr_m$)} \eval \val_\rho \Then \EnvLoc_4,\EnvStore_4\env{\alloc(\EnvStore_4)\mapsto\val_\rho}
+	}
+\]
+First, the expression $f$ to be invoked is evaluated (any expression that
+evaluates to a function can be invoked); then all actual parameters
+$y_i:\expr_i$ are evaluated and bound to the formal parameter whose identifier
+$x_i=y_j$, therefore the order of the parameter doesn't matter.
+
+\comment{TODO: se $\tau_1 = \Self$ o $\rho = \Self$}
+
+\comment{TODO: opzionalità}
+
+\comment{TODO: invocation labels}
+
+% \[
+% 	\oprule[aligned]{
+% 		\EnvSym               &\then n \geq 0 \semiq \forall_{i\in[1,n]}{x_i\in\mathcal{N}\subseteq\Id, \tau_i:\Type} \semiq \rho:\Type \\*
+% 		\EnvSym               &\then \phi = (x_1:\tau_1,\dotsc,x_n:\tau_n) \to \rho \\*
+% 		\EnvLoc,\EnvStore     &\then f\in\Expr \semiq f \eval \phi \Then \EnvLoc_2,\EnvStore_2 \\*
+% 		\EnvLoc_2,\EnvStore_2 &\then \forall_{i\in[1,n]}{\expr_i\eval\val_i} \Then \EnvLoc_3,\EnvStore_3 \\*
+% 		\EnvLoc_3,\EnvStore_3 &\then m \leq n \semiq \forall_{j\in[1,m]}{y_j\in\mathcal{M}\subseteq\mathcal{N}} \\*
+% 		\EnvLoc_3,\EnvStore_3 &\then \forall_{i\in[1,n]}{\addr_i=\alloc(\EnvStore_3)} \\*
+% 		                      &\EnvLoc_4 = \EnvLoc_3\env{\forall_{y'\in\mathcal{M}}{y'\mapsto\alloc(\EnvStore_3)}} \cup \env{\forall_{x'\in\mathcal{N}\setminus\mathcal{M}}{x'\mapsto\alloc(\EnvStore_3)}} \\*
+% 		                      &\EnvStore_4 = \EnvStore_3\env{\forall_{y'\in\mathcal{M}}{\EnvLoc(y')\mapsto\val_i}} \cup \env{\forall_{x'\in\mathcal{N}\setminus\mathcal{M}}{\EnvLoc(x')\mapsto\Zero(x')}}\\*
+% 	}{
+% 		\EnvLoc_3,\EnvStore_3 \then \code{$f$($y_1$:$\expr_1$,$\dotsc$,$y_m$:$\expr_m$)} \eval \val_\rho \Then \EnvLoc_4,\EnvStore_4\env{\alloc(\EnvStore_4)\mapsto\val_\rho}
+% 	}
+% \]
 
 \chapter{Notation}
 
