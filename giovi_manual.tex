@@ -2949,7 +2949,7 @@ For example: \code{false and someFunction()}, \texttt{someFunction()} will not
 be evaluated.
 
 
-\paragraph{Invocation}
+\subsubsection{Invocation}
 
 A function can be invoked using two approaches:
 \begin{itemize}
@@ -2957,7 +2957,7 @@ A function can be invoked using two approaches:
 	\item Named \code{$f$($x_1$:$\expr_1$,$\dotsc$,$x_n$:$\expr_n$)}
 \end{itemize}
 
-\subparagraph{Positional}
+\paragraph{Positional}
 
 \[
 	\oprule[aligned]{
@@ -2976,7 +2976,7 @@ First, the expression $f$ to be invoked is evaluated (any expression that
 evaluates to a function can be invoked); then all actual parameters $\expr_i$
 are evaluated and bound to the respective formal parameter $x_i$.
 
-\subparagraph{Named}
+\paragraph{Named}
 
 \[
 	\oprule[aligned]{
@@ -2996,11 +2996,16 @@ evaluates to a function can be invoked); then all actual parameters
 $y_i:\expr_i$ are evaluated and bound to the formal parameter whose identifier
 $x_i=y_j$, therefore the order of the parameter doesn't matter.
 
+\subparagraph{Invocation labels} A function can declare an "invocation label"
+for one or more formal parameters; the invocation label, if defined, has then
+to be used instead of the formal parameter name when invoking the function.\\*
+The rules are the same for a named invocation, except that, if a formal
+parameter $x_i$ defines an invocation label $l_i$, then the actual parameter
+name $y_j$ is bound to the formal parameter whose label is $l_i=y_j$.
+
 \comment{TODO: se $\tau_1 = \Self$ o $\rho = \Self$}
 
 \comment{TODO: opzionalità}
-
-\comment{TODO: invocation labels}
 
 % \[
 % 	\oprule[aligned]{
