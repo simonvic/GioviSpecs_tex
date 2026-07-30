@@ -2517,27 +2517,6 @@ dimensione iniziale}
 	}
 \]
 
-\subsection{Operators}
-
-\[
-	\oprule[aligned]{
-		&\bop = \text{any binary operator} \\*
-		\EnvLoc,\EnvStore     &\then \expr_1 \eval \val_1 \Then \EnvLoc_2,\EnvStore_2 \\*
-		\EnvLoc_2,\EnvStore_2 &\then \expr_2 \eval \val_2 \Then \EnvLoc_3,\EnvStore_3 \\*
-		\EnvLoc_3,\EnvStore_3 &\then \val_3 = \val_1 \bop \val_2 \\*
-	}{
-		\EnvLoc_3,\EnvStore_3\then \code{$\expr_1$ $\bop$ $\expr_2$} \eval \val_3 \Then \EnvStore_3\env{\alloc(\EnvStore_3) \mapsto \val_3}
-	}
-\]
-
-\subparagraph{Side-effects} Evaluating expressions may cause side effects (e.g.
-a function invokation), hence new environments are declared.
-
-\subparagraph{Short-circuit evaluation} In some operations (e.g. boolean), some
-expressions may be "short-circuited" (they won't be evaluated).\\*
-For example: \code{false and someFunction()}, \texttt{someFunction()} will not
-be evaluated.
-
 \subsection{Statements}
 
 \paragraph{Redirection (assignment)}
@@ -2943,6 +2922,30 @@ pair of two patterns, one for the key and one for the value respectively.
 \]
 At each iteration $i$, the $i$-th key-value pair of the map gets deconstructed
 with the patterns $\pattern_k$ and $\pattern_v$ respectively
+
+\subsection{Expressions}
+
+\subsubsection{Operators}
+
+\[
+	\oprule[aligned]{
+		&\bop = \text{any binary operator} \\*
+		\EnvLoc,\EnvStore     &\then \expr_1 \eval \val_1 \Then \EnvLoc_2,\EnvStore_2 \\*
+		\EnvLoc_2,\EnvStore_2 &\then \expr_2 \eval \val_2 \Then \EnvLoc_3,\EnvStore_3 \\*
+		\EnvLoc_3,\EnvStore_3 &\then \val_3 = \val_1 \bop \val_2 \\*
+	}{
+		\EnvLoc_3,\EnvStore_3\then \code{$\expr_1$ $\bop$ $\expr_2$} \eval \val_3 \Then \EnvStore_3\env{\alloc(\EnvStore_3) \mapsto \val_3}
+	}
+\]
+
+\subparagraph{Side-effects} Evaluating expressions may cause side effects (e.g.
+a function invokation), hence new environments are declared.
+
+\subparagraph{Short-circuit evaluation} In some operations (e.g. boolean), some
+expressions may be "short-circuited" (they won't be evaluated).\\*
+For example: \code{false and someFunction()}, \texttt{someFunction()} will not
+be evaluated.
+
 
 \chapter{Notation}
 
