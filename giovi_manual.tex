@@ -38,7 +38,7 @@
 % \newcommand{\copi}{\mathrm{copy}}
 \newcommand{\addr}{\alpha}
 \newcommand{\expr}{\epsilon}
-\newcommand{\val}{\nu}
+\newcommand{\val}{\nu} % eventually use chi
 \newcommand{\pattern}{p} % eventually use pi
 \newcommand{\Id}{\mathcal{I}}
 \newcommand{\Expr}{\mathcal{E}}
@@ -208,7 +208,7 @@ type $T$ with the type parameter $\tau$ equal to $\sigma$.
 \comment{TODO: tipi esistenziali? Rivedere notazione}
 
 \subparagraph{List} To denote a list type, the existential type notation will
-be used $\List[\sigma:=\Type]$.\\*
+be used $\List[\nu=\Type]$.\\*
 To denote a value, for example of type $\exists\Int.\List$, this notation will
 be used: $\glist{1,2,3}$
 
@@ -388,7 +388,7 @@ Using the $\EnvVar$ variables environment as example
 
 \[
 	\begin{split}
-		&\EnvSym\then \List[\sigma:=\Type]:\Type \\
+		&\EnvSym\then \List[\nu=\Type]:\Type \\
 		&\EnvSym\then \Map[\kappa:=\Type,\nu:=\Type]:\Type \\
 	\end{split}
 \]
@@ -561,9 +561,9 @@ Using the $\EnvVar$ variables environment as example
 
 \[
 	\infrule{
-		\EnvSym\then \tau_1 = \List[\sigma_1:=\Type]\\*
-		\EnvSym\then \tau_2 = \List[\sigma_2:=\Type]\\*
-		\EnvSym\then \sigma_1 \narr \sigma_2
+		\EnvSym\then \tau_1 = \List[\nu_1:=\Type]\\*
+		\EnvSym\then \tau_2 = \List[\nu_2:=\Type]\\*
+		\EnvSym\then \nu_1 \narr \nu_2
 	}{
 		\EnvSym\then \tau_1 \narr \tau_2
 	}
@@ -1819,16 +1819,16 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\EnvSym\then \tau_1 = \List[\sigma_1 := \Type] \\*
-		\EnvSym\then \tau_2 = \List[\sigma_2 := \Type] \\*
-		\EnvSym\then \expr:\tau_1 \semiq x:\sigma_1 \\*
-		\EnvSym\then \code{$x$ as $\sigma_2$} : \sigma_2
+		\EnvSym\then \tau_1 = \List[\nu_1 := \Type] \\*
+		\EnvSym\then \tau_2 = \List[\nu_2 := \Type] \\*
+		\EnvSym\then \expr:\tau_1 \semiq x:\nu_1 \\*
+		\EnvSym\then \code{$x$ as $\nu_2$} : \nu_2
 	}{
 		\EnvSym\then \code{$\expr$ as $\tau_2$} : \tau_2
 	}
 \]
-If a term of type $\sigma_1$ can be casted to type $\sigma_2$ $\implies$ A list
-of $\sigma_1$ can be casted to a list of $\sigma_2$.
+If a term of type $\nu_1$ can be casted to type $\nu_2$ $\implies$ A list
+of $\nu_1$ can be casted to a list of $\nu_2$.
 
 \paragraph{Plus}
 
@@ -1846,8 +1846,8 @@ lhs o dovrebbe essere il widest tra i due?}
 
 \[
 	\infrule{
-		\EnvSym\then \tau=\List[\sigma_1:=\Type] \semiq \expr_1:\tau \\*
-		\EnvSym\then \sigma_2:\Type \semiq \sigma_2\narr\sigma_1 \semiq \expr_2:\sigma_2
+		\EnvSym\then \tau=\List[\nu_1:=\Type] \semiq \expr_1:\tau \\*
+		\EnvSym\then \nu_2:\Type \semiq \nu_2\narr\nu_1 \semiq \expr_2:\nu_2
 	}{
 		\EnvSym\then \code{$\expr_1$ + $\expr_2$} : \tau
 	}
@@ -1869,8 +1869,8 @@ lhs o dovrebbe essere il widest tra i due?}
 
 \[
 	\infrule{
-		\EnvSym\then \tau=\List[\sigma_1:=\Type] \semiq \expr_1:\tau \\*
-		\EnvSym\then \sigma_2:\Type \semiq \sigma_2\narr\sigma_1 \semiq \expr_2:\sigma_2
+		\EnvSym\then \tau=\List[\nu_1:=\Type] \semiq \expr_1:\tau \\*
+		\EnvSym\then \nu_2:\Type \semiq \nu_2\narr\nu_1 \semiq \expr_2:\nu_2
 	}{
 		\EnvSym\then \code{$\expr_1$ - $\expr_2$} : \tau
 	}
@@ -2400,7 +2400,7 @@ function can be applied on an identifier
 \subparagraph{List}
 
 \[
-	\EnvSym\then \Zero(\List[\sigma:=\Type]) = \List(0, \Zero(\sigma))
+	\EnvSym\then \Zero(\List[\nu:=\Type]) = \List(0, \Zero(\nu))
 \]
 
 \comment{TODO: se eventualmente formalizzo l'operatore \code{**}, aggiornare
