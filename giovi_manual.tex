@@ -193,9 +193,9 @@ For example: $\code{59 + 10} \eval 69$
 
 \subparagraph{Functions} Functions are denoted by a list of zero or more input
 arguments followed by an output argument.\\*
-For example, $(\tau_1, \tau_2) \to \rho$ describes a function type that takes
+For example, $(\tau_1,\tau_2)\to\tau_3$ describes a function type that takes
 two arguments of type $\tau_1$ and $\tau_2$ respectively, and produces a value
-of type $\rho$.
+of type $\tau_3$.
 
 \subparagraph{"Generic" types} Some types are "generic" (a.k.a. existential
 types), meaning that they declare one or more type variable (a.k.a. type
@@ -488,9 +488,9 @@ Using the $\EnvVar$ variables environment as example
 
 \[
 	\infrule{
-		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type,x_i\in\Id} \semiq \rho:\Type
+		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type,x_i\in\Id} \semiq \tau_{n+1}\Type
 	}{
-		\EnvSym\then \code{::($x_1$ $\tau_1$, $\dotsc$, $x_n$ $\tau_n$) => $\rho$} \eval (\tau_1,\dotsc,\tau_n) \to \rho
+		\EnvSym\then \code{::($x_1$ $\tau_1$, $\dotsc$, $x_n$ $\tau_n$) => $\tau_{n+1}$} \eval (\tau_1,\dotsc,\tau_n)\to\tau_{n+1}
 	}
 \]
 
@@ -498,23 +498,23 @@ Using the $\EnvVar$ variables environment as example
 	\infrule{
 		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type,x_i\in\Id}
 	}{
-		\EnvSym\then \code{::($x_1$ $\tau_1$, $\dotsc$, $x_n$ $\tau_n$)} \eval (\tau_1,\dotsc,\tau_n) \to \Void
+		\EnvSym\then \code{::($x_1$ $\tau_1$, $\dotsc$, $x_n$ $\tau_n$)} \eval (\tau_1,\dotsc,\tau_n)\to\Void
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then \xi \in \Id \semiq n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type,x_i\in\Id} \semiq \rho:\Type
+		\EnvSym\then \xi \in \Id \semiq n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type,x_i\in\Id} \semiq \tau_{n+1}\Type
 	}{
-		\EnvSym,\code{$\xi$($x_1$ $\tau_1$, $\dotsc$, $x_n$ $\tau_n$) => $\rho$ \{\}} \then \code{$\xi$} : (\tau_1,\dotsc,\tau_n) \to \rho
+		\EnvSym,\code{$\xi$($x_1$ $\tau_1$, $\dotsc$, $x_n$ $\tau_n$) => $\tau_{n+1}$ \{\}} \then \code{$\xi$} : (\tau_1,\dotsc,\tau_n)\to\tau_{n+1}
 	}
 \]
 
 \[
 	\infrule{
-		\EnvSym\then \xi \in \Id \semiq n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type,x_i\in\Id} \semiq \rho:\Type
+		\EnvSym\then \xi \in \Id \semiq n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type,x_i\in\Id}
 	}{
-		\EnvSym,\code{$\xi$($x_1$ $\tau_1$, $\dotsc$, $x_n$ $\tau_n$) \{\}} \then \code{$\xi$} : (\tau_1,\dotsc,\tau_n) \to \Void
+		\EnvSym,\code{$\xi$($x_1$ $\tau_1$, $\dotsc$, $x_n$ $\tau_n$) \{\}} \then \code{$\xi$} : (\tau_1,\dotsc,\tau_n)\to\Void
 	}
 \]
 
@@ -689,21 +689,21 @@ construction).
 
 \[
 	\infrule{
-		\EnvSym\then \rho_1:\Type \semiq n \geq 0 \semiq \forall_{i\in[1,n]}{x_i \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \\*
-		\EnvSym\then \phi_1 = (x_1:\tau_1,\dotsc,x_n:\tau_n) \to \rho_1 \\*
-		\EnvSym\then \rho_2:\Type \semiq m \geq n  \semiq \forall_{j\in[1,m]}{y_j \in \mathcal{M} \subseteq \Id, \omega_i:\Type} \\*
-		\EnvSym\then \phi_2 = (y_1:\omega_1,\dotsc,y_m:\omega_m) \to \rho_1 \\*
-		\EnvSym\then \rho_1 \narr \rho_2 \\*
+		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{x_i\in\mathcal{N}\subseteq\mathcal{M},\tau_i:\Type} \semiq \tau_{n+1}:\Type  \\*
+		\EnvSym\then \phi_1 = (x_1:\tau_1,\dotsc,x_n:\tau_n)\to\tau_{n+1} \\*
+		\EnvSym\then m \geq n \semiq \forall_{j\in[1,m]}{y_j\in\mathcal{M}\subseteq\Id,\omega_i:\Type} \semiq \omega_{m+1}:\Type \\*
+		\EnvSym\then \phi_2 = (y_1:\omega_1,\dotsc,y_m:\omega_m)\to\omega_{m+1} \\*
+		\EnvSym\then \tau_{n+1} \narr \omega_{m+1} \\*
 		\EnvSym\then \forall_{x':\tau'}{\exists_{y':\omega'}{x'=y' \land \tau' \narr \omega'}}
 	}{
 		\EnvSym\then \phi_1 \narr \phi_2
 	}
 \]
 A function type $\phi_1$ is narrower than a function type $\phi_2$ if the
-return type $\rho_1$ is narrower than the other return type $\rho_2$, and if,
-for all parameters $x'$ of type $\tau'$ in $\phi_1$, there is a parameter with
-the same name $y'$ of type $\omega'$ in $\phi_2$, where $\tau'$ is narrower
-than $\omega'$.
+return type $\tau_{n+1}$ is narrower than the other return type $\omega_{m+1}$,
+and if, for all parameters $x'$ of type $\tau'$ in $\phi_1$, there is a
+parameter with the same name $y'$ of type $\omega'$ in $\phi_2$, where $\tau'$
+is narrower than $\omega'$.
 
 \comment{TODO: è gia un casino cosi :D, ma includere anche opzionalità dei parametri}
 
@@ -955,10 +955,10 @@ Range from $\expr_1$ (begin) to $\expr_2$ (end) with a step $\expr_3$.
 
 \[
 	\infrule{
-		\EnvSym\then \rho:\Type \semi n \geq 0 \semi \forall_{i\in[1,n]}{x_i \in \Id, \tau_i:\Type} \semi \phi = (x_1:\tau_1,\dotsc,x_n:\tau_n) \to \rho \\*
+		\EnvSym\then n \geq 0 \semi \forall_{i\in[1,n]}{\tau_i:\Type} \semi \tau_{n+1}\Type \semiq \phi = (x_1:\tau_1,\dotsc,x_n:\tau_n)\to\tau_{n+1} \\*
 		\EnvSym\then f : \phi
 	}{
-		\EnvSym\then \code{$f$($\dotsc$)} : \rho
+		\EnvSym\then \code{$f$($\dotsc$)} : \tau_{n+1}
 	}
 \]
 
@@ -971,7 +971,8 @@ Range from $\expr_1$ (begin) to $\expr_2$ (end) with a step $\expr_3$.
 \[
 	\infrule{
 		\EnvSym\then x \in \Id \\*
-		\EnvSym\then \rho:\Type \semi n \geq 0 \semi \forall_{i\in[1,n]}{x_i \in \Id, \tau_i:\Type} \semi \phi = (x_1:\tau_1,\dotsc,x_n:\tau_n) \to \rho \\*
+		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{x_i\in\Id,\tau_i:\Type} \semiq \tau_{n+1}\Type \\*
+		\EnvSym\then \phi = (x_1:\tau_1,\dotsc,x_n:\tau_n)\to\tau_{n+1} \\*
 	}{
 		\EnvSym,\code{$x$ $\phi$}\then \code{::$x$} : \phi
 	}
@@ -2428,13 +2429,13 @@ dimensione iniziale}
 \subsubsection{Function}
 
 \[
-	\EnvSym\then \Zero(\Function) = () \to \Void
+	\EnvSym\then \Zero(\Function) = ()\to\Void
 \]
 
 % \[
 % 	\infrule{
 % 		\Env\then n \in \mathbb{N} \semiq \forall_{i\in[1,n]}{\tau_i:\Type,x_i\in\Id} \semiq \rho:\Type \\*
-% 		\Env\then \phi : (\tau_1,\dotsc,\tau_n) \to \rho
+% 		\Env\then \phi : (\tau_1,\dotsc,\tau_n)\to\rho
 % 	}{
 % 		\Env\then \Zero(\phi()) = \Zero(\rho)
 % 	}
@@ -2959,15 +2960,15 @@ A function can be invoked using two approaches:
 
 \[
 	\oprule[aligned]{
-		\EnvSym               &\then n \geq 0 \semiq \forall_{i\in[1,n]}{x_i \in \Id, \tau_i:\Type} \semiq \rho:\Type \\*
-		\EnvSym               &\then \phi = (x_1:\tau_1,\dotsc,x_n:\tau_n) \to \rho \\*
+		\EnvSym               &\then n \geq 0 \semiq \forall_{i\in[1,n]}{x_i\in\Id,\tau_i:\Type} \semiq \tau_{n+1}\Type \\*
+		\EnvSym               &\then \phi = (x_1:\tau_1,\dotsc,x_n:\tau_n)\to\tau_{n+1} \\*
 		\EnvLoc,\EnvStore     &\then f\in\Expr \semiq f \eval \phi \Then \EnvLoc_2,\EnvStore_2 \\*
 		\EnvLoc_2,\EnvStore_2 &\then \forall_{i\in[1,n]}{\expr_i\eval\val_i} \Then \EnvLoc_3,\EnvStore_3 \\*
 		\EnvLoc_3,\EnvStore_3 &\then \forall_{i\in[1,n]}{\addr_i=\alloc(\EnvStore_3)} \\*
 		                      &\EnvLoc_4 = \EnvLoc_3\env{\forall_{i\in[1,n]}{x_i\mapsto\addr_i}} \\*
 		                      &\EnvStore_4 = \EnvStore_3\env{\forall_{i\in[1,n]}{\addr_i\mapsto\val_i}} \\*
 	}{
-		\EnvLoc_3,\EnvStore_3 \then \code{$f$($\expr_1$,$\dotsc$,$\expr_n$)} \eval \val_\rho \Then \EnvLoc_4,\EnvStore_4\env{\alloc(\EnvStore_4)\mapsto\val_\rho}
+		\EnvLoc_3,\EnvStore_3 \then \code{$f$($\expr_1$,$\dotsc$,$\expr_n$)} \eval \val_{\tau_{n+1}} \Then \EnvLoc_4,\EnvStore_4\env{\alloc(\EnvStore_4)\mapsto\val_{\tau_{n+1}}}
 	}
 \]
 First, the expression $f$ to be invoked is evaluated (any expression that
@@ -2978,15 +2979,15 @@ are evaluated and bound to the respective formal parameter $x_i$.
 
 \[
 	\oprule[aligned]{
-		\EnvSym               &\then n \geq 0 \semiq \forall_{i\in[1,n]}{x_i\in\mathcal{N}\subseteq\Id, \tau_i:\Type} \semiq \rho:\Type \\*
-		\EnvSym               &\then \phi = (x_1:\tau_1,\dotsc,x_n:\tau_n) \to \rho \\*
+		\EnvSym               &\then n \geq 0 \semiq \forall_{i\in[1,n]}{x_i\in\mathcal{N}\subseteq\Id,\tau_i:\Type} \semiq \tau_{n+1}:\Type \\*
+		\EnvSym               &\then \phi = (x_1:\tau_1,\dotsc,x_n:\tau_n)\to\tau_{n+1} \\*
 		\EnvLoc,\EnvStore     &\then f\in\Expr \semiq f \eval \phi \Then \EnvLoc_2,\EnvStore_2 \\*
 		\EnvLoc_2,\EnvStore_2 &\then \forall_{i\in[1,n]}{y_i\in\mathcal{N},\expr_i\eval\val_i} \Then \EnvLoc_3,\EnvStore_3 \\*
 		\EnvLoc_3,\EnvStore_3 &\then \forall_{i\in[1,n]}{\addr_i=\alloc(\EnvStore_3)} \\*
 		                      &\EnvLoc_4 = \EnvLoc_3\env{\forall_{i\in[1,n]}{\exists_{j\in[1,n]}{y_j=x_i \quad x_i\mapsto\addr_i}}} \\*
 		                      &\EnvStore_4 = \EnvStore_3\env{\forall_{i\in[1,n]}{\exists_{j\in[1,n]}{y_j=x_i \quad \addr_i\mapsto\val_i}}} \\*
 	}{
-		\EnvLoc_3,\EnvStore_3 \then \code{$f$($y_1$:$\expr_1$,$\dotsc$,$y_m$:$\expr_m$)} \eval \val_\rho \Then \EnvLoc_4,\EnvStore_4\env{\alloc(\EnvStore_4)\mapsto\val_\rho}
+		\EnvLoc_3,\EnvStore_3 \then \code{$f$($y_1$:$\expr_1$,$\dotsc$,$y_m$:$\expr_m$)} \eval \val_{\tau_{n+1}} \Then \EnvLoc_4,\EnvStore_4\env{\alloc(\EnvStore_4)\mapsto\val_{\tau_{n+1}}}
 	}
 \]
 First, the expression $f$ to be invoked is evaluated (any expression that
@@ -3001,14 +3002,14 @@ The rules are the same for a named invocation, except that, if a formal
 parameter $x_i$ defines an invocation label $l_i$, then the actual parameter
 name $y_j$ is bound to the formal parameter whose label is $l_i=y_j$.
 
-\comment{TODO: se $\tau_1 = \Self$ o $\rho = \Self$}
+\comment{TODO: se $\tau_1 = \Self$ o $\tau_{n+1} = \Self$}
 
 \comment{TODO: opzionalità}
 
 % \[
 % 	\oprule[aligned]{
-% 		\EnvSym               &\then n \geq 0 \semiq \forall_{i\in[1,n]}{x_i\in\mathcal{N}\subseteq\Id, \tau_i:\Type} \semiq \rho:\Type \\*
-% 		\EnvSym               &\then \phi = (x_1:\tau_1,\dotsc,x_n:\tau_n) \to \rho \\*
+% 		\EnvSym               &\then n \geq 0 \semiq \forall_{i\in[1,n]}{x_i\in\mathcal{N}\subseteq\Id, \tau_i:\Type} \semiq \tau_{n+1}\Type \\*
+% 		\EnvSym               &\then \phi = (x_1:\tau_1,\dotsc,x_n:\tau_n)\to\tau_{n+1} \\*
 % 		\EnvLoc,\EnvStore     &\then f\in\Expr \semiq f \eval \phi \Then \EnvLoc_2,\EnvStore_2 \\*
 % 		\EnvLoc_2,\EnvStore_2 &\then \forall_{i\in[1,n]}{\expr_i\eval\val_i} \Then \EnvLoc_3,\EnvStore_3 \\*
 % 		\EnvLoc_3,\EnvStore_3 &\then m \leq n \semiq \forall_{j\in[1,m]}{y_j\in\mathcal{M}\subseteq\mathcal{N}} \\*
@@ -3016,7 +3017,7 @@ name $y_j$ is bound to the formal parameter whose label is $l_i=y_j$.
 % 		                      &\EnvLoc_4 = \EnvLoc_3\env{\forall_{y'\in\mathcal{M}}{y'\mapsto\alloc(\EnvStore_3)}} \cup \env{\forall_{x'\in\mathcal{N}\setminus\mathcal{M}}{x'\mapsto\alloc(\EnvStore_3)}} \\*
 % 		                      &\EnvStore_4 = \EnvStore_3\env{\forall_{y'\in\mathcal{M}}{\EnvLoc(y')\mapsto\val_i}} \cup \env{\forall_{x'\in\mathcal{N}\setminus\mathcal{M}}{\EnvLoc(x')\mapsto\Zero(x')}}\\*
 % 	}{
-% 		\EnvLoc_3,\EnvStore_3 \then \code{$f$($y_1$:$\expr_1$,$\dotsc$,$y_m$:$\expr_m$)} \eval \val_\rho \Then \EnvLoc_4,\EnvStore_4\env{\alloc(\EnvStore_4)\mapsto\val_\rho}
+% 		\EnvLoc_3,\EnvStore_3 \then \code{$f$($y_1$:$\expr_1$,$\dotsc$,$y_m$:$\expr_m$)} \eval \val_{\tau_{n+1}} \Then \EnvLoc_4,\EnvStore_4\env{\alloc(\EnvStore_4)\mapsto\val_{\tau_{n+1}}}
 % 	}
 % \]
 
@@ -3085,8 +3086,8 @@ name $y_j$ is bound to the formal parameter whose label is $l_i=y_j$.
 	                                                                                            & $\glist{1,2,3}$ \\\hline
 	\multirow{2}{*}{$\map{\expr_{k_1}\mapsto\expr_{v_1},\dotsc,\expr_{k_n}\mapsto\expr_{v_n}}$} & A Map of $n$ key-value pairs \\
 	                                                                                            & $\map{a\mapsto1,b\mapsto2,c\mapsto3}$ \\\hline
-	$(\tau_1,\dotsc,\tau_n) \to \tau_{n+1}$                                                     & Function type with $n$ formal parameters $\tau_i$ and return type $\tau_{n+1}$\\
-	$(x_1:\tau_1,\dotsc,x_n:\tau_n) \to \tau_{n+1}$                                             & $(\Int,\Real) \to \Real$ \\\hline
+	$(\tau_1,\dotsc,\tau_n)\to\tau_{n+1}$                                                       & Function type with $n$ formal parameters $\tau_i$ and return type $\tau_{n+1}$\\
+	$(x_1:\tau_1,\dotsc,x_n:\tau_n)\to\tau_{n+1}$                                               & $(\Int,\Real)\to\Real$ \\\hline
 	\multirow{2}{*}{$\tau_1 \times \dotsb \times \tau_n$}                                       & A Tuple type with $n$ fields of type $\tau_i$\\
 	                                                                                            & $\Real \times \Real \times \Text$ \\\hline
 	\multirow{2}{*}{$\tuple{x_1:\tau_1,\dotsc,x_n:\tau_n}$}                                     & A record type with $n$ fields with name $x_i$ and type $\tau_i$\\
