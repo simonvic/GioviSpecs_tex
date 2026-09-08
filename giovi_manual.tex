@@ -31,7 +31,7 @@
 \newcommand{\tuple}[1]{\left<#1\right>}
 \newcommand{\code}[1]{\texttt{\colorbox{gray!10}{#1}}}
 \newcommand{\nb}[1]{\textbf{N.B. } #1}
-\newcommand{\narr}{<:}
+\newcommand{\narreq}{\leq:}
 \newcommand{\eval}{\equiv}
 \newcommand{\bop}{\diamond}
 \newcommand{\alloc}{\mathrm{alloc}}
@@ -242,16 +242,16 @@ describes a struct type (a pair of an identifier $\xi$ and a record type).
 	by $N$ can also be described by $W$ without any loss of information.\\*
 	Conversely, a type $W$ is said to be "wider" than a type $N$ iff it can
 	describe any value described by $N$ without loss of information.\\*
-	A "narrower than" relationship is denoted using the $\narr$ operator
-	$N<:W$.
+	A "narrower than" relationship is denoted using the $\narreq$ operator.
+	For example: $N \narreq W$.
 \end{definition}
 
 The $\sqcap$ operator produces the least wide type for the operand types
 \[
 	\infrule[aligned]{
 		\EnvSym & \then \tau_1:\Type \semiq \tau_2:\Type \\*
-		\EnvSym & \then \exists_{\omega:\Type}{\tau_1\narr\omega \land \tau_2\narr\omega} \\*
-		\EnvSym & \then \nexists_{\omega'\Type}{\tau_1\narr\omega' \land \tau_2\narr\omega' \land \omega'\narr\omega}
+		\EnvSym & \then \exists_{\omega:\Type}{\tau_1\narreq\omega \land \tau_2\narreq\omega} \\*
+		\EnvSym & \then \nexists_{\omega'\Type}{\tau_1\narreq\omega' \land \tau_2\narreq\omega' \land \omega'\narreq\omega}
 	}{
 		\EnvSym\then \tau_1 \sqcap \tau_2 = \omega
 	}
@@ -532,16 +532,16 @@ controvarianza (parametri funzioni?)}
 	\infrule{
 		\EnvSym\then \tau:\Type
 	}{
-		\EnvSym\then \tau \narr \tau
+		\EnvSym\then \tau \narreq \tau
 	}
 \]
 
 \paragraph{Transitivity}
 \[
 	\infrule{
-		\EnvSym\then \tau_1 \narr \tau_2 \semiq \tau_2 \narr \tau_3
+		\EnvSym\then \tau_1 \narreq \tau_2 \semiq \tau_2 \narreq \tau_3
 	}{
-		\EnvSym\then \tau_1 \narr \tau_3
+		\EnvSym\then \tau_1 \narreq \tau_3
 	}
 \]
 
@@ -551,13 +551,13 @@ controvarianza (parametri funzioni?)}
 	\infrule{
 		\EnvSym\then \tau : \Type
 	}{
-		\EnvSym\then \Void \narr \tau
+		\EnvSym\then \Void \narreq \tau
 	}
 \]
 
 \[
-	\EnvSym\then \Natural \narr \Int
-	\qquad \EnvSym\then \Int \narr \Real
+	\EnvSym\then \Natural \narreq \Int
+	\qquad \EnvSym\then \Int \narreq \Real
 \]
 
 \subsubsection{Composite types}
@@ -566,9 +566,9 @@ controvarianza (parametri funzioni?)}
 	\infrule{
 		\EnvSym\then \tau_1 = \List[\nu_1:=\Type]\\*
 		\EnvSym\then \tau_2 = \List[\nu_2:=\Type]\\*
-		\EnvSym\then \nu_1 \narr \nu_2
+		\EnvSym\then \nu_1 \narreq \nu_2
 	}{
-		\EnvSym\then \tau_1 \narr \tau_2
+		\EnvSym\then \tau_1 \narreq \tau_2
 	}
 \]
 
@@ -576,9 +576,9 @@ controvarianza (parametri funzioni?)}
 	\infrule{
 		\EnvSym\then \tau_1 = \Map[\kappa_1:=\Type, \nu_1:=\Type]\\*
 		\EnvSym\then \tau_2 = \Map[\kappa_2:=\Type, \nu_2:=\Type]\\*
-		\EnvSym\then \kappa_1 \narr \kappa_2 \land \nu_1 \narr \nu_2
+		\EnvSym\then \kappa_1 \narreq \kappa_2 \land \nu_1 \narreq \nu_2
 	}{
-		\EnvSym\then \tau_1 \narr \tau_2
+		\EnvSym\then \tau_1 \narreq \tau_2
 	}
 \]
 
@@ -592,9 +592,9 @@ controvarianza (parametri funzioni?)}
 	\infrule{
 		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type} \semiq \theta_1 = \bigtimes_{i \in [1,n]}{\tau_i}\\*
 		\EnvSym\then m \geq n \semiq \forall_{i\in[1,m]}{\omega_i:\Type} \semiq \theta_2 = \bigtimes_{j \in [1,m]}{\omega_j}\\*
-		\EnvSym\then \forall_{i \in [1,n]}{\tau_i \narr \omega_i}
+		\EnvSym\then \forall_{i \in [1,n]}{\tau_i \narreq \omega_i}
 	}{
-		\EnvSym\then \theta_1 \narr \theta_2
+		\EnvSym\then \theta_1 \narreq \theta_2
 	}
 \]
 A tuple type $\theta_1$ is narrower than the tuple type $\theta_2$ if the first
@@ -607,9 +607,9 @@ types $\omega$ of $\theta_2$.
 	\infrule{
 		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type} \semiq \theta = \bigtimes_{i \in [1,n]}{\tau_i}\\*
 		\EnvSym\then m \geq n \semiq \forall_{j\in[1,m]}{x_j \in \Id, \omega_j:\Type} \semiq \rho = \tuple{x_1:\omega_1,\dotsc,x_m:\omega_m} \\*
-		\EnvSym\then \forall_{i \in [1,n]}{\tau_i \narr \omega_i}
+		\EnvSym\then \forall_{i \in [1,n]}{\tau_i \narreq \omega_i}
 	}{
-		\EnvSym\then \theta \narr \rho
+		\EnvSym\then \theta \narreq \rho
 	}
 \]
 A tuple type $\theta$ is narrower than the record type $\rho$ if the first $n$
@@ -622,9 +622,9 @@ $\omega$ of $\rho$ (fields names are ignored).
 	\infrule{
 		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type} \semiq \theta = \bigtimes_{i \in [1,n]}{\tau_i}\\*
 		\EnvSym\then \xi \in \Id \semi m \geq n \semi \forall_{j\in[1,m]}{x_j \in \Id, \omega_j:\Type} \semi \sigma = (\xi, \tuple{x_1:\omega_1,\dotsc,x_m:\omega_m}) \\*
-		\EnvSym\then \forall_{i \in [1,n]}{\tau_i \narr \omega_i}
+		\EnvSym\then \forall_{i \in [1,n]}{\tau_i \narreq \omega_i}
 	}{
-		\EnvSym\then \theta \narr \sigma
+		\EnvSym\then \theta \narreq \sigma
 	}
 \]
 A tuple type $\theta$ is narrower than the struct type $\sigma$ if the first
@@ -641,9 +641,9 @@ type $\omega$ of $\sigma$ (struct name and fields names are ignored).
 	\infrule{
 		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{x_i \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \semiq \rho_1 = \tuple{x_1:\tau_1,\dotsc,x_n:\tau_n} \\*
 		\EnvSym\then m \geq n \semiq \forall_{j\in[1,m]}{y_j \in \mathcal{M} \subseteq \Id, \omega_j:\Type} \semiq \rho_2 = \tuple{y_1:\omega_1,\dotsc,y_m:\omega_m} \\*
-		\EnvSym\then \forall_{x':\tau'\in\mathcal{N}}{\exists_{y':\omega'\in\mathcal{M}}{x'=y' \land \tau' \narr \omega'}}
+		\EnvSym\then \forall_{x':\tau'\in\mathcal{N}}{\exists_{y':\omega'\in\mathcal{M}}{x'=y' \land \tau' \narreq \omega'}}
 	}{
-		\EnvSym\then \rho_1 \narr \rho_2
+		\EnvSym\then \rho_1 \narreq \rho_2
 	}
 \]
 A record type $\rho_1$ is narrower than a record type $\rho_2$ if, for all
@@ -656,9 +656,9 @@ $y'$ of type $\omega'$ in $\rho_2$, where $\tau'$ is narrower than $\omega'$.
 	\infrule{
 		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{x \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \semiq \rho = \tuple{x_1:\tau_1,\dotsc,x_n:\tau_n} \\*
 		\EnvSym\then \xi \in \Id \semi m \geq n \semi \forall_{j\in[1,m]}{y_j \in \Id, \omega_j:\Type} \semiq \sigma = (\xi, \tuple{y_1:\omega_1,\dotsc,y_m:\omega_m}) \\*
-		\EnvSym\then \forall_{x':\tau'\in\mathcal{N}}{\exists_{y':\omega'\in\mathcal{M}}{x'=y' \land \tau' \narr \omega'}}
+		\EnvSym\then \forall_{x':\tau'\in\mathcal{N}}{\exists_{y':\omega'\in\mathcal{M}}{x'=y' \land \tau' \narreq \omega'}}
 	}{
-		\EnvSym\then \rho \narr \sigma
+		\EnvSym\then \rho \narreq \sigma
 	}
 \]
 A record type $\rho$ is narrower than a struct type $\sigma$ if, for all fields
@@ -676,7 +676,7 @@ name is ignored).
 		\EnvSym\then \sigma_2 = (\xi_2, \tuple{y_1:\omega_1,\dotsc,y_m:\omega_m}) \\*
 		\EnvSym\then \xi_1 = \xi_2
 	}{
-		\EnvSym\then \sigma_1 \narr \sigma_2
+		\EnvSym\then \sigma_1 \narreq \sigma_2
 	}
 \]
 A struct type $\sigma_1$ is narrower than a struct type $\sigma_2$ if and only
@@ -696,10 +696,10 @@ construction).
 		\EnvSym\then \phi_1 = (x_1:\tau_1,\dotsc,x_n:\tau_n)\to\tau_{n+1} \\*
 		\EnvSym\then m \geq n \semiq \forall_{j\in[1,m]}{y_j\in\mathcal{M}\subseteq\Id,\omega_i:\Type} \semiq \omega_{m+1}:\Type \\*
 		\EnvSym\then \phi_2 = (y_1:\omega_1,\dotsc,y_m:\omega_m)\to\omega_{m+1} \\*
-		\EnvSym\then \tau_{n+1} \narr \omega_{m+1} \\*
-		\EnvSym\then \forall_{x':\tau'}{\exists_{y':\omega'}{x'=y' \land \tau' \narr \omega'}}
+		\EnvSym\then \tau_{n+1} \narreq \omega_{m+1} \\*
+		\EnvSym\then \forall_{x':\tau'}{\exists_{y':\omega'}{x'=y' \land \tau' \narreq \omega'}}
 	}{
-		\EnvSym\then \phi_1 \narr \phi_2
+		\EnvSym\then \phi_1 \narreq \phi_2
 	}
 \]
 A function type $\phi_1$ is narrower than a function type $\phi_2$ if the
@@ -893,7 +893,7 @@ This expression initializes a struct $\xi$ of type $\sigma$.
 \[
 	\infrule{
 		\EnvSym\then \xi \in \Id \semiq n \geq 0 \semiq \forall_{i\in[1,n]}{x_i \in \Id, \tau_i:\Type} \semiq \sigma = (\xi, \tuple{x_1:\tau_1,\dotsc,x_n:\tau_n}) \\*
-		\EnvSym\then \forall_{i\in[1,n]}{\eta_i:\Type,\eta_i\narr\tau_i,\expr_i:\eta_i} \\*
+		\EnvSym\then \forall_{i\in[1,n]}{\eta_i:\Type,\eta_i\narreq\tau_i,\expr_i:\eta_i} \\*
 	}{
 		\EnvSym\then \code{$\xi$.<$\expr_1$, $\dotsc$, $\expr_n$>} : \sigma \\*
 	}
@@ -906,7 +906,7 @@ $\expr_i$ of type $\eta_i$ (narrower than $\tau_i$).
 	\infrule{
 		\EnvSym\then \xi \in \Id \semi n \geq 0 \semi \forall_{i\in[1,n]}{x_i\in\mathcal{N}\subseteq\Id, \tau_i:\Type} \semi \sigma = (\xi, \tuple{x_1:\tau_1,\dotsc,x_n:\tau_n}) \\*
 		\EnvSym\then m \leq n \semi \forall_{j\in[1,m]}{y_j\in\mathcal{M}\subseteq\mathcal{N}, \eta_j:\Type, \expr_j:\eta_j} \\*
-		\EnvSym\then \forall_{j\in[1,m]}{\exists_{i\in[1,n]}{y_j=x_i \land \eta_j\narr\tau_i}}
+		\EnvSym\then \forall_{j\in[1,m]}{\exists_{i\in[1,n]}{y_j=x_i \land \eta_j\narreq\tau_i}}
 		% \EnvSym\then \forall_{\mathcal{M}\ni y':\eta'}{\exists_{\mathcal{N}\ni x':\tau'}{y'=x' \land \eta'\narr\tau'}}
 	}{
 		\EnvSym\then \code{$\xi$.<$y_1$:$\expr_1$, $\dotsc$, $y_n$:$\expr_n$>} : \sigma \\*
@@ -936,7 +936,7 @@ expression $\expr_j$ of type $\eta_j$ (narrower than $\tau_i$).
 	\infrule{
 		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type} \semiq \tau_{n+1}:\Type \\*
 		\EnvSym\then \phi = (\tau_1,\dotsc,\tau_n)\to\tau_{n+1} \semiq  f : \phi \\*
-		\EnvSym\then \forall_{i\in[1,n]}{\eta_i:\Type,\eta_i\narr\tau_i,\expr_i:\eta_i}
+		\EnvSym\then \forall_{i\in[1,n]}{\eta_i:\Type,\eta_i\narreq\tau_i,\expr_i:\eta_i}
 	}{
 		\EnvSym\then \code{$f$($\expr_1$,$\dotsc$,$\expr_n$)} : \tau_{n+1}
 	}
@@ -949,7 +949,7 @@ expression $\expr_j$ of type $\eta_j$ (narrower than $\tau_i$).
 		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{x\in\mathcal{N}\subseteq\Id,\tau_i:\Type} \semiq \tau_{n+1}:\Type \\*
 		\EnvSym\then \phi = (x_1:\tau_1,\dotsc,x_n:\tau_n)\to\tau_{n+1} \semiq  f : \phi \\*
 		\EnvSym\then \forall_{j\in[1,n]}{y\in\mathcal{N},\eta_j:\Type,\expr_j:\eta_j} \\*
-		\EnvSym\then \forall_{j\in[1,n]}{\exists_{i\in[1,n]}{y_j=x_i,\eta_j\narr\tau_i}}
+		\EnvSym\then \forall_{j\in[1,n]}{\exists_{i\in[1,n]}{y_j=x_i,\eta_j\narreq\tau_i}}
 	}{
 		\EnvSym\then \code{$f$($y_1$:$\expr_1$,$\dotsc$,$y_n$:$\expr_n$)} : \tau_{n+1}
 	}
@@ -1047,7 +1047,7 @@ Range from $\expr_1$ (begin) to $\expr_2$ (end) with a step $\expr_3$.
 \[
 	\infrule{
 		\EnvSym\then \tau_1:\Type \semiq \expr_1:\tau \\*
-		\EnvSym\then \tau_2:\Type \semiq \tau_1 \narr \tau_2 \semiq \expr_2:\tau_2
+		\EnvSym\then \tau_2:\Type \semiq \tau_1 \narreq \tau_2 \semiq \expr_2:\tau_2
 	}{
 		\EnvSym\then \code{$\expr_1$ = $\expr_2$} : \Bool
 	}
@@ -1838,7 +1838,7 @@ of $\nu_1$ can be casted to a list of $\nu_2$.
 	\infrule{
 		\EnvSym\then \tau_1=\List \semiq \expr_1:\tau_1 \\*
 		\EnvSym\then \tau_2=\List \semiq \expr_2:\tau_2 \\*
-		\EnvSym\then \tau_2 \narr \tau_1
+		\EnvSym\then \tau_2 \narreq \tau_1
 	}{
 		\EnvSym\then \code{$\expr_1$ + $\expr_2$} : \tau_1
 	}
@@ -1849,7 +1849,7 @@ lhs o dovrebbe essere il widest tra i due?}
 \[
 	\infrule{
 		\EnvSym\then \tau=\List[\nu_1:=\Type] \semiq \expr_1:\tau \\*
-		\EnvSym\then \nu_2:\Type \semiq \nu_2\narr\nu_1 \semiq \expr_2:\nu_2
+		\EnvSym\then \nu_2:\Type \semiq \nu_2\narreq\nu_1 \semiq \expr_2:\nu_2
 	}{
 		\EnvSym\then \code{$\expr_1$ + $\expr_2$} : \tau
 	}
@@ -1861,7 +1861,7 @@ lhs o dovrebbe essere il widest tra i due?}
 	\infrule{
 		\EnvSym\then \tau_1=\List \semiq \expr_1:\tau_1 \\*
 		\EnvSym\then \tau_2=\List \semiq \expr_2:\tau_2 \\*
-		\EnvSym\then \tau_2 \narr \tau_1
+		\EnvSym\then \tau_2 \narreq \tau_1
 	}{
 		\EnvSym\then \code{$\expr_1$ - $\expr_2$} : \tau_1
 	}
@@ -1872,7 +1872,7 @@ lhs o dovrebbe essere il widest tra i due?}
 \[
 	\infrule{
 		\EnvSym\then \tau=\List[\nu_1:=\Type] \semiq \expr_1:\tau \\*
-		\EnvSym\then \nu_2:\Type \semiq \nu_2\narr\nu_1 \semiq \expr_2:\nu_2
+		\EnvSym\then \nu_2:\Type \semiq \nu_2\narreq\nu_1 \semiq \expr_2:\nu_2
 	}{
 		\EnvSym\then \code{$\expr_1$ - $\expr_2$} : \tau
 	}
@@ -1883,7 +1883,7 @@ lhs o dovrebbe essere il widest tra i due?}
 \[
 	\infrule{
 		\EnvSym\then \tau_1:\Type \semiq \expr_1:\exists\tau_1.\List \\*
-		\EnvSym\then \tau_2:\Type \semiq \tau_2 \narr \tau_1 \semiq \expr_2:\tau_2
+		\EnvSym\then \tau_2:\Type \semiq \tau_2 \narreq \tau_1 \semiq \expr_2:\tau_2
 	}{
 		\EnvSym\then \code{$\expr_1$ =\~{} $\expr_2$} : \Bool
 	}
@@ -1894,7 +1894,7 @@ $\tau_1$).
 \[
 	\infrule{
 		\EnvSym\then \tau_1:\Type \semiq \expr_1:\exists\tau_1.\List\\*
-		\EnvSym\then \tau_2:\Type \semiq \tau_2 \narr \tau_1 \semiq \expr_2:\exists\tau_2.\List
+		\EnvSym\then \tau_2:\Type \semiq \tau_2 \narreq \tau_1 \semiq \expr_2:\exists\tau_2.\List
 	}{
 		\EnvSym\then \code{$\expr_1$ =\~{} $\expr_2$} : \Bool
 	}
@@ -1968,7 +1968,7 @@ can be casted to the type $\tau_2$.
 	\infrule{
 		\EnvSym\then \tau_1=\Map \semiq \expr_1:\tau_1 \\*
 		\EnvSym\then \tau_2=\Map \semiq \expr_2:\tau_2 \\*
-		\EnvSym\then \tau_2 \narr \tau_1
+		\EnvSym\then \tau_2 \narreq \tau_1
 	}{
 		\EnvSym\then \code{$\expr_1$ + $\expr_2$} : \tau_1
 	}
@@ -1982,7 +1982,7 @@ lhs o dovrebbe essere il widest tra i due?}
 	\infrule{
 		\EnvSym\then \tau_1=\Map \semiq \expr_1:\tau_1 \\*
 		\EnvSym\then \tau_2=\Map \semiq \expr_2:\tau_2 \\*
-		\EnvSym\then \tau_2 \narr \tau_1
+		\EnvSym\then \tau_2 \narreq \tau_1
 	}{
 		\EnvSym\then \code{$\expr_1$ - $\expr_2$} : \tau_1
 	}
@@ -1993,7 +1993,7 @@ lhs o dovrebbe essere il widest tra i due?}
 \[
 	\infrule{
 		\EnvSym\then \tau=\Map[\kappa_1:=\Type] \semiq \expr_1:\tau \\*
-		\EnvSym\then \kappa_2:\Type \semiq \kappa_2\narr\kappa_1 \semiq \expr_2:\kappa_2
+		\EnvSym\then \kappa_2:\Type \semiq \kappa_2\narreq\kappa_1 \semiq \expr_2:\kappa_2
 	}{
 		\EnvSym\then \code{$\expr_1$ - $\expr_2$} : \tau
 	}
@@ -2005,7 +2005,7 @@ lhs o dovrebbe essere il widest tra i due?}
 \[
 	\infrule{
 		\EnvSym\then \tau = \Map[\kappa_1:=\Type,\nu:=\Type] \semiq \expr_1:\tau \\*
-		\EnvSym\then \kappa_2:\Type \semiq \kappa_2 \narr \kappa_1 \semiq \expr_2:\kappa_2
+		\EnvSym\then \kappa_2:\Type \semiq \kappa_2 \narreq \kappa_1 \semiq \expr_2:\kappa_2
 	}{
 		\EnvSym\then \code{$\expr_1$ =\~{} $\expr_2$} : \Bool
 	}
@@ -2017,7 +2017,7 @@ $\kappa_1$).
 	\infrule{
 		\EnvSym\then \tau_1 = \Map[\kappa_1:=\Type,\nu_1:=\Type] \semiq \expr_1:\tau_1 \\*
 		\EnvSym\then \tau_2 = \Map[\kappa_2:=\Type,\nu_2:=\Type] \semiq \expr_2:\tau_2 \\*
-		\EnvSym\then \kappa_2 \narr \kappa_1 \land \nu_2 \narr \nu_1
+		\EnvSym\then \kappa_2 \narreq \kappa_1 \land \nu_2 \narreq \nu_1
 	}{
 		\EnvSym\then \code{$\expr_1$ =\~{} $\expr_2$} : \Bool
 	}
@@ -2032,7 +2032,7 @@ $\expr_2$ of type $\tau_2$.
 	\infrule{
 		\text{Access by key}\\*
 		\EnvSym\then \tau = \Map[\kappa_1:=\Type,\nu:=\Type] \semiq \expr_1:\tau \\*
-		\EnvSym\then \kappa_2 = \Type \semiq \kappa_2 \narr \kappa_1 \semiq \expr_2:\kappa_2
+		\EnvSym\then \kappa_2 = \Type \semiq \kappa_2 \narreq \kappa_1 \semiq \expr_2:\kappa_2
 	}{
 		\EnvSym\then \code{$\expr_1$ @ $\expr_2$}: \nu
 	}
@@ -2201,7 +2201,7 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 \[
 	\infrule{
 		\EnvSym\then x\in\Id \semiq \tau:\Type \\*
-		\EnvSym\then \tau_\expr:\Type \semiq \tau_\expr\narr\tau \semiq \expr\in\Expr \semiq \expr:\tau_\expr
+		\EnvSym\then \tau_\expr:\Type \semiq \tau_\expr\narreq\tau \semiq \expr\in\Expr \semiq \expr:\tau_\expr
 	}{
 		\EnvSym, \code{var $x$ $\tau$ <- $\expr$} \then x:\tau \qquad \text{(esplicit type)} \\*
 		\land \EnvSym, \code{var $x$ <- $\expr$} \then x:\tau \qquad \text{(implicit type)}
@@ -2215,7 +2215,7 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 \[
 	\infrule{
 		\EnvSym\then x\in\Id \semiq \tau:\Type \\*
-		\EnvSym\then \tau_\expr:\Type \semiq \tau_\expr\narr\tau \semiq \expr\in\Expr \semiq \expr:\tau_\expr
+		\EnvSym\then \tau_\expr:\Type \semiq \tau_\expr\narreq\tau \semiq \expr\in\Expr \semiq \expr:\tau_\expr
 	}{
 		\EnvSym, \code{const $x$ $\tau$ <- $\expr$} \then x:\tau \qquad \text{(esplicit type)} \\*
 		\land \EnvSym, \code{const $x$ <- $\expr$} \then x:\tau \qquad \text{(implicit type)}
@@ -3046,12 +3046,12 @@ name $y_j$ is bound to the formal parameter whose label is $l_i=y_j$.
 \begin{tabular}{rll}
 	Symbol                                  & Use                              & Examples\\\hline
 	$\bop$                                  & Generic binary operator          & $x \bop y$\\\hline
-	$\narr$                                 & "Narrower than" operator         & $\Int \narr \Real$ \\\hline
+	$\narreq$                               & "Narrower than" operator         & $\Int \narreq \Real$ \\\hline
 	$\sqcap$                                & "Least wide type" operator       & $\Int \sqcap \Real$ \\\hline
 	$\then$                                 & Assumptions suffix               & $\EnvSym \then \val:\tau$ \\\hline
 	$\Then$                                 & Environments modification prefix & $\expr \Then \EnvStore$\\\hline
 	$\tau,\omega,\eta,\kappa,\nu$           & \multirow{2}{*}{A type}          & $\tau = \Int$\\
-	or any lowercase greek letter           &                                  & $\eta=\Int \narr \omega=\Real$\\\hline
+	or any lowercase greek letter           &                                  & $\eta=\Int \narreq \omega=\Real$\\\hline
 	$\phi$                                  & Function type                    & $\phi=(\tau_1)\to\tau_2$\\\hline
 	$\theta$                                & Tuple type                       & $\theta=\tau_1\times\tau_2$\\\hline
 	$\rho$                                  & Record type                      & $\rho=\tuple{x:\tau_1,y:\tau_2}$\\\hline
