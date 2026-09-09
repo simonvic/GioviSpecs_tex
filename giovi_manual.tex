@@ -33,6 +33,8 @@
 	ignorelexererrors=true,
 }
 \setminted[eBNF]{
+	bgcolorpadding=2pt,
+	bgcolor=codeblockBG,
 	autogobble=true,
 	tabsize=4,
 	fontsize=\scriptsize,
@@ -346,11 +348,19 @@ There are two kinds of comments:
 
 \begin{itemize}
 	\item \textbf{end-of-line comment}: Every character after the comment token
-		\code{\#} until a newline \code{\\n} is considered part of the comment
+		\code{\#} until a newline \code{\\n} is considered part of the
+		comment.
+		\begin{minted}{eBNF}
+			comment: '#' comment_content? ('\n' | EOF) ;
+			comment_content: [^\n]+ ;
+		\end{minted}
 	\item \textbf{multiline comment}: Every character between and the open
 		comment token \code{\#\{} and the close comment token \code{\}\#} is
 		considered part of the comment.\\*
 		A multiline comment can also be inlined in the code.
+		\begin{minted}{eBNF}
+			comment_block: '#{' .* ('}#' | EOF) ;
+		\end{minted}
 \end{itemize}
 
 \subparagraph{Conventions} By convention, \code{\#} is immediately followed by
@@ -367,6 +377,10 @@ documentation: \code{\#? This is a documentation comment}
 
 A boolean value is simply expressed by \code{true} or \code{false}
 
+\begin{minted}{eBNF}
+	literal_boolean: 'true' | 'false' ;
+\end{minted}
+
 \subsubsection{Text}
 
 There are four types of \code{Text} literals (a.k.a. strings).
@@ -378,10 +392,21 @@ There are four types of \code{Text} literals (a.k.a. strings).
 	\item \textbf{Exact text block}: \code{'{hello world}'}
 \end{itemize}
 
+\begin{minted}{eBNF}
+	literal_normal_text:       '"' ([^\\\n] | escape_sequence)* '"' ;
+	literal_normal_text_block: '"{' ([^\\] | escape_sequence)* '}"' ;
+	literal_exact_text:        "'" ([^\\\n] | escape_sequence)* "'" ;
+	literal_exact_text_block:  "'{" ([^\\] | escape_sequence)* "}'" ;
+\end{minted}
+
 \subparagraph{Escape sequences} Some special characters may not appear in the
 text, unless escaped with by prefixing it with \code{$\backslash$} (backslash).
 
-\comment{TODO: unicode escapes}
+\begin{minted}{eBNF}
+	escape_sequence: character_escape | unicode_escape ;
+	character_escape: '\' [btnfrs"'\\${}] ;
+	unicode_escape: '\' 'u' HexDigit HexDigit HexDigit HexDigit ;
+\end{minted}
 
 \subparagraph{Interpolation} Normal text and normal text blocks support
 interpolation, allowing the "injecttion" of a variable or expression in the
@@ -464,6 +489,8 @@ add a suffix to the number to explicitate the type: \code{n} for naturals,
 Any other word that is not a reserved keyword is considered an identifier.
 
 \comment{TODO: completare}
+
+\comment{TODO: restringere i caratteri permessi ad un subset unicode?}
 
 \part{Type system}
 
