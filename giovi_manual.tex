@@ -21,13 +21,23 @@
 
 \definecolor{codeblockBG}{rgb}{0.85,0.85,0.85}
 \definecolor{colorString}{rgb}{0.1,0.5,0.1}
+\definecolor{colorNonText}{rgb}{0.5,0.5,0.5}
 \setminted[Ruby]{
 	linenos,
 	autogobble=true,
 	bgcolor=codeblockBG,
 	frame=lines,
 	tabsize=4,
+	tabcolor=colorNonText,
 	fontsize=\scriptsize,
+	ignorelexererrors=true,
+}
+\setminted[eBNF]{
+	autogobble=true,
+	tabsize=4,
+	fontsize=\scriptsize,
+	ignorelexererrors=true,
+	style=bw
 }
 
 \newcommand{\set}[1]{\left\{#1\right\}}
@@ -238,6 +248,222 @@ giovi --repl
 > "The sum of 10 and 20 is equal to ${10 + 20}" -> _out
 > The sum of 10 and 20 is equal to 30
 \end{minted}
+
+\chapter{Grammar}
+
+\section{Introduction}
+
+This chapter describes the lexicon and syntax of the language. Grammar rules
+will be shown using a dialect of eBNF.
+
+\begin{minted}{eBNF}
+someRule
+	: SOME_TOKEN someLabel=someOtherRule
+	| 'some_token' optional? zeroOrMore* oneOrMore+
+	| (SOME_TOKEN | SOME_OTHER_TOKEN)
+	;
+\end{minted}
+
+\nb{
+	Only a subsest of the rules will be shown, and they may not exactly match
+	the real grammar. For the actual rules consult the appropriate grammar
+	files.
+}
+
+\subparagraph{Whitespaces} Whitespaces (e.g. spaces, tabs, newlines) are
+determinant \textbf{only} during the lexical parsing, meaning that \code{!=} is
+different than \code{! =}, where the former gets parsed as a single token while
+the latest gets parsed as two different tokens; in any other case, whitepsaces
+are ignored.
+
+\section{Lexicon}
+
+\subsection{Keywords}
+
+\code{if}, \code{do}, \code{else}, \code{when}, \code{for}, \code{in},
+\code{repeat}, \code{break}, \code{skip}, \code{return}\\*
+\code{default}, \code{import}, \code{module}\\*
+\code{const}, \code{var}, \code{alias},
+\code{self}, \code{function}, \code{tuple}, \code{record}, \code{struct},
+\code{type}, \code{and}, \code{or}, \code{not}, \code{as}
+
+\subparagraph{Reserved keywords} Some keywords are reserved for future-proofing
+to ensure backward compatibility in the eventuality they get used.
+
+\code{def}, \code{let}, \code{ref}, \code{at}, \code{with}, \code{interface},
+\code{enum}
+
+\subsection{Operators}
+
+\resizebox{\linewidth}{!}{
+	\begin{tabular}{rcl}
+		Operator                        & Token           & Description                                     \\\hline
+		PLUS                            & \texttt{+}      & Arithmetic sum, concatenation                   \\\hline
+		MINUS                           & \texttt{-}      & Arithmetic subtraction, intersection            \\\hline
+		MULTIPLICATION                  & \texttt{*}      & Arithmetic multiplication                       \\\hline
+		DIVISION                        & \texttt{/}      & Arithmetic division                             \\\hline
+		MODULO                          & \texttt{\%}     & Arithmetic remainder                            \\\hline
+		EXPONENTIAL                     & \texttt{\^}     & Arithmetic power, text repetition               \\\hline
+		EQUAL                           & \texttt{=}      & Loose equality                                  \\\hline
+		NOT EQUAL                       & \texttt{!=}     & Loose inequality                                \\\hline
+		LESS EQUAL                      & \texttt{<=}     & Arithmetic and lexicographical comparison       \\\hline
+		LESS                            & \texttt{<}      & Arithmetic and lexicographical comparison       \\\hline
+		GREATER                         & \texttt{>}      & Arithmetic and lexicographical comparison       \\\hline
+		GREATER EQUAL                   & \texttt{>=}     & Arithmetic and lexicographical comparison       \\\hline
+		CONTAINS                        & \texttt{=\~{}}  & Checks if a set of elements contains an element \\\hline
+		IS CONTAINED                    & \texttt{\~{}=}  & Reverse of CONTAINS                             \\\hline
+		\multirow{2}{*}{BOOL NOT}       & \texttt{not}    & \multirow{2}{*}{Boolean logic negation}         \\
+	                                	& \texttt{!}      &                                                 \\\hline
+		\multirow{2}{*}{BOOL AND}       & \texttt{and}    & \multirow{2}{*}{Boolean logic and}              \\
+	                                	& \texttt{\&}     &                                                 \\\hline
+		\multirow{2}{*}{BOOL OR}        & \texttt{or}     & \multirow{2}{*}{Boolean logic or}               \\
+	                                	& \texttt{|}      &                                                 \\\hline
+		BITWISE NOT                     & \texttt{!!}     & Bitwise negation                                \\\hline
+		BITWISE AND                     & \texttt{\&\&}   & Bitwise and                                     \\\hline
+		BITWISE OR                      & \texttt{||}     & Bitwise or                                      \\\hline
+		BITWISE XOR                     & \texttt{|||}    & Bitwise exclusive or                            \\\hline
+		BITWISE LEFT SHIFT              & \texttt{\{<\}}  & Bitwise left shift                              \\\hline
+		BITWISE RIGHT SHIFT             & \texttt{\{>\}}  & Bitwise right shift                             \\\hline
+		BITWISE RIGHT UNSIGNED SHIFT    & \texttt{\{>>\}} & Bitwise right unsigned shift                    \\\hline
+		IS                              & \texttt{is}     & Runtime type check, pattern matching            \\\hline
+		AS                              & \texttt{as}     & Explicit type coercion                          \\\hline
+	    \\
+		\multicolumn{3}{c}{Pseudo-Operators}                                                                \\\hline
+		DOT ACCESS                      & \texttt{.}      & Members access                                  \\\hline
+		DOTREF ACCESS                   & \texttt{::}     & Function member access                          \\\hline
+		AT ACCESS                       & \texttt{@}      & Properties access                               \\\hline
+	\end{tabular}
+}
+
+\subsection{Other tokens}
+
+\code{..}, \code{:}, \code{,}, \code{;}, \code{\#}, \code{(}, \code{)}, \code{[}, \code{]},
+\code{\{}, \code{\}}, \code{<}, \code{>}
+
+\subsection{Comments}
+
+There are two kinds of comments:
+
+\begin{itemize}
+	\item \textbf{end-of-line comment}: Every character after the comment token
+		\code{\#} until a newline \code{\\n} is considered part of the comment
+	\item \textbf{multiline comment}: Every character between and the open
+		comment token \code{\#\{} and the close comment token \code{\}\#} is
+		considered part of the comment.\\*
+		A multiline comment can also be inlined in the code.
+\end{itemize}
+
+\subparagraph{Conventions} By convention, \code{\#} is immediately followed by
+a space, as the first character is reserved for "special" comments, for example
+documentation: \code{\#? This is a documentation comment}
+
+\comment{
+	TODO: Specificare RFC riguardo language server e altro?
+}
+
+\subsection{Literals}
+
+\subsubsection{Boolean}
+
+A boolean value is simply expressed by \code{true} or \code{false}
+
+\subsubsection{Text}
+
+There are four types of \code{Text} literals (a.k.a. strings).
+
+\begin{itemize}
+	\item \textbf{Normal text}: \code{"hello world"}
+	\item \textbf{Exact text}: \code{'hello world'}
+	\item \textbf{Normal text block}: \code{"{hello world}"}
+	\item \textbf{Exact text block}: \code{'{hello world}'}
+\end{itemize}
+
+\subparagraph{Escape sequences} Some special characters may not appear in the
+text, unless escaped with by prefixing it with \code{$\backslash$} (backslash).
+
+\comment{TODO: unicode escapes}
+
+\subparagraph{Interpolation} Normal text and normal text blocks support
+interpolation, allowing the "injecttion" of a variable or expression in the
+text.\\*
+To inject a variable, simply prefix it with \code{\$} (dollar):\\*
+\code{"My name is \$name"}.\\*
+In order to inject an expression, it needs to be wrapped in braces:\\*
+\code{"My name is \$\{getName()\}"}
+
+\paragraph{Text block} Normal and exact text blocks allow the text to span over
+multiple lines, without the need to escape the text delimiter.
+
+\subparagraph{Incidental whitespaces} White spaces (spaces, newlines, tabs)
+will be kept in a text block, unless they're considered "incidental".\\*
+Incidental white spaces are those needed for code indentation.\\*
+The amount of "incidental" whitespaces is defined by the line that has less of
+them.\\*
+Only one type of white space can be used; in case of mixed types, it will be
+used the type of the first incidental whitespace of the first line (excluding
+the line with the opening text block tag).\\*
+So it is advised to be consistent with code formatting to avoid ambiguities and
+undesired side effects.
+
+\begin{minted}[showtabs,tab=>]{Ruby}
+if true do {
+	if true do {
+		html Text <- "{
+			<html>
+				<head></head>
+				<body>
+					<p>Hello world</p>
+				<body>
+			</html>
+			}"
+#^^^^^^^^^^^
+# the first three tabulations are considered "incidental"
+# and won't be included in the text
+	}
+}
+\end{minted}
+
+A new line will be automatically be appended at the last line. If you don't
+want that, put the closing tag on the previous line
+
+\begin{minted}{Ruby}
+t Text <- "{
+	hello world}"
+\end{minted}
+
+\comment{TODO: più dettagli... queste dovrebbero essere le specifiche ufficiali}
+
+\subsubsection{Numbers}
+
+Giovi supports three different type of numbers: integers, natural and real
+numbers.
+
+\subparagraph{Separators} To improve readability of large numbers, you can use
+underscores to group digits; separators cannot appear at the beginning or the
+end of the number. For example: \code{100\_000\_000}
+
+\subparagraph{Integers} An integer literal may be expressed in multiple
+bases.\\*
+By default, decimal (base 10) is used; to indicate a different base use the
+appropriate prefix:
+\begin{itemize}
+	\item Decimal (base 10): \code{69420}
+	\item Hexadecimal (base 16): \code{0x10F2C}
+	\item Octal (base 8): \code{0o207454}
+	\item Binary (base 2): \code{0b0001\_0000\_1111\_0010\_1100}
+\end{itemize}
+
+\comment{TODO: menzionare le altre forme supportate per i reali?}
+
+\subparagraph{Suffixes} By default, a number is parsed as an integer; you can
+add a suffix to the number to explicitate the type: \code{n} for naturals,
+\code{i} for integers, \code{r} for reals. \code{69n} \code{69i} \code{69r}
+
+\subsubsection{Identifiers}
+
+Any other word that is not a reserved keyword is considered an identifier.
+
+\comment{TODO: completare}
 
 \part{Type system}
 
@@ -1128,48 +1354,6 @@ Range from $\expr_1$ (begin) to $\expr_2$ (end).
 	}
 \]
 Range from $\expr_1$ (begin) to $\expr_2$ (end) with a step $\expr_3$.
-
-\section{Operators}
-
-\resizebox{\linewidth}{!}{
-	\begin{tabular}{rcl}
-		Operator                        & Symbol          & Description                                     \\\hline
-		PLUS                            & \texttt{+}      & Arithmetic sum, concatenation                   \\\hline
-		MINUS                           & \texttt{-}      & Arithmetic subtraction, intersection            \\\hline
-		MULTIPLICATION                  & \texttt{*}      & Arithmetic multiplication                       \\\hline
-		DIVISION                        & \texttt{/}      & Arithmetic division                             \\\hline
-		MODULO                          & \texttt{\%}     & Arithmetic remainder                            \\\hline
-		EXPONENTIAL                     & \texttt{\^}     & Arithmetic power, text repetition               \\\hline
-		EQUAL                           & \texttt{=}      & Loose equality                                  \\\hline
-		NOT EQUAL                       & \texttt{!=}     & Loose inequality                                \\\hline
-		LESS EQUAL                      & \texttt{<=}     & Arithmetic and lexicographical comparison       \\\hline
-		LESS                            & \texttt{<}      & Arithmetic and lexicographical comparison       \\\hline
-		GREATER                         & \texttt{>}      & Arithmetic and lexicographical comparison       \\\hline
-		GREATER EQUAL                   & \texttt{>=}     & Arithmetic and lexicographical comparison       \\\hline
-		CONTAINS                        & \texttt{=\~{}}  & Checks if a set of elements contains an element \\\hline
-		IS CONTAINED                    & \texttt{\~{}=}  & Reverse of CONTAINS                             \\\hline
-		\multirow{2}{*}{BOOL NOT}       & \texttt{not}    & \multirow{2}{*}{Boolean logic negation}         \\
-	                                	& \texttt{!}      &                                                 \\\hline
-		\multirow{2}{*}{BOOL AND}       & \texttt{and}    & \multirow{2}{*}{Boolean logic and}              \\
-	                                	& \texttt{\&}     &                                                 \\\hline
-		\multirow{2}{*}{BOOL OR}        & \texttt{or}     & \multirow{2}{*}{Boolean logic or}               \\
-	                                	& \texttt{|}      &                                                 \\\hline
-		BITWISE NOT                     & \texttt{!!}     & Bitwise negation                                \\\hline
-		BITWISE AND                     & \texttt{\&\&}   & Bitwise and                                     \\\hline
-		BITWISE OR                      & \texttt{||}     & Bitwise or                                      \\\hline
-		BITWISE XOR                     & \texttt{|||}    & Bitwise exclusive or                            \\\hline
-		BITWISE LEFT SHIFT              & \texttt{\{<\}}  & Bitwise left shift                              \\\hline
-		BITWISE RIGHT SHIFT             & \texttt{\{>\}}  & Bitwise right shift                             \\\hline
-		BITWISE RIGHT UNSIGNED SHIFT    & \texttt{\{>>\}} & Bitwise right unsigned shift                    \\\hline
-		IS                              & \texttt{is}     & Runtime type check, pattern matching            \\\hline
-		AS                              & \texttt{as}     & Explicit type coercion                          \\\hline
-	    \\
-		\multicolumn{3}{c}{Pseudo-Operators}                                                                \\\hline
-		DOT ACCESS                      & \texttt{.}      & Members access                                  \\\hline
-		DOTREF ACCESS                   & \texttt{::}     & Function member access                          \\\hline
-		AT ACCESS                       & \texttt{@}      & Properties access                               \\\hline
-	\end{tabular}
-}
 
 \newpage
 
