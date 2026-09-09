@@ -532,7 +532,30 @@ statement_declaration
 	;
 \end{minted}
 
+In many rules, a single statement or a block of statement are allowed; the
+following rules will be used.
+
+\begin{minted}{eBNF}
+block: '{' statement* '}';
+block_or_statement: statement | block ;
+\end{minted}
+
+\newpage
+
 \subsection{Import statement}
+
+\begin{minted}{eBNF}
+statement_import
+	: 'import' import_entry
+	| 'import' '[' import_entry+ ']')
+	;
+import_entry: import_uri ('.' import_uri)* ('as' alias=identifier)? ;
+import_uri
+	: identifier
+	| literal_normal_text
+	| literal_exact_text
+	;
+\end{minted}
 
 The import statement is used to import one or more modules.
 
@@ -549,20 +572,11 @@ import giovi.util.Random as Random
 Random.integer() -> _out
 \end{minted}
 
-\begin{minted}{eBNF}
-statement_import
-	: 'import' import_entry
-	| 'import' '[' import_entry+ ']')
-	;
-import_entry: import_uri ('.' import_uri)* ('as' alias=identifier)? ;
-import_uri
-	: identifier
-	| literal_normal_text
-	| literal_exact_text
-	;
-\end{minted}
-
 \subsection{Alias statement}
+
+\begin{minted}{eBNF}
+statement_alias: 'alias' expression 'as' identifier ;
+\end{minted}
 
 Sometimes a type, a function, a constant or something else may be named in a
 too verbose way. You can use the alias statement to basically refer to the same
@@ -572,8 +586,58 @@ thing but with a different name.
 alias AVeryVerboseAndLongStructName as SomeStruct
 \end{minted}
 
+\subsection{Break and Skip statement}
+
+Both statements are used to control the flow of a loop, therefore can only be
+used within a loop.
+
+\paragraph{Break statement}
+
 \begin{minted}{eBNF}
-statement_alias: 'alias' expression 'as' identifier ;
+statement_break: 'break';
+\end{minted}
+The break statement will stop the loop and the execution will continue with the
+next instruction.
+
+\paragraph{Skip statement}
+\begin{minted}{eBNF}
+statement_skip: 'skip';
+\end{minted}
+The skip statement will stop the current loop iteration and skip to the next
+iteration.
+
+\subsection{Repeat statement}
+
+\begin{minted}{eBNF}
+statement_repeat: 'repeat' ('if' expression)? statement_or_block ;
+\end{minted}
+
+The repeat statement allows you to repeat a statement or block of code. It
+allows an optional condition that gets checked at the beginning of every loop;
+if the condition fails, the iteration stops.
+
+\begin{minted}{Ruby}
+# this code will run indefinitely
+repeat {
+	"hello world" -> _out
+}
+\end{minted}
+
+\begin{minted}{Ruby}
+# the loop continues while someCondition is true
+repeat if someCondition() {
+	"hello world" -> _out
+}
+\end{minted}
+
+A "do-while" like statement, can be achieved with a \code{break} statement.
+
+\begin{minted}{Ruby}
+# the loop continues until someCondition is true
+repeat {
+	"hello world" -> _out
+	if someCondition() do break
+}
 \end{minted}
 
 \part{Type system}
