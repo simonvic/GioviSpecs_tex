@@ -3,6 +3,7 @@
 \usepackage[a4paper,margin=40mm]{geometry}
 \usepackage{multirow}
 \usepackage[english]{babel}
+\usepackage{minted}
 \usepackage{longtable}
 \usepackage{arydshln}
 \usepackage{amsmath}
@@ -17,6 +18,17 @@
 \setcounter{tocdepth}{3}
 
 \renewcommand{\arraystretch}{1.5} % increase space between table rows
+
+\definecolor{codeblockBG}{rgb}{0.85,0.85,0.85}
+\definecolor{colorString}{rgb}{0.1,0.5,0.1}
+\setminted[Ruby]{
+	linenos,
+	autogobble=true,
+	bgcolor=codeblockBG,
+	frame=lines,
+	tabsize=4,
+	fontsize=\scriptsize,
+}
 
 \newcommand{\set}[1]{\left\{#1\right\}}
 \newcommand{\glist}[1]{\left[#1\right]}
@@ -104,9 +116,128 @@
 \abovedisplayshortskip=8pt
 \belowdisplayshortskip=8pt
 
+\begin{titlepage}
+	\centering
+	{\Huge\bfseries Giovi Language Specification}
+
+	\vspace{1cm}
+	{\huge Simone Vicinanza}
+
+	\vfill
+	{\Large 2069-69-69}
+
+\end{titlepage}
+
 \tableofcontents
 
 \newpage
+
+\part{The language}
+
+\chapter{Introduction}
+
+\section{What is Giovi}
+
+Giovi (pronounced as \textit{"jovi"}) is a high level, multipurpose,
+strongly typed, imperative programming and scripting language.
+
+\begin{minted}{Ruby}
+	"hello world" -> _out
+\end{minted}
+
+Giovi is originally born as a configuration language and as such, it relies on
+a mostly structural type system; it puts a lot of emphasis on the use of few
+basic data structures that, combined with simple yet powerful syntactic
+features, allows writing code that is easy to read and fast to write.
+
+\begin{minted}{Ruby}
+var simonvic <- User.<
+	id: 69
+	username: "simonvic"
+	aliaes: ["Simone", "Simon"]
+	bio: "{
+		hello I'm simonvic,
+		and I'm working on Giovi!
+		}"
+	age: 26
+	favoriteColor: Rgb.<0, 255, 0>
+	credits: 69.420
+	roles: [
+		"admin" : true
+		"developer" : true
+		"guest" : false
+	]
+	onLogin: function(user User) {
+		"hello ${user.username}" -> _out
+		if "admin" in user.roles do {
+			"Granting admin priviledges" -> _out
+		}
+	}
+>
+\end{minted}
+
+Giovi evolved to be more than a configuration language, by providing
+user-defined data structures, first-class functions and types. Giovi wants to
+experiment with the idea of non-nullability, where everything has a
+(overwritable) "default" value that, along the support for automatic data
+widening (but explicit narrowing), allows writing flexible code with few
+keystrokes.
+
+\begin{minted}{Ruby}
+plus(x Real, y Real) => Real { return x + y }
+minus(x Real, y Real) => Real { return x + y }
+times(x Real, y Real) => Real { return x * y }
+divided(x Real, y Real) => Real { return x / y }
+
+#? Calculator function
+#? leftHandSide: first operand
+#? strategy: a function with signature (Real,Real)=>Real
+#? rightHandSide: second operand
+calculator(
+	leftHandSide Real,
+	strategy function(x Real, y Real) => Real,
+	rightHandSide Real,
+) => Real {
+	# apply strategy
+	return strategy(leftHandSide, rightHandSide)
+}
+
+calulator(5, plus, 2) -> _out # 5 + 2
+calulator(5, minus, 2) -> _out # 5 - 2
+calulator(5, times, 2) -> _out # 5 * 2
+calulator(5, divided, 2) -> _out # 5 / 2
+\end{minted}
+
+The grammar design philosophy is to have a language that is easy to read and
+fast to write. The syntax aims to have minimal lexical and syntactic clutter
+where keywords are preferred over symbols, and to provide many quality-of-life
+features that speed up the writing process, without hindering the reading by
+relying on the use of symbols that is consistent and predictable.
+
+\section{Executing Giovi code}
+
+Giovi code can be executed from a file
+
+\begin{minted}{Bash}
+giovi some_script.giovi
+\end{minted}
+
+Alternatively, the source code can be passed directly to the CLI
+
+\begin{minted}{Bash}
+giovi -f '"hello world" -> _out'
+\end{minted}
+
+\subsection{REPL}
+
+Giovi also has a minimal REPL (Read Evaluation Print Loop), that allows you to
+write and execute code on the fly
+
+\begin{minted}{Bash}
+giovi --repl
+> "The sum of 10 and 20 is equal to ${10 + 20}" -> _out
+> The sum of 10 and 20 is equal to 30
+\end{minted}
 
 \part{Type system}
 
