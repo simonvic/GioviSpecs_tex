@@ -39,7 +39,7 @@
 	tabsize=4,
 	fontsize=\scriptsize,
 	ignorelexererrors=true,
-	style=bw
+	style=bw,
 }
 
 \newcommand{\set}[1]{\left\{#1\right\}}
@@ -491,6 +491,90 @@ Any other word that is not a reserved keyword is considered an identifier.
 \comment{TODO: completare}
 
 \comment{TODO: restringere i caratteri permessi ad un subset unicode?}
+
+\newpage
+
+\section{Syntax}
+
+This section mainly focuses on the syntax rules of the grammar; for more
+details about a specific feature, refer to the dedicated section.
+
+A valid Giovi program starts with zero or more statements. There are 11 valid
+statements:
+
+\begin{minted}{eBNF}
+program: statement* ;
+statement
+	: statement_import
+	| statement_alias
+	| statement_break
+	| statement_skip
+	| statement_repeat
+	| statement_for
+	| statement_if
+	| statement_redirection
+	| statement_return
+	| statement_invocation
+	| statement_declaration
+	;
+
+statement_if
+	: statement_simple_if
+	| statement_multi_if
+	;
+
+statement_declaration
+	: statement_declaration_module
+	| statement_declaration_struct
+	| statement_declaration_constant
+	| statement_declaration_variable
+	| statement_declaration_function
+	;
+\end{minted}
+
+\subsection{Import statement}
+
+The import statement is used to import one or more modules.
+
+\begin{minted}{Ruby}
+import giovi.util.Random
+giovi.util.Random.integer() -> _out
+\end{minted}
+
+To avoid fully qualifying the module every time, it can be aliased. It's a
+shortcut for importing and then aliasing with two different statements.
+
+\begin{minted}{Ruby}
+import giovi.util.Random as Random
+Random.integer() -> _out
+\end{minted}
+
+\begin{minted}{eBNF}
+statement_import
+	: 'import' import_entry
+	| 'import' '[' import_entry+ ']')
+	;
+import_entry: import_uri ('.' import_uri)* ('as' alias=identifier)? ;
+import_uri
+	: identifier
+	| literal_normal_text
+	| literal_exact_text
+	;
+\end{minted}
+
+\subsection{Alias statement}
+
+Sometimes a type, a function, a constant or something else may be named in a
+too verbose way. You can use the alias statement to basically refer to the same
+thing but with a different name.
+
+\begin{minted}{Ruby}
+alias AVeryVerboseAndLongStructName as SomeStruct
+\end{minted}
+
+\begin{minted}{eBNF}
+statement_alias: 'alias' expression 'as' identifier ;
+\end{minted}
 
 \part{Type system}
 
