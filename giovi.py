@@ -19,10 +19,11 @@ class GioviLexer(RegexLexer):
             # (r'(#?.*?)(\n)', bygroups(Comment.Special, Whitespace)),
 
             (r'(#.*?)(\n)', bygroups(Comment.Single, Whitespace)),
+            (r'"\{[^}]*\}+(?:[^"{][^{]*\}+)*"', Comment.Multiline),
+            (r'"\{', String, 'normal_text_block'),
             (r'"', String, 'normal_text'),
+            (r'\'\{', String, 'exact_text_block'),
             (r'\'', String, 'exact_text'),
-            # (r'"\{', String, 'normal_text_block'),
-            # (r'\'\{', String, 'exact_text_block'),
             (
                 words(
                     (
@@ -72,23 +73,33 @@ class GioviLexer(RegexLexer):
             (r'0o[0-7_]+[ni]?', Number.Oct),
             (r'0|[1-9][0-9_]*[ni]?', Number.Integer),
         ],
-        # 'comment_block': [
-        #     (r'[^}#]+', Comment.Multiline),
-        #     (r'#\{', Comment.Multiline, '#push'),
-        #     (r'\}#', Comment.Multiline, '#pop'),
-        #     (r'[{}#]', Comment.Multiline)
-        # ],
+        'normal_text_block': [
+            (r'\}"', String, '#pop'),
+            (r'\\([btnfrs"\'\\${}]|x[a-fA-F0-9]{2,4}|'
+             r'u[a-fA-F0-9]{4}|U[a-fA-F0-9]{8}|[0-7]{1,3})', String.Escape),
+            (r'[^\\]+', String),  # all other characters
+            (r'\\\n', String),  # line continuation
+            (r'\\', String),  # stray backslash
+        ],
         'normal_text': [
             (r'"', String, '#pop'),
-            (r'\\([\\abfnrtv"\']|x[a-fA-F0-9]{2,4}|'
+            (r'\\([btnfrs"\'\\${}]|x[a-fA-F0-9]{2,4}|'
              r'u[a-fA-F0-9]{4}|U[a-fA-F0-9]{8}|[0-7]{1,3})', String.Escape),
             (r'[^\\"\n]+', String),  # all other characters
             (r'\\\n', String),  # line continuation
             (r'\\', String),  # stray backslash
         ],
+        'exact_text_block': [
+            (r'\}\'', String, '#pop'),
+            (r'\\([btnfrs"\'\\${}]|x[a-fA-F0-9]{2,4}|'
+             r'u[a-fA-F0-9]{4}|U[a-fA-F0-9]{8}|[0-7]{1,3})', String.Escape),
+            (r'[^\\]+', String),  # all other characters
+            (r'\\\n', String),  # line continuation
+            (r'\\', String),  # stray backslash
+        ],
         'exact_text': [
             (r'\'', String, '#pop'),
-            (r'\\([\\abfnrtv"\']|x[a-fA-F0-9]{2,4}|'
+            (r'\\([btnfrs"\'\\${}]|x[a-fA-F0-9]{2,4}|'
              r'u[a-fA-F0-9]{4}|U[a-fA-F0-9]{8}|[0-7]{1,3})', String.Escape),
             (r'[^\\\'\n]+', String),  # all other characters
             (r'\\\n', String),  # line continuation
