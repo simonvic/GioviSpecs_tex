@@ -7,6 +7,8 @@ class GioviLexer(RegexLexer):
     aliases = ['giovi']
     filenames = ['*.giovi']
 
+    _character_escape = r'\\([btnfrs"\'\\${}]|u[a-fA-F0-9]{4})'
+
     tokens = {
         'root': [
             (r'[^\S\n]+', Whitespace),
@@ -75,32 +77,28 @@ class GioviLexer(RegexLexer):
         ],
         'normal_text_block': [
             (r'\}"', String, '#pop'),
-            (r'\\([btnfrs"\'\\${}]|x[a-fA-F0-9]{2,4}|'
-             r'u[a-fA-F0-9]{4}|U[a-fA-F0-9]{8}|[0-7]{1,3})', String.Escape),
+            (_character_escape, String.Escape),
             (r'[^\\]+', String),  # all other characters
             (r'\\\n', String),  # line continuation
             (r'\\', String),  # stray backslash
         ],
         'normal_text': [
             (r'"', String, '#pop'),
-            (r'\\([btnfrs"\'\\${}]|x[a-fA-F0-9]{2,4}|'
-             r'u[a-fA-F0-9]{4}|U[a-fA-F0-9]{8}|[0-7]{1,3})', String.Escape),
+            (_character_escape, String.Escape),
             (r'[^\\"\n]+', String),  # all other characters
             (r'\\\n', String),  # line continuation
             (r'\\', String),  # stray backslash
         ],
         'exact_text_block': [
             (r'\}\'', String, '#pop'),
-            (r'\\([btnfrs"\'\\${}]|x[a-fA-F0-9]{2,4}|'
-             r'u[a-fA-F0-9]{4}|U[a-fA-F0-9]{8}|[0-7]{1,3})', String.Escape),
+            (_character_escape, String.Escape),
             (r'[^\\]+', String),  # all other characters
             (r'\\\n', String),  # line continuation
             (r'\\', String),  # stray backslash
         ],
         'exact_text': [
             (r'\'', String, '#pop'),
-            (r'\\([btnfrs"\'\\${}]|x[a-fA-F0-9]{2,4}|'
-             r'u[a-fA-F0-9]{4}|U[a-fA-F0-9]{8}|[0-7]{1,3})', String.Escape),
+            (_character_escape, String.Escape),
             (r'[^\\\'\n]+', String),  # all other characters
             (r'\\\n', String),  # line continuation
             (r'\\', String),  # stray backslash
