@@ -10,8 +10,15 @@ class GioviLexer(RegexLexer):
     tokens = {
         'root': [
             (r'[^\S\n]+', Whitespace),
+
+            # unrolled version of r'(?s)#\{.*?\}#'
+            # NOTE: it has to be matched before single line comments
+            (r'#\{[^}]*\}+(?:[^#{][^{]*\}+)*#', Comment.Multiline),
+
+            # Documentation line
+            # (r'(#?.*?)(\n)', bygroups(Comment.Special, Whitespace)),
+
             (r'(#.*?)(\n)', bygroups(Comment.Single, Whitespace)),
-            (r'#\{.*?\}#', Comment.Multiline),
             (r'"', String, 'normal_text'),
             (r'\'', String, 'exact_text'),
             # (r'"\{', String, 'normal_text_block'),
@@ -65,6 +72,12 @@ class GioviLexer(RegexLexer):
             (r'0o[0-7_]+[ni]?', Number.Oct),
             (r'0|[1-9][0-9_]*[ni]?', Number.Integer),
         ],
+        # 'comment_block': [
+        #     (r'[^}#]+', Comment.Multiline),
+        #     (r'#\{', Comment.Multiline, '#push'),
+        #     (r'\}#', Comment.Multiline, '#pop'),
+        #     (r'[{}#]', Comment.Multiline)
+        # ],
         'normal_text': [
             (r'"', String, '#pop'),
             (r'\\([\\abfnrtv"\']|x[a-fA-F0-9]{2,4}|'
