@@ -1,0 +1,84 @@
+from pygments.lexer import RegexLexer, include, bygroups, using, this, inherit, default, words
+from pygments.token import Comment, Operator, Keyword, Name, String, Number, Punctuation, Whitespace
+
+
+class GioviLexer(RegexLexer):
+    name = 'Giovi'
+    aliases = ['giovi']
+    filenames = ['*.giovi']
+
+    tokens = {
+        'root': [
+            (r'[^\S\n]+', Whitespace),
+            (r'(#.*?)(\n)', bygroups(Comment.Single, Whitespace)),
+            (r'#\{.*?\}#', Comment.Multiline),
+            (r'"', String, 'normal_text'),
+            (r'\'', String, 'exact_text'),
+            # (r'"\{', String, 'normal_text_block'),
+            # (r'\'\{', String, 'exact_text_block'),
+            (
+                words(
+                    (
+                        "if", "do", "else", "when", "for", "repeat", "break",
+                        "skip", "return",
+                        "default",
+                        "self", "function", "tuple", "record", "struct",
+                        "type",
+                    ),
+                    suffix=r'\b'
+                ),
+                Keyword
+            ),
+            (r'(var|const|alias)\b', Keyword.Declaration),
+            (r'(not|and|or|in|is|as)\b', Operator.Word),
+            (words(("true", "false", "_"), suffix=r'\b'), Keyword.Constant),
+            (words(("import", "module"), suffix=r'\b'), Keyword.Namespace),
+            (
+                words(
+                    ("Natural", "Int", "Real", "Text", "Void", "Bool",),
+                    suffix=r'\b'
+                ),
+                Keyword.Type
+            ),
+            (words(("_out", "_err", "_in"), suffix=r'\b'), Name.Builtin),
+            (r'=>', Keyword),
+            (
+                r'(::|<=|>=|<|>|~=|=~|!=|=|!|&|\||\+|-|\*|/|%|\^|@|\{>>\}|\{>\}|\{<\})',
+                Operator
+            ),
+            (r'(\.|,|:|;|\[|\])', Punctuation),
+            (r'([^\W\d]|\$)[\w$]*', Name),
+            # kindly borrowed from java lexer :)
+            (
+                r'([0-9][0-9_]*\.([0-9][0-9_]*)?|'
+                r'\.[0-9][0-9_]*)'
+                r'(e[+\-]?[0-9][0-9_]*)?r?|'
+                r'[0-9]e[+\-]?[0-9][0-9_]*r?|'
+                r'[0-9](e[+\-]?[0-9][0-9_]*)?r|'
+                r'0x([0-9a-fA-F][0-9a-fA-F_]*\.?|'
+                r'([0-9a-fA-F][0-9a-fA-F_]*)?\.[0-9a-fA-F][0-9a-fA-F_]*)'
+                r'p[+\-]?[0-9][0-9_]*r?',
+                Number.Float
+            ),
+            (r'0x[0-9a-fA-F][0-9a-fA-F_]*[ni]?', Number.Hex),
+            (r'0b[01][01_]*[ni]?', Number.Bin),
+            (r'0o[0-7_]+[ni]?', Number.Oct),
+            (r'0|[1-9][0-9_]*[ni]?', Number.Integer),
+        ],
+        'normal_text': [
+            (r'"', String, '#pop'),
+            (r'\\([\\abfnrtv"\']|x[a-fA-F0-9]{2,4}|'
+             r'u[a-fA-F0-9]{4}|U[a-fA-F0-9]{8}|[0-7]{1,3})', String.Escape),
+            (r'[^\\"\n]+', String),  # all other characters
+            (r'\\\n', String),  # line continuation
+            (r'\\', String),  # stray backslash
+        ],
+        'exact_text': [
+            (r'\'', String, '#pop'),
+            (r'\\([\\abfnrtv"\']|x[a-fA-F0-9]{2,4}|'
+             r'u[a-fA-F0-9]{4}|U[a-fA-F0-9]{8}|[0-7]{1,3})', String.Escape),
+            (r'[^\\\'\n]+', String),  # all other characters
+            (r'\\\n', String),  # line continuation
+            (r'\\', String),  # stray backslash
+        ],
+    }
