@@ -613,11 +613,6 @@ statement
 	| statement_declaration
 	;
 
-statement_if
-	: statement_simple_if
-	| statement_multi_if
-	;
-
 statement_declaration
 	: statement_declaration_module
 	| statement_declaration_struct
@@ -740,19 +735,106 @@ repeat {
 
 \subsection{For statement}
 
+\begin{minted}{antlr}
+statement_for
+	: 'for' pattern_iterator 'in' iterable 'do' statement_or_block
+	;
+
+pattern_iterator: pattern_map_naked | pattern ;
+\end{minted}
+
 \subsection{If statement}
+
+\begin{minted}{antlr}
+statement_if
+	: statement_simple_if
+	| statement_multi_if
+	;
+\end{minted}
+
+\subsubsection{Simple If statement}
+
+\begin{minted}{antlr}
+statement_simple_if
+	: 'if' expression 'do' statement_or_block ('else' statement_or_block)?
+	;
+\end{minted}
+
+\subsubsection{Multi If statement}
+
+\begin{minted}{antlr}
+statement_multi_if
+	: 'if' subject=expression multi_if_body ('else' statement_or_block)?
+	| 'if' subjectless_multi_if_body ('else' statement_or_block)?
+	;
+\end{minted}
 
 \subsection{Module declaration}
 
+\begin{minted}{antlr}
+statement_declaration_module
+	: 'module' identifier body=block
+	;
+\end{minted}
+
 \subsection{Constant declaration}
+
+\begin{minted}{antlr}
+statement_declaration_constant
+	: 'const' identifier type? '<-' expression
+	;
+\end{minted}
 
 \subsection{Variable declaration}
 
+\begin{minted}{antlr}
+statement_declaration_variable
+	: 'var' identifier type? ('default' expression)? '<-' expression
+	;
+\end{minted}
+
 \subsection{Function declaration}
+
+\begin{minted}{antlr}
+statement_declaration_function
+	: identifier '(' formal_parameters? ')' ('=>' return_type=type)?
+	  body=block
+	;
+
+formal_parameters
+	: formal_parameter (',' formal_parameter)*
+	;
+
+formal_parameter
+	: (label=identifier ':')? name=identifier type ('default' expression)?
+	;
+\end{minted}
+
 
 \subsection{Return statement}
 
+\begin{minted}{antlr}
+statement_return
+	: ('return' | '=>') expression?
+	;
+\end{minted}
+
 \subsection{Invocation statement}
+
+\begin{minted}{antlr}
+statement_invocation
+	: expression '(' actual_parameters ')'
+	;
+
+actual_parameters
+	: actual_parameter (',' actual_parameter)*
+	;
+
+actual_parameter
+	: (label=identifier ':')? expression
+	;
+\end{minted}
+
 
 \part{Type system}
 
