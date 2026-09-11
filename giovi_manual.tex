@@ -19,8 +19,7 @@
 
 \renewcommand{\arraystretch}{1.5} % increase space between table rows
 
-\definecolor{codeblockBG}{rgb}{0.95,0.95,0.95}
-\definecolor{colorString}{rgb}{0.1,0.5,0.1}
+\definecolor{codeblockBG}{rgb}{0.98,0.98,0.98}
 \definecolor{colorNonText}{rgb}{0.5,0.5,0.5}
 \setminted{
 	fontsize=\scriptsize,
@@ -30,15 +29,21 @@
 	autogobble=true,
 	ignorelexererrors=true,
 	numbersep=4pt,
-	style=murphy,
+	linenos=true,
+	bgcolorpadding=2pt,
+	% style=autumn,
+	% style=sas,
+	% style=murphy,
+	% style=tango,
+	% style=friendly_grayscale
+	style=algol_nu,
+	% style=bw,
 }
-\setminted[Ruby]{
-	linenos,
-	frame=leftline,
+\setminted[Bash]{
+	linenos=false,
 }
 \setminted[antlr]{
-	bgcolorpadding=2pt,
-	style=bw,
+	linenos=false,
 }
 
 \newcommand{\set}[1]{\left\{#1\right\}}
@@ -152,7 +157,7 @@
 Giovi (pronounced as \textit{"jovi"}) is a high level, multipurpose,
 strongly typed, imperative programming and scripting language.
 
-\begin{minted}{Ruby}
+\begin{minted}{giovi.py:GioviLexer}
 	"hello world" -> _out
 \end{minted}
 
@@ -161,7 +166,7 @@ a mostly structural type system; it puts a lot of emphasis on the use of few
 basic data structures that, combined with simple yet powerful syntactic
 features, allows writing code that is easy to read and fast to write.
 
-\begin{minted}{Ruby}
+\begin{minted}{giovi.py:GioviLexer}
 var simonvic <- User.<
 	id: 69
 	username: "simonvic"
@@ -194,7 +199,7 @@ experiment with the idea of non-nullability, where everything has a
 widening (but explicit narrowing), allows writing flexible code with few
 keystrokes.
 
-\begin{minted}{Ruby}
+\begin{minted}{giovi.py:GioviLexer}
 plus(x Real, y Real) => Real { return x + y }
 minus(x Real, y Real) => Real { return x + y }
 times(x Real, y Real) => Real { return x * y }
@@ -343,7 +348,7 @@ to ensure backward compatibility in the eventuality they get used.
 
 \subsection{Comments}
 
-There are two kinds of comments:
+There are two kinds of comments: single line and multiline.
 
 \subsubsection{Single line comment}
 
@@ -416,7 +421,7 @@ text.\\*
 To inject a variable, simply prefix it with \code{\$} (dollar):\\*
 \code{"My name is \$name"}.\\*
 In order to inject an expression, it needs to be wrapped in braces:\\*
-\code{"My name is \$\{getName()\}"}
+\code{"My name is \$\{user.getName()\}"}
 
 \paragraph{Text block} Normal and exact text blocks allow the text to span over
 multiple lines, without the need to escape the text delimiter.
@@ -432,7 +437,7 @@ the line with the opening text block tag).\\*
 So it is advised to be consistent with code formatting to avoid ambiguities and
 undesired side effects.
 
-\begin{minted}[showtabs,tab=>]{Ruby}
+\begin{minted}[showtabs,tab=>]{giovi.py:GioviLexer}
 if true do {
 	if true do {
 		html Text <- "{
@@ -453,7 +458,7 @@ if true do {
 A new line will be automatically be appended at the last line. If you don't
 want that, put the closing tag on the previous line
 
-\begin{minted}{Ruby}
+\begin{minted}{giovi.py:GioviLexer}
 t Text <- "{
 	hello world}"
 \end{minted}
@@ -561,7 +566,7 @@ import_uri
 
 The import statement is used to import one or more modules.
 
-\begin{minted}{Ruby}
+\begin{minted}{giovi.py:GioviLexer}
 import giovi.util.Random
 giovi.util.Random.integer() -> _out
 \end{minted}
@@ -569,7 +574,7 @@ giovi.util.Random.integer() -> _out
 To avoid fully qualifying the module every time, it can be aliased. It's a
 shortcut for importing and then aliasing with two different statements.
 
-\begin{minted}{Ruby}
+\begin{minted}{giovi.py:GioviLexer}
 import giovi.util.Random as Random
 Random.integer() -> _out
 \end{minted}
@@ -584,7 +589,7 @@ Sometimes a type, a function, a constant or something else may be named in a
 too verbose way. You can use the alias statement to basically refer to the same
 thing but with a different name.
 
-\begin{minted}{Ruby}
+\begin{minted}{giovi.py:GioviLexer}
 alias AVeryVerboseAndLongStructName as SomeStruct
 \end{minted}
 
@@ -621,14 +626,14 @@ The repeat statement allows you to repeat a statement or block of code. It
 allows an optional condition that gets checked at the beginning of every loop;
 if the condition fails, the iteration stops.
 
-\begin{minted}{Ruby}
+\begin{minted}{giovi.py:GioviLexer}
 # this code will run indefinitely
 repeat {
 	"hello world" -> _out
 }
 \end{minted}
 
-\begin{minted}{Ruby}
+\begin{minted}{giovi.py:GioviLexer}
 # the loop continues while someCondition is true
 repeat if someCondition() {
 	"hello world" -> _out
@@ -637,7 +642,7 @@ repeat if someCondition() {
 
 A "do-while" like statement, can be achieved with a \code{break} statement.
 
-\begin{minted}{Ruby}
+\begin{minted}{giovi.py:GioviLexer}
 # the loop continues until someCondition is true
 repeat {
 	"hello world" -> _out
