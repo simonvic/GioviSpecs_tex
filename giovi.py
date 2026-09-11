@@ -32,7 +32,7 @@ class GioviLexer(RegexLexer):
             (r'(_out|_err|_in)\b', Name.Builtin),
             (r'=>', Keyword),
             (r'(::|<=|>=|<|>|~=|=~|!=|=|!|&|\||\+|-|\*|/|%|\^|@|\{>>\}|\{>\}|\{<\})', Operator),
-            (r'(\.|,|:|;|\(|\)|\[|\]|\{|\})', Punctuation),
+            (r'[.,:;()\[\]{}]', Punctuation),
             (r'([^\W\d]|\$)[\w$]*', Name),
             # kindly borrowed from java lexer :)
             (
