@@ -21,7 +21,6 @@ class GioviLexer(RegexLexer):
             # (r'(#?.*?)(\n)', bygroups(Comment.Special, Whitespace)),
 
             (r'(#.*?)(\n)', bygroups(Comment.Single, Whitespace)),
-            (r'"\{[^}]*\}+(?:[^"{][^{]*\}+)*"', Comment.Multiline),
             (r'"\{', String, 'normal_text_block'),
             (r'"', String, 'normal_text'),
             (r'\'\{', String, 'exact_text_block'),
