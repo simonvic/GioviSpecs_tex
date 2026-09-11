@@ -19,13 +19,12 @@
 
 \renewcommand{\arraystretch}{1.5} % increase space between table rows
 
-\definecolor{codeblockBG}{rgb}{0.98,0.98,0.98}
-\definecolor{colorNonText}{rgb}{0.5,0.5,0.5}
 \setminted{
 	fontsize=\scriptsize,
-	bgcolor=codeblockBG,
+	bgcolor=gray!10,
 	tabsize=4,
-	tabcolor=colorNonText,
+	tabcolor=gray!50,
+	spacecolor=gray!50,
 	autogobble=true,
 	ignorelexererrors=true,
 	numbersep=4pt,
@@ -370,6 +369,10 @@ Every character between and the open comment token \code{\#\{} and the close
 comment token \code{\}\#} is considered part of the comment.\\*
 A multiline comment can also be inlined in the code.
 
+\begin{minted}{giovi.py:GioviLexer}
+if true #{ this is a comment }# do something()
+\end{minted}
+
 \subparagraph{Conventions} By convention, \code{\#} is immediately followed by
 a space, as the first character is reserved for "special" comments, for example
 documentation: \code{\#? This is a documentation comment}
@@ -377,6 +380,8 @@ documentation: \code{\#? This is a documentation comment}
 \comment{
 	TODO: Specificare RFC riguardo language server e altro?
 }
+
+\newpage
 
 \subsection{Literals}
 
@@ -393,21 +398,40 @@ A boolean value is simply expressed by \code{true} or \code{false}
 There are four types of \code{Text} literals (a.k.a. strings).
 
 \begin{itemize}
-	\item \textbf{Normal text}: \code{"hello world"}
-	\item \textbf{Exact text}: \code{'hello world'}
-	\item \textbf{Normal text block}: \code{"{hello world}"}
-	\item \textbf{Exact text block}: \code{'{hello world}'}
+	\item \textbf{Normal text}: delimited by double quotes \code{"}
+	\item \textbf{Exact text}: delimited by single quptes \code{'}
+	\item \textbf{Normal text block}: delimited by \code{"\{} and \code{\}"}
+	\item \textbf{Exact text block}: delimited by \code{'\{} and \code{\}'}
 \end{itemize}
 
 \begin{minted}{antlr}
-	literal_normal_text:       '"' ([^\\\n] | escape_sequence)* '"' ;
-	literal_normal_text_block: '"{' ([^\\] | escape_sequence)* '}"' ;
-	literal_exact_text:        "'" ([^\\\n] | escape_sequence)* "'" ;
-	literal_exact_text_block:  "'{" ([^\\] | escape_sequence)* "}'" ;
+	literal_normal_text
+		: '"' ([^\n] | escape_sequence | interpolation)* '"'
+		;
+
+	literal_normal_text_block
+		: '"{' (. | escape_sequence | interpolation)* '}"'
+		;
+
+	literal_exact_text
+		: "'" ([^\n] | escape_sequence)* "'"
+		;
+
+	literal_exact_text_block
+		: "'{" (. | escape_sequence)* "}'"
+		;
 \end{minted}
 
+\subparagraph{Differences} All types of text literals can contain escape
+sequences.\\*
+Normal and exact text must be terminated on the same line (they cannot contain
+a newline).\\*
+Normal and exact text blocks can span over multiple lines and do not require
+the escape of the text delimiter.\\*
+Normal text and normal text block allow interpolation.
+
 \subparagraph{Escape sequences} Some special characters may not appear in the
-text, unless escaped with by prefixing it with \code{$\backslash$} (backslash).
+text, unless when escaped by prefixing it with \code{$\backslash$} (backslash).
 
 \begin{minted}{antlr}
 	escape_sequence: character_escape | unicode_escape ;
@@ -420,24 +444,42 @@ interpolation, allowing the "injecttion" of a variable or expression in the
 text.\\*
 To inject a variable, simply prefix it with \code{\$} (dollar):\\*
 \code{"My name is \$name"}.\\*
-In order to inject an expression, it needs to be wrapped in braces:\\*
+In order for an expression to be injected, it needs to be wrapped in braces:\\*
 \code{"My name is \$\{user.getName()\}"}
 
-\paragraph{Text block} Normal and exact text blocks allow the text to span over
-multiple lines, without the need to escape the text delimiter.
+\paragraph{Text blocks} Normal and exact text blocks allow the text to span
+over multiple lines, without the need to escape the text delimiter.
 
-\subparagraph{Incidental whitespaces} White spaces (spaces, newlines, tabs)
-will be kept in a text block, unless they're considered "incidental".\\*
-Incidental white spaces are those needed for code indentation.\\*
-The amount of "incidental" whitespaces is defined by the line that has less of
-them.\\*
-Only one type of white space can be used; in case of mixed types, it will be
-used the type of the first incidental whitespace of the first line (excluding
-the line with the opening text block tag).\\*
-So it is advised to be consistent with code formatting to avoid ambiguities and
-undesired side effects.
+\begin{minted}{giovi.py:GioviLexer}
+if true do {
+	if true do {
+		html Text <- "{
+			<html>
+				<head></head>
+				<body>
+					<p>Hello world</p>
+				<body>
+			</html>
+			}"
+	}
+}
+\end{minted}
 
-\begin{minted}[showtabs,tab=>]{giovi.py:GioviLexer}
+The last newline character will be included. If you don't want it, put the
+closing tag on the previous line
+
+\begin{minted}{giovi.py:GioviLexer}
+t Text <- "{
+	hello world}"
+\end{minted}
+
+\newpage
+
+\subparagraph{Incidental whitespaces} In a text block, white spaces (spaces,
+newlines, tabs) are preserved, unless they're considered "incidental".\\*
+Incidental white spaces are those needed for code indentation.
+
+\begin{minted}[showtabs,tab=>,escapeinside=||]{giovi.py:GioviLexer}
 if true do {
 	if true do {
 		html Text <- "{
@@ -455,15 +497,64 @@ if true do {
 }
 \end{minted}
 
-A new line will be automatically be appended at the last line. If you don't
-want that, put the closing tag on the previous line
+The amount of "incidental" whitespaces is defined by the line that has less of
+them.
 
-\begin{minted}{giovi.py:GioviLexer}
-t Text <- "{
-	hello world}"
+\nb{
+	Only the highlighted part will actually be included in the text literal
+}
+
+\begin{minted}[autogobble=false,showtabs,tab=>,escapeinside=||]{text}
+			_out <- "{
+			|\colorbox{gray!80}{<html>}|
+			|\colorbox{gray!80}{	<head></head>}|
+			|\colorbox{gray!80}{	<body>}|
+			|\colorbox{gray!80}{		<p>Hello world</p>}|
+			|\colorbox{gray!80}{	<body>}|
+			|\colorbox{gray!80}{</html>}|
+			}"
+
+			_out <- "{
+		|\colorbox{gray!80}{	<html>}|
+		|\colorbox{gray!80}{		<head></head>}|
+		|\colorbox{gray!80}{		<body>}|
+		|\colorbox{gray!80}{			<p>Hello world</p>}|
+		|\colorbox{gray!80}{		<body>}|
+		|\colorbox{gray!80}{</html>}|
+		|\colorbox{gray!80}{	\}"}|
 \end{minted}
 
-\comment{TODO: più dettagli... queste dovrebbero essere le specifiche ufficiali}
+Note how line 16 \code{</html>} now dictates the amount of incidental
+whitespaces.
+
+\newpage
+
+\subparagraph{Indentation leader} Only one type of white space will be
+considered as the indentation leader; in case of mixed types, the first
+incidental whitespace of the first line (excluding the line with the opening
+text block tag) will be considered the indentation leader character. So it is
+advised to be consistent with code formatting to avoid ambiguities and
+undesired side effects.
+
+\comment{TODO: riferimento a convenzioni e best practices}
+
+\begin{minted}[autogobble=false,showtabs,tab=>,escapeinside=||]{text}
+			_out <- "{
+		|\colorbox{gray!80}{	<html>}|
+		|\colorbox{gray!80}{		<head></head>}|
+		|\colorbox{gray!80}{		<body>}|
+		|\colorbox{gray!80}{····		<p>Hello world</p>}|
+		|\colorbox{gray!80}{		<body>}|
+		|\colorbox{gray!80}{	</html>}|
+		|\colorbox{gray!80}{	\}"}|
+\end{minted}
+
+Note how line 5 accidentally used 4 spaces instead of a tab; since the tab was
+chosen as indentation leader, the spaces are considered non-incidental,
+therefore they should be included in the text, hence line 5 now dictates the
+amount of incidental whitespaces.
+
+\newpage
 
 \subsubsection{Numbers}
 
@@ -649,6 +740,22 @@ repeat {
 	if someCondition() do break
 }
 \end{minted}
+
+\subsection{For statement}
+
+\subsection{If statement}
+
+\subsection{Module declaration}
+
+\subsection{Constant declaration}
+
+\subsection{Variable declaration}
+
+\subsection{Function declaration}
+
+\subsection{Return statement}
+
+\subsection{Invocation statement}
 
 \part{Type system}
 
