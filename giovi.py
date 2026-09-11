@@ -34,16 +34,17 @@ class GioviLexer(RegexLexer):
             (r'(::|<=|>=|<|>|~=|=~|!=|=|!|&|\||\+|-|\*|/|%|\^|@|\{>>\}|\{>\}|\{<\})', Operator),
             (r'[.,:;()\[\]{}]', Punctuation),
             (r'([^\W\d]|\$)[\w$]*', Name),
-            # kindly borrowed from java lexer :)
             (
-                r'([0-9][0-9_]*\.([0-9][0-9_]*)?|'
-                r'\.[0-9][0-9_]*)'
-                r'(e[+\-]?[0-9][0-9_]*)?r?|'
-                r'[0-9]e[+\-]?[0-9][0-9_]*r?|'
-                r'[0-9](e[+\-]?[0-9][0-9_]*)?r|'
-                r'0x([0-9a-fA-F][0-9a-fA-F_]*\.?|'
-                r'([0-9a-fA-F][0-9a-fA-F_]*)?\.[0-9a-fA-F][0-9a-fA-F_]*)'
-                r'p[+\-]?[0-9][0-9_]*r?',
+                r'([0-9][0-9_]*'  # integer_part
+                r'(r'  # r
+                r'|\.[0-9][0-9_]*(e[+-]?[0-9]+)?r?'  # decimal_part exp? r?
+                r'|e[+-]?[0-9]+r?'  # exp r?
+                r')'
+                r'|0x[0-9a-fA-F][0-9a-fA-F_]*'  # hex_part
+                r'(e[+-]?[0-9]+)?'  # exp?
+                r'p[+-]?[0-9]+'  # binary_exponent
+                r'r?'  # r?
+                r')',
                 Number.Float
             ),
             (r'0x[0-9a-fA-F][0-9a-fA-F_]*[ni]?', Number.Hex),
