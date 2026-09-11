@@ -19,26 +19,25 @@
 
 \renewcommand{\arraystretch}{1.5} % increase space between table rows
 
-\definecolor{codeblockBG}{rgb}{0.90,0.90,0.90}
+\definecolor{codeblockBG}{rgb}{0.95,0.95,0.95}
 \definecolor{colorString}{rgb}{0.1,0.5,0.1}
 \definecolor{colorNonText}{rgb}{0.5,0.5,0.5}
-\setminted[Ruby]{
-	linenos,
-	autogobble=true,
+\setminted{
+	fontsize=\scriptsize,
 	bgcolor=codeblockBG,
-	frame=lines,
 	tabsize=4,
 	tabcolor=colorNonText,
-	fontsize=\scriptsize,
-	ignorelexererrors=true,
-}
-\setminted[eBNF]{
-	bgcolorpadding=2pt,
-	bgcolor=codeblockBG,
 	autogobble=true,
-	tabsize=4,
-	fontsize=\scriptsize,
 	ignorelexererrors=true,
+	numbersep=4pt,
+	style=murphy,
+}
+\setminted[Ruby]{
+	linenos,
+	frame=leftline,
+}
+\setminted[antlr]{
+	bgcolorpadding=2pt,
 	style=bw,
 }
 
@@ -258,11 +257,11 @@ giovi --repl
 This chapter describes the lexicon and syntax of the language. Grammar rules
 will be shown using a dialect of eBNF.
 
-\begin{minted}{eBNF}
+\begin{minted}{antlr}
 someRule
-	: SOME_TOKEN someLabel=someOtherRule
-	| 'some_token' optional? zeroOrMore* oneOrMore+
-	| (SOME_TOKEN | SOME_OTHER_TOKEN)
+	: 'some_token' someLabel=someOtherRule
+	| zeroOrOneOfThis? zeroOrMoreThis* oneOrMoreThis+
+	| ('some_token' | 'some_other_token')
 	;
 \end{minted}
 
@@ -346,22 +345,25 @@ to ensure backward compatibility in the eventuality they get used.
 
 There are two kinds of comments:
 
-\begin{itemize}
-	\item \textbf{end-of-line comment}: Every character after the comment token
-		\code{\#} until a newline \code{\\n} is considered part of the
-		comment.
-		\begin{minted}{eBNF}
-			comment: '#' comment_content? ('\n' | EOF) ;
-			comment_content: [^\n]+ ;
-		\end{minted}
-	\item \textbf{multiline comment}: Every character between and the open
-		comment token \code{\#\{} and the close comment token \code{\}\#} is
-		considered part of the comment.\\*
-		A multiline comment can also be inlined in the code.
-		\begin{minted}{eBNF}
-			comment_block: '#{' .* ('}#' | EOF) ;
-		\end{minted}
-\end{itemize}
+\subsubsection{Single line comment}
+
+\begin{minted}{antlr}
+	comment: '#' comment_content? ('\n' | EOF) ;
+	comment_content: [^\n]+ ;
+\end{minted}
+
+Every character after the comment token \code{\#} until a newline \code{\\n} is
+considered part of the comment.
+
+\subsubsection{Multiline comment}
+
+\begin{minted}{antlr}
+	comment_block: '#{' .* ('}#' | EOF) ;
+\end{minted}
+
+Every character between and the open comment token \code{\#\{} and the close
+comment token \code{\}\#} is considered part of the comment.\\*
+A multiline comment can also be inlined in the code.
 
 \subparagraph{Conventions} By convention, \code{\#} is immediately followed by
 a space, as the first character is reserved for "special" comments, for example
@@ -377,7 +379,7 @@ documentation: \code{\#? This is a documentation comment}
 
 A boolean value is simply expressed by \code{true} or \code{false}
 
-\begin{minted}{eBNF}
+\begin{minted}{antlr}
 	literal_boolean: 'true' | 'false' ;
 \end{minted}
 
@@ -392,7 +394,7 @@ There are four types of \code{Text} literals (a.k.a. strings).
 	\item \textbf{Exact text block}: \code{'{hello world}'}
 \end{itemize}
 
-\begin{minted}{eBNF}
+\begin{minted}{antlr}
 	literal_normal_text:       '"' ([^\\\n] | escape_sequence)* '"' ;
 	literal_normal_text_block: '"{' ([^\\] | escape_sequence)* '}"' ;
 	literal_exact_text:        "'" ([^\\\n] | escape_sequence)* "'" ;
@@ -402,7 +404,7 @@ There are four types of \code{Text} literals (a.k.a. strings).
 \subparagraph{Escape sequences} Some special characters may not appear in the
 text, unless escaped with by prefixing it with \code{$\backslash$} (backslash).
 
-\begin{minted}{eBNF}
+\begin{minted}{antlr}
 	escape_sequence: character_escape | unicode_escape ;
 	character_escape: '\' [btnfrs"'\\${}] ;
 	unicode_escape: '\' 'u' HexDigit HexDigit HexDigit HexDigit ;
@@ -502,7 +504,7 @@ details about a specific feature, refer to the dedicated section.
 A valid Giovi program starts with zero or more statements. There are 11 valid
 statements:
 
-\begin{minted}{eBNF}
+\begin{minted}{antlr}
 program: statement* ;
 statement
 	: statement_import
@@ -535,7 +537,7 @@ statement_declaration
 In many rules, a single statement or a block of statement are allowed; the
 following rules will be used.
 
-\begin{minted}{eBNF}
+\begin{minted}{antlr}
 block: '{' statement* '}';
 block_or_statement: statement | block ;
 \end{minted}
@@ -544,10 +546,10 @@ block_or_statement: statement | block ;
 
 \subsection{Import statement}
 
-\begin{minted}{eBNF}
+\begin{minted}{antlr}
 statement_import
 	: 'import' import_entry
-	| 'import' '[' import_entry+ ']')
+	| 'import' '[' import_entry+ ']'
 	;
 import_entry: import_uri ('.' import_uri)* ('as' alias=identifier)? ;
 import_uri
@@ -574,7 +576,7 @@ Random.integer() -> _out
 
 \subsection{Alias statement}
 
-\begin{minted}{eBNF}
+\begin{minted}{antlr}
 statement_alias: 'alias' expression 'as' identifier ;
 \end{minted}
 
@@ -593,22 +595,25 @@ used within a loop.
 
 \paragraph{Break statement}
 
-\begin{minted}{eBNF}
+\begin{minted}{antlr}
 statement_break: 'break';
 \end{minted}
+
 The break statement will stop the loop and the execution will continue with the
 next instruction.
 
 \paragraph{Skip statement}
-\begin{minted}{eBNF}
+
+\begin{minted}{antlr}
 statement_skip: 'skip';
 \end{minted}
+
 The skip statement will stop the current loop iteration and skip to the next
 iteration.
 
 \subsection{Repeat statement}
 
-\begin{minted}{eBNF}
+\begin{minted}{antlr}
 statement_repeat: 'repeat' ('if' expression)? statement_or_block ;
 \end{minted}
 
