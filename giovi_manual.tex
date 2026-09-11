@@ -600,21 +600,21 @@ A valid Giovi program starts with zero or more top-level statements; there are
 \begin{minted}{antlr}
 program: statement* ;
 statement
-	: statement_import
-	| statement_alias
+	: statement_declaration
+	| statement_return
+	| statement_invocation
+	| statement_redirection
+	| statement_import
+	| statement_if
 	| statement_break
 	| statement_skip
 	| statement_repeat
 	| statement_for
-	| statement_if
-	| statement_redirection
-	| statement_return
-	| statement_invocation
-	| statement_declaration
 	;
 
 statement_declaration
-	: statement_declaration_module
+	: statement_declaration_alias
+	| statement_declaration_module
 	| statement_declaration_struct
 	| statement_declaration_constant
 	| statement_declaration_variable
@@ -631,6 +631,85 @@ block_or_statement: statement | block ;
 \end{minted}
 
 \newpage
+
+\subsection{Alias declaration}
+
+\begin{minted}{antlr}
+statement_declaration_alias: 'alias' expression 'as' identifier ;
+\end{minted}
+
+Sometimes a type, a function, a constant or something else may be named in a
+too verbose way. You can use the alias statement to basically refer to the same
+thing but with a different name.
+
+\begin{minted}{giovi.py:GioviLexer}
+alias AVeryVerboseAndLongStructName as SomeStruct
+\end{minted}
+
+\subsection{Module declaration}
+
+\begin{minted}{antlr}
+statement_declaration_module
+	: 'module' identifier body=block
+	;
+\end{minted}
+
+\subsection{Constant declaration}
+
+\begin{minted}{antlr}
+statement_declaration_constant
+	: 'const' identifier type? '<-' expression
+	;
+\end{minted}
+
+\subsection{Variable declaration}
+
+\begin{minted}{antlr}
+statement_declaration_variable
+	: 'var' identifier type? ('default' expression)? '<-' expression
+	;
+\end{minted}
+
+\subsection{Function declaration}
+
+\begin{minted}{antlr}
+statement_declaration_function
+	: identifier '(' formal_parameters? ')' ('=>' return_type=type)?
+	  body=block
+	;
+
+formal_parameters
+	: formal_parameter (',' formal_parameter)*
+	;
+
+formal_parameter
+	: (label=identifier ':')? name=identifier type ('default' expression)?
+	;
+\end{minted}
+
+\subsection{Return statement}
+
+\begin{minted}{antlr}
+statement_return
+	: ('return' | '=>') expression?
+	;
+\end{minted}
+
+\subsection{Invocation statement}
+
+\begin{minted}{antlr}
+statement_invocation
+	: expression '(' actual_parameters ')'
+	;
+
+actual_parameters
+	: actual_parameter (',' actual_parameter)*
+	;
+
+actual_parameter
+	: (label=identifier ':')? expression
+	;
+\end{minted}
 
 \subsection{Import statement}
 
@@ -662,18 +741,32 @@ import giovi.util.Random as Random
 Random.integer() -> _out
 \end{minted}
 
-\subsection{Alias statement}
+\subsection{Redirection statement (assignment)}
+
+\subsection{If statement}
 
 \begin{minted}{antlr}
-statement_alias: 'alias' expression 'as' identifier ;
+statement_if
+	: statement_simple_if
+	| statement_multi_if
+	;
 \end{minted}
 
-Sometimes a type, a function, a constant or something else may be named in a
-too verbose way. You can use the alias statement to basically refer to the same
-thing but with a different name.
+\subsubsection{Simple If statement}
 
-\begin{minted}{giovi.py:GioviLexer}
-alias AVeryVerboseAndLongStructName as SomeStruct
+\begin{minted}{antlr}
+statement_simple_if
+	: 'if' expression 'do' statement_or_block ('else' statement_or_block)?
+	;
+\end{minted}
+
+\subsubsection{Multi If statement}
+
+\begin{minted}{antlr}
+statement_multi_if
+	: 'if' subject=expression multi_if_body ('else' statement_or_block)?
+	| 'if' subjectless_multi_if_body ('else' statement_or_block)?
+	;
 \end{minted}
 
 \subsection{Break and Skip statement}
@@ -742,99 +835,6 @@ statement_for
 
 pattern_iterator: pattern_map_naked | pattern ;
 \end{minted}
-
-\subsection{If statement}
-
-\begin{minted}{antlr}
-statement_if
-	: statement_simple_if
-	| statement_multi_if
-	;
-\end{minted}
-
-\subsubsection{Simple If statement}
-
-\begin{minted}{antlr}
-statement_simple_if
-	: 'if' expression 'do' statement_or_block ('else' statement_or_block)?
-	;
-\end{minted}
-
-\subsubsection{Multi If statement}
-
-\begin{minted}{antlr}
-statement_multi_if
-	: 'if' subject=expression multi_if_body ('else' statement_or_block)?
-	| 'if' subjectless_multi_if_body ('else' statement_or_block)?
-	;
-\end{minted}
-
-\subsection{Module declaration}
-
-\begin{minted}{antlr}
-statement_declaration_module
-	: 'module' identifier body=block
-	;
-\end{minted}
-
-\subsection{Constant declaration}
-
-\begin{minted}{antlr}
-statement_declaration_constant
-	: 'const' identifier type? '<-' expression
-	;
-\end{minted}
-
-\subsection{Variable declaration}
-
-\begin{minted}{antlr}
-statement_declaration_variable
-	: 'var' identifier type? ('default' expression)? '<-' expression
-	;
-\end{minted}
-
-\subsection{Function declaration}
-
-\begin{minted}{antlr}
-statement_declaration_function
-	: identifier '(' formal_parameters? ')' ('=>' return_type=type)?
-	  body=block
-	;
-
-formal_parameters
-	: formal_parameter (',' formal_parameter)*
-	;
-
-formal_parameter
-	: (label=identifier ':')? name=identifier type ('default' expression)?
-	;
-\end{minted}
-
-
-\subsection{Return statement}
-
-\begin{minted}{antlr}
-statement_return
-	: ('return' | '=>') expression?
-	;
-\end{minted}
-
-\subsection{Invocation statement}
-
-\begin{minted}{antlr}
-statement_invocation
-	: expression '(' actual_parameters ')'
-	;
-
-actual_parameters
-	: actual_parameter (',' actual_parameter)*
-	;
-
-actual_parameter
-	: (label=identifier ':')? expression
-	;
-\end{minted}
-
 
 \part{Type system}
 
