@@ -667,6 +667,7 @@ statement_declaration_constant
 \begin{minted}{antlr}
 statement_declaration_variable
 	: 'var' identifier type? ('default' expression)? '<-' expression
+	| identifier type ('default' expression)?
 	;
 \end{minted}
 
@@ -742,6 +743,50 @@ Random.integer() -> _out
 \end{minted}
 
 \subsection{Redirection statement (assignment)}
+
+\begin{minted}{antlr}
+statement_redirection
+	: statement_redirection_rtl
+	| statement_redirection_ltr
+	;
+
+statement_redirection_rtl
+	: dest=pattern_redir '<-' src=expression
+	| dest=expression ('<-', '+<-', '-<-', '*<-', '/<-') src=expression
+	;
+
+statement_redirection_ltr
+	: src=expression '->' dest=pattern_redir
+	| src=expression ('->', '->+', '->-', '->*', '->/') content=expression
+	;
+
+pattern_redir
+	: pattern_placeholder
+	| pattern_unary
+	| pattern_placeholder
+	;
+\end{minted}
+
+The redirection statement is simply an assignment of a value to
+\textit{something}.
+
+\nb{
+	Only non-iterator patterns are permitted. See § Patterns.
+}
+
+A peculiarity of the statement is that it can be written "left to right" or
+"right to left". There is no difference between the two directions, except for
+readability. Sometimes it's just better to use one instead of the other.
+
+\comment{
+	TODO: link a FAQ
+}
+
+\begin{minted}{giovi.py:GioviLexer}
+"hello world" -> _out     # Printing
+counter +<- 1             # Increasing counter by one
+acceleration ->+ velocity # Increasing velocity by "acceleration"
+\end{minted}
 
 \subsection{If statement}
 
