@@ -8,6 +8,7 @@ class GioviLexer(RegexLexer):
     filenames = ['*.giovi']
 
     _character_escape = r'\\([btnfrs"\'\\${}]|u[a-fA-F0-9]{4})'
+    _interp_identifier = r'\$[a-z][a-zA-Z0-9_]*'
 
     tokens = {
         'root': [
@@ -51,14 +52,18 @@ class GioviLexer(RegexLexer):
             (r'0|[1-9][0-9_]*[ni]?', Number.Integer),
         ],
         'normal_text_block': [
-            (r'[^\\\}]+', String),
+            (r'[^\\\}$]+', String),
             (_character_escape, String.Escape),
+            (r'\$\{[^}]+\}', String.Interpol),
+            (_interp_identifier, String.Interpol),
             (r'\}"', String, '#pop'),
             (r'\}', String),
         ],
         'normal_text': [
-            (r'[^\\"\n]+', String),
+            (r'[^\\"\n$]+', String),
             (_character_escape, String.Escape),
+            (r'\$\{[^}\n]+\}', String.Interpol),
+            (_interp_identifier, String.Interpol),
             (r'"', String, '#pop'),
         ],
         'exact_text_block': [
