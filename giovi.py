@@ -17,14 +17,11 @@ class GioviLexer(RegexLexer):
             # NOTE: it has to be matched before single line comments
             (r'#\{[^}]*\}+(?:[^#{][^{]*\}+)*#', Comment.Multiline),
 
-            # Documentation line
-            # (r'(#?.*?)(\n)', bygroups(Comment.Special, Whitespace)),
-
             (r'(#.*?)(\n)', bygroups(Comment.Single, Whitespace)),
-            (r'"\{', String, 'normal_text_block'),
-            (r'"', String, 'normal_text'),
-            (r'\'\{', String, 'exact_text_block'),
-            (r'\'', String, 'exact_text'),
+            (r'"\{', String.Double, 'normal_text_block'),
+            (r'"', String.Double, 'normal_text'),
+            (r'\'\{', String.Single, 'exact_text_block'),
+            (r'\'', String.Single, 'exact_text'),
             (r'(if|do|else|when|for|repeat|break|skip|return|default|self|function|tuple|record|struct|type)\b', Keyword),
             (r'(var|const|alias)\b', Keyword.Declaration),
             (r'(not|and|or|in|is|as)\b', Operator.Word),
