@@ -30,10 +30,7 @@ class GioviLexer(RegexLexer):
             (r'(Natural|Int|Real|Text|Void|Bool)\b', Keyword.Type),
             (r'(_out|_err|_in)\b', Name.Builtin),
             (r'=>', Keyword),
-            (
-                r'(::|<=|>=|<|>|~=|=~|!=|=|!|&|\||\+|-|\*|/|%|\^|@|\{>>\}|\{>\}|\{<\})',
-                Operator
-            ),
+            (r'(::|<=|>=|<|>|~=|=~|!=|=|!|&|\||\+|-|\*|/|%|\^|@|\{>>\}|\{>\}|\{<\})', Operator),
             (r'(\.|,|:|;|\(|\)|\[|\]|\{|\})', Punctuation),
             (r'([^\W\d]|\$)[\w$]*', Name),
             # kindly borrowed from java lexer :)
