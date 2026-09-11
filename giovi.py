@@ -34,7 +34,7 @@ class GioviLexer(RegexLexer):
                 r'(::|<=|>=|<|>|~=|=~|!=|=|!|&|\||\+|-|\*|/|%|\^|@|\{>>\}|\{>\}|\{<\})',
                 Operator
             ),
-            (r'(\.|,|:|;|\[|\]|\{|\})', Punctuation),
+            (r'(\.|,|:|;|\(|\)|\[|\]|\{|\})', Punctuation),
             (r'([^\W\d]|\$)[\w$]*', Name),
             # kindly borrowed from java lexer :)
             (
