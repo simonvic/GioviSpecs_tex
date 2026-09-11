@@ -25,31 +25,13 @@ class GioviLexer(RegexLexer):
             (r'"', String, 'normal_text'),
             (r'\'\{', String, 'exact_text_block'),
             (r'\'', String, 'exact_text'),
-            (
-                words(
-                    (
-                        "if", "do", "else", "when", "for", "repeat", "break",
-                        "skip", "return",
-                        "default",
-                        "self", "function", "tuple", "record", "struct",
-                        "type",
-                    ),
-                    suffix=r'\b'
-                ),
-                Keyword
-            ),
+            (r'(if|do|else|when|for|repeat|break|skip|return|default|self|function|tuple|record|struct|type)\b', Keyword),
             (r'(var|const|alias)\b', Keyword.Declaration),
             (r'(not|and|or|in|is|as)\b', Operator.Word),
-            (words(("true", "false", "_"), suffix=r'\b'), Keyword.Constant),
-            (words(("import", "module"), suffix=r'\b'), Keyword.Namespace),
-            (
-                words(
-                    ("Natural", "Int", "Real", "Text", "Void", "Bool",),
-                    suffix=r'\b'
-                ),
-                Keyword.Type
-            ),
-            (words(("_out", "_err", "_in"), suffix=r'\b'), Name.Builtin),
+            (r'(true|false|_)\b', Keyword.Constant),
+            (r'(import|module)\b', Keyword.Namespace),
+            (r'(Natural|Int|Real|Text|Void|Bool)\b', Keyword.Type),
+            (r'(_out|_err|_in)\b', Name.Builtin),
             (r'=>', Keyword),
             (
                 r'(::|<=|>=|<|>|~=|=~|!=|=|!|&|\||\+|-|\*|/|%|\^|@|\{>>\}|\{>\}|\{<\})',
