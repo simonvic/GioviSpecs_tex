@@ -75,31 +75,25 @@ class GioviLexer(RegexLexer):
             (r'0|[1-9][0-9_]*[ni]?', Number.Integer),
         ],
         'normal_text_block': [
-            (r'\}"', String, '#pop'),
+            (r'[^\\\}]+', String),
             (_character_escape, String.Escape),
-            (r'[^\\]+', String),  # all other characters
-            (r'\\\n', String),  # line continuation
-            (r'\\', String),  # stray backslash
+            (r'\}"', String, '#pop'),
+            (r'\}', String),
         ],
         'normal_text': [
-            (r'"', String, '#pop'),
+            (r'[^\\"\n]+', String),
             (_character_escape, String.Escape),
-            (r'[^\\"\n]+', String),  # all other characters
-            (r'\\\n', String),  # line continuation
-            (r'\\', String),  # stray backslash
+            (r'"', String, '#pop'),
         ],
         'exact_text_block': [
-            (r'\}\'', String, '#pop'),
+            (r'[^\\\}]+', String),
             (_character_escape, String.Escape),
-            (r'[^\\]+', String),  # all other characters
-            (r'\\\n', String),  # line continuation
-            (r'\\', String),  # stray backslash
+            (r'\}\'', String, '#pop'),
+            (r'\}', String),
         ],
         'exact_text': [
-            (r'\'', String, '#pop'),
+            (r'[^\\\'\n]+', String),
             (_character_escape, String.Escape),
-            (r'[^\\\'\n]+', String),  # all other characters
-            (r'\\\n', String),  # line continuation
-            (r'\\', String),  # stray backslash
+            (r'\'', String, '#pop'),
         ],
     }
