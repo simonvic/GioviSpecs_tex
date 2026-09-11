@@ -387,22 +387,13 @@ documentation: \code{\#? This is a documentation comment}
 
 \subsubsection{Boolean}
 
-A boolean value is simply expressed by \code{true} or \code{false}
-
 \begin{minted}{antlr}
 	literal_boolean: 'true' | 'false' ;
 \end{minted}
 
+A \code{Bool} literal is simply expressed by \code{true} or \code{false}
+
 \subsubsection{Text}
-
-There are four types of \code{Text} literals (a.k.a. strings).
-
-\begin{itemize}
-	\item \textbf{Normal text}: delimited by double quotes \code{"}
-	\item \textbf{Exact text}: delimited by single quptes \code{'}
-	\item \textbf{Normal text block}: delimited by \code{"\{} and \code{\}"}
-	\item \textbf{Exact text block}: delimited by \code{'\{} and \code{\}'}
-\end{itemize}
 
 \begin{minted}{antlr}
 	literal_normal_text
@@ -421,6 +412,15 @@ There are four types of \code{Text} literals (a.k.a. strings).
 		: "'{" (. | escape_sequence)* "}'"
 		;
 \end{minted}
+
+There are four types of \code{Text} literals (a.k.a. strings).
+
+\begin{itemize}
+	\item \textbf{Normal text}: delimited by double quotes \code{"}
+	\item \textbf{Exact text}: delimited by single quptes \code{'}
+	\item \textbf{Normal text block}: delimited by \code{"\{} and \code{\}"}
+	\item \textbf{Exact text block}: delimited by \code{'\{} and \code{\}'}
+\end{itemize}
 
 \subparagraph{Differences} All types of text literals can contain escape
 sequences.\\*
@@ -549,8 +549,8 @@ undesired side effects.
 		|\colorbox{gray!80}{	\}"}|
 \end{minted}
 
-Note how line 5 accidentally used 4 spaces instead of a tab; since the tab was
-chosen as indentation leader, the spaces are considered non-incidental,
+Note how line 5 accidentally used four spaces instead of a tab; since the tab
+was chosen as indentation leader, the spaces are considered non-incidental,
 therefore they should be included in the text, hence line 5 now dictates the
 amount of incidental whitespaces.
 
@@ -558,8 +558,7 @@ amount of incidental whitespaces.
 
 \subsubsection{Numbers}
 
-Giovi supports three different type of numbers: integers, natural and real
-numbers.
+Giovi supports three different type of numbers: integers, natural and real.
 
 \subparagraph{Separators} To improve readability of large numbers, you can use
 underscores to group digits; separators cannot appear at the beginning or the
@@ -575,8 +574,6 @@ appropriate prefix:
 	\item Octal (base 8): \code{0o207454}
 	\item Binary (base 2): \code{0b0001\_0000\_1111\_0010\_1100}
 \end{itemize}
-
-\comment{TODO: menzionare le altre forme supportate per i reali?}
 
 \subparagraph{Suffixes} By default, a number is parsed as an integer; you can
 add a suffix to the number to explicitate the type: \code{n} for naturals,
@@ -597,8 +594,8 @@ Any other word that is not a reserved keyword is considered an identifier.
 This section mainly focuses on the syntax rules of the grammar; for more
 details about a specific feature, refer to the dedicated section.
 
-A valid Giovi program starts with zero or more statements. There are 11 valid
-statements:
+A valid Giovi program starts with zero or more top-level statements; there are
+11 valid statements:
 
 \begin{minted}{antlr}
 program: statement* ;
@@ -630,7 +627,7 @@ statement_declaration
 	;
 \end{minted}
 
-In many rules, a single statement or a block of statement are allowed; the
+In many rules, a single statement or a block of statements are allowed; the
 following rules will be used.
 
 \begin{minted}{antlr}
@@ -689,7 +686,7 @@ alias AVeryVerboseAndLongStructName as SomeStruct
 Both statements are used to control the flow of a loop, therefore can only be
 used within a loop.
 
-\paragraph{Break statement}
+\subsubsection{Break statement}
 
 \begin{minted}{antlr}
 statement_break: 'break';
@@ -698,7 +695,7 @@ statement_break: 'break';
 The break statement will stop the loop and the execution will continue with the
 next instruction.
 
-\paragraph{Skip statement}
+\subsubsection{Skip statement}
 
 \begin{minted}{antlr}
 statement_skip: 'skip';
