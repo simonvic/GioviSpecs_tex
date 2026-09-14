@@ -3624,7 +3624,7 @@ lookup of the product value
 	\oprule[aligned]{
 		\EnvLoc,\EnvStore       &\then n \geq 0 \semiq \forall_{i\in[1,n]}{x_i\in\mathcal{N}\subseteq\Id, \val_i\in\Val} \semiq \val = \tuple{x_1:\val_1,\dotsc,x_n:\val_n} \\*
 		\EnvLoc,\EnvStore       &\then m \leq n \semiq \forall_{j\in[1,m]}{\pattern_j\in\PatternTerminal\setminus\set{\code{\_}}} \\*
-		\EnvLoc,\EnvStore       &\then \pattern = \code{<:$\pattern_1$, $\dotsc$, :$\pattern_m$>} \\*
+		\EnvLoc,\EnvStore       &\then \pattern = \code{<\_:$\pattern_1$, $\dotsc$, \_:$\pattern_m$>} \\*
 		\EnvLoc,\EnvStore       &\then \expr \eval \val \Then \EnvLoc_2,\EnvStore_2 \\*
 		\EnvLoc_2,\EnvStore_2   &\then \forall_{j\in[1,m]}{\addr_j = \alloc(\EnvStore_2)} \\*
 		                        &\EnvLoc_3   = \EnvLoc_2\env{\forall_{j\in[1,m]}{\pattern_j\mapsto\addr_j}}\\*
