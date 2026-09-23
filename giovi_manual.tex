@@ -1378,7 +1378,7 @@ Using the $\EnvVar$ variables environment as example
 	\infrule{
 		\EnvSym\then \tau:\Type \semiq \sigma:\Type
 	}{
-		\EnvSym\then \code{type.[$\tau$:$\sigma$]} \eval \exists\tau.\exists\sigma.\Map
+		\EnvSym\then \code{type.[$\tau$ => $\sigma$]} \eval \exists\tau.\exists\sigma.\Map
 	}
 \]
 
@@ -1803,7 +1803,7 @@ List of $\omega$ (widest among $\tau$)
 \subsubsection{Map}
 
 \[
-	\EnvSym\then \code{[:]}:\exists\Void.\exists\Void.\Map
+	\EnvSym\then \code{[=>]}:\exists\Void.\exists\Void.\Map
 \]
 
 \[
@@ -1811,7 +1811,7 @@ List of $\omega$ (widest among $\tau$)
 		\EnvSym\then \kappa:\Type \semiq \forall_{i\in[1,n]}{k_i\in\Expr,k_i:\kappa} \semiq n \geq 1 \\*
 		\EnvSym\then \nu:\Type \semiq \forall_{i\in[1,n]}{v_i\in\Expr,v_i:\nu} \hfill
 	}{
-		\EnvSym\then \code{[$k_1$:$v_1$, $\dotsc$, $k_n$:$v_n$]}:\exists\kappa.\exists\nu.\Map
+		\EnvSym\then \code{[$k_1$=>$v_1$, $\dotsc$, $k_n$=>$v_n$]}:\exists\kappa.\exists\nu.\Map
 	}
 \]
 
@@ -1821,7 +1821,7 @@ List of $\omega$ (widest among $\tau$)
 		\EnvSym\then \forall_{i \in [1,n]}{\nu_i:\Type, v_i\in\Expr, v_i:\nu_i} \hfill\\*
 		\EnvSym\then \omega_\kappa = \bigsqcap_{i=1}^{n}{\kappa_i} \semiq \omega_\nu = \bigsqcap_{i=1}^{n}{\nu_i}
 	}{
-		\EnvSym\then \code{[$k_1$:$v_1$, $\dotsc$, $k_n$:$v_n$]}:\exists\omega_\kappa.\exists\omega_\nu.\Map
+		\EnvSym\then \code{[$k_1$=>$v_1$, $\dotsc$, $k_n$=>$v_n$]}:\exists\omega_\kappa.\exists\omega_\nu.\Map
 	}
 \]
 
@@ -3171,7 +3171,7 @@ Reverse: \code{<0,1,2,3,4,5> . 4..2 = <4 3 2>}
 	\infrule{
 		\EnvSym\then k \in \Id \semiq v \in \Id \semiq \kappa:\Type \semiq \nu:\Type \semiq \expr:\exists\kappa.\exists\nu.\Map
 	}{
-		\EnvSym, \code{for $k$:$v$ in $\expr$ do} \then k:\kappa \semiq v:\nu
+		\EnvSym, \code{for $k$=>$v$ in $\expr$ do} \then k:\kappa \semiq v:\nu
 	}
 \]
 
@@ -3599,7 +3599,7 @@ A pattern is used in redirections (assignments) and for loops to perform the
 	\item Iterator patterns:
 		\begin{itemize}
 			\item \textbf{List pattern}: \code{[someIdentifier]}
-			\item \textbf{Map pattern}: \code{[key : value]}
+			\item \textbf{Map pattern}: \code{[key => value]}
 		\end{itemize}
 \end{itemize}
 
@@ -3609,9 +3609,9 @@ are similar to types widening rules.
 
 \paragraph{Nesting patterns} Non-terminal patterns can have other patterns
 nested.\\*
-An extreme example: a value of type \code{[Text:[tuple<Int,Int,Int>]]} (map
+An extreme example: a value of type \code{[Text=>[tuple<Int,Int,Int>]]} (map
 with $\Text$ keys and a list of tuples as value) could be iterated with a
-pattern \code{[colorName:[<r,\_,b>]]} is a map pattern with a unary pattern as
+pattern \code{[colorName=>[<r,\_,b>]]} is a map pattern with a unary pattern as
 key and a list pattern as value which itself has a positional product pattern
 nested, where the second field pattern is a placeholder.
 
@@ -3658,7 +3658,7 @@ recursive function will be used to describe the deconstruction.
 			\decons(\EnvLoc,\EnvStore,\val',\pattern')                                                   &\text{ if } \val:\List \\*
 																										 &\quad\land \pattern = \code{[$\pattern'$]} \\*
 			\decons(\EnvLoc,\EnvStore,\val_k,\pattern_k)\cup\decons(\EnvLoc,\EnvStore,\val_v,\pattern_v) &\text{ if } \val:\Map \\*
-																										 &\quad\land \pattern = \code{[$\pattern_k$:$\pattern_v$]} \\*
+																										 &\quad\land \pattern = \code{[$\pattern_k$ => $\pattern_v$]} \\*
 		\end{cases}
 	\end{split}
 \]
@@ -3860,7 +3860,7 @@ pair of two patterns, one for the key and one for the value respectively.
 		\EnvLoc,\EnvStore &\then n \geq 0 \semiq \expr\eval\map{\val_{k_1}\mapsto\val_{v_1},\dotsc,\val_{k_n}\mapsto\val_{v_n}} \Then \EnvLoc_2,\EnvStore_2 \\*
 						  &\forall_{i\in[1,n]}{(\EnvLoc_i,\EnvStore_i) = \decons(\EnvLoc_2,\EnvStore_2,\val_{k_i},\pattern_k)} \cup \decons(\EnvLoc_2,\EnvStore_2,\val_{v_i},\pattern_v)
 	}{
-		\EnvLoc_2,\EnvStore_2 \then \code{for [$\pattern_k$:$\pattern_v$] in $\expr$ do} \Then \EnvLoc_i,\EnvStore_i\\*
+		\EnvLoc_2,\EnvStore_2 \then \code{for [$\pattern_k$ => $\pattern_v$] in $\expr$ do} \Then \EnvLoc_i,\EnvStore_i\\*
 	}
 \]
 At each iteration $i$, the $i$-th key-value pair of the map gets deconstructed
