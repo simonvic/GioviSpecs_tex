@@ -862,12 +862,25 @@ statement_if
 	;
 \end{minted}
 
+The \code{if} statement is used to evaluate boolean expressions exclusively.\\*
+There is a "traditional" \code{if}, where a single expression is evaluated and
+the appropriate execution flow is chosen, and a "multi-if" version.
+
 \subsubsection{Simple If statement}
 
 \begin{minted}{antlr}
 statement_simple_if
 	: 'if' expression 'do' statement_or_block ('else' statement_or_block)?
 	;
+\end{minted}
+
+\begin{minted}{giovi.py:GioviLexer}
+if someConditionIsTrue() do something() else somethingElse()
+if someConditionIsTrue() do {
+	something()
+} else {
+	somethingElse()
+}
 \end{minted}
 
 \subsubsection{Multi If statement}
@@ -877,6 +890,77 @@ statement_multi_if
 	: 'if' subject=expression multi_if_body ('else' statement_or_block)?
 	| 'if' subjectless_multi_if_body ('else' statement_or_block)?
 	;
+\end{minted}
+
+Very often it is needed to check multiple conditions sequentially.
+
+\begin{minted}{giovi.py:GioviLexer}
+if name = "Simone" do {
+	"hey it's Simone!" -> _out
+} else if name = "Mario" do {
+	"heyo Mario" -> _out
+	"where is Luigi?" -> _out
+} else if name = "Luigi" do {
+	"heyo green Mario!" -> _out
+}
+\end{minted}
+
+To improve readability, the \code{if} statement allows you to write the same in
+a more concise way.
+
+\begin{minted}{giovi.py:GioviLexer}
+if {
+	name = "Simone" do "hey it's Simone!" -> _out
+	name = "Mario" do {
+		"heyo Mario" -> _out
+		"where is Luigi?" -> _out
+	}
+	name = "Luigi" do "heyo green Mario!" -> _out
+}
+\end{minted}
+
+\nb{Any boolean expression is allowed and exhaustiveness is not enforced! Be
+mindful of the branch order; since they're evaluated in the same order they're
+written, some branch may become unreachable if it's dominated by a previous
+one.}
+
+\subparagraph{Subject} More often than not, the conditions involve the same
+"subject". The \code{if} statement allows you to write it just once and then
+omit it in the left-hand side of the condition
+
+\begin{minted}{giovi.py:GioviLexer}
+if name {
+	= "Simone" do "hey it's Simone!" -> _out
+	= "Mario" do {
+		"heyo Mario" -> _out
+		"where is Luigi?" -> _out
+	}
+	= "Luigi" do "heyo green Mario!" -> _out
+}
+\end{minted}
+
+Common boolean operators are allowed
+
+\begin{minted}{giovi.py:GioviLexer}
+if getSomeNumber() {
+	= 69 or = 420 do "Nice!" -> _out
+	> 100 and < 999 do "big number" -> _out
+}
+\end{minted}
+
+A branch can also be "guarded" with another (possibly unrelated) boolean
+condition
+
+\begin{minted}{giovi.py:GioviLexer}
+var funnyNumbers <- [69, 420] 
+if getSomeNumber() {
+	# if equal to 69, but only if someCondition() is true
+	= 69 when someCondition() do "Nice!" -> _out
+
+	# if is contained in funnyNumbers list,
+	# but only when 67 is not contained in funnyNumbers
+	in funnyNumbers when 67 not in funnyNumbers
+}
 \end{minted}
 
 \subsection{Break and Skip statement}
