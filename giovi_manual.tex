@@ -1040,8 +1040,8 @@ for key in ["Simone"=>69 "Luca"=>420 "Paolo"=>10] do somethingWith(key)
 
 The for statement is like an usual for-each loop, but on steroids; the iterator
 is actually a pattern (see §Patterns): for each iteration, the for statement
-will perform pattern-matching of the iterated date with the pattern, and
-perform the appropriate deconstruction.
+will match iterated value with the pattern, and perform the appropriate
+deconstruction.
 
 \begin{minted}{giovi.py:GioviLexer}
 for _ in 0..9 do something() # do something 10 times
@@ -1078,6 +1078,240 @@ for <r, g, b> in listOfColors do {
 \chapter{Functions}
 
 \chapter{Patterns}
+
+A pattern is a special language construct that describes a structure of data.
+
+A pattern is used to perform the "deconstruction" of a value into the structure
+that the pattern describes.
+
+\begin{minted}{giovi.py:GioviLexer}
+getPoint() => tuple<Int, Int> {
+	=> <69, 420>
+}
+<x, y> <- getPoint()
+"The point is at $x and $y" -> _out
+\end{minted}
+
+Patterns can also be used as iterators in a for loop; at each iteration the
+value will be matched to the pattern.
+
+\begin{minted}{giovi.py:GioviLexer}
+const CITIES <- [
+	"Rome"    => <41.8941047, 12.5151106>
+	"NewYork" => <40.7157121, -74.0013879>
+	"Tokyo"   => <35.7104635, 139.7300523>
+]
+for city => <x, y> in CITIES do {
+	"$city is located at $x and $y" -> _out
+}
+\end{minted}
+
+\paragraph{Patterns compatibility} A value can be deconstructed into a pattern
+only when it is "equal or narrower" than the pattern; the rules are similar to
+types widening rules.
+
+\begin{minted}{giovi.py:GioviLexer}
+getPoint() => tuple<Int, Int> { => <69, 420> }
+getPoint() -> <x Real, y Real>
+"$x and $y are Real" -> _out
+\end{minted}
+
+\newpage
+
+\section{Patterns kinds}
+
+There are five kinds of patterns:
+\begin{itemize}
+	\item Terminal patterns:
+		\begin{itemize}
+			\item \textbf{Placeholder pattern}: \code{\_} (underscore)
+
+				\comment{TODO: rinominare. Sinkhole?}
+			\item \textbf{Unary pattern}: \code{someIdentifier}
+		\end{itemize}
+	\item \textbf{Product pattern}:
+		\begin{itemize}
+			\item \textbf{Positional}: \code{<a, b, c>}
+			\item \textbf{Nominal}: \code{<x:a, y:b, z:c>}
+		\end{itemize}
+	\item Iterator patterns:
+		\begin{itemize}
+			\item \textbf{List pattern}: \code{[someIdentifier]}
+			\item \textbf{Map pattern}: \code{[key => value]}
+		\end{itemize}
+\end{itemize}
+
+\section{Nesting patterns}
+
+Non-terminal patterns can have other patterns nested.\\*
+An extreme example: a value of type \code{[Text=>[tuple<Int,Int,Int>]]} (map
+with $\Text$ keys and a list of tuples as value) could be iterated with a
+pattern \code{[colorName=>[<r,\_,b>]]} is a map pattern with a unary pattern as
+key and a list pattern as value which itself has a positional product pattern
+nested, where the second field pattern is a placeholder.
+
+\nb{
+	Nesting iterator patterns effectively means nesting iterations.\\*
+	For example \code{for [[[i]]] in matrix3D do} would be equivalent of
+	writing three nested for loops
+}
+
+\subsection{Limitations}
+
+\begin{itemize}
+	\item Product patterns can only have terminal patterns (placeholder, unary)
+		or other product patterns nested.
+	\item In map patterns, the pattern for the key can only be a terminal or a
+		product pattern; the pattern for the value can be of any kind (other
+		iterator patterns as well).
+\end{itemize}
+
+\newpage
+
+\section{Terminal patterns}
+
+A terminal pattern is called as such because it instructs not to deconstruct
+the value further.
+
+\subsection{Placeholder pattern}
+
+The simplest kind of pattern is the placeholder pattern (denoted by an
+underscore \code{\_}).\\*
+It basically acts as a sinkhole; redirecting to it does nothing. It can be
+useful to explicitly discard a function return value, or when nested in other
+patterns.
+
+\begin{minted}{giovi.py:GioviLexer}
+stack.pop() -> _ # pop a stack but ignore the value
+
+getPoint() -> <_, y>
+"I only care about $y" -> _out
+\end{minted}
+
+\subsection{Unary pattern}
+A unary pattern is a terminal pattern that simply states a single "unit" to
+which the value is assigned to as a whole, without deconstruction.\\*
+The pattern is denoted by an identifier (the name) and an optional type to
+which the deconstructed value is widened to.
+
+\nb{A variable declaration is secretly a unary pattern!}
+
+\newpage
+
+\section{Product patterns}
+
+A product pattern describes the data structure of a product type, hence it is
+meant to be used with product values (tuples, records, structs).
+
+Like mentioned above, the patterns follow the same rules of types
+compatibility. In order to be able to deconstruct all product values, you are
+given the choice of two deconstruction approaches: positional and nominal.
+
+\subsection{Positional}
+
+With a positional product pattern, the fields of a product value are
+deconstructed in the same order they're defined in the pattern.
+
+The positional product pattern can be used to deconstruct all product types.
+
+\begin{minted}{giovi.py:GioviLexer}
+<x, y> <- getPoint()
+"The point is at $x and $y" -> _out
+\end{minted}
+
+\subsection{Nominal}
+
+With the nominal approach you're deconstructing the value based on the fields'
+names (the order won't matter), therefore the pattern labels must be the same
+of the fields' names.
+
+Obviously, nominal product patterns can only be used with product types with
+named fields (i.e. records, structs).
+
+\begin{minted}{giovi.py:GioviLexer}
+<y:someY, x:someX> <- getPoint()
+"The point is at $someX and $someY" -> _out
+\end{minted}
+
+\subsubsection{Implicitly named product pattern}
+
+It is often needed to deconstruct a nominal product value into a pattern whose
+variables share the same names.\\*
+A shorthand syntax is available for such scenario; however, only unary patterns
+are allowed. In this case, the identifier of the unary pattern will be used for
+the field lookup of the product value
+
+\begin{minted}{giovi.py:GioviLexer}
+<_:y, _:x> <- getPoint()
+"The point is at $x and $y" -> _out
+\end{minted}
+
+\newpage
+
+\section{Iterator patterns}
+
+Iterator patters can only be used in a for loop statement (hence the name). For
+each iteration of the loop, the iterated value is deconstructed into the
+specified pattern.
+
+\subsection{List pattern}
+
+The list pattern is used to iterate over a list; it's basically a unary
+pattern, but allows nested patterns.
+
+\begin{minted}{giovi.py:GioviLexer}
+# iterate elements of a list
+for [i] in [0 1 2 3] do somethingWith(i)
+
+# iterate elements of a nested list
+identityMatrix [[Real]] <- [
+	[1 0 0]
+	[0 1 0]
+	[0 0 1]
+]
+for [[i]] in identityMatrix do somethingWith(i)
+\end{minted}
+
+Since it is very common to iterate the elements of a list, the brackets can be
+omitted for non-nested patterns
+
+\begin{minted}{giovi.py:GioviLexer}
+for i in [0 1 2 3] do somethingWith(i)
+\end{minted}
+
+\subsection{Map pattern}
+
+The map pattern is used to iterate over maps; it's a pair of two patterns, one
+for the key and one for the value respectively.
+
+\begin{minted}{giovi.py:GioviLexer}
+# iterate over a map
+for [key => value] in ["Simone"=>69 "Luca"=>420 "Paolo"=>10] do {
+	somethingWith(key, value)
+}
+
+# iterate over a nested map
+graph [Text => [Text => Int]] <- [
+	"a" => ["b"=>5 "e"=>3]
+	"b" => ["a"=>5 "c"=>1 "d"=>9 "f"=>2]
+	"c" => ["b"=>1 "e"=>6]
+	"d" => ["b"=>9 "e"=>7]
+	"e" => ["a"=>3 "c"=>6 "d"=>7 "f"=>8]
+	"f" => ["b"=>2 "e"=>8]
+]
+
+for nodeA => [nodeB => edgeCost] in graph do {
+	"$nodeA ---$edgeCost---> $nodeB" -> _out
+}
+\end{minted}
+
+Like for the list pattern, the brackets can be omitted for non-nested patterns
+
+\begin{minted}{giovi.py:GioviLexer}
+for key => value in ["Simone"=>69 "Luca"=>420 "Paolo"=>10] do {
+	somethingWith(key, value)
+}
+\end{minted}
 
 \chapter{Modules}
 
@@ -1915,7 +2149,7 @@ expression $\expr_j$ of type $\eta_j$ (narrower than $\tau_i$).
 	}
 \]
 
-\paragraph{Named}
+\paragraph{Nominal}
 
 \[
 	\infrule{
@@ -3572,63 +3806,7 @@ immutability}
 
 \subsection{Patterns}
 
-\comment{TODO: muovere definizioni in Part specifica}
-
-\begin{definition}[Pattern]
-	A pattern is a special language construct that describes a structure of
-	data.
-\end{definition}
-
-A pattern is used in redirections (assignments) and for loops to perform the
-"deconstruction" of a value into the structure that the pattern describes.
-
-\paragraph{Patterns kinds} There are five kinds of patterns:
-\begin{itemize}
-	\item Terminal patterns:
-		\begin{itemize}
-			\item \textbf{Placeholder pattern}: \code{\_} (underscore)
-
-				\comment{TODO: rinominare. Sinkhole?}
-			\item \textbf{Unary pattern}: \code{someIdentifier}
-		\end{itemize}
-	\item \textbf{Product pattern}:
-		\begin{itemize}
-			\item \textbf{Positional}: \code{<a, b, c>}
-			\item \textbf{Named}: \code{<x:a, y:b, z:c>}
-		\end{itemize}
-	\item Iterator patterns:
-		\begin{itemize}
-			\item \textbf{List pattern}: \code{[someIdentifier]}
-			\item \textbf{Map pattern}: \code{[key => value]}
-		\end{itemize}
-\end{itemize}
-
-\paragraph{Patterns compatibility} A value can be deconstructed with a
-pattern only when the pattern is "equal or narrower" than the value; the rules
-are similar to types widening rules.
-
-\paragraph{Nesting patterns} Non-terminal patterns can have other patterns
-nested.\\*
-An extreme example: a value of type \code{[Text=>[tuple<Int,Int,Int>]]} (map
-with $\Text$ keys and a list of tuples as value) could be iterated with a
-pattern \code{[colorName=>[<r,\_,b>]]} is a map pattern with a unary pattern as
-key and a list pattern as value which itself has a positional product pattern
-nested, where the second field pattern is a placeholder.
-
-\nb{
-	Nesting iterator patterns effectively means nesting iterations.\\*
-	For example \code{for [[[i]]] in matrix3D do} would be equivalent of
-	writing three nested for loops
-}
-
-\subparagraph{Limitations}
-\begin{itemize}
-	\item Product patterns can only have terminal patterns (placeholder, unary)
-		or other product patterns nested.
-	\item In map patterns, the pattern for the key can only be a terminal or a
-		product pattern; the pattern for the value can be of any kind (other
-		iterator patterns as well).
-\end{itemize}
+See §Patterns for more details.
 
 \paragraph{Patterns sets} The following sets group patterns to make rules more
 readable
@@ -3684,14 +3862,7 @@ In other words, the function tells that:
 
 \subsubsection{Terminal patterns}
 
-A terminal pattern is called as such because it is not deconstructed further.
-
-\paragraph{Placeholder pattern} The simplest kind of pattern is the placeholder
-pattern (denoted by an underscore \code{\_}).\\*
-It basically acts as a sinkhole; redirecting to it does nothing. It can be
-useful to explicitly discard a function return value, or when nested in other
-patterns.
-
+\paragraph{Placeholder pattern}
 \[
 	\oprule{
 		\EnvLoc,\EnvStore \then \expr \in \Expr \Then \EnvLoc_2,\EnvStore_2
@@ -3712,30 +3883,14 @@ More formally, using the deconstruction function
 	}
 \]
 
-\paragraph{Unary pattern} A terminal pattern that simply states a single "unit"
-to which the value is assigned to as a whole, without deconstruction.\\*
-The pattern is denoted by an identifier (the name) and an optional type to
-which the deconstructed value is widened to.\\*
-The semantic rules are the same for redirections and variable declarations,
-because they're secretly the same thing.
+\paragraph{Unary pattern} The semantic rules are the same of redirections and
+variable declarations, because they're secretly the same thing.
 
 \newpage
 
 \subsubsection{Product patterns}
 
-A product pattern describes the data structure of a product type, hence it is
-meant to be used with product values (tuples, records, structs).
-
-Like mentioned above, the patterns follow the same rules of types
-compatibility. In order to be able to deconstruct all product values, you are
-given the choice of two deconstruction approaches: positional and named.
-
 \paragraph{Positional}
-
-With a positional product pattern, the fields of a product value are
-deconstructed in the same order they're defined in the pattern.
-
-The positional product pattern can be used to deconstruct all product types.
 
 In case only unary patterns are used:
 \[
@@ -3763,16 +3918,7 @@ More formally, in case of nested patterns
 	}
 \]
 
-\newpage
-
-\paragraph{Named}
-
-With the named approach you're deconstructing the value based on the fields'
-names (the order won't matter), therefore the pattern labels must be the same
-of the fields' names.
-
-Obviously, named product patterns can only be used with product types with
-named fields (i.e. records, structs).
+\paragraph{Nominal}
 
 In case only unary patterns are used:
 \[
@@ -3808,12 +3954,8 @@ More formally, in case of nested patterns
 	}
 \]
 
-\subparagraph{Implicitly named product pattern} It is often needed to
-deconstruct a named product value into a pattern whose variables share the same
-names. A shorthand syntax is available for such scenario; however, only unary
-patterns are allowed.\\*
-In this case, the identifier of the unary pattern will be used for the field
-lookup of the product value
+\subparagraph{Implicitly named product pattern}
+
 \[
 	\oprule[aligned]{
 		\EnvLoc,\EnvStore       &\then n \geq 0 \semiq \forall_{i\in[1,n]}{x_i\in\mathcal{N}\subseteq\Id, \val_i\in\Val} \semiq \val = \tuple{x_1:\val_1,\dotsc,x_n:\val_n} \\*
@@ -3828,17 +3970,9 @@ lookup of the product value
 	}
 \]
 
-
-\newpage
-
 \subsubsection{Iterator patterns}
 
-Iterator patters can only be used in a for loop statement (hence the name). For
-each iteration of the loop, the iterated value is deconstructed into the
-specified pattern.
-
-\paragraph{List pattern} The list pattern is used to iterate over a list;
-it's basically a unary pattern, but allows nested patterns.
+\paragraph{List pattern}
 
 \[
 	\oprule[aligned]{
@@ -3852,8 +3986,7 @@ At each iteration $i$, the $i$-th entry of the list gets deconstructed with
 the pattern $\pattern$
 
 
-\paragraph{Map pattern} The map pattern is used to iterate over maps; it's a
-pair of two patterns, one for the key and one for the value respectively.
+\paragraph{Map pattern}
 
 \[
 	\oprule[aligned]{
@@ -3865,6 +3998,8 @@ pair of two patterns, one for the key and one for the value respectively.
 \]
 At each iteration $i$, the $i$-th key-value pair of the map gets deconstructed
 with the patterns $\pattern_k$ and $\pattern_v$ respectively
+
+\newpage
 
 \subsection{Expressions}
 
@@ -3895,7 +4030,7 @@ be evaluated.
 A function can be invoked using two approaches:
 \begin{itemize}
 	\item Positional \code{$f$($\expr_1$,$\dotsc$,$\expr_n$)}
-	\item Named \code{$f$($x_1$:$\expr_1$,$\dotsc$,$x_n$:$\expr_n$)}
+	\item Nominal \code{$f$($x_1$:$\expr_1$,$\dotsc$,$x_n$:$\expr_n$)}
 \end{itemize}
 
 \paragraph{Positional}
@@ -3917,7 +4052,7 @@ First, the expression $f$ to be invoked is evaluated (any expression that
 evaluates to a function can be invoked); then all actual parameters $\expr_i$
 are evaluated and bound to the respective formal parameter $x_i$.
 
-\paragraph{Named}
+\paragraph{Nominal}
 
 \[
 	\oprule[aligned]{
@@ -3940,7 +4075,7 @@ $x_i=y_j$, therefore the order of the parameter doesn't matter.
 \subparagraph{Invocation labels} A function can declare an "invocation label"
 for one or more formal parameters; the invocation label, if defined, has then
 to be used instead of the formal parameter name when invoking the function.\\*
-The rules are the same for a named invocation, except that, if a formal
+The rules are the same for a nominal invocation, except that, if a formal
 parameter $x_i$ defines an invocation label $l_i$, then the actual parameter
 name $y_j$ is bound to the formal parameter whose label is $l_i=y_j$.
 
