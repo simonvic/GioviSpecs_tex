@@ -1030,6 +1030,48 @@ statement_for
 pattern_iterator: pattern_map_naked | pattern ;
 \end{minted}
 
+In its simplest form, the \code{for} statement is sued to iterate over lists,
+maps or ranges.
+
+\begin{minted}{giovi.py:GioviLexer}
+for i in 0..10 do somethingWith(i)
+for number in [1 2 3 4] do somethingWith(number)
+for key in ["Simone"=>69 "Luca"=>420 "Paolo"=>10] do somethingWith(key)
+\end{minted}
+
+The for statement is like an usual for-each loop, but on steroids; the iterator
+is actually a pattern (see §Patterns): for each iteration, the for statement
+will perform pattern-matching of the iterated date with the pattern, and
+perform the appropriate deconstruction.
+
+\begin{minted}{giovi.py:GioviLexer}
+for _ in 0..9 do something() # do something 10 times
+
+for [[i]] in some2DMatrix do somethingWith(i)
+
+mapOfNicknames [Text => [Text]] <- [
+	"Simone" => ["Simon", "simonvic"]
+	"Mario"  => ["Super Mario", "The plumber"]
+	"Luigi"  => ["Green Mario"]
+]
+for [name => [nickname]] in mapOfNicknames do {
+	somethingWith(name, nickname)
+}
+
+listOfColors [tuple<Int,Int,Int>] <- [
+	<0 255 0>
+	<55 0 255>
+	<255 255 255>
+]
+for <r, g, b> in listOfColors do {
+	"The color is made of $r $g $b" -> _out
+}
+\end{minted}
+
+\nb{Nesting iterator patterns effectively means nesting iterations}
+
+\comment{TODO: aggiungere RFC di iteration counters}
+
 \part{Type system}
 
 \chapter{Types}
