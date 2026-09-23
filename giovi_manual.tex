@@ -278,7 +278,7 @@ someRule
 \subparagraph{Whitespaces} Whitespaces (e.g. spaces, tabs, newlines) are
 determinant \textbf{only} during the lexical parsing, meaning that \code{!=} is
 different than \code{! =}, where the former gets parsed as a single token while
-the latest gets parsed as two different tokens; in any other case, whitepsaces
+the latter gets parsed as two different tokens; in any other case, whitepsaces
 are ignored.
 
 \section{Lexicon}
@@ -627,8 +627,17 @@ following rules will be used.
 
 \begin{minted}{antlr}
 block: '{' statement* '}';
-block_or_statement: statement | block ;
+block_or_statement: block | statement ;
 \end{minted}
+
+\subparagraph{Identifiers} The \code{identifier} rule describes the allowed
+identifiers to be used as names for variables, constants, types etc.
+
+\begin{minted}{antlr}
+identifier: [a-zA-Z] [a-zA-Z0-9_]* ;
+\end{minted}
+
+It must start with a letter and can contain any letter, number or underscore.
 
 \newpage
 
@@ -644,72 +653,6 @@ thing but with a different name.
 
 \begin{minted}{giovi.py:GioviLexer}
 alias AVeryVerboseAndLongStructName as SomeStruct
-\end{minted}
-
-\subsection{Module declaration}
-
-\begin{minted}{antlr}
-statement_declaration_module
-	: 'module' identifier body=block
-	;
-\end{minted}
-
-\subsection{Constant declaration}
-
-\begin{minted}{antlr}
-statement_declaration_constant
-	: 'const' identifier type? '<-' expression
-	;
-\end{minted}
-
-\subsection{Variable declaration}
-
-\begin{minted}{antlr}
-statement_declaration_variable
-	: 'var' identifier type? ('default' expression)? '<-' expression
-	| identifier type ('default' expression)?
-	;
-\end{minted}
-
-\subsection{Function declaration}
-
-\begin{minted}{antlr}
-statement_declaration_function
-	: identifier '(' formal_parameters? ')' ('=>' return_type=type)?
-	  body=block
-	;
-
-formal_parameters
-	: formal_parameter (',' formal_parameter)*
-	;
-
-formal_parameter
-	: (label=identifier ':')? name=identifier type ('default' expression)?
-	;
-\end{minted}
-
-\subsection{Return statement}
-
-\begin{minted}{antlr}
-statement_return
-	: ('return' | '=>') expression?
-	;
-\end{minted}
-
-\subsection{Invocation statement}
-
-\begin{minted}{antlr}
-statement_invocation
-	: expression '(' actual_parameters ')'
-	;
-
-actual_parameters
-	: actual_parameter (',' actual_parameter)*
-	;
-
-actual_parameter
-	: (label=identifier ':')? expression
-	;
 \end{minted}
 
 \subsection{Import statement}
@@ -742,6 +685,128 @@ import giovi.util.Random as Random
 Random.integer() -> _out
 \end{minted}
 
+\subsection{Module declaration}
+
+\begin{minted}{antlr}
+statement_declaration_module
+	: 'module' identifier body=block
+	;
+\end{minted}
+
+A module is a "container" for code, and shares the same behavior of a scope: it
+can hold code, variables, functions, constants, types definition etcetera; in
+fact it can be seen as a "named scope". See §Modules.
+
+\nb{Modules are an experimental feature.}
+
+\subsection{Constant declaration}
+
+\begin{minted}{antlr}
+statement_declaration_constant
+	: 'const' identifier type? '<-' expression
+	;
+\end{minted}
+
+Constants are read-only values; their value is defined at declaration and
+cannot change.\\*
+By convention, constants identifiers are written in \code{SCREAMING\_CASE}.\\*
+The type can be omitted as it will be inferred from the expression.
+\
+\begin{minted}{giovi.py:GioviLexer}
+const PI Real <- 3.14
+const TAU <- PI * 2
+\end{minted}
+
+\comment{TODO: decidere se usare shallow o deep immutability}
+
+\subsection{Variable declaration}
+
+\begin{minted}{antlr}
+statement_declaration_variable
+	: 'var' identifier type? ('default' expression)? '<-' expression
+	| identifier type ('default' expression)?
+	;
+\end{minted}
+
+A variable is identified by a name, and it is of a specific type.\\*
+By convention, variable identifiers are written in \code{pascalCase}.\\*
+Using the \code{var} keyword allows you to omit the type and let it be inferred
+from the assigned expression.
+
+\begin{minted}{giovi.py:GioviLexer}
+myName Text <- "Simone"
+var myNickname <- "simonvic"
+\end{minted}
+
+\subsection{Return statement}
+
+\begin{minted}{antlr}
+statement_return
+	: ('return' | '=>') expression?
+	;
+\end{minted}
+
+The return statement can only be used within a function scope.
+
+\subsection{Function declaration}
+
+\begin{minted}{antlr}
+statement_declaration_function
+	: identifier '(' formal_parameters? ')' ('=>' return_type=type)?
+	  body=block
+	;
+
+formal_parameters
+	: formal_parameter (',' formal_parameter)*
+	;
+
+formal_parameter
+	: (label=identifier ':')? name=identifier type ('default' expression)?
+	;
+\end{minted}
+
+Functions are code blocks that can be invoked at a later time.\\*
+By convention, function identifiers are written in \code{pascalCase}.
+
+\begin{minted}{giovi.py:GioviLexer}
+printHelloWorld() {
+	"Hello World" -> _out
+}
+
+greetPerson(name Text, surname Text) {
+	"Greetings $name, $surname" -> _out
+}
+
+getFunLanguage() => Text {
+	=> "Giovi"
+}
+\end{minted}
+
+For more details, see §Functions.
+
+\subsection{Invocation statement}
+
+\begin{minted}{antlr}
+statement_invocation
+	: expression '(' actual_parameters ')'
+	;
+
+actual_parameters
+	: actual_parameter (',' actual_parameter)*
+	;
+
+actual_parameter
+	: (label=identifier ':')? expression
+	;
+\end{minted}
+
+When invoking a function, arguments can be passed using a traditional
+positional approach or a nominal approach. For more details, see §Functions.
+
+\nb{Albeit the grammar doesn't enforce one approach or the other, the current
+implementation supports either all arguments to be passed as positional or as
+nominal.}
+
 \subsection{Redirection statement (assignment)}
 
 \begin{minted}{antlr}
@@ -771,7 +836,7 @@ The redirection statement is simply an assignment of a value to
 \textit{something}.
 
 \nb{
-	Only non-iterator patterns are permitted. See § Patterns.
+	Only non-iterator patterns are permitted. See §Patterns.
 }
 
 A peculiarity of the statement is that it can be written "left to right" or
