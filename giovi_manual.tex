@@ -336,7 +336,6 @@ to ensure backward compatibility in the eventuality they get used.
 		\multicolumn{3}{c}{Pseudo-Operators}                                                                \\\hline
 		DOT ACCESS                      & \texttt{.}      & Members access                                  \\\hline
 		DOTREF ACCESS                   & \texttt{::}     & Function member access                          \\\hline
-		AT ACCESS                       & \texttt{@}      & Properties access                               \\\hline
 	\end{tabular}
 }
 
@@ -2692,23 +2691,23 @@ Dovrebbe?}
 	}
 \]
 
-\paragraph{Access}
+\paragraph{Dot access}
 
 \[
 	\infrule{
 		\text{Index access}\\*
 		\EnvSym\then \expr_1:\Text \semiq \expr_2:\Int
 	}{
-		\EnvSym\then \code{$\expr_1$ @ $\expr_2$}: \Text
+		\EnvSym\then \code{$\expr_1$.$\expr_2$}: \Text
 	}
 \]
 
 \[
 	\infrule{
-		\text{"Substring"}\\*
+		\text{"Slice"}\\*
 		\EnvSym\then \expr_1:\Text \semiq \expr_2:\exists\Int.\Range
 	}{
-		\EnvSym\then \code{$\expr_1$ @ $\expr_2$}: \Text
+		\EnvSym\then \code{$\expr_1$.$\expr_2$}: \Text
 	}
 \]
 
@@ -2716,28 +2715,28 @@ Dovrebbe?}
 
 \[
 	\infrule{
-		\text{Count access}\\*
+		\text{Text length}\\*
 		\EnvSym\then \expr_1:\Text
 	}{
-		\EnvSym\then \code{$\expr_1$ @ \%}: \Int
+		\EnvSym\then \code{$\expr_1$.\_count}: \Int
 	}
 \]
 
 \[
 	\infrule{
-		\text{Range access}\\*
+		\text{Characters range}\\*
 		\EnvSym\then \expr_1:\Text
 	}{
-		\EnvSym\then \code{$\expr_1$ @ @}: \exists\Int.\Range
+		\EnvSym\then \code{$\expr_1$.\_range}: \exists\Int.\Range
 	}
 \]
 
 \[
 	\infrule{
-		\text{Values access}\\*
+		\text{Characters list}\\*
 		\EnvSym\then \expr_1:\Text
 	}{
-		\EnvSym\then \code{$\expr_1$ @ *}: \exists\Text.\List
+		\EnvSym\then \code{$\expr_1$.\_chars}: \exists\Text.\List
 	}
 \]
 
@@ -2834,7 +2833,7 @@ $\tau_1$).
 A list of $\tau_1$ contains the elements of a list of $\tau_2$ (narrower than
 $\tau_1$).
 
-\paragraph{Access}
+\paragraph{Dot access}
 
 \[
 	\infrule{
@@ -2843,18 +2842,18 @@ $\tau_1$).
 		\semiq \expr_1:\exists\tau.\List
 		\semiq \expr_2:\Int
 	}{
-		\EnvSym\then \code{$\expr_1$ @ $\expr_2$}: \tau
+		\EnvSym\then \code{$\expr_1$.$\expr_2$}: \tau
 	}
 \]
 
 \[
 	\infrule{
-		\text{Sublist}\\*
+		\text{"Slice"}\\*
 		\EnvSym\then \tau : \Type
 		\semiq \expr_1:\exists\tau.\List
 		\semiq \expr_2:\exists\Int.\Range
 	}{
-		\EnvSym\then \code{$\expr_1$ @ $\expr_2$}: \tau
+		\EnvSym\then \code{$\expr_1$.$\expr_2$}: \tau
 	}
 \]
 
@@ -2863,7 +2862,7 @@ $\tau_1$).
 		\text{Count access}\\*
 		\EnvSym\then \tau:\Type \semiq \expr:\exists\tau.\List
 	}{
-		\EnvSym\then \code{$\expr$ @ \%}: \Int
+		\EnvSym\then \code{$\expr$.\_count}: \Int
 	}
 \]
 
@@ -2872,7 +2871,7 @@ $\tau_1$).
 		\text{Range access}\\*
 		\EnvSym\then \expr:\Text
 	}{
-		\EnvSym\then \code{$\expr$ @ @}: \exists\Int.\Range
+		\EnvSym\then \code{$\expr$.\_range}: \exists\Int.\Range
 	}
 \]
 
@@ -2958,7 +2957,7 @@ A map $\expr_1$ of type $\tau_1$ contais the key-value pairs of type $\kappa_2$
 (narrower than $\kappa_1$) and $\nu_2$ (narrower than $\nu_1$) of the map
 $\expr_2$ of type $\tau_2$.
 
-\paragraph{Access}
+\paragraph{Dot access}
 
 \[
 	\infrule{
@@ -2966,7 +2965,7 @@ $\expr_2$ of type $\tau_2$.
 		\EnvSym\then \tau = \Map[\kappa_1:=\Type,\nu:=\Type] \semiq \expr_1:\tau \\*
 		\EnvSym\then \kappa_2 = \Type \semiq \kappa_2 \narreq \kappa_1 \semiq \expr_2:\kappa_2
 	}{
-		\EnvSym\then \code{$\expr_1$ @ $\expr_2$}: \nu
+		\EnvSym\then \code{$\expr_1$.$\expr_2$}: \nu
 	}
 \]
 
@@ -2975,7 +2974,7 @@ $\expr_2$ of type $\tau_2$.
 		\text{Count access}\\*
 		\EnvSym\then \tau = \Map[\kappa:=\Type,\nu:=\Type] \semiq \expr:\tau \\*
 	}{
-		\EnvSym\then \code{$\expr$ @ \%}: \Int
+		\EnvSym\then \code{$\expr$.\_count}: \Int
 	}
 \]
 
@@ -2984,7 +2983,7 @@ $\expr_2$ of type $\tau_2$.
 		\text{Keys access}\\*
 		\EnvSym\then \tau = \Map[\kappa:=\Type,\nu:=\Type] \semiq \expr:\tau \\*
 	}{
-		\EnvSym\then \code{$\expr$ @ @}: \exists\kappa.\List
+		\EnvSym\then \code{$\expr$.\_keys}: \exists\kappa.\List
 	}
 \]
 
@@ -2993,7 +2992,7 @@ $\expr_2$ of type $\tau_2$.
 		\text{Values access}\\*
 		\EnvSym\then \tau = \Map[\kappa:=\Type,\nu:=\Type] \semiq \expr:\tau \\*
 	}{
-		\EnvSym\then \code{$\expr$ @ @}: \exists\nu.\List
+		\EnvSym\then \code{$\expr$.\_values}: \exists\nu.\List
 	}
 \]
 
@@ -3017,7 +3016,7 @@ $\expr_2$ of type $\tau_2$.
 		\text{Fields count access} \\*
 		\EnvSym\then \tau\in\Product \semiq \expr:\tau
 	}{
-		\EnvSym\then \code{$\expr$ @ \%}: \Int
+		\EnvSym\then \code{$\expr$.\_count}: \Int
 	}
 \]
 
@@ -3026,7 +3025,7 @@ $\expr_2$ of type $\tau_2$.
 		\text{Fields range access} \\*
 		\EnvSym\then \tau\in\Product \semiq \expr:\tau
 	}{
-		\EnvSym\then \code{$\expr$ @ @}: \exists\Int.\Range
+		\EnvSym\then \code{$\expr$.\_range}: \exists\Int.\Range
 	}
 \]
 
@@ -3035,29 +3034,29 @@ $\expr_2$ of type $\tau_2$.
 		\text{Fields names access} \\*
 		\EnvSym\then \tau\in\set{\Record,\Struct} \semiq \expr:\tau
 	}{
-		\EnvSym\then \code{$\expr$ @ *}: \exists\Text.\List
+		\EnvSym\then \code{$\expr$.\_fields}: \exists\Text.\List
 	}
 \]
 
 \subsubsection{Tuple}
 
-\paragraph{Access}
+\paragraph{Dot access}
 
 \[
 	\infrule{
-		\text{"Slice" access}\\*
+		\text{"Slice"}\\*
 		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type} \semiq \expr_1:\tau_1 \times \dotsb \times \tau_n \\*
 		\EnvSym\then \expr_2:\exists\Int.\Range
 	}{
-		\EnvSym\then \code{$\expr_1$ @ $\expr_2$}: \bigtimes_{i \in \expr_2} \tau_i
+		\EnvSym\then \code{$\expr_1$.$\expr_2$}: \bigtimes_{i \in \expr_2} \tau_i
 	}
 \]
 
-Example: \code{<0,1,2,3,4,5> @ 2..4 = <2 3 4>}
+Example: \code{<0,1,2,3,4,5> . 2..4 = <2 3 4>}
 
-With step: \code{<0,1,2,3,4,5> @ 0..5..2 = <0 2 4>}
+With step: \code{<0,1,2,3,4,5> . 0..5..2 = <0 2 4>}
 
-Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
+Reverse: \code{<0,1,2,3,4,5> . 4..2 = <4 3 2>}
 
 \[
 	\infrule{
@@ -3065,13 +3064,13 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type} \semiq \expr_1:\tau_1 \times \dotsb \times \tau_n \\*
 		\EnvSym\then \expr_2:\Int \semiq \expr_2 \in [1,n]
 	}{
-		\EnvSym\then \code{$\expr_1$ @ $\expr_2$}: \tau_{\expr_2}
+		\EnvSym\then \code{$\expr_1$.$\expr_2$}: \tau_{\expr_2}
 	}
 \]
 
 \subsubsection{Record}
 
-\paragraph{Access}
+\paragraph{Dot access}
 
 \[
 	\infrule{
@@ -3079,7 +3078,7 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 		\EnvSym\then n \geq 1 \semiq \forall_{i\in[1,n]}{\tau_i:\Type, x_i\in\Id} \semiq \expr_1:\tuple{x_1:\tau_1,\dotsc,x_n:\tau_n}\\*
 		\EnvSym\then \expr_2:\Int \semiq \expr_2 \in [1,n]
 	}{
-		\EnvSym\then \code{$\expr_1$ @ $\expr_2$}: \tau_{\expr_2}
+		\EnvSym\then \code{$\expr_1$.$\expr_2$}: \tau_{\expr_2}
 	}
 \]
 
@@ -3087,16 +3086,14 @@ Reverse: \code{<0,1,2,3,4,5> @ 4..2 = <4 3 2>}
 
 \[
 	\infrule{
-		\text{"Slice" access}\\*
+		\text{"Slice"}\\*
 		\EnvSym\then n \geq 1 \semiq \forall_{i\in[1,n]}{\tau_i:\Type, x_i\in\Id} \semiq \rho=\tuple{x_1:\tau_1,\dotsc,x_n:\tau_n} \semiq \expr_1:\rho\\*
 		\EnvSym\then \expr_2:\exists\Int.\Range \\*
 		\EnvSym\then \forall_{i\in\expr_2}{\rho'=\tuple{x_j:\tau_j, \dotsc, x_j:\tau_j}}
 	}{
-		\EnvSym\then \code{$\expr_1$ @ $\expr_2$}: \rho'
+		\EnvSym\then \code{$\expr_1$.$\expr_2$}: \rho'
 	}
 \]
-
-\paragraph{Dot access}
 
 \[
 	\infrule{
