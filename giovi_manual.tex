@@ -1255,6 +1255,144 @@ someDefaultPerson.favoriteColor -> _out # <255,255,255>
 \chapter{Functions}
 \label{chap:functions}
 
+\section{Intro}
+
+Functions are code blocks that can be invoked at a later time.
+
+In Giovi, functions are first-class citizens, meaning that they are like any
+other value: they have a well defined type (signature), they can be assigned to
+variables, returned from other functions or passed to them as arguments, and so
+on.
+
+\subparagraph{Function signature} A function signature is made of the function
+name, its formal parameters (if any) and its return type (if any).
+
+\subparagraph{Declaration} A "traditional" function can be declared
+by specifying its signature and its body.
+
+\begin{minted}{giovi.py:GioviLexer}
+buildGreetingMessage(name Text) => Text {
+	if name = "simonvic" do {
+		=> "heyo $name, how are you?"
+	}
+	=> "greetings, $name."
+}
+\end{minted}
+
+It can later be invoked.
+
+\nb{You have to declare the function first before invoking it. Hoisting is
+still an experimental feature.}
+
+\begin{minted}{giovi.py:GioviLexer}
+buildGreetingMessage("simonvic") -> _out
+\end{minted}
+
+A function can also exist, for example, as a variable, where its type is the
+signature. In this case the variable is an "empty function"; before invoking
+it, you want to assign an actual function instance (with compatible signature.
+
+\begin{minted}{giovi.py:GioviLexer}
+greetingBuilder function(name Text) => Text
+greetingBuilder <- buildGreetingMessage
+# greetingBuilder is now "referencing" the previously
+# defined buildGreetingMessage function
+greetingBuilder("simonvic") -> _out
+\end{minted}
+
+\subsection{The dotref operator}
+
+A "traditional" function declaration is semantically similar to a declaration
+of a constant of type function, but with a difference: while there cannot be
+two equally named functions defined in the same scope, there can be a function
+and a variable (or constant) sharing the same name.
+
+However, a function is always shadowed by a variable (or constant) with the
+same name. To explicitly refer to the function, the \code{::} prefix is
+required.
+
+\begin{minted}{giovi.py:GioviLexer}
+var foo <- 69
+function foo() { "hello world" -> _out }
+foo -> _out # 69
+::foo -> _out # function(){}
+\end{minted}
+
+The dotref operator can also be used instead of a dot operator
+
+\begin{minted}{giovi.py:GioviLexer}
+struct SomeStruct <
+	foo Int default 69
+	function foo() { "hello world" -> _out }
+>
+
+someStruct SomeStruct
+someStruct.foo -> _out # 69
+someStruct::foo -> _out # function(){}
+\end{minted}
+
+\newpage
+
+\section{Function scope}
+
+The scope of a function behaves like a normal scope, which means that, unlike
+many other languages, it doesn't have a "call stack". It can be seen as a
+normal scope in which some variables (i.e. formal parameters) are pre-declared
+and declarations in parent scopes are visible.
+
+\begin{minted}{giovi.py:GioviLexer}
+const DEG_TO_RAD <- 0.01745329
+degreeToRadians(deg Int) => Int {
+	=> deg * DEG_TO_RAD
+}
+degreeToRadians(180) -> _out # 3.14
+\end{minted}
+
+\nb{This behavior, while it offers a lot of flexibility, it has some caveats:
+when invoking a function, that depends on a declaration of a parent scope,
+within a scope where such declaration is not present, the program will error.}
+
+\begin{minted}{giovi.py:GioviLexer}
+degreeToRadians(deg Int) => Int {
+	=> deg * DEG_TO_RAD
+}
+if true do {
+	const DEG_TO_RAD <- 0.01745329
+	degreeToRadians(180) -> _out # 3.14
+} else {
+	degreeToRadians(180) -> _out # ERROR: DEG_TO_RAD not declared
+}
+\end{minted}
+
+A function declaration can appear anywhere, even within other function scopes.
+Like any other declaration, its lifetime is bound to its enclosing scope,
+meaning that after its enclosing scope has ended, the function will not be
+visible anymore.
+
+This can be very useful when you have repeating code, but you don't want to
+expose a function.
+
+\begin{minted}{giovi.py:GioviLexer}
+function makePizza(ingredients [Text]) => Pizza {
+	if "pineapple" in ingredients do panic()
+
+	function cook(ingredient Text, seconds Int) {
+		# cook the ingredient ...
+	}
+
+	cookedIngredients [Text]
+	for ingredient in ingredients do {
+		if ingredient {
+			= "tomato" do cook(ingredient, 60) ->+ cookedIngredients
+			= "fries" do cook(ingredient, 30) ->+ cookedIngredients
+		} else {
+			cook(ingredient, 100) ->+ cookedIngredients
+		}
+	}
+	=> assemblePizza(cookedIngredients)
+}
+\end{minted}
+
 \chapter{Patterns}
 \label{chap:patterns}
 
