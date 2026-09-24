@@ -590,6 +590,7 @@ Any other word that is not a reserved keyword is considered an identifier.
 \newpage
 
 \section{Syntax}
+\label{sec:syntax}
 
 This section mainly focuses on the syntax rules of the grammar; for more
 details about a specific feature, refer to the dedicated section.
@@ -1070,6 +1071,79 @@ for <r, g, b> in listOfColors do {
 \comment{TODO: aggiungere RFC di iteration counters}
 
 \chapter{Scopes}
+
+A scope is a code region within which you can execute statements and perform
+declarations (e.g. variables, constants, types, functions) that can later be
+referred to, simply, by their name.
+
+A Giovi source code file is itself a scope (see \see{chap:modules}). Scopes can
+be "nested" within other scopes. Their lifetime has a clear begin and end; a
+scope usually coincide with a \code{block} (see \see{sec:syntax}), for example
+in an \code{if} statement, a \code{for} or \code{repeat} loop or a function
+body.
+
+\begin{minted}{giovi.py:GioviLexer}
+# begin scope
+if true do {
+	# begin scope
+	for _ in 0..10 do {
+		# begin scope
+		"hello world" -> _out
+		# end scope
+	}
+	# end scope
+} else {
+	# begin scope
+	"hello world" -> _out
+	# end scope
+}
+#end scope
+\end{minted}
+
+\newpage
+
+\subparagraph{Declarations lifetime} The lifetime of a declaration is bound to
+the lifetime of the scope in which it has been declared.
+
+\begin{minted}{giovi.py:GioviLexer}
+if true do {
+	username Text <- "simonvic"
+	"hello $username" -> _out # "hello simonvic"
+}
+"hello $username" -> _out # ERROR: username not defined
+\end{minted}
+
+A scope "inherits" the declarations of their parent scope; more precisely, a
+declaration in a parent scope is visible to the children scopes.
+
+\begin{minted}{giovi.py:GioviLexer}
+username Text <- "simonvic"
+if true do {
+	"hello $username" -> _out # "hello simonvic"
+}
+\end{minted}
+
+Two declarations of the same type cannot have the same name.
+
+\begin{minted}{giovi.py:GioviLexer}
+username Text <- "simonvic"
+username Text <- "mario" # ERROR: username already declared
+\end{minted}
+
+\subparagraph{Shadowing} You can, for example, declare a variable with the same
+name of another variable declared in a parent scope; the variable in the parent
+scope is now "shadowed", and cannot be referred to by its name.
+
+\begin{minted}{giovi.py:GioviLexer}
+username Text <- "simonvic"
+if true do {
+	username Text <- "mario"
+	"hello $username" -> _out # "hello mario"
+}
+"hello $username" -> _out # "hello simonvic"
+\end{minted}
+
+For a more formal description, see \see{chap:opsem}
 
 \chapter{Defaults}
 
@@ -3413,6 +3487,7 @@ Reverse: \code{<0,1,2,3,4,5> . 4..2 = <4 3 2>}
 \comment{TODO: deconstruction}
 
 \chapter{Operational semantics}
+\label{chap:opsem}
 
 This section provides a semi-formal definition of the operational semantics of
 the language, definining the state and context and how they mutate with every
