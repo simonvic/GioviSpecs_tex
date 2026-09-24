@@ -1145,9 +1145,112 @@ if true do {
 "hello $username" -> _out # "hello simonvic"
 \end{minted}
 
-For a more formal description, see \See{chap:opsem}
+For a more formal definition, see \See{chap:opsem}
 
 \chapter{Defaults}
+\label{chap:defaults}
+
+An important design philosophy of the language is that it has no concept (nor
+models) a "null" value or uninitialized memory.
+
+Every variable, constant, function parameter, product types fields etc. have a
+"default" value (a.k.a. zero value) which is the value that they are
+initialized to at declaration.
+
+Every type has a zero value, for example it's zero for numeric types, empty
+string for \code{Text}, false for \code{Bool} etc.
+
+\begin{minted}{giovi.py:GioviLexer}
+someInteger Int
+someInteger -> _out # 0
+
+someText Text
+someText -> _out # "" (empty string)
+
+someBool Bool
+someBool -> _out # false
+\end{minted}
+
+The same applies to lists and maps (empty list and empty map respectively), and
+most importantly to product types, where the zero value has all its fields
+initialized to their respective zero values.
+
+\begin{minted}{giovi.py:GioviLexer}
+struct Person <
+	name Text
+	aliases [Text]
+	age Int
+	isAdult Bool
+	favoriteColor tuple<Int, Int, Int>
+>
+someDefaultPerson Person
+someDefaultPerson -> _out
+# Person.<name:"", aliaes:[], age:0, isAdult:false, favoriteColor:<0,0,0>>
+\end{minted}
+
+For a more formal definition, see \See{sec:zero_values}.
+
+\newpage
+
+\section{The default keyword}
+
+The \code{default} keyword can be used in redirections, for example, to "reset"
+a variable to its default value
+
+\begin{minted}{giovi.py:GioviLexer}
+age Int
+69 -> age
+age -> _out # 69
+default -> age
+age -> _out # 0
+\end{minted}
+
+You can get the default value of a type with the dot operator
+
+\begin{minted}{giovi.py:GioviLexer}
+Int.default -> _out # 0
+Bool.default -> _out # false
+Person.default -> _out
+# Person.<name:"", aliaes:[], age:0, isAdult:false, favoriteColor:<0,0,0>>
+\end{minted}
+
+You can also get the default value of a variable, which will be useful later
+with \See{sec:default_override}
+
+\begin{minted}{giovi.py:GioviLexer}
+age Int
+age.default -> _out # 0
+\end{minted}
+
+\section{Overriding default}
+\label{sec:default_override}
+
+A peculiarity of the language is that the default value is overrideable.
+
+\nb{This is possible only at declaration.}
+
+\begin{minted}{giovi.py:GioviLexer}
+age Int default 69
+age.default -> _out # 69
+\end{minted}
+
+Product types fields can also have their default value overridden
+
+\begin{minted}{giovi.py:GioviLexer}
+struct Person <
+	name Text default "nobody"
+	aliases [Text]
+	age Int default 18
+	isAdult Bool default true
+	favoriteColor tuple<Int, Int, Int> default <255, 255, 255>
+>
+someDefaultPerson Person
+someDefaultPerson.name -> _out # nobody
+someDefaultPerson.aliaes -> _out # []
+someDefaultPerson.age -> _out # 18
+someDefaultPerson.isAdult -> _out # true
+someDefaultPerson.favoriteColor -> _out # <255,255,255>
+\end{minted}
 
 \chapter{Functions}
 \label{chap:functions}
@@ -3590,15 +3693,11 @@ For example: $\EnvLoc,\EnvStore \then \expr \Then \EnvStore_2$
 \newpage
 
 \subsection{Zero values}
+\label{sec:zero_values}
 
-The concept of a "default" value (a.k.a. zero value) is very important since
-the language has no concept of (nor models) a "null" value or uninitialized
-memory.
+For more info, see \See{chap:defaults}.
 
-Every variable, constant, function parameter, product types fields etc. gets
-automatically initialized to its type's zero value.
-
-Every type has a zero value and will be described using $\Zero$
+A type's zero value will be described using $\Zero$
 \[
 	\begin{split}
 		\Zero : \Type &\to \Val \\*
@@ -3606,8 +3705,8 @@ Every type has a zero value and will be described using $\Zero$
 	\end{split}
 \]
 
-In some cases the zero value may be overridden. In that case the $\Zero$
-function can be applied on an identifier
+Since in some cases the zero value may be overridden, the $\Zero$ function can
+be applied on an identifier
 \[
 	\begin{split}
 		\Zero : \Id &\to \Val \\*
