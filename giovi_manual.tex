@@ -9,10 +9,10 @@
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{amssymb}
-\usepackage{hyperref}
 \usepackage{xcolor}
 \usepackage{mathtools}
 \usepackage{sourcecodepro}
+\usepackage{hyperref}
 
 \setcounter{secnumdepth}{3}
 \setcounter{tocdepth}{3}
@@ -45,6 +45,7 @@
 	linenos=false,
 }
 
+\newcommand{\see}[1]{§ \ref{#1} \nameref{#1}}
 \newcommand{\set}[1]{\left\{#1\right\}}
 \newcommand{\glist}[1]{\left[#1\right]}
 \newcommand{\map}[1]{\left[#1\right]}
@@ -694,7 +695,7 @@ statement_declaration_module
 
 A module is a "container" for code, and shares the same behavior of a scope: it
 can hold code, variables, functions, constants, types definition etcetera; in
-fact it can be seen as a "named scope". See §Modules.
+fact it can be seen as a "named scope". See \see{chap:modules}.
 
 \nb{Modules are an experimental feature.}
 
@@ -781,7 +782,7 @@ getFunLanguage() => Text {
 }
 \end{minted}
 
-For more details, see §Functions.
+For more details, see \see{chap:functions}.
 
 \subsection{Invocation statement}
 
@@ -800,7 +801,8 @@ actual_parameter
 \end{minted}
 
 When invoking a function, arguments can be passed using a traditional
-positional approach or a nominal approach. For more details, see §Functions.
+positional approach or a nominal approach.\\*
+For more details, see \see{chap:functions}.
 
 \nb{Albeit the grammar doesn't enforce one approach or the other, the current
 implementation supports either all arguments to be passed as positional or as
@@ -833,10 +835,6 @@ pattern_redir
 
 The redirection statement is simply an assignment of a value to
 \textit{something}.
-
-\nb{
-	Only non-iterator patterns are permitted. See §Patterns.
-}
 
 A peculiarity of the statement is that it can be written "left to right" or
 "right to left". There is no difference between the two directions, except for
@@ -1039,9 +1037,9 @@ for key in ["Simone"=>69 "Luca"=>420 "Paolo"=>10] do somethingWith(key)
 \end{minted}
 
 The for statement is like an usual for-each loop, but on steroids; the iterator
-is actually a pattern (see §Patterns): for each iteration, the for statement
-will match iterated value with the pattern, and perform the appropriate
-deconstruction.
+is actually a pattern (see \see{chap:patterns}): for each iteration, the for
+statement will match iterated value with the pattern, and perform the
+appropriate deconstruction.
 
 \begin{minted}{giovi.py:GioviLexer}
 for _ in 0..9 do something() # do something 10 times
@@ -1076,8 +1074,10 @@ for <r, g, b> in listOfColors do {
 \chapter{Defaults}
 
 \chapter{Functions}
+\label{chap:functions}
 
 \chapter{Patterns}
+\label{chap:patterns}
 
 A pattern is a special language construct that describes a structure of data.
 
@@ -1314,6 +1314,7 @@ for key => value in ["Simone"=>69 "Luca"=>420 "Paolo"=>10] do {
 \end{minted}
 
 \chapter{Modules}
+\label{chap:modules}
 
 \part{Type system}
 
@@ -3806,7 +3807,7 @@ immutability}
 
 \subsection{Patterns}
 
-See §Patterns for more details.
+See \see{chap:patterns} for more details.
 
 \paragraph{Patterns sets} The following sets group patterns to make rules more
 readable
