@@ -1300,7 +1300,7 @@ greetingBuilder <- buildGreetingMessage
 greetingBuilder("simonvic") -> _out
 \end{minted}
 
-\subsection{The dotref operator}
+\section{The dotref operator}
 
 A "traditional" function declaration is semantically similar to a declaration
 of a constant of type function, but with a difference: while there cannot be
@@ -1349,7 +1349,7 @@ degreeToRadians(180) -> _out # 3.14
 \end{minted}
 
 \nb{This behavior, while it offers a lot of flexibility, it has some caveats:
-when invoking a function, that depends on a declaration of a parent scope,
+when a function, that depends on a declaration of a parent scope, is invoked
 within a scope where such declaration is not present, the program will error.}
 
 \begin{minted}{giovi.py:GioviLexer}
@@ -1363,6 +1363,8 @@ if true do {
 	degreeToRadians(180) -> _out # ERROR: DEG_TO_RAD not declared
 }
 \end{minted}
+
+\subsection{Nested functions}
 
 A function declaration can appear anywhere, even within other function scopes.
 Like any other declaration, its lifetime is bound to its enclosing scope,
@@ -1392,6 +1394,41 @@ function makePizza(ingredients [Text]) => Pizza {
 	=> assemblePizza(cookedIngredients)
 }
 \end{minted}
+
+\newpage
+
+\section{Parameters and invocation}
+
+A formal parameter is the parameter that is declared in the function signature;
+it has a name and a type. A function can have zero or more formal parameters.
+They share the variable declaration syntax since they could be seen as such;
+when a function is invoked, before executing the first statement of its body, a
+new function scope is created and the formal parameters are declared as
+variables.
+
+The actual parameters (a.k.a. arguments) of the invocation are passed by value,
+which means they're copied, therefore, while the function body can mutate the
+parameters, the mutation will not be visible outside the function.
+
+\begin{minted}{giovi.py:GioviLexer}
+someFunction(someParameter Int) {
+	someParameter -> _out # 69
+	someParameter <- 420
+	someParameter -> _out # 420
+}
+someArgument Int <- 69
+someFunction(someArgument)
+someArgument -> _out # still 69
+\end{minted}
+
+\comment{TODO: menzionare eccezione per self functions, se decido di
+"formalizzare il bug" :)}
+
+\subsection{Optional parameters}
+
+\subsection{Positional and nominal parameters}
+
+\subsection{Invocation labels}
 
 \chapter{Patterns}
 \label{chap:patterns}
