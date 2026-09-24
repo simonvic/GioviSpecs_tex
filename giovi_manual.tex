@@ -45,7 +45,8 @@
 	linenos=false,
 }
 
-\newcommand{\see}[1]{§ \ref{#1} \nameref{#1}}
+\newcommand{\See}[1]{§\ref{#1} \nameref{#1}}
+\newcommand{\see}[1]{§\ref{#1}}
 \newcommand{\set}[1]{\left\{#1\right\}}
 \newcommand{\glist}[1]{\left[#1\right]}
 \newcommand{\map}[1]{\left[#1\right]}
@@ -127,6 +128,7 @@
 
 \begin{document}
 
+% \setlength{\parindent}{0pt}
 \setlength{\doublerulesep}{0.40cm}
 % \setlength{\baselineskip}{11pt}
 \abovedisplayshortskip=8pt
@@ -696,7 +698,7 @@ statement_declaration_module
 
 A module is a "container" for code, and shares the same behavior of a scope: it
 can hold code, variables, functions, constants, types definition etcetera; in
-fact it can be seen as a "named scope". See \see{chap:modules}.
+fact it can be seen as a "named scope". See \See{chap:modules}.
 
 \nb{Modules are an experimental feature.}
 
@@ -783,7 +785,7 @@ getFunLanguage() => Text {
 }
 \end{minted}
 
-For more details, see \see{chap:functions}.
+For more details, see \See{chap:functions}.
 
 \subsection{Invocation statement}
 
@@ -803,7 +805,7 @@ actual_parameter
 
 When invoking a function, arguments can be passed using a traditional
 positional approach or a nominal approach.\\*
-For more details, see \see{chap:functions}.
+For more details, see \See{chap:functions}.
 
 \nb{Albeit the grammar doesn't enforce one approach or the other, the current
 implementation supports either all arguments to be passed as positional or as
@@ -1038,7 +1040,7 @@ for key in ["Simone"=>69 "Luca"=>420 "Paolo"=>10] do somethingWith(key)
 \end{minted}
 
 The for statement is like an usual for-each loop, but on steroids; the iterator
-is actually a pattern (see \see{chap:patterns}): for each iteration, the for
+is actually a pattern (\see{chap:patterns}): for each iteration, the for
 statement will match iterated value with the pattern, and perform the
 appropriate deconstruction.
 
@@ -1076,11 +1078,11 @@ A scope is a code region within which you can execute statements and perform
 declarations (e.g. variables, constants, types, functions) that can later be
 referred to, simply, by their name.
 
-A Giovi source code file is itself a scope (see \see{chap:modules}). Scopes can
+A Giovi source code file is itself a scope (see \See{chap:modules}). Scopes can
 be "nested" within other scopes. Their lifetime has a clear begin and end; a
-scope usually coincide with a \code{block} (see \see{sec:syntax}), for example
-in an \code{if} statement, a \code{for} or \code{repeat} loop or a function
-body.
+scope usually coincides with a \textit{block} (see \See{sec:syntax}), for
+example in an \code{if} statement, a \code{for} or \code{repeat} loop or a
+function body.
 
 \begin{minted}{giovi.py:GioviLexer}
 # begin scope
@@ -1143,7 +1145,7 @@ if true do {
 "hello $username" -> _out # "hello simonvic"
 \end{minted}
 
-For a more formal description, see \see{chap:opsem}
+For a more formal description, see \See{chap:opsem}
 
 \chapter{Defaults}
 
@@ -3882,7 +3884,7 @@ immutability}
 
 \subsection{Patterns}
 
-See \see{chap:patterns} for more details.
+See \See{chap:patterns} for more details.
 
 \paragraph{Patterns sets} The following sets group patterns to make rules more
 readable
