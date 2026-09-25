@@ -1,5 +1,5 @@
 from pygments.lexer import RegexLexer, include, bygroups, using, this, inherit, default, words
-from pygments.token import Comment, Operator, Keyword, Name, String, Number, Punctuation, Whitespace
+from pygments.token import Comment, Operator, Keyword, Name, Literal, String, Number, Punctuation, Whitespace
 
 
 class GioviLexer(RegexLexer):
@@ -26,7 +26,7 @@ class GioviLexer(RegexLexer):
             (r'(if|do|else|when|for|repeat|break|skip|return|default|self|function|tuple|record|struct|type)\b', Keyword),
             (r'(var|const|alias)\b', Keyword.Declaration),
             (r'(not|and|or|in|is|as)\b', Operator.Word),
-            (r'(true|false|_)\b', Keyword.Constant),
+            (r'(true|false)\b', Number.Bin), # not really a number, but it's the closest thing to a literal
             (r'(import|module)\b', Keyword.Namespace),
             # (r'(Natural|Int|Real|Text|Void|Bool)\b', Keyword.Type),
             (r'(_out|_err|_in)\b', Name.Builtin),
@@ -34,6 +34,7 @@ class GioviLexer(RegexLexer):
             (r'[A-Z][A-Z0-9_]*\b', Name.Constant),
             (r'[A-Z][a-zA-Z0-9_]+\b', Name.Class),
             (r'=>', Keyword),
+            (r'_\b', Keyword.Constant),
             (r'(::|<=|>=|<|>|~=|=~|!=|=|!|&|\||\+|-|\*|/|%|\^|@|\{>>\}|\{>\}|\{<\})', Operator),
             (r'[.,:;()\[\]{}]', Punctuation),
             (r'([^\W\d]|\$)[\w$]*', Name),
