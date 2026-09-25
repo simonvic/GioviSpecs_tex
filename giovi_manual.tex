@@ -1590,7 +1590,118 @@ processPizzaOrder(
 )
 \end{minted}
 
-\section{Self functions}
+\newpage
+
+\section{Struct functions}
+
+Functions can be defined within structs and will be associated to the type.\\*
+Beware that these are, by definition, NOT methods; it can be seen as simple
+syntax sugar to better organize code using types as "namespaces" for these
+functions. We could compare them to "static methods" in OO languages.
+
+\begin{minted}{giovi.py:GioviLexer}
+Vehicle <
+	speed Int
+
+	accelerate(v Vehicle, amount Int) {
+		amount ->+ v.speed
+	}
+
+	brake(v Vehicle) {
+		v.speed -<- 1
+	}
+
+	speedToMilesPerHour(v Vehicle) => Int {
+		=> v.speed / 1.6093
+	}
+>
+
+car Vehicle
+Vehicle.accelerate(car, 10)
+"${car.speed} KMH" -> _out
+"${Vehicle.speedToMilesPerHour(car)} MPH" -> _out
+\end{minted}
+
+Note that, although functions can be invoked from an instance of a struct,
+they're still only related to the type; the syntax is allowed because of self
+functions (\see{sec:self_func}).
+
+\subsection{Self functions}
+\label{sec:self_func}
+
+More often than not, functions defined within a struct type are meant to
+operate on such type (e.g. creating, updating, reading).
+
+The \code{self} keyword can be prefixed to the function declaration; it's a
+shortcut for defining a function that has a first parameter of the same type of
+the struct in which the function is defined.
+
+\begin{minted}{giovi.py:GioviLexer}
+Vehicle <
+	speed Int
+	self speedToMilesPerHour() => Int {
+		=> self.speed / 1.6093
+	}
+>
+\end{minted}
+
+Albeit \code{self} is a reserved keyword and cannot be used as parameter name,
+the previous example would be equivalent to the following
+
+\begin{minted}{giovi.py:GioviLexer}
+Vehicle <
+	speed Int
+	speedToMilesPerHour(self Vehicle) => Int {
+		=> self.speed / 1.6093
+	}
+>
+\end{minted}
+
+This also allows you to invoke the function using the instance of the struct as
+the left-hand side of the dot operator, which will be passed automatically as
+the first argument.
+
+\begin{minted}{giovi.py:GioviLexer}
+car Vehicle
+car.speedToMilesPerHour() -> _out
+# equivalent to
+Vehicle.speedToMilesPerHour(car) -> _out
+\end{minted}
+
+\subsection{Self returning functions}
+
+The \code{self} keyword can also be used as a return type as a shorthand.\\*
+This comes very handy for writing "chainable" functions.
+
+\begin{minted}{giovi.py:GioviLexer}
+Color <
+	r Int
+	g Int
+	b Int
+
+	rgb(r Int, g Int, b Int) => self {
+		=> Color.<r g b>
+	}
+
+	self brigthen() => self {
+		self.r *<- 0.5
+		self.g *<- 0.5
+		self.b *<- 0.5
+		=> self
+	}
+
+	self saturate() => self {
+		# ...
+		=> self
+	}
+>
+
+Color.rgb(5, 20, 512)
+	.brigthen()
+	.saturate()
+	.brighten()
+\end{minted}
+
 
 \chapter{Patterns}
 \label{chap:patterns}
