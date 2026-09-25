@@ -1427,11 +1427,167 @@ someArgument -> _out # still 69
 \comment{TODO: menzionare eccezione per self functions, se decido di
 "formalizzare il bug" :)}
 
+\subparagraph{Parameters defaults}
+
+A formal parameter, being like a normal variable, also has a default value. You
+can pass a default value by simply using the \code{default} keyword or the
+underscore \code{\_}
+
+\begin{minted}{giovi.py:GioviLexer}
+someFunction(x Int, y Text) {
+	x -> _out # 0
+	y -> _out # "" (empty string)
+}
+someFunction(default, default)
+someFunction(_, _)
+\end{minted}
+
 \subsection{Optional parameters}
 
+Giovi supports optional parameters: by overriding a formal parameter's default
+value, the parameter will be marked as optional. An optional parameter can be
+omitted at invocation; its default value will be used instead.
+
+\begin{minted}{giovi.py:GioviLexer}
+someFunction(x Int default 69, y Text default "hello world") {
+	x -> _out # 69
+	y -> _out # hello world
+}
+someFunction()
+\end{minted}
+
+You can mark a parameter as optional without overriding its default
+
+\begin{minted}{giovi.py:GioviLexer}
+someFunction(x Int default _) { }
+# equivalent to
+someFunction(x Int default Int.default) { }
+\end{minted}
+
+It's possible to mix optional and required parameters, however only trailing
+(last) optional parameters can be omitted when invoking using the positional
+approach (\see{sec:arg_approach})
+
+\begin{minted}{giovi.py:GioviLexer}
+processPizzaOrder(
+  kind Text default "Margherita",
+  tableNumber Int,
+  withPineapple Bool default false,
+) {
+	if withPineapple do panic()
+	makePizza(kind) -> pizza Pizza
+	serve(pizza, tableNumber)
+}
+
+processPizzaOrder("Diavola", 69) # "Diavola" to table 69
+processPizzaOrder(_, 69) # "Margherita" to table 69
+processPizzaOrder(_, _) # "Margherita" to table 0
+processPizzaOrder(_, 69, true) # "Margherita" with pineapple to table 69
+processPizzaOrder(69) # ERROR: expecting pizza type, but got 69
+\end{minted}
+
 \subsection{Positional and nominal parameters}
+\label{sec:arg_approach}
+
+\paragraph{Positional parameters} When invoking a function with the positional
+approach, you just pass the values as arguments, which will be assigned to the
+respective formal parameters in the same order: the first argument is assigned
+to the first formal parameter, the second to the second and so on.
+
+\paragraph{Nominal parameters} \label{sec:nominal_params} Giovi supports
+nominal arguments: you can specify the name of the argument. When using the
+nominal approach, the order of the arguments is not important.
+
+\begin{minted}{giovi.py:GioviLexer}
+processPizzaOrder(kind Text, tableNumber Int, withPineapple Bool) { #{...}# }
+processPizzaOrder(tableNumber:69, withPineapple:false, kind:"Diavola")
+\end{minted}
+
+When using the nominal approach, all optional parameters can be omitted, as
+long as the required parameters are specified.
+
+\begin{minted}{giovi.py:GioviLexer}
+processPizzaOrder(
+  kind Text default "Margherita",
+  tableNumber Int,
+  withPineapple Bool default false
+) { #{...}# }
+processPizzaOrder(tableNumber:69) # Margherita to table 69 and no pineapple
+\end{minted}
+
+\newpage
 
 \subsection{Invocation labels}
+
+As we've seen in \See{sec:nominal_params}, parameters names can be specified at
+invocation.
+
+When declaring a function, you sometimes have to decide whether to name a
+parameter to either favor readability in the function body at the expense of
+invocation or viceversa.
+
+% \begin{minted}{giovi.py:GioviLexer}
+% processPizzaOrder(
+%   kind Text,
+%   tableNumber Int,
+%   hasPineapple Bool,
+% ) {
+% 	if hasPineapple do return
+% 	makePizza(kind) -> pizza Pizza
+% 	serve(pizza, tableNumber)
+% }
+%
+% processPizzaOrder(
+%   kind: "Diavola",
+%   tableNumber: 69,
+%   hasPineapple: false,
+% )
+% \end{minted}
+%
+% ... or viceversa
+%
+% \begin{minted}{giovi.py:GioviLexer}
+% processPizzaOrder(
+%   ofKind Text
+%   atTableNumber Int,
+%   withPineapple Bool,
+% ) {
+% 	if withPineapple do return
+% 	makePizza(ofKind) -> pizza Pizza
+% 	serve(pizza, atTableNumber)
+% }
+%
+% processPizzaOrder(
+%   ofKind: "Diavola",
+%   atTableNumber: 69,
+%   withPineapple: false,
+% )
+% \end{minted}
+
+To get the best of both worlds and further improve readability, Giovi allows
+you to define an "invocation label". Such label is the name of the parameter
+that is exposed to the invocation, while the formal parameter name remains
+unchanged in the function body.
+
+\begin{minted}{giovi.py:GioviLexer}
+processPizzaOrder(
+  ofKind: kind Text,
+  atTable: tableNumber Int,
+  withPineapple: hasPineapple Bool,
+) {
+	if hasPineapple do return
+	makePizza(kind) -> pizza Pizza
+	serve(pizza, tableNumber)
+}
+
+processPizzaOrder(
+  ofKind: "Diavola",
+  atTable: 69,
+  withPineapple: false
+)
+\end{minted}
+
+\section{Self functions}
 
 \chapter{Patterns}
 \label{chap:patterns}
