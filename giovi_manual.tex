@@ -1593,11 +1593,13 @@ processPizzaOrder(
 \newpage
 
 \section{Struct functions}
+\label{sec:struct_functions}
 
-Functions can be defined within structs and will be associated to the type.\\*
+Functions can be defined within structs (\see{sec:structs}) and will be
+associated to the type.\\*
 Beware that these are, by definition, NOT methods; it can be seen as simple
 syntax sugar to better organize code using types as "namespaces" for these
-functions. We could compare them to "static methods" in OO languages.
+functions. We could make an analogy with "static methods" in OO languages.
 
 \begin{minted}{giovi.py:GioviLexer}
 Vehicle <
@@ -1702,6 +1704,104 @@ Color.rgb(5, 20, 512)
 	.brighten()
 \end{minted}
 
+\chapter{Product types}
+
+In this chapter product types will be discussed. A product type is called as
+such because it can be seen as a Cartesian product of other types.
+
+There are three product types:
+\begin{itemize}
+	\item \textbf{Tuple} (\see{sec:tuples})
+	\item \textbf{Record} (\see{sec:records})
+	\item \textbf{Struct} (\see{sec:structs})
+\end{itemize}
+
+All product types follow the same rules of the default (\see{chap:defaults}),
+hence, when a variable or any other value of such type is declared, it is
+initialized with its zero value; there is one exception (see
+\See{sec:recursive_structs}).
+
+\section{Tuples}
+\label{sec:tuples}
+
+A Tuple is an ordered collection of zero or more heterogeneous values.
+
+\begin{minted}{giovi.py:GioviLexer}
+someTuple tuple<Text, Bool, Real>
+someTuple <- <"foo", true, 420.69>
+\end{minted}
+
+Tuples being ordered means that two tuple types with the same fields (same
+count and equally typed), but in different position, are considered different.
+
+\section{Records}
+\label{sec:records}
+
+A Record is an unordered collection of zero or more named (labeled)
+heterogeneous values.
+
+\begin{minted}{giovi.py:GioviLexer}
+someRecord record<field1 Text, field2 Bool, field3 Real>
+someRecord <- <field1:"foo", field2:true, field3:420.69>
+\end{minted}
+
+Records being unordered means that two record types with the same fields (same
+count, equally named and equally typed) are equal, regardless of the order
+their fields appear at.
+
+\section{Structs}
+\label{sec:structs}
+
+A Struct is a named unordered collection of zero or more named (labeled)
+heterogeneous fields. In other words, a struct type is a type you can define
+and later refer to via its name. Structs could be seen as Records
+(\see{sec:records}) with a typename associated to it.
+
+Before being able to use a struct type, it must first be declared.
+
+\begin{minted}{giovi.py:GioviLexer}
+struct SomeStruct <field1 Text, field2 Bool, field3 Real>
+someStruct SomeStruct
+\end{minted}
+
+\paragraph{Struct constants} Like for functions (see
+\See{sec:struct_functions}), a struct type can also contain constant
+declarations, that can later be accessed via the dot operator.
+
+\subsection{Recursive struct types}
+\label{sec:recursive_structs}
+
+Recursive struct type definitions are allowed by using the \code{self} keyword
+in place of the field type.
+
+\comment{TODO: menzionare RFC di larval types e uso del typename}
+
+\begin{minted}{giovi.py:GioviLexer}
+struct Node <
+	data Text,
+	nextNode self
+>
+\end{minted}
+
+All types in Giovi have a zero value (see \See{chap:defaults}) and all values
+of such type are initialized with it, and the same applies to structs;
+however recursive structs are the exception.\\*
+In the case of the a recursive struct, the fields of such type will be
+initialized with a lazy approach: the initialization of such fields happens
+only upon the first access/use.
+
+\begin{minted}{giovi.py:GioviLexer}
+struct Node <
+	data Text default "default_data",
+	nextNode self
+>
+root Node <- <data:"root_data">
+root -> _out       # <"root_data", _>
+root.nextNode -> _ # nextNode is now initialized
+root -> _out       # <"root_data", <"default_data", _>>
+\end{minted}
+
+\subsection{Structs composition}
 
 \chapter{Patterns}
 \label{chap:patterns}
