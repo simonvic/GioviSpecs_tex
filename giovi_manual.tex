@@ -1801,7 +1801,50 @@ root.nextNode -> _ # nextNode is now initialized
 root -> _out       # <"root_data", <"default_data", _>>
 \end{minted}
 
-\subsection{Structs composition}
+\subsection{Aggregation and composition}
+
+When modelling a certain domain, it is often needed to define an aggregation or
+composition relationship between types. To achieve aggregation, practically
+speaking, it's simply possible to define a field of a previously typed.
+
+\begin{minted}{giovi.py:GioviLexer}
+struct Fullname <name Text, surname Text>
+struct Person <age Int, fullname Fullname>
+Person -> _out # Person<age Int, fullname Fullname>
+\end{minted}
+
+At times, however, it may be desirable to "flatten/inline" such aggregated
+fields; instead of manually copying the fields in the new declaration, it's
+possible to specify the typename of the other type you want to aggregate.
+
+\begin{minted}{giovi.py:GioviLexer}
+struct Person <age Int> + Fullname
+Person -> _out # <age Int, name Text, surname Text>
+\end{minted}
+
+The aggregate type can also be specified before the new declaration; by doing
+so, the fields will appear before the ones in the new declaration.
+
+\begin{minted}{giovi.py:GioviLexer}
+Fullname + struct Person <age Int>
+Person -> _out # <name Text, surname Text, age Int>
+\end{minted}
+
+Multiple aggregations are possible
+
+\begin{minted}{giovi.py:GioviLexer}
+Vehicle, Engine + struct Car<brand Text> + AirCondition, ReclineableSeats
+Car -> _out
+# Car<
+#	Vehicle fields...,
+#	Engine fields...,
+#	brand Text,
+#	AirCondition fields...,
+#	ReclineableSeats fields...,
+#>
+\end{minted}
+
+TODO: clarify multiple aggregation, overrides and defaults
 
 \chapter{Patterns}
 \label{chap:patterns}
