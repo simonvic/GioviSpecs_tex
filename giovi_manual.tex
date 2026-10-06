@@ -2684,6 +2684,40 @@ controvarianza (parametri funzioni?)}
 
 \subsubsection{Product types}
 
+Since the widening and narrowing is crucial for type inference, Tuples, Records
+and Structs require some additional attention as they have some differences.
+
+\vspace{\baselineskip}
+
+In order to quickly understand why the widening between product types behaves
+the way it does, ask yourself: \textit{what information does this data
+carry?}\\*
+For example, \code{<1,2,3,"foo">} is a tuple with three integer fields and a
+text field; no additional semantic information is given, and those values could
+mean anything.\\*
+Instead, \code{<x:1, y:2, z:3, name:"foo">} is a record with three integer
+fields and a text field, with the additional information about their name;
+their semantic meaning is still uncertain.\\*
+Finally, \code{Rgb.<x:1, y:2, z:3, name:"foo">} is a struct describing a color
+which has an integer field for each red, green and blue channel, and a field
+representing the common name of the color.\\*
+Instead, \code{Point.<x:1, y:2, z:3, name:"foo">} is a struct describing
+a point in a coordinate system which has a three integer field for each
+dimension and a label.
+
+\vspace{\baselineskip}
+
+While all previous examples evaluates to an "equal" value (the data they
+carry), their semantic meaning is potentially very different. This means that,
+while the tuple or the record could be widened to either \code{Rgb} or
+\code{Point} (where the "added information" is their semantic meaning), a
+\code{Point} cannot be losslessly converted to \code{Rgb} or other narrower
+types, because we would "lose" their semantic meaning.\\*
+If you're ok with losing such information, conversion between "incompatible"
+product types can still be achieved via explicit type coercion (casting).
+
+\newpage
+
 \paragraph{Tuple}
 
 \[
