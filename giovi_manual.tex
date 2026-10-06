@@ -2261,27 +2261,28 @@ if Random.real() > 0.69 do {
 
 \subparagraph{Judgements and terms} To describe the type system, its types and
 the inference rules, this document uses "judgements" on "terms".\\*
-For example, $t:T$ is a judgement telling that $t$ is a term of type $T$.
+For example, $\tau:T$ is a judgement telling that $\tau$ is a term of type $T$.
 
 \subparagraph{Assumptions} Zero or more assumptions (comma separated) can be
 used for a judgement; they're specified before the "turnstile" symbol
 $\then$.\\*
-For example, $\EnvSym \then t:T$ can be read as "if $\EnvSym$ is true, then $t$
-is a term of type $T$".
+For example, $\EnvSym \then \tau:T$ can be read as "if $\EnvSym$ is true, then
+$\tau$ is a term of type $T$".
 
 \subparagraph{Premise} Judgements can be made based on zero or more premises
 (semicolon separated judgements).\\*
-For example, $\infrule{\EnvSym_1\then t_1:T \semiq \EnvSym_2\then
-t_2:T}{\EnvSym_1,\EnvSym_2\then \code{$t_1$ + $t_2$}: T}$ means that with a
-premise that both judgements $\EnvSym_1\then t_1:T$ and $\EnvSym_2\then t_2:T$
-are true, then $\EnvSym_1,\EnvSym_2\then \code{$t_1$ + $t_2$}: T$ is true.
+For example, $\infrule{\EnvSym_1\then\tau_1:T\semiq\EnvSym_2\then\tau_2:T}{
+\EnvSym_1,\EnvSym_2\then \code{$\tau_1$ + $\tau_2$}: T}$ means that with a
+premise that both judgements $\EnvSym_1\then\tau_1:T$ and
+$\EnvSym_2\then\tau_2:T$ are true, then
+$\EnvSym_1,\EnvSym_2\then\code{$\tau_1$+$\tau_2$}:T$ is true.
 
 \subparagraph{Code} Text written with \code{monospaced} font denotes the text
 as written in code verbatim. Some types may also be written with
 \texttt{Monospace} font (usually in PascalCase).
 
 If the code evaluates to some value, to denote its type the
-$:\texttt{SomeType}$ notation will be used.\\*
+"$:\texttt{SomeType}$" notation will be used.\\*
 For example: $\code{59 + 10} : \Int$
 
 To denote to what the value evaluates to, the $\eval$ symbol will be used.\\*
