@@ -305,7 +305,7 @@ to ensure backward compatibility in the eventuality they get used.
 
 \resizebox{\linewidth}{!}{
 	\begin{tabular}{rcl}
-		Operator                        & Token           & Description                                     \\\hline
+		\textbf{Operator}               & \textbf{Token}  & \textbf{Description}                            \\\hline
 		PLUS                            & \texttt{+}      & Arithmetic sum, concatenation                   \\\hline
 		MINUS                           & \texttt{-}      & Arithmetic subtraction, intersection            \\\hline
 		MULTIPLICATION                  & \texttt{*}      & Arithmetic multiplication                       \\\hline
@@ -1575,15 +1575,16 @@ invocation or viceversa.
 To get the best of both worlds and further improve readability, Giovi allows
 you to define an "invocation label". Such label is the name of the parameter
 that is exposed to the invocation, while the formal parameter name remains
-unchanged in the function body.
+unchanged in the function body. If an invocation label is not specified, the
+formal parameter name will be used.
 
 \begin{minted}{giovi.py:GioviLexer}
 processPizzaOrder(
   ofKind: kind Text,
   atTable: tableNumber Int,
-  withPineapple: hasPineapple Bool,
+  hasPineapple Bool,
 ) {
-	if hasPineapple do return
+	if hasPineapple do panic()
 	makePizza(kind) -> pizza Pizza
 	serve(pizza, tableNumber)
 }
@@ -1591,7 +1592,7 @@ processPizzaOrder(
 processPizzaOrder(
   ofKind: "Diavola",
   atTable: 69,
-  withPineapple: false
+  hasPineapple: false
 )
 \end{minted}
 
