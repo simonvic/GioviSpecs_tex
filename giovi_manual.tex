@@ -396,6 +396,7 @@ documentation: \code{\#? This is a documentation comment}
 A \code{Bool} literal is simply expressed by \code{true} or \code{false}
 
 \subsubsection{Text}
+\label{sec:text_syntax}
 
 \begin{minted}{antlr}
 	literal_normal_text
@@ -673,7 +674,8 @@ import_uri
 	;
 \end{minted}
 
-The import statement is used to import one or more modules.
+The import statement is used to import one or more modules
+(\see{chap:modules}).
 
 \begin{minted}{giovi.py:GioviLexer}
 import giovi.util.Random
@@ -687,6 +689,8 @@ shortcut for importing and then aliasing with two different statements.
 import giovi.util.Random as Random
 Random.integer() -> _out
 \end{minted}
+
+For more details, see \See{sec:import}.
 
 \subsection{Module declaration}
 
@@ -1073,6 +1077,7 @@ for <r, g, b> in listOfColors do {
 \comment{TODO: aggiungere RFC di iteration counters}
 
 \chapter{Scopes}
+\label{chap:scopes}
 
 A scope is a code region within which you can execute statements and perform
 declarations (e.g. variables, constants, types, functions) that can later be
@@ -2085,6 +2090,119 @@ for key => value in ["Simone"=>69 "Luca"=>420 "Paolo"=>10] do {
 
 \chapter{Modules}
 \label{chap:modules}
+
+A module is a "container" for code; it shares the same behavior of scopes
+(\see{chap:scopes}): it can hold code, variables, functions, constants, types
+definition etcetera; in fact it can be seen as a "named scope".
+
+Each file is implicitly a module, whose name is the filename containing it.
+
+\begin{minted}{giovi.py:GioviLexer}
+# my_project/src/Foo.giovi
+"hello from Foo module" -> _out
+const SOME_CONSTANT Real <- 3.14
+someFunction() => Int {
+	"hello from Foo.someFunction" -> _out
+	=> 69
+}
+\end{minted}
+
+\section{Inner modules}
+
+A inner sub-module can be declared with the \code{module} keyword.
+
+\begin{minted}{giovi.py:GioviLexer}
+# my_project/src/Foo.giovi
+"hello from Foo module" -> _out
+module Bar {
+	"hello from Foo.Bar module" -> _out
+	module Baz {
+		"hello from Foo.Bar.Baz module" -> _out
+	}
+}
+\end{minted}
+
+\nb{The body of an inner module is not executed until it is imported! See
+\See{sec:import}.}
+
+\section{Importing modules}
+\label{sec:import}
+
+The \code{import} statement is used to "import" one or more modules.
+
+\begin{minted}{giovi.py:GioviLexer}
+module Foo {
+	"hello from Foo module" -> _out
+}
+import Foo # "hello from Foo module"
+\end{minted}
+
+\subsection{Import entry}
+
+An import entry can be a qualified identifier (for native and inner modules) or
+a file URI for file modules. To later refer to a file module, it must be
+aliased first.
+
+\begin{minted}{giovi.py:GioviLexer}
+import [
+	giovi.util.Math,
+	'file://my_project/my_module.giovi' as MyModule
+]
+giovi.util.Math -> _out
+MyModule -> _out
+\end{minted}
+
+Import entries URIs are written using the text literals syntax
+(\see{sec:text_syntax}) and, as such, it allows for text interpolation, which
+is advised to be used carefully.
+
+\begin{minted}{giovi.py:GioviLexer}
+nameOfMyModule Text <- "my_other_module"
+import "file://my_project/${nameOfMyModule}.giovi"
+\end{minted}
+
+It's possible to import to a inner module of a file module with a single import
+statement; however the URI can only appear as the first entry
+
+\begin{minted}{giovi.py:GioviLexer}
+import 'file://my_project/my_module.giovi'.MySubModule.MySubSubModule
+\end{minted}
+
+\subsection{Import behaviour}
+
+The \code{import} keyword may be deceiving as the import statement doesn't
+really import a module like in many other languages, but rather it executes its
+body and then gives you access to it and its declarations.
+
+\nb{The import of the same module can be performed multiple times, meaning that
+its body will be executed for each import.}
+
+\comment{TODO: menzionare funzione util per caching moduli}
+
+\begin{minted}{giovi.py:GioviLexer}
+module MyMath {
+	"hello from MyMath module" -> _out
+	const PI <- 3.14
+}
+import MyMath # "hello from MyMath module"
+MyMath.PI -> _out # 3.14
+\end{minted}
+
+\paragraph{Lazy imports} A peculiarity of the import statement is that it can
+be performed anywhere like any other statement; the lifetime of the imported
+module alias, like all other declarations (e.g. variables, constants,
+functions), will be bound to the scope within which the import is executed.\\*
+This allows the flexibility of deferring the import to whenever it is actually
+needed.
+
+\begin{minted}{giovi.py:GioviLexer}
+import giovi.util.Random as Random # immediately imported
+
+if Random.real() > 0.69 do {
+	import giovi.util.Math as Math
+	Math.PI -> _out # 3.14
+}
+\end{minted}
 
 \part{Type system}
 
