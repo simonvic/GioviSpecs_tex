@@ -675,7 +675,7 @@ import_uri
 \end{minted}
 
 The import statement is used to import one or more modules
-(\see{chap:modules}).
+(\see{ch:modules}).
 
 \begin{minted}{giovi.py:GioviLexer}
 import giovi.util.Random
@@ -702,7 +702,7 @@ statement_declaration_module
 
 A module is a "container" for code, and shares the same behavior of a scope: it
 can hold code, variables, functions, constants, types definition etcetera; in
-fact it can be seen as a "named scope". See \See{chap:modules}.
+fact it can be seen as a "named scope". See \See{ch:modules}.
 
 \nb{Modules are an experimental feature.}
 
@@ -789,7 +789,7 @@ getFunLanguage() => Text {
 }
 \end{minted}
 
-For more details, see \See{chap:functions}.
+For more details, see \See{ch:functions}.
 
 \subsection{Invocation statement}
 
@@ -809,7 +809,7 @@ actual_parameter
 
 When invoking a function, arguments can be passed using a traditional
 positional approach or a nominal approach.\\*
-For more details, see \See{chap:functions}.
+For more details, see \See{ch:functions}.
 
 \nb{Albeit the grammar doesn't enforce one approach or the other, the current
 implementation supports either all arguments to be passed as positional or as
@@ -1044,7 +1044,7 @@ for key in ["Simone"=>69 "Luca"=>420 "Paolo"=>10] do somethingWith(key)
 \end{minted}
 
 The for statement is like an usual for-each loop, but on steroids; the iterator
-is actually a pattern (\see{chap:patterns}): for each iteration, the for
+is actually a pattern (\see{ch:patterns}): for each iteration, the for
 statement will match iterated value with the pattern, and perform the
 appropriate deconstruction.
 
@@ -1077,13 +1077,13 @@ for <r, g, b> in listOfColors do {
 \comment{TODO: aggiungere RFC di iteration counters}
 
 \chapter{Scopes}
-\label{chap:scopes}
+\label{ch:scopes}
 
 A scope is a code region within which you can execute statements and perform
 declarations (e.g. variables, constants, types, functions) that can later be
 referred to, simply, by their name.
 
-A Giovi source code file is itself a scope (see \See{chap:modules}). Scopes can
+A Giovi source code file is itself a scope (see \See{ch:modules}). Scopes can
 be "nested" within other scopes. Their lifetime has a clear begin and end; a
 scope usually coincides with a \textit{block} (see \See{sec:syntax}), for
 example in an \code{if} statement, a \code{for} or \code{repeat} loop or a
@@ -1150,10 +1150,10 @@ if true do {
 "hello $username" -> _out # "hello simonvic"
 \end{minted}
 
-For a more formal definition, see \See{chap:opsem}
+For a more formal definition, see \See{ch:opsem}
 
 \chapter{Defaults}
-\label{chap:defaults}
+\label{ch:defaults}
 
 An important design philosophy of the language is that it has no concept (nor
 models) a "null" value or uninitialized memory.
@@ -1261,7 +1261,7 @@ someDefaultPerson.favoriteColor -> _out # <255,255,255>
 \end{minted}
 
 \chapter{Functions}
-\label{chap:functions}
+\label{ch:functions}
 
 \section{Intro}
 
@@ -1722,7 +1722,7 @@ There are three product types:
 	\item \textbf{Struct} (\see{sec:structs})
 \end{itemize}
 
-All product types follow the same rules of the default (\see{chap:defaults}),
+All product types follow the same rules of the default (\see{ch:defaults}),
 hence, when a variable or any other value of such type is declared, it is
 initialized with its zero value; there is one exception (see
 \See{sec:recursive_structs}).
@@ -1789,7 +1789,7 @@ struct Node <
 >
 \end{minted}
 
-All types in Giovi have a zero value (see \See{chap:defaults}) and all values
+All types in Giovi have a zero value (see \See{ch:defaults}) and all values
 of such type are initialized with it, and the same applies to structs;
 however recursive structs are the exception.\\*
 In the case of the a recursive struct, the fields of such type will be
@@ -1853,7 +1853,7 @@ Car -> _out
 TODO: clarify multiple aggregation, overrides and defaults
 
 \chapter{Patterns}
-\label{chap:patterns}
+\label{ch:patterns}
 
 A pattern is a special language construct that describes a structure of data.
 
@@ -2090,10 +2090,10 @@ for key => value in ["Simone"=>69 "Luca"=>420 "Paolo"=>10] do {
 \end{minted}
 
 \chapter{Modules}
-\label{chap:modules}
+\label{ch:modules}
 
 A module is a "container" for code; it shares the same behavior of scopes
-(\see{chap:scopes}): it can hold code, variables, functions, constants, types
+(\see{ch:scopes}): it can hold code, variables, functions, constants, types
 definition etcetera; in fact it can be seen as a "named scope".
 
 Each file is implicitly a module, whose name is the filename containing it.
@@ -4337,7 +4337,7 @@ Reverse: \code{<0,1,2,3,4,5> . 4..2 = <4 3 2>}
 \comment{TODO: deconstruction}
 
 \chapter{Operational semantics}
-\label{chap:opsem}
+\label{ch:opsem}
 
 This section provides a semi-formal definition of the operational semantics of
 the language, definining the state and context and how they mutate with every
@@ -4440,7 +4440,7 @@ For example: $\EnvLoc,\EnvStore \then \expr \Then \EnvStore_2$
 \subsection{Zero values}
 \label{sec:zero_values}
 
-For more info, see \See{chap:defaults}.
+For more info, see \See{ch:defaults}.
 
 A type's zero value will be described using $\Zero$
 \[
@@ -4728,7 +4728,7 @@ immutability}
 
 \subsection{Patterns}
 
-See \See{chap:patterns} for more details.
+See \See{ch:patterns} for more details.
 
 \paragraph{Patterns sets} The following sets group patterns to make rules more
 readable
