@@ -121,14 +121,8 @@
 
 
 \makeatletter
-\providecommand{\bigsqcap}{%
-  \mathop{%
-    \mathpalette\@updown\bigsqcup
-  }%
-}
-\newcommand*{\@updown}[2]{%
-  \rotatebox[origin=c]{180}{$\m@th#1#2$}%
-}
+\providecommand{\bigsqcap}{\mathop{\mathpalette\@updown\bigsqcup}}
+\newcommand*{\@updown}[2]{\rotatebox[origin=c]{180}{$\m@th#1#2$}}
 \makeatother
 
 \begin{document}
