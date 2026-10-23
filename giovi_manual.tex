@@ -14,6 +14,7 @@
 \usepackage{sourcecodepro}
 \usepackage{hyperref}
 \usepackage{microtype}
+\usepackage{marginnote}
 
 \setcounter{secnumdepth}{3}
 \setcounter{tocdepth}{3}
@@ -112,9 +113,10 @@
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[section]
 
-\newcommand{\comment}[1]{
-	\parbox{0.9\linewidth}{\color{black!30}\small\sffamily #1}
-}
+\newcommand{\comment}[1]{\marginnote{\color{black!30}\small\sffamily#1}}
+\newcommand{\commentinline}[1]{\parbox{0.9\linewidth}{\color{black!30}\small\sffamily#1}}
+\setlength{\marginparwidth}{3cm}
+
 
 \makeatletter
 \providecommand{\bigsqcap}{%
@@ -383,9 +385,7 @@ if true #{ this is a comment }# do something()
 a space, as the first character is reserved for "special" comments, for example
 documentation: \code{\#? This is a documentation comment}
 
-\comment{
-	TODO: Specificare RFC riguardo language server e altro?
-}
+\comment{TODO: Specificare RFC riguardo language server e altro?}
 
 \newpage
 
@@ -2844,11 +2844,13 @@ and if, for all parameters $x'$ of type $\tau'$ in $\phi_1$, there is a
 parameter with the same name $y'$ of type $\omega'$ in $\phi_2$, where $\tau'$
 is narrower than $\omega'$.
 
-\comment{TODO: è gia un casino cosi :D, ma includere anche opzionalità dei parametri}
-
-\comment{Eventualmente estrarre una regola per il singolo parametro}
-
 \comment{
+	TODO: è gia un casino cosi :D, ma includere anche opzionalità dei parametri\\
+	Eventualmente estrarre una regola per il singolo parametro
+}
+
+
+\commentinline{
 	TODO: come menzionato nel README, il widening tra funzioni potrebbe essere
 	errato se si considerano i domini delle funzioni rispetto al loro corpo.
 
@@ -3186,8 +3188,7 @@ defined.
 	}
 \]
 
-\comment{TODO(implementazione): -69 as Natural fallisce (out of bounds).
-Dovrebbe?}
+\comment{TODO(impl): -69 as Natural fallisce (out of bounds). Dovrebbe?}
 
 \[
 	\infrule{
@@ -3782,7 +3783,7 @@ Dovrebbe?}
 	}
 \]
 
-\comment{TODO(implementazione): non dovremmo permettere Real}
+\comment{TODO(impl): non dovremmo permettere Real}
 
 \paragraph{Division}
 
@@ -4241,7 +4242,7 @@ Reverse: \code{<0,1,2,3,4,5> . 4..2 = <4 3 2>}
 	}
 \]
 
-\comment{TODO(implemenatzione): permettere solo a Tuple in modo da rendere esplicito la perdita degli identificatori}
+\comment{TODO(impl): permettere solo a Tuple in modo da rendere esplicito la perdita degli identificatori}
 
 \[
 	\infrule{
