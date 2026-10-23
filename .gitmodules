@@ -1,0 +1,3 @@
+[submodule "giovi_pygments"]
+	path = giovi_pygments
+	url = git@github.com:simonvic/giovi_pygments.git

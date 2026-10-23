@@ -46,6 +46,7 @@
 \setminted[antlr]{
 	linenos=false,
 }
+\newcommand{\giovilexer}{./giovi_pygments/giovi.py:GioviLexer}
 
 \newcommand{\See}[1]{\S\ref{#1}~\nameref{#1}}
 \newcommand{\see}[1]{\S\ref{#1}}
@@ -165,7 +166,7 @@
 Giovi (pronounced as \textit{"jovi"}) is a high level, multipurpose,
 strongly typed, imperative programming and scripting language.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 	"hello world" -> _out
 \end{minted}
 
@@ -174,7 +175,7 @@ a mostly structural type system; it puts a lot of emphasis on the use of few
 basic data structures that, combined with simple yet powerful syntactic
 features, allows writing code that is easy to read and fast to write.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 var simonvic <- User.<
 	id: 69
 	username: "simonvic"
@@ -207,7 +208,7 @@ experiment with the idea of non-nullability, where everything has a
 widening (but explicit narrowing), allows writing flexible code with few
 keystrokes.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 plus(x Real, y Real) => Real { return x + y }
 minus(x Real, y Real) => Real { return x + y }
 times(x Real, y Real) => Real { return x * y }
@@ -377,7 +378,7 @@ Every character between and the open comment token \code{\#\{} and the close
 comment token \code{\}\#} is considered part of the comment.\\*
 A multiline comment can also be inlined in the code.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 if true #{ this is a comment }# do something()
 \end{minted}
 
@@ -457,7 +458,7 @@ In order for an expression to be injected, it needs to be wrapped in braces:\\*
 \paragraph{Text blocks} Normal and exact text blocks allow the text to span
 over multiple lines, without the need to escape the text delimiter.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 if true do {
 	if true do {
 		html Text <- "{
@@ -475,7 +476,7 @@ if true do {
 The last newline character will be included. If you don't want it, put the
 closing tag on the previous line
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 t Text <- "{
 	hello world}"
 \end{minted}
@@ -486,7 +487,7 @@ t Text <- "{
 newlines, tabs) are preserved, unless they're considered "incidental".\\*
 Incidental white spaces are those needed for code indentation.
 
-\begin{minted}[showtabs,tab=>,escapeinside=||]{giovi.py:GioviLexer}
+\begin{minted}[showtabs,tab=>,escapeinside=||]{\giovilexer}
 if true do {
 	if true do {
 		html Text <- "{
@@ -659,7 +660,7 @@ Sometimes a type, a function, a constant or something else may be named in a
 too verbose way. You can use the alias statement to basically refer to the same
 thing but with a different name.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 alias AVeryVerboseAndLongStructName as SomeStruct
 \end{minted}
 
@@ -681,7 +682,7 @@ import_uri
 The import statement is used to import one or more modules
 (\see{ch:modules}).
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 import giovi.util.Random
 giovi.util.Random.integer() -> _out
 \end{minted}
@@ -689,7 +690,7 @@ giovi.util.Random.integer() -> _out
 To avoid fully qualifying the module every time, it can be aliased. It's a
 shortcut for importing and then aliasing with two different statements.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 import giovi.util.Random as Random
 Random.integer() -> _out
 \end{minted}
@@ -723,7 +724,7 @@ cannot change.\\*
 By convention, constants identifiers are written in \code{SCREAMING\_CASE}.\\*
 The type can be omitted as it will be inferred from the expression.
 \
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 const PI Real <- 3.14
 const TAU <- PI * 2
 \end{minted}
@@ -744,7 +745,7 @@ By convention, variable identifiers are written in \code{pascalCase}.\\*
 Using the \code{var} keyword allows you to omit the type and let it be inferred
 from the assigned expression.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 myName Text <- "Simone"
 var myNickname <- "simonvic"
 \end{minted}
@@ -779,7 +780,7 @@ formal_parameter
 Functions are code blocks that can be invoked at a later time.\\*
 By convention, function identifiers are written in \code{pascalCase}.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 printHelloWorld() {
 	"Hello World" -> _out
 }
@@ -855,7 +856,7 @@ readability. Sometimes it's just better to use one instead of the other.
 	TODO: link a FAQ
 }
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 "hello world" -> _out     # Printing
 counter +<- 1             # Increasing counter by one
 acceleration ->+ velocity # Increasing velocity by "acceleration"
@@ -882,7 +883,7 @@ statement_simple_if
 	;
 \end{minted}
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 if someConditionIsTrue() do something() else somethingElse()
 if someConditionIsTrue() do {
 	something()
@@ -902,7 +903,7 @@ statement_multi_if
 
 Very often it is needed to check multiple conditions sequentially.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 if name = "Simone" do {
 	"hey it's Simone!" -> _out
 } else if name = "Mario" do {
@@ -916,7 +917,7 @@ if name = "Simone" do {
 To improve readability, the \code{if} statement allows you to write the same in
 a more concise way.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 if {
 	name = "Simone" do "hey it's Simone!" -> _out
 	name = "Mario" do {
@@ -936,7 +937,7 @@ one.}
 "subject". The \code{if} statement allows you to write it just once and then
 omit it in the left-hand side of the condition
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 if name {
 	= "Simone" do "hey it's Simone!" -> _out
 	= "Mario" do {
@@ -949,7 +950,7 @@ if name {
 
 Common boolean operators are allowed
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 if getSomeNumber() {
 	= 69 or = 420 do "Nice!" -> _out
 	> 100 and < 999 do "big number" -> _out
@@ -959,7 +960,7 @@ if getSomeNumber() {
 A branch can also be "guarded" with another (possibly unrelated) boolean
 condition
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 var funnyNumbers <- [69, 420] 
 if getSomeNumber() {
 	# if equal to 69, but only if someCondition() is true
@@ -1004,14 +1005,14 @@ The repeat statement allows you to repeat a statement or block of code. It
 allows an optional condition that gets checked at the beginning of every loop;
 if the condition fails, the iteration stops.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 # this code will run indefinitely
 repeat {
 	"hello world" -> _out
 }
 \end{minted}
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 # the loop continues while someCondition is true
 repeat if someCondition() {
 	"hello world" -> _out
@@ -1020,7 +1021,7 @@ repeat if someCondition() {
 
 A "do-while" like statement, can be achieved with a \code{break} statement.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 # the loop continues until someCondition is true
 repeat {
 	"hello world" -> _out
@@ -1041,7 +1042,7 @@ pattern_iterator: pattern_map_naked | pattern ;
 In its simplest form, the \code{for} statement is sued to iterate over lists,
 maps or ranges.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 for i in 0..10 do somethingWith(i)
 for number in [1 2 3 4] do somethingWith(number)
 for key in ["Simone"=>69 "Luca"=>420 "Paolo"=>10] do somethingWith(key)
@@ -1052,7 +1053,7 @@ is actually a pattern (\see{ch:patterns}): for each iteration, the for
 statement will match iterated value with the pattern, and perform the
 appropriate deconstruction.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 for _ in 0..9 do something() # do something 10 times
 
 for [[i]] in some2DMatrix do somethingWith(i)
@@ -1093,7 +1094,7 @@ scope usually coincides with a \textit{block} (see \See{sec:syntax}), for
 example in an \code{if} statement, a \code{for} or \code{repeat} loop or a
 function body.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 # begin scope
 if true do {
 	# begin scope
@@ -1116,7 +1117,7 @@ if true do {
 \subparagraph{Declarations lifetime} The lifetime of a declaration is bound to
 the lifetime of the scope in which it has been declared.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 if true do {
 	username Text <- "simonvic"
 	"hello $username" -> _out # "hello simonvic"
@@ -1127,7 +1128,7 @@ if true do {
 A scope "inherits" the declarations of their parent scope; more precisely, a
 declaration in a parent scope is visible to the children scopes.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 username Text <- "simonvic"
 if true do {
 	"hello $username" -> _out # "hello simonvic"
@@ -1136,7 +1137,7 @@ if true do {
 
 Two declarations of the same type cannot have the same name.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 username Text <- "simonvic"
 username Text <- "mario" # ERROR: username already declared
 \end{minted}
@@ -1145,7 +1146,7 @@ username Text <- "mario" # ERROR: username already declared
 name of another variable declared in a parent scope; the variable in the parent
 scope is now "shadowed", and cannot be referred to by its name.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 username Text <- "simonvic"
 if true do {
 	username Text <- "mario"
@@ -1172,7 +1173,7 @@ used interchangeably.
 Every type has a zero value, for example it's zero for numeric types, empty
 string for \code{Text}, false for \code{Bool} etc.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 someInteger Int
 someInteger -> _out # 0
 
@@ -1187,7 +1188,7 @@ The same applies to lists and maps (empty list and empty map respectively), and
 most importantly to product types, where the zero value has all its fields
 initialized to their respective zero values.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 struct Person <
 	name Text
 	aliases [Text]
@@ -1209,7 +1210,7 @@ For a more formal definition, see \See{sec:zero_values}.
 The \code{default} keyword can be used in redirections, for example, to "reset"
 a variable to its default value
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 age Int
 69 -> age
 age -> _out # 69
@@ -1219,7 +1220,7 @@ age -> _out # 0
 
 You can get the default value of a type with the dot operator
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 Int.default -> _out # 0
 Bool.default -> _out # false
 Person.default -> _out
@@ -1229,7 +1230,7 @@ Person.default -> _out
 You can also get the default value of a variable, which will be useful later
 with \See{sec:default_override}
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 age Int
 age.default -> _out # 0
 \end{minted}
@@ -1241,14 +1242,14 @@ A peculiarity of the language is that the default value is overrideable.
 
 \nb{This is possible only at declaration.}
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 age Int default 69
 age.default -> _out # 69
 \end{minted}
 
 Product types fields can also have their default value overridden
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 struct Person <
 	name Text default "nobody"
 	aliases [Text]
@@ -1282,7 +1283,7 @@ name, its formal parameters (if any) and its return type (if any).
 \subparagraph{Declaration} A "traditional" function can be declared
 by specifying its signature and its body.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 buildGreetingMessage(name Text) => Text {
 	if name = "simonvic" do {
 		=> "heyo $name, how are you?"
@@ -1296,7 +1297,7 @@ It can later be invoked.
 \nb{You have to declare the function first before invoking it. Hoisting is
 still an experimental feature.}
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 buildGreetingMessage("simonvic") -> _out
 \end{minted}
 
@@ -1304,7 +1305,7 @@ A function can also exist, for example, as a variable, where its type is the
 signature. In this case the variable is an "empty function"; before invoking
 it, you want to assign an actual function instance (with compatible signature.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 greetingBuilder function(name Text) => Text
 greetingBuilder <- buildGreetingMessage
 # greetingBuilder is now "referencing" the previously
@@ -1323,7 +1324,7 @@ However, a function is always shadowed by a variable (or constant) with the
 same name. To explicitly refer to the function, the \code{::} prefix is
 required.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 var foo <- 69
 function foo() { "hello world" -> _out }
 foo -> _out # 69
@@ -1332,7 +1333,7 @@ foo -> _out # 69
 
 The dotref operator can also be used instead of a dot operator
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 struct SomeStruct <
 	foo Int default 69
 	function foo() { "hello world" -> _out }
@@ -1352,7 +1353,7 @@ many other languages, it doesn't have a "call stack". It can be seen as a
 normal scope in which some variables (i.e. formal parameters) are pre-declared
 and declarations in parent scopes are visible.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 const DEG_TO_RAD <- 0.01745329
 degreeToRadians(deg Int) => Int {
 	=> deg * DEG_TO_RAD
@@ -1364,7 +1365,7 @@ degreeToRadians(180) -> _out # 3.14
 when a function, that depends on a declaration of a parent scope, is invoked
 within a scope where such declaration is not present, the program will error.}
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 degreeToRadians(deg Int) => Int {
 	=> deg * DEG_TO_RAD
 }
@@ -1386,7 +1387,7 @@ visible anymore.
 This can be very useful when you have repeating code, but you don't want to
 expose a function.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 function makePizza(ingredients [Text]) => Pizza {
 	if "pineapple" in ingredients do panic()
 
@@ -1422,7 +1423,7 @@ The actual parameters (a.k.a. arguments) of the invocation are passed by value,
 which means they're copied, therefore, while the function body can mutate the
 parameters, the mutation will not be visible outside the function.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 someFunction(someParameter Int) {
 	someParameter -> _out # 69
 	someParameter <- 420
@@ -1445,7 +1446,7 @@ A formal parameter, being like a normal variable, also has a default value. You
 can pass a default value by simply using the \code{default} keyword or the
 underscore \code{\_}
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 someFunction(x Int, y Text) {
 	x -> _out # 0
 	y -> _out # "" (empty string)
@@ -1460,7 +1461,7 @@ Giovi supports optional parameters: by overriding a formal parameter's default
 value, the parameter will be marked as optional. An optional parameter can be
 omitted at invocation; its default value will be used instead.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 someFunction(x Int default 69, y Text default "hello world") {
 	x -> _out # 69
 	y -> _out # hello world
@@ -1470,7 +1471,7 @@ someFunction()
 
 You can mark a parameter as optional without overriding its default
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 someFunction(x Int default _) { }
 # equivalent to
 someFunction(x Int default Int.default) { }
@@ -1480,7 +1481,7 @@ It's possible to mix optional and required parameters, however only trailing
 (last) optional parameters can be omitted when invoking using the positional
 approach (\see{sec:arg_approach})
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 processPizzaOrder(
   kind Text default "Margherita",
   tableNumber Int,
@@ -1510,7 +1511,7 @@ to the first formal parameter, the second to the second and so on.
 nominal arguments: you can specify the name of the argument. When using the
 nominal approach, the order of the arguments is not important.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 processPizzaOrder(kind Text, tableNumber Int, withPineapple Bool) { #{...}# }
 processPizzaOrder(tableNumber:69, withPineapple:false, kind:"Diavola")
 \end{minted}
@@ -1518,7 +1519,7 @@ processPizzaOrder(tableNumber:69, withPineapple:false, kind:"Diavola")
 When using the nominal approach, all optional parameters can be omitted, as
 long as the required parameters are specified.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 processPizzaOrder(
   kind Text default "Margherita",
   tableNumber Int,
@@ -1538,7 +1539,7 @@ When declaring a function, you sometimes have to decide whether to name a
 parameter to either favor readability in the function body at the expense of
 invocation or viceversa.
 
-% \begin{minted}{giovi.py:GioviLexer}
+% \begin{minted}{\giovilexer}
 % processPizzaOrder(
 %   kind Text,
 %   tableNumber Int,
@@ -1558,7 +1559,7 @@ invocation or viceversa.
 %
 % ... or viceversa
 %
-% \begin{minted}{giovi.py:GioviLexer}
+% \begin{minted}{\giovilexer}
 % processPizzaOrder(
 %   ofKind Text
 %   atTableNumber Int,
@@ -1582,7 +1583,7 @@ that is exposed to the invocation, while the formal parameter name remains
 unchanged in the function body. If an invocation label is not specified, the
 formal parameter name will be used.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 processPizzaOrder(
   ofKind: kind Text,
   atTable: tableNumber Int,
@@ -1611,7 +1612,7 @@ Beware that these are, by definition, NOT methods; it can be seen as simple
 syntax sugar to better organize code using types as "namespaces" for these
 functions. We could make an analogy with "static methods" in OO languages.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 Vehicle <
 	speed Int
 
@@ -1648,7 +1649,7 @@ The \code{self} keyword can be prefixed to the function declaration; it's a
 shortcut for defining a function that has a first parameter of the same type of
 the struct in which the function is defined.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 Vehicle <
 	speed Int
 	self speedToMilesPerHour() => Int {
@@ -1660,7 +1661,7 @@ Vehicle <
 Albeit \code{self} is a reserved keyword and cannot be used as parameter name,
 the previous example would be equivalent to the following
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 Vehicle <
 	speed Int
 	speedToMilesPerHour(self Vehicle) => Int {
@@ -1673,7 +1674,7 @@ This also allows you to invoke the function using the instance of the struct as
 the left-hand side of the dot operator, which will be passed automatically as
 the first argument.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 car Vehicle
 car.speedToMilesPerHour() -> _out
 # equivalent to
@@ -1685,7 +1686,7 @@ Vehicle.speedToMilesPerHour(car) -> _out
 The \code{self} keyword can also be used as a return type as a shorthand.\\*
 This comes very handy for writing "chainable" functions.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 Color <
 	r Int
 	g Int
@@ -1736,7 +1737,7 @@ initialized with its zero value; there is one exception (see
 
 A Tuple is an ordered collection of zero or more heterogeneous values.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 someTuple tuple<Text, Bool, Real>
 someTuple <- <"foo", true, 420.69>
 \end{minted}
@@ -1750,7 +1751,7 @@ count and equally typed), but in different position, are considered different.
 A Record is an unordered collection of zero or more named (labeled)
 heterogeneous values.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 someRecord record<field1 Text, field2 Bool, field3 Real>
 someRecord <- <field1:"foo", field2:true, field3:420.69>
 \end{minted}
@@ -1769,7 +1770,7 @@ and later refer to via its name. Structs could be seen as Records
 
 Before being able to use a struct type, it must first be declared.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 struct SomeStruct <field1 Text, field2 Bool, field3 Real>
 someStruct SomeStruct
 \end{minted}
@@ -1786,7 +1787,7 @@ in place of the field type.
 
 \comment{TODO: menzionare RFC di larval types e uso del typename}
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 struct Node <
 	data Text,
 	nextNode self
@@ -1800,7 +1801,7 @@ In the case of the a recursive struct, the fields of such type will be
 initialized with a lazy approach: the initialization of such fields happens
 only upon the first access/use.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 struct Node <
 	data Text default "default_data",
 	nextNode self
@@ -1817,7 +1818,7 @@ When modelling a certain domain, it is often needed to define an aggregation or
 composition relationship between types. To achieve aggregation, practically
 speaking, it's simply possible to define a field of a previously typed.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 struct Fullname <name Text, surname Text>
 struct Person <age Int, fullname Fullname>
 Person -> _out # Person<age Int, fullname Fullname>
@@ -1827,7 +1828,7 @@ At times, however, it may be desirable to "flatten/inline" such aggregated
 fields; instead of manually copying the fields in the new declaration, it's
 possible to specify the typename of the other type you want to aggregate.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 struct Person <age Int> + Fullname
 Person -> _out # <age Int, name Text, surname Text>
 \end{minted}
@@ -1835,14 +1836,14 @@ Person -> _out # <age Int, name Text, surname Text>
 The aggregate type can also be specified before the new declaration; by doing
 so, the fields will appear before the ones in the new declaration.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 Fullname + struct Person <age Int>
 Person -> _out # <name Text, surname Text, age Int>
 \end{minted}
 
 Multiple aggregations are possible
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 Vehicle, Engine + struct Car<brand Text> + AirCondition, ReclineableSeats
 Car -> _out
 # Car<
@@ -1864,7 +1865,7 @@ A pattern is a special language construct that describes a structure of data.
 A pattern is used to perform the "deconstruction" of a value into the structure
 that the pattern describes.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 getPoint() => tuple<Int, Int> {
 	=> <69, 420>
 }
@@ -1875,7 +1876,7 @@ getPoint() => tuple<Int, Int> {
 Patterns can also be used as iterators in a for loop; at each iteration the
 value will be matched to the pattern.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 const CITIES <- [
 	"Rome"    => <41.8941047, 12.5151106>
 	"NewYork" => <40.7157121, -74.0013879>
@@ -1890,7 +1891,7 @@ for city => <x, y> in CITIES do {
 only when it is "equal or narrower" than the pattern; the rules are similar to
 types widening rules.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 getPoint() => tuple<Int, Int> { => <69, 420> }
 getPoint() -> <x Real, y Real>
 "$x and $y are Real" -> _out
@@ -1961,7 +1962,7 @@ It basically acts as a sinkhole; redirecting to it does nothing. It can be
 useful to explicitly discard a function return value, or when nested in other
 patterns.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 stack.pop() -> _ # pop a stack but ignore the value
 
 getPoint() -> <_, y>
@@ -1994,7 +1995,7 @@ deconstructed in the same order they're defined in the pattern.
 
 The positional product pattern can be used to deconstruct all product types.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 <x, y> <- getPoint()
 "The point is at $x and $y" -> _out
 \end{minted}
@@ -2008,7 +2009,7 @@ of the fields' names.
 Obviously, nominal product patterns can only be used with product types with
 named fields (i.e. records, structs).
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 <y:someY, x:someX> <- getPoint()
 "The point is at $someX and $someY" -> _out
 \end{minted}
@@ -2021,7 +2022,7 @@ A shorthand syntax is available for such scenario; however, only unary patterns
 are allowed. In this case, the identifier of the unary pattern will be used for
 the field lookup of the product value
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 <_:y, _:x> <- getPoint()
 "The point is at $x and $y" -> _out
 \end{minted}
@@ -2039,7 +2040,7 @@ specified pattern.
 The list pattern is used to iterate over a list; it's basically a unary
 pattern, but allows nested patterns.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 # iterate elements of a list
 for [i] in [0 1 2 3] do somethingWith(i)
 
@@ -2055,7 +2056,7 @@ for [[i]] in identityMatrix do somethingWith(i)
 Since it is very common to iterate the elements of a list, the brackets can be
 omitted for non-nested patterns
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 for i in [0 1 2 3] do somethingWith(i)
 \end{minted}
 
@@ -2064,7 +2065,7 @@ for i in [0 1 2 3] do somethingWith(i)
 The map pattern is used to iterate over maps; it's a pair of two patterns, one
 for the key and one for the value respectively.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 # iterate over a map
 for [key => value] in ["Simone"=>69 "Luca"=>420 "Paolo"=>10] do {
 	somethingWith(key, value)
@@ -2087,7 +2088,7 @@ for nodeA => [nodeB => edgeCost] in graph do {
 
 Like for the list pattern, the brackets can be omitted for non-nested patterns
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 for key => value in ["Simone"=>69 "Luca"=>420 "Paolo"=>10] do {
 	somethingWith(key, value)
 }
@@ -2102,7 +2103,7 @@ definition etcetera; in fact it can be seen as a "named scope".
 
 Each file is implicitly a module, whose name is the filename containing it.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 # my_project/src/Foo.giovi
 "hello from Foo module" -> _out
 const SOME_CONSTANT Real <- 3.14
@@ -2116,7 +2117,7 @@ someFunction() => Int {
 
 A inner sub-module can be declared with the \code{module} keyword.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 # my_project/src/Foo.giovi
 "hello from Foo module" -> _out
 module Bar {
@@ -2135,7 +2136,7 @@ module Bar {
 
 The \code{import} statement is used to "import" one or more modules.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 module Foo {
 	"hello from Foo module" -> _out
 }
@@ -2148,7 +2149,7 @@ An import entry can be a qualified identifier (for native and inner modules) or
 a file URI for file modules. To later refer to a file module, it must be
 aliased first.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 import [
 	giovi.util.Math,
 	'file://my_project/my_module.giovi' as MyModule
@@ -2161,7 +2162,7 @@ Import entries URIs are written using the text literals syntax
 (\see{sec:text_syntax}) and, as such, it allows for text interpolation, which
 is advised to be used carefully.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 nameOfMyModule Text <- "my_other_module"
 import "file://my_project/${nameOfMyModule}.giovi"
 \end{minted}
@@ -2169,7 +2170,7 @@ import "file://my_project/${nameOfMyModule}.giovi"
 It's possible to import to a inner module of a file module with a single import
 statement; however the URI can only appear as the first entry
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 import 'file://my_project/my_module.giovi'.MySubModule.MySubSubModule
 \end{minted}
 
@@ -2184,7 +2185,7 @@ its body will be executed for each import.}
 
 \comment{TODO: menzionare funzione util per caching moduli}
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 module MyMath {
 	"hello from MyMath module" -> _out
 	const PI <- 3.14
@@ -2200,7 +2201,7 @@ functions), will be bound to the scope within which the import is executed.\\*
 This allows the flexibility of deferring the import to whenever it is actually
 needed.
 
-\begin{minted}{giovi.py:GioviLexer}
+\begin{minted}{\giovilexer}
 import giovi.util.Random as Random # immediately imported
 
 if Random.real() > 0.69 do {
