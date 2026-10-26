@@ -2383,50 +2383,60 @@ if Random.real() > 0.69 do {
 
 \section{Conversion}
 
-\resizebox{0.5\linewidth}{!}{
-	\begin{tabular}{ll}
-		Symbol & Meaning \\\hline
-		$=$ & Identity \\\hline
-		$w$ & Wideneable \\\hline
-		$n$ & Narrowable \\\hline
-		$W$ & Wideneable if components are wideneable \\\hline
-		$N$ & Narrowable if components are narrowable \\\hline
-		$!$ & Explicit cast is required (it may fail) \\\hline
-	\end{tabular}
-}
+\begin{table}[!ht]
+	\centering
+	\resizebox{0.4\textwidth}{!}{
+		\begin{tabular}{cl}
+			\textbf{Symbol} & \textbf{Meaning} \\\hline
+			$=$ & Identity \\\hline
+			$w$ & Wideneable \\\hline
+			$n$ & Narrowable \\\hline
+			$W$ & Wideneable if components are wideneable \\\hline
+			$N$ & Narrowable if components are narrowable \\\hline
+			$!$ & Explicit cast is required (it may fail) \\\hline
+		\end{tabular}
+	}
+\end{table}
 
-\subsection{Primitive types}
+\begin{table}[!ht]
+	\label{tab:primitive_types_conversion}
+	\caption{Primitive types conversion table}
+	\centering
+	\resizebox{0.9\textwidth}{!}{
+		\begin{tabular}{|c|c|c|c|c|c|c|c|}
+			\hline
+			$_{from} \quad ^{to}$ & \Void       & \Type       & \Bool       & \Natural       & \Int       & \Real       & \Text \\\hline
+			\Void                 & $=$         & $w$         & $w$         & $w$            & $w$        & $w$         & $w$         \\\hline
+			\Type                 &             & $=$         &             &                &            &             &             \\\hline
+			\Bool                 &             &             & $=$         &                &            &             &             \\\hline
+			\Natural              &             &             &             & $=$            & $w$        & $w$         &             \\\hline
+			\Int                  &             &             &             & $n!$           & $=$        & $w$         &             \\\hline
+			\Real                 &             &             &             & $n!$           & $n!$       & $=$         &             \\\hline
+			\Text                 &             &             &             &                &            &             & $=$         \\\hline
+		\end{tabular}
+	}
+\end{table}
 
-\resizebox{0.9\linewidth}{!}{
-	\begin{tabular}{|c|c|c|c|c|c|c|c|}
-		\hline
-		$_{from} \quad ^{to}$ & \Void       & \Type       & \Bool       & \Natural       & \Int       & \Real       & \Text \\\hline
-		\Void                 & $=$         & $w$         & $w$         & $w$            & $w$        & $w$         & $w$         \\\hline
-		\Type                 &             & $=$         &             &                &            &             &             \\\hline
-		\Bool                 &             &             & $=$         &                &            &             &             \\\hline
-		\Natural              &             &             &             & $=$            & $w$        & $w$         &             \\\hline
-		\Int                  &             &             &             & $n!$           & $=$        & $w$         &             \\\hline
-		\Real                 &             &             &             & $n!$           & $n!$       & $=$         &             \\\hline
-		\Text                 &             &             &             &                &            &             & $=$         \\\hline
-	\end{tabular}
-}
+\begin{table}[!ht]
+	\label{tab:non_primitive_types_conversion}
+	\caption{Non primitive types conversion table}
+	\centering
+	\resizebox{0.9\textwidth}{!}{
+		\begin{tabular}{|c|c|c|c|c|c|c|c|}
+			\hline
+			$_{from} \quad ^{to}$ & \Void       & \List       & \Map        & \Function      & \Tuple       & \Record       & \Struct \\\hline
+			\Void                 & $=$         & $w$         & $w$         & $w$            & $w$          & $w$           & $w$           \\\hline
+			\List                 &             & $N! W$      &             &                &              &               &               \\\hline
+			\Map                  &             &             & $N! W$      &                &              &               &               \\\hline
+			\Function             &             &             &             & $N! W$         &              &               &               \\\hline
+			\Tuple                &             &             &             &                & $N! W$       & $W$           & $W$          \\\hline
+			\Record               &             &             &             &                & $N!$         & $N! W$        & $W$           \\\hline
+			\Struct               &             &             &             &                & $N!$         & $N!$          & $N! W!$       \\\hline
+		\end{tabular}
+	}
+\end{table}
 
-
-\subsection{Non primitive types}
-
-\resizebox{0.9\linewidth}{!}{
-	\begin{tabular}{|c|c|c|c|c|c|c|c|}
-		\hline
-		$_{from} \quad ^{to}$ & \Void       & \List       & \Map        & \Function      & \Tuple       & \Record       & \Struct \\\hline
-		\Void                 & $=$         & $w$         & $w$         & $w$            & $w$          & $w$           & $w$           \\\hline
-		\List                 &             & $N! W$      &             &                &              &               &               \\\hline
-		\Map                  &             &             & $N! W$      &                &              &               &               \\\hline
-		\Function             &             &             &             & $N! W$         &              &               &               \\\hline
-		\Tuple                &             &             &             &                & $N! W$       & $W$           & $W$          \\\hline
-		\Record               &             &             &             &                & $N!$         & $N! W$        & $W$           \\\hline
-		\Struct               &             &             &             &                & $N!$         & $N!$          & $N! W!$       \\\hline
-	\end{tabular}
-}
+\todo{completare... overview dei tipi, descrizione e regole generali}
 
 \chapter{Inference rules}
 
