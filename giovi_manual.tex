@@ -492,6 +492,67 @@ documentation: \code{\#? This is a documentation comment}
 
 A \code{Bool} literal is simply expressed by \code{true} or \code{false}
 
+\subsubsection{Numbers}
+
+\begin{minted}{antlr}
+	literal_number
+		: literal_integer
+		| literal_natural
+		| literal_real
+		;
+	literal_integer
+		: ( numeral_decimal
+		  | numeral_hex
+		  | numeral_octal
+		  | numeral_binary
+		  ) 'i'?
+		;
+	literal_natural
+		: ( numeral_decimal
+		  | numeral_hex
+		  | numeral_octal
+		  | numeral_binary
+		  ) 'n'?
+		;
+	literal_real
+		: decimal_floating_point_literal
+		| hexadecimal_floating_point_literal
+		| (numeral_hex | numeral_octal | numeral_binary) 'r'
+		;
+\end{minted}
+
+Giovi supports three different type of numbers: integers, natural and real.
+
+\paragraph{Suffixes} By default, a numeral is parsed as an integer; you can
+add a suffix to the number to explicitate the type: \code{n} for naturals,
+\code{i} for integers, \code{r} for reals. \code{69n} \code{69i} \code{69r}
+
+\paragraph{Separators} To improve readability of large numbers, you can use
+underscores to group digits; separators cannot appear at the beginning or the
+end of the number. For example: \code{100\_000\_000}
+
+\clearpage
+
+\paragraph{Bases} Numeral literals may be expressed in multiple bases.\\*
+By default, decimal (base 10) is used; to indicate a different base use the
+appropriate prefix:
+\begin{itemize}
+	\item Decimal (base 10): \code{69420}
+	\item Hexadecimal (base 16): \code{0x10F2C}
+	\item Octal (base 8): \code{0o207454}
+	\item Binary (base 2): \code{0b0001\_0000\_1111\_0010\_1100}
+\end{itemize}
+
+\paragraph{Scientific notation} For real numbers, the scientific notation is
+supported: \code{1e69}, \code{6.9e-10}
+
+\paragraph{Binary exponent} For hexadecimal real numbers, a binary exponent can
+be used: \code{0x1p69}
+
+\comment{TODO: semplificare?}
+
+\clearpage
+
 \subsubsection{Text}
 \label{sec:text_syntax}
 
@@ -577,8 +638,6 @@ t Text <- "{
 	hello world}"
 \end{minted}
 
-\clearpage
-
 \subparagraph{Incidental whitespaces} In a text block, white spaces (spaces,
 newlines, tabs) are preserved, unless they're considered "incidental".\\*
 Incidental white spaces are those needed for code indentation.
@@ -601,15 +660,14 @@ if true do {
 }
 \end{minted}
 
-The amount of "incidental" whitespaces is defined by the line that has less of
-them.
+\clearpage
 
-\nb{
-	Only the highlighted part will actually be included in the text literal
-}
+The amount of whitespaces that will be considered "incidental" is defined by
+the line that has less of them.
 
 \begin{listing}
 	\label{lst:textblock_incidental_whitespaces}
+	\caption{A textblock with its actual content highlighted}
 	\begin{minted}[autogobble=false,showtabs,tab=>,escapeinside=||]{text}
 			_out <- "{
 			|\colorbox{gray!80}{<html>}|
@@ -629,13 +687,13 @@ them.
 		|\colorbox{gray!80}{</html>}|
 		|\colorbox{gray!80}{	\}"}|
 	\end{minted}
-	\caption{A textblock with its actual content highlighted}
 \end{listing}
 
-Note how line 16 \code{</html>} now dictates the amount of incidental
-whitespaces.
-
-\clearpage
+\nb{
+	Only the highlighted part will actually be included in the text literal.\\*
+	Note how line 16 \code{</html>} dictates the amount of incidental
+	whitespaces for the second textblock.
+}
 
 \subparagraph{Indentation leader} Only one type of white space will be
 considered as the indentation leader; in case of mixed types, the first
@@ -661,31 +719,6 @@ Note how line 5 accidentally used four spaces instead of a tab; since the tab
 was chosen as indentation leader, the spaces are considered non-incidental,
 therefore they should be included in the text, hence line 5 now dictates the
 amount of incidental whitespaces.
-
-\clearpage
-
-\subsubsection{Numbers}
-
-Giovi supports three different type of numbers: integers, natural and real.
-
-\paragraph{Separators} To improve readability of large numbers, you can use
-underscores to group digits; separators cannot appear at the beginning or the
-end of the number. For example: \code{100\_000\_000}
-
-\paragraph{Integers} An integer literal may be expressed in multiple
-bases.\\*
-By default, decimal (base 10) is used; to indicate a different base use the
-appropriate prefix:
-\begin{itemize}
-	\item Decimal (base 10): \code{69420}
-	\item Hexadecimal (base 16): \code{0x10F2C}
-	\item Octal (base 8): \code{0o207454}
-	\item Binary (base 2): \code{0b0001\_0000\_1111\_0010\_1100}
-\end{itemize}
-
-\paragraph{Suffixes} By default, a number is parsed as an integer; you can
-add a suffix to the number to explicitate the type: \code{n} for naturals,
-\code{i} for integers, \code{r} for reals. \code{69n} \code{69i} \code{69r}
 
 \subsubsection{Identifiers}
 
