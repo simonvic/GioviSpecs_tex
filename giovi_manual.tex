@@ -16,6 +16,16 @@
 \usepackage{multirow}
 \usepackage{hyperref}
 
+\usepackage[
+	font={footnotesize,it},
+	justification=raggedright,
+	singlelinecheck=true,
+	labelfont={up,sc,bf},
+	labelsep=colon,
+	position=auto,
+	skip=0pt
+]{caption}
+
 \usepackage{titlesec}
 \titleformat{\part}[display]
 	{\scshape\Huge\filcenter}
@@ -73,7 +83,7 @@
 \setcounter{secnumdepth}{3}
 \setcounter{tocdepth}{3}
 
-\usepackage{minted}
+\usepackage[newfloat=true]{minted}
 \setminted{
 	fontsize=\scriptsize,
 	bgcolor=gray!10,
@@ -99,7 +109,11 @@
 \setminted[antlr]{
 	linenos=false,
 }
+\AddToHook{env/listing/begin}{\setminted{vspace=0pt}}
 \newcommand{\giovilexer}{./giovi_pygments/giovi.py:GioviLexer}
+
+\usepackage{float}
+\floatplacement{listing}{H}
 
 \usepackage{marginnote}
 \newcommand{\comment}[1]{\marginnote{\color{black!30}\small\sffamily#1}}
