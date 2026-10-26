@@ -27,6 +27,22 @@
 \titleformat{\paragraph}[runin]{\bfseries\scshape\large}{\llap{\theparagraph~}}{0pt}{}
 \titleformat{\subparagraph}[runin]{\bfseries\scshape\normalsize}{\llap{\thesubparagraph~}}{0pt}{}
 
+\usepackage{fancyhdr}
+\renewcommand{\chaptermark}[1]{\markboth{\thechapter~#1}{}}
+\renewcommand{\sectionmark}[1]{\markright{\thesection~#1}}
+\fancyhead{}
+\fancyhead[L]{\nouppercase{\scshape\leftmark~//~\rightmark}}
+% \fancyhead[R]{\nouppercase{\scshape\rightmark}}
+\fancyfoot{}
+\fancyfoot[C]{\thepage}
+\renewcommand{\footrulewidth}{0.0pt}
+\renewcommand{\headrulewidth}{0.5pt}
+\fancyheadoffset{2cm}
+\fancyfootoffset{2cm}
+\setlength{\headheight}{14pt}
+
+% \AddToHook{cmd/section/before}{\ifnum\value{section}>0 \clearpage\fi}
+
 \setcounter{secnumdepth}{3}
 \setcounter{tocdepth}{3}
 
@@ -161,6 +177,8 @@
 \tableofcontents
 
 \newpage
+
+\pagestyle{fancy}
 
 \part{The language}
 
