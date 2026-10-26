@@ -557,7 +557,7 @@ if true do {
 			<html>
 				<head></head>
 				<body>
-					<p>Hello world</p>
+					<p class="foo">Hello world</p>
 				<body>
 			</html>
 			}"
@@ -1276,8 +1276,8 @@ declaration.
 A default value is also referred to as the "zero" value; the two terms will be
 used interchangeably.
 
-Every type has a zero value, for example it's zero for numeric types, empty
-string for \code{Text}, false for \code{Bool} etc.
+Every type has a zero value, for example it's the number zero for numeric
+types, an empty string for \code{Text}, false for \code{Bool} etc.
 
 \begin{minted}{\giovilexer}
 someInteger Int
@@ -1309,8 +1309,11 @@ struct Person <
 	favoriteColor tuple<Int, Int, Int>
 >
 someDefaultPerson Person
-someDefaultPerson -> _out
-# Person.<name:"", aliaes:[], age:0, isAdult:false, favoriteColor:<0,0,0>>
+someDefaultPerson.name -> _out # ""
+someDefaultPerson.aliaes -> _out # []
+someDefaultPerson.age -> _out # 0
+someDefaultPerson.isAdult -> _out # false
+someDefaultPerson.favoriteColor -> _out # <0,0,0>
 	\end{minted}
 \end{listing}
 
