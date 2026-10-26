@@ -736,6 +736,8 @@ Any other word that is not a reserved keyword is considered an identifier.
 This section mainly focuses on the syntax rules of the grammar; for more
 details about a specific feature, refer to the dedicated section.
 
+\vspace{\baselineskip}
+
 A valid Giovi program starts with zero or more top-level statements; there are
 11 valid statements:
 
@@ -764,8 +766,8 @@ statement_declaration
 	;
 \end{minted}
 
-In many rules, a single statement or a block of statements are allowed; the
-following rules will be used.
+In many rules, either a single statement or a block of statements are allowed;
+the following "fragment" rules will be used.
 
 \begin{minted}{antlr}
 block: '{' statement* '}';
@@ -854,15 +856,14 @@ statement_declaration_constant
 
 Constants are read-only values; their value is defined at declaration and
 cannot change.\\*
+\comment{TODO: decidere se usare shallow o deep immutability}
 By convention, constants identifiers are written in \code{SCREAMING\_CASE}.\\*
 The type can be omitted as it will be inferred from the expression.
-\
+
 \begin{minted}{\giovilexer}
 const PI Real <- 3.14
 const TAU <- PI * 2
 \end{minted}
-
-\comment{TODO: decidere se usare shallow o deep immutability}
 
 \subsection{Variable declaration}
 
@@ -2065,7 +2066,6 @@ There are five kinds of patterns:
 	\item Terminal patterns:
 		\begin{itemize}
 			\item \textbf{Placeholder pattern}: \code{\_} (underscore)
-
 				\comment{TODO: rinominare. Sinkhole?}
 			\item \textbf{Unary pattern}: \code{someIdentifier}
 		\end{itemize}
@@ -2459,6 +2459,8 @@ For example, $(\tau_1,\tau_2)\to\tau_3$ describes a function type that takes
 two arguments of type $\tau_1$ and $\tau_2$ respectively, and produces a value
 of type $\tau_3$.
 
+\clearpage
+
 \paragraph{"Generic" types} Some types are "generic" (a.k.a. existential
 types), meaning that they declare one or more type variable (a.k.a. type
 parameters).\\*
@@ -2466,7 +2468,6 @@ The notation $T[\tau:=\sigma]$ describes a generic type $T$ with a type
 parameter $\tau$ of some type $\sigma$.\\*
 The notation $t : \exists\sigma.T$ means that $t$ is a term of concrete
 type $T$ with the type parameter $\tau$ equal to $\sigma$.
-
 \comment{TODO: tipi esistenziali? Rivedere notazione}
 
 \paragraph{List} To denote a list type, the existential type notation will
@@ -2481,7 +2482,6 @@ notation will be used: $\map{a\mapsto1,b\mapsto2,c\mapsto3}$
 
 \paragraph{Identifiers set} A set $\Id=\set{i\mid i:=\text{identifier}}$ is
 used to encompass all possible identifiers allowed by the grammar.
-
 \comment{TODO: formalizzare}
 
 \paragraph{Product types}
@@ -2496,7 +2496,6 @@ record type (a tuple whose fields are named).
 
 \subparagraph{Struct} The notation $(\xi, \tuple{x_1:\tau_1, x_2:\tau_2})$
 describes a struct type (a pair of an identifier $\xi$ and a record type).
-
 \comment{TODO: rivedere notazione struct}
 
 \begin{definition}[Types widening/narrowing]
@@ -2627,11 +2626,11 @@ Using the $\EnvVar$ variables environment as example
 	needed.
 }
 
-\comment{TODO: menzionare uso di type system strutturale e nominale}
-
-\comment{TODO: usare 0-based indexes}
-
-\comment{TODO: usare notazione tipi polimorfici invece che solo Type}
+\comment{
+	TODO: menzionare uso di type system strutturale e nominale\\
+	TODO: usare 0-based indexes\\
+	TODO: usare notazione tipi polimorfici invece che solo Type
+}
 
 \subsection{Primitive types}
 
@@ -2675,6 +2674,8 @@ Using the $\EnvVar$ variables environment as example
 	When the type parameters are not needed in the rule, they will be omitted.
 	For example: $\tau=\List$, $\expr:\Map$
 }
+
+\clearpage
 
 \subsection{Product types}
 
@@ -2736,6 +2737,8 @@ Using the $\EnvVar$ variables environment as example
 \]
 
 \comment{TODO: che notazione usare per \Struct???}
+
+\clearpage
 
 \subsection{Functions}
 
@@ -3084,6 +3087,8 @@ is narrower than $\omega'$.
 	}
 \]
 
+\comment{TODO: specificare il set $Unicode$ con i caratteri permessi da Java}
+
 \[
 	\infrule{
 		\EnvSym\then x \in \text{Unicode} \semiq n \geq 0
@@ -3094,8 +3099,6 @@ is narrower than $\omega'$.
 \]
 
 % \subparagraph{Examples} \verb|"hello", 'world', "{hello}", '{world}'|
-
-\comment{TODO: specificare il set $Unicode$ con i caratteri permessi da Java}
 
 \clearpage
 
@@ -3298,7 +3301,7 @@ Range from $\expr_1$ (begin) to $\expr_2$ (end) with a step $\expr_3$.
 
 \clearpage
 
-\paragraph{General rules}
+\subsection{General rules}
 
 \[
 	\infrule{
@@ -4910,10 +4913,9 @@ readable
 environments.\\*
 For example, $\Env_\EnvLoc$ will denote the set of location environments.
 
-\comment{TODO: rinominare in Decomposition?}
-
 \paragraph{Deconstruction function} Given how patterns can be nested, a
 recursive function will be used to describe the deconstruction.
+\comment{TODO: rinominare in Decomposition?}
 \[
 	\begin{split}
 		\decons& : (\Env_\EnvLoc,\Env_\EnvStore,\Val,\Pattern) \to (\Env_\EnvLoc,\Env_\EnvStore) \\*
@@ -4929,7 +4931,6 @@ recursive function will be used to describe the deconstruction.
 		\end{cases}
 	\end{split}
 \]
-
 In other words, the function tells that:
 \begin{itemize}
 	\item for a placeholder pattern, the resulting environments will be the
