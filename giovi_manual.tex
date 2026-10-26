@@ -1,21 +1,20 @@
 \documentclass[11pt]{report}
+
 \usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
 \usepackage[a4paper,margin=40mm]{geometry}
-\usepackage{indentfirst}
-\usepackage{multirow}
+
 \usepackage[english]{babel}
-\usepackage{minted}
-\usepackage{longtable}
-\usepackage{arydshln}
+\usepackage{microtype}
+\usepackage{sourcecodepro}
+\usepackage{indentfirst}
 \usepackage{amsmath}
 \usepackage{amsthm}
 \usepackage{amssymb}
-\usepackage{xcolor}
 \usepackage{mathtools}
-\usepackage{sourcecodepro}
+\usepackage{xcolor}
+\usepackage{multirow}
 \usepackage{hyperref}
-\usepackage{microtype}
-\usepackage{marginnote}
 
 \usepackage{titlesec}
 \titleformat{\part}[display]{\scshape\Huge\filcenter}{\partname~\thepart}{0pt}{}
@@ -46,8 +45,7 @@
 \setcounter{secnumdepth}{3}
 \setcounter{tocdepth}{3}
 
-\renewcommand{\arraystretch}{1.5} % increase space between table rows
-
+\usepackage{minted}
 \setminted{
 	fontsize=\scriptsize,
 	bgcolor=gray!10,
@@ -74,6 +72,11 @@
 	linenos=false,
 }
 \newcommand{\giovilexer}{./giovi_pygments/giovi.py:GioviLexer}
+
+\usepackage{marginnote}
+\newcommand{\comment}[1]{\marginnote{\color{black!30}\small\sffamily#1}}
+\newcommand{\commentinline}[1]{\parbox{0.9\linewidth}{\color{black!30}\small\sffamily#1}}
+\setlength{\marginparwidth}{3cm}
 
 \newcommand{\See}[1]{\S\ref{#1}~\textsc{\nameref{#1}}}
 \newcommand{\see}[1]{\S\ref{#1}}
@@ -141,15 +144,12 @@
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[section]
 
-\newcommand{\comment}[1]{\marginnote{\color{black!30}\small\sffamily#1}}
-\newcommand{\commentinline}[1]{\parbox{0.9\linewidth}{\color{black!30}\small\sffamily#1}}
-\setlength{\marginparwidth}{3cm}
-
-
 \makeatletter
 \providecommand{\bigsqcap}{\mathop{\mathpalette\@updown\bigsqcup}}
 \newcommand*{\@updown}[2]{\rotatebox[origin=c]{180}{$\m@th#1#2$}}
 \makeatother
+
+\renewcommand{\arraystretch}{1.5} % increase space between table rows
 
 \begin{document}
 
