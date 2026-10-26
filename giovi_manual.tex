@@ -218,7 +218,7 @@
 
 \tableofcontents
 
-\newpage
+\clearpage
 
 \pagestyle{fancy}
 
@@ -455,7 +455,7 @@ documentation: \code{\#? This is a documentation comment}
 
 \comment{TODO: Specificare RFC riguardo language server e altro?}
 
-\newpage
+\clearpage
 
 \subsection{Literals}
 
@@ -548,7 +548,7 @@ t Text <- "{
 	hello world}"
 \end{minted}
 
-\newpage
+\clearpage
 
 \subparagraph{Incidental whitespaces} In a text block, white spaces (spaces,
 newlines, tabs) are preserved, unless they're considered "incidental".\\*
@@ -602,7 +602,7 @@ them.
 Note how line 16 \code{</html>} now dictates the amount of incidental
 whitespaces.
 
-\newpage
+\clearpage
 
 \subparagraph{Indentation leader} Only one type of white space will be
 considered as the indentation leader; in case of mixed types, the first
@@ -629,7 +629,7 @@ was chosen as indentation leader, the spaces are considered non-incidental,
 therefore they should be included in the text, hence line 5 now dictates the
 amount of incidental whitespaces.
 
-\newpage
+\clearpage
 
 \subsubsection{Numbers}
 
@@ -662,7 +662,7 @@ Any other word that is not a reserved keyword is considered an identifier.
 
 \comment{TODO: restringere i caratteri permessi ad un subset unicode?}
 
-\newpage
+\clearpage
 
 \section{Syntax}
 \label{sec:syntax}
@@ -715,7 +715,7 @@ identifier: [a-zA-Z] [a-zA-Z0-9_]* ;
 
 It must start with a letter and can contain any letter, number or underscore.
 
-\newpage
+\clearpage
 
 \subsection{Alias declaration}
 
@@ -1179,7 +1179,7 @@ if true do {
 #end scope
 \end{minted}
 
-\newpage
+\clearpage
 
 \section{Declarations lifetime} The lifetime of a declaration is bound to
 the lifetime of the scope in which it has been declared.
@@ -1270,7 +1270,7 @@ someDefaultPerson -> _out
 
 For a more formal definition, see \See{sec:zero_values}.
 
-\newpage
+\clearpage
 
 \section{The default keyword}
 
@@ -1411,7 +1411,7 @@ someStruct.foo -> _out # 69
 someStruct::foo -> _out # function(){}
 \end{minted}
 
-\newpage
+\clearpage
 
 \section{Function scope}
 
@@ -1475,7 +1475,7 @@ function makePizza(ingredients [Text]) => Pizza {
 }
 \end{minted}
 
-\newpage
+\clearpage
 
 \section{Parameters and invocation}
 
@@ -1597,7 +1597,7 @@ processPizzaOrder(
 processPizzaOrder(tableNumber:69) # Margherita to table 69 and no pineapple
 \end{minted}
 
-\newpage
+\clearpage
 
 \subsection{Invocation labels}
 
@@ -1670,7 +1670,7 @@ processPizzaOrder(
 )
 \end{minted}
 
-\newpage
+\clearpage
 
 \section{Struct functions}
 \label{sec:struct_functions}
@@ -1966,7 +1966,7 @@ getPoint() -> <x Real, y Real>
 "$x and $y are Real" -> _out
 \end{minted}
 
-\newpage
+\clearpage
 
 \section{Patterns kinds}
 
@@ -2016,7 +2016,7 @@ nested, where the second field pattern is a placeholder.
 		iterator patterns as well).
 \end{itemize}
 
-\newpage
+\clearpage
 
 \section{Terminal patterns}
 
@@ -2046,7 +2046,7 @@ which the deconstructed value is widened to.
 
 \nb{A variable declaration is secretly a unary pattern!}
 
-\newpage
+\clearpage
 
 \section{Product patterns}
 
@@ -2096,7 +2096,7 @@ the field lookup of the product value
 "The point is at $x and $y" -> _out
 \end{minted}
 
-\newpage
+\clearpage
 
 \section{Iterator patterns}
 
@@ -2429,7 +2429,7 @@ The $\sqcap$ operator produces the least wide type for the operand types
 	}
 \]
 
-\newpage
+\clearpage
 
 \subsection{Type environments}
 
@@ -2526,7 +2526,7 @@ Using the $\EnvVar$ variables environment as example
 	\end{cases}
 \]
 
-\newpage
+\clearpage
 
 \section{Types}
 
@@ -2754,7 +2754,7 @@ controvarianza (parametri funzioni?)}
 	}
 \]
 
-\newpage
+\clearpage
 
 \subsubsection{Product types}
 
@@ -2790,7 +2790,7 @@ types, because we would "lose" their semantic meaning.\\*
 If you're ok with losing such information, conversion between "incompatible"
 product types can still be achieved via explicit type coercion (casting).
 
-\newpage
+\clearpage
 
 \paragraph{Tuple}
 
@@ -2839,7 +2839,7 @@ type $\omega$ of $\sigma$ (struct name and fields names are ignored).
 
 \vspace{\baselineskip}
 
-\newpage
+\clearpage
 
 \paragraph{Record}
 
@@ -2892,7 +2892,7 @@ construction).
 \comment{TODO: questa regola è ridondante?}
 \vspace{\baselineskip}
 
-\newpage
+\clearpage
 
 \subsubsection{Function}
 
@@ -2933,7 +2933,7 @@ is narrower than $\omega'$.
 	un tipo inaspettato
 }
 
-\newpage
+\clearpage
 
 \section{Expressions}
 
@@ -3007,7 +3007,7 @@ is narrower than $\omega'$.
 
 \comment{TODO: specificare il set $Unicode$ con i caratteri permessi da Java}
 
-\newpage
+\clearpage
 
 \subsection{Collection types}
 
@@ -3063,7 +3063,7 @@ List of $\omega$ (widest among $\tau$)
 Map of $\omega_\kappa$ keys (widest  among $\kappa$) and $\omega_\nu$ (widest
 among $\nu$).
 
-\newpage
+\clearpage
 
 \subsection{Product types}
 
@@ -3124,7 +3124,7 @@ This expression initializes a struct $\xi$ of type $\sigma$ by using a
 record-like notation, where each specified field $y_j$ gets initialized with the
 expression $\expr_j$ of type $\eta_j$ (narrower than $\tau_i$).
 
-\newpage
+\clearpage
 
 \subsection{Parenthesized expression}
 
@@ -3179,7 +3179,7 @@ expression $\expr_j$ of type $\eta_j$ (narrower than $\tau_i$).
 	}
 \]
 
-\newpage
+\clearpage
 
 \subsection{Range}
 
@@ -3206,7 +3206,7 @@ Range from $\expr_1$ (begin) to $\expr_2$ (end).
 \]
 Range from $\expr_1$ (begin) to $\expr_2$ (end) with a step $\expr_3$.
 
-\newpage
+\clearpage
 
 \paragraph{General rules}
 
@@ -3285,7 +3285,7 @@ defined.
 	}
 \]
 
-\newpage
+\clearpage
 
 \subsection{Primitive types}
 
@@ -3972,7 +3972,7 @@ defined.
 	}
 \]
 
-\newpage
+\clearpage
 
 \subsection{Collection types}
 
@@ -4343,7 +4343,7 @@ Reverse: \code{<0,1,2,3,4,5> . 4..2 = <4 3 2>}
 
 \comment{TODO: ...}
 
-\newpage
+\clearpage
 
 \section{Statements}
 
@@ -4510,7 +4510,7 @@ results in an alteration of an environment, the judgment may be followed by a
 "double turnstile" symbol $\Then$ and the new environments.\\*
 For example: $\EnvLoc,\EnvStore \then \expr \Then \EnvStore_2$
 
-\newpage
+\clearpage
 
 \subsection{Zero values}
 \label{sec:zero_values}
@@ -4619,7 +4619,7 @@ dimensione iniziale}
 	\EnvSym\then \Zero(\Range) = \Range(0, 0, 1)
 \]
 
-\newpage
+\clearpage
 
 \section{Operational rules}
 
@@ -4799,7 +4799,7 @@ immutability}
 	}
 \]
 
-\newpage
+\clearpage
 
 \subsection{Patterns}
 
@@ -4857,7 +4857,7 @@ In other words, the function tells that:
 		map's entry key and value pair.
 \end{itemize}
 
-\newpage
+\clearpage
 
 \subsubsection{Terminal patterns}
 
@@ -4885,7 +4885,7 @@ More formally, using the deconstruction function
 \paragraph{Unary pattern} The semantic rules are the same of redirections and
 variable declarations, because they're secretly the same thing.
 
-\newpage
+\clearpage
 
 \subsubsection{Product patterns}
 
@@ -4998,7 +4998,7 @@ the pattern $\pattern$
 At each iteration $i$, the $i$-th key-value pair of the map gets deconstructed
 with the patterns $\pattern_k$ and $\pattern_v$ respectively
 
-\newpage
+\clearpage
 
 \subsection{Expressions}
 
@@ -5177,7 +5177,7 @@ name $y_j$ is bound to the formal parameter whose label is $l_i=y_j$.
 \end{tabular}
 }
 
-\newpage
+\clearpage
 
 \[
 	\begin{split}
