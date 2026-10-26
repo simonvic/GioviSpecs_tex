@@ -17,6 +17,16 @@
 \usepackage{microtype}
 \usepackage{marginnote}
 
+\usepackage{titlesec}
+\titleformat{\part}[display]{\scshape\Huge\filcenter}{\partname~\thepart}{0pt}{}
+\titleformat{\chapter}[display]{\scshape\Huge\filcenter}{\chaptertitlename~\thechapter}{0pt}{}
+\titlespacing*{\chapter}{0pt}{0pt}{2.0\baselineskip}
+\titleformat{\section}{\scshape\huge}{\llap{\thesection~}}{0pt}{}
+\titleformat{\subsection}{\scshape\LARGE}{\llap{\thesubsection~}}{0pt}{}
+\titleformat{\subsubsection}{\scshape\Large}{\llap{\thesubsubsection~}}{0pt}{}
+\titleformat{\paragraph}[runin]{\bfseries\scshape\large}{\llap{\theparagraph~}}{0pt}{}
+\titleformat{\subparagraph}[runin]{\bfseries\scshape\normalsize}{\llap{\thesubparagraph~}}{0pt}{}
+
 \setcounter{secnumdepth}{3}
 \setcounter{tocdepth}{3}
 
@@ -49,7 +59,7 @@
 }
 \newcommand{\giovilexer}{./giovi_pygments/giovi.py:GioviLexer}
 
-\newcommand{\See}[1]{\S\ref{#1}~\nameref{#1}}
+\newcommand{\See}[1]{\S\ref{#1}~\textsc{\nameref{#1}}}
 \newcommand{\see}[1]{\S\ref{#1}}
 \newcommand{\set}[1]{\left\{#1\right\}}
 \newcommand{\glist}[1]{\left[#1\right]}
@@ -305,7 +315,7 @@ to ensure backward compatibility in the eventuality they get used.
 
 \subsection{Operators}
 
-\begin{table}[!h]
+\begin{table}[H]
 \resizebox{\linewidth}{!}{
 	\begin{tabular}{rcl}
 		\textbf{Operator}               & \textbf{Token}  & \textbf{Description}                            \\\hline
@@ -586,9 +596,9 @@ add a suffix to the number to explicitate the type: \code{n} for naturals,
 
 \subsubsection{Identifiers}
 
-Any other word that is not a reserved keyword is considered an identifier.
-
 \comment{TODO: completare}
+
+Any other word that is not a reserved keyword is considered an identifier.
 
 \comment{TODO: restringere i caratteri permessi ad un subset unicode?}
 
@@ -1111,7 +1121,7 @@ if true do {
 
 \newpage
 
-\subparagraph{Declarations lifetime} The lifetime of a declaration is bound to
+\section{Declarations lifetime} The lifetime of a declaration is bound to
 the lifetime of the scope in which it has been declared.
 
 \begin{minted}{\giovilexer}
@@ -1139,7 +1149,7 @@ username Text <- "simonvic"
 username Text <- "mario" # ERROR: username already declared
 \end{minted}
 
-\subparagraph{Shadowing} You can, for example, declare a variable with the same
+\section{Shadowing} You can, for example, declare a variable with the same
 name of another variable declared in a parent scope; the variable in the parent
 scope is now "shadowed", and cannot be referred to by its name.
 
@@ -1431,11 +1441,13 @@ someFunction(someArgument)
 someArgument -> _out # still 69
 \end{minted}
 
-\comment{TODO: menzionare eccezione per self functions, se decido di
-"formalizzare il bug" :)}
+\comment{
+	TODO: menzionare eccezione per self functions, se decido di "formalizzare
+	il bug" :)
 
-\comment{TODO: alternativamente, formalizzare che le strutture (o tutti i
-prodotti tipi) sono mutabili}
+	Alternativamente, formalizzare che le strutture (o tutti i prodotti tipi)
+	sono mutabili
+}
 
 \subparagraph{Parameters defaults}
 
