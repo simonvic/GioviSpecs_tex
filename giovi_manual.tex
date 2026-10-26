@@ -5190,114 +5190,121 @@ name $y_j$ is bound to the formal parameter whose label is $l_i=y_j$.
 
 \chapter{Notation}
 
-\section{Commonly used symbols}
+\begin{table}[!ht]
+	\label{tab:greek_letters_legend}
+	\caption{Greek letters legend}
+	\renewcommand{\arraystretch}{1}
+	\centering
+	\begin{tabular}{ccc}
+		$A$        & $\alpha$   & alpha   \\
+		$B$        & $\beta$    & beta    \\
+		$\Gamma$   & $\gamma$   & gamma   \\
+		$\Delta$   & $\delta$   & delta   \\
+		$E$        & $\epsilon$ & epsilon \\
+		$Z$        & $\zeta$    & zeta    \\
+		$H$        & $\eta$     & eta     \\
+		$\Theta$   & $\theta$   & theta   \\
+		$I$        & $\iota$    & iota    \\
+		$K$        & $\kappa$   & kappa   \\
+		$\Lambda$  & $\lambda$  & lambda  \\
+		$M$        & $\mu$      & mu      \\
+		$N$        & $\nu$      & nu      \\
+		$\Xi$      & $\xi$      & xi      \\
+		$O$        & $o$        & o       \\
+		$\Pi$      & $\pi$      & pi      \\
+		$P$        & $\rho$     & rho     \\
+		$\Sigma$   & $\sigma$   & sigma   \\
+		$T$        & $\tau$     & tau     \\
+		$\Upsilon$ & $\upsilon$ & upsilon \\
+		$\Phi$     & $\phi$     & phi     \\
+		$X$        & $\chi$     & chi     \\
+		$\Psi$     & $\psi$     & psi     \\
+		$\Omega$   & $\omega$   & omega   \\
+	\end{tabular}
+\end{table}
 
-\resizebox{0.55\linewidth}{!}{
-\begin{tabular}{rll}
-	\textbf{Symbol}                         & \textbf{Use}                     & \textbf{Example}s\\\hline
-	$\bop$                                  & Generic binary operator          & $x \bop y$\\\hline
-	$\narreq$                               & "Narrower than" operator         & $\Int \narreq \Real$ \\\hline
-	$\sqcap$                                & "Least wide type" operator       & $\Int \sqcap \Real$ \\\hline
-	$\then$                                 & Assumptions suffix               & $\EnvSym \then \val:\tau$ \\\hline
-	$\Then$                                 & Environments modification prefix & $\expr \Then \EnvStore$\\\hline
-	$\tau,\omega,\eta,\kappa,\nu$           & \multirow{2}{*}{A type}          & $\tau = \Int$\\
-	or any lowercase greek letter           &                                  & $\eta=\Int \narreq \omega=\Real$\\\hline
-	$\phi$                                  & Function type                    & $\phi=(\tau_1)\to\tau_2$\\\hline
-	$\theta$                                & Tuple type                       & $\theta=\tau_1\times\tau_2$\\\hline
-	$\rho$                                  & Record type                      & $\rho=\tuple{x:\tau_1,y:\tau_2}$\\\hline
-	$\sigma$                                & Struct type                      & $\sigma=(\xi, \tuple{x:\tau_1,y:\tau_2})$\\\hline
-	$\eval$                                 & "Evaluates to" operator          & $\expr\eval\val$\\\hline
-	$\addr$                                 & Memory address                   & $\addr = 69$\\\hline
-	$\Id$                                   & Identifiers set                  & \\\hline
-	$a,b,x,y$                               & \multirow{2}{*}{Identifier}      & \\
-	or any lower case latin letter          &                                  & \\\hline
-	$\Expr$                                 & Expressions set                  & \\\hline
-	$\expr$                                 & Expression                       & $\expr=\code{10 + 59}$\\\hline
-	$\Val$                                  & Values set                       & \\\hline
-	$\val$                                  & Value                            & $\val=69$\\\hline
-	$\Zero$                                 & Zero set/function                & \\\hline
-	$\Pattern$                              & Patterns set                     & \\\hline
-	$\pattern$                              & Pattern                          & \\\hline
-	$\PatternTerminal$                      & Terminal patterns set            & \\\hline
-	$\PatternProduct$                       & Product patterns set             & \\\hline
-	$\PatternIterator$                      & Iterator patterns set            & \\\hline
-	$\Env$                                  & Environments set                 & \\\hline
-	$\EnvSym$                               & General type environment         & \\\hline
-	$\EnvVar$                               & Variables type environment       & \\\hline
-	$\EnvConst$                             & Constants type environment       & \\\hline
-	$\EnvFunc$                              & Functions type environment       & \\\hline
-	$\EnvStucts$                            & Structs type environment         & \\\hline
-	% $\EnvModules$                         & Modules type environment         & \\\hline
-	$\EnvLoc$                               & Locations environment            & \\\hline
-	$\EnvStore$                             & Store environment (memory)       & \\\hline
-\end{tabular}
-}
+\begin{table}[!ht]
+	\label{tab:common_symbols}
+	\caption{Commonly used symbols}
+	\centering
+	\resizebox{\textwidth}{!}{
+		\begin{tabular}{rll}
+			\textbf{Symbol}                                       & \textbf{Use}                     & \textbf{Example}                          \\\hline
+			$\bop$                                                & Generic binary operator          & $x \bop y$                                \\\hline
+			$\narreq$                                             & "Narrower than" operator         & $\Int \narreq \Real$                      \\\hline
+			$\sqcap$                                              & "Least wide type" operator       & $\Int \sqcap \Real$                       \\\hline
+			$\then$                                               & Assumptions suffix               & $\EnvSym \then \val:\tau$                 \\\hline
+			$\Then$                                               & Environments modification prefix & $\expr \Then \EnvStore$                   \\\hline
+			$\tau,\omega,\eta,\kappa,\nu$, lowercase greek letter & A type                           & $\tau = \Int$                             \\\hline
+			$\phi$                                                & Function type                    & $\phi=(\tau_1)\to\tau_2$                  \\\hline
+			$\theta$                                              & Tuple type                       & $\theta=\tau_1\times\tau_2$               \\\hline
+			$\rho$                                                & Record type                      & $\rho=\tuple{x:\tau_1,y:\tau_2}$          \\\hline
+			$\sigma$                                              & Struct type                      & $\sigma=(\xi, \tuple{x:\tau_1,y:\tau_2})$ \\\hline
+			$\eval$                                               & "Evaluates to" operator          & $\expr\eval\val$                          \\\hline
+			$\addr$                                               & Memory address                   & $\addr = 69$                              \\\hline
+			$\Id$                                                 & Identifiers set                  &                                           \\\hline
+			$a,b,x,y$, lowercase latin letter                     & Identifier                       &                                           \\\hline
+			$\Expr$                                               & Expressions set                  &                                           \\\hline
+			$\expr$                                               & Expression                       & $\expr=\code{10 + 59}$                    \\\hline
+			$\Val$                                                & Values set                       &                                           \\\hline
+			$\val$                                                & Value                            & $\val=69$                                 \\\hline
+			$\Zero$                                               & Zero set/function                &                                           \\\hline
+			$\Pattern$                                            & Patterns set                     &                                           \\\hline
+			$\pattern$                                            & Pattern                          &                                           \\\hline
+			$\PatternTerminal$                                    & Terminal patterns set            &                                           \\\hline
+			$\PatternProduct$                                     & Product patterns set             &                                           \\\hline
+			$\PatternIterator$                                    & Iterator patterns set            &                                           \\\hline
+			$\Env$                                                & Environments set                 &                                           \\\hline
+			$\EnvSym$                                             & General type environment         &                                           \\\hline
+			$\EnvVar$                                             & Variables type environment       &                                           \\\hline
+			$\EnvConst$                                           & Constants type environment       &                                           \\\hline
+			$\EnvFunc$                                            & Functions type environment       &                                           \\\hline
+			$\EnvStucts$                                          & Structs type environment         &                                           \\\hline
+			% $\EnvModules$                                       & Modules type environment         &                                           \\\hline
+			$\EnvLoc$                                             & Locations environment            &                                           \\\hline
+			$\EnvStore$                                           & Store environment (memory)       &                                           \\\hline
+		\end{tabular}
+	}
+\end{table}
 
-\section{Notations}
-
-\resizebox{0.9\linewidth}{!}{
-\begin{tabular}{rl}
-	\multirow{2}{*}{\textbf{Notation}}                                                          & \textbf{Use} \\
-	                                                                                            & \textbf{Example} \\\hline
-	\multirow{2}{*}{$\code{monospace}$}                                                         & Verbatim code \\
-	                                                                                            & \code{59 + 10} \\\hline
-	\multirow{2}{*}{$\val : \tau$}                                                              & "$\val$ is a term of type $\tau$"\\
-	                                                                                            & \code{69} : \Int \\\hline
-	\multirow{2}{*}{$\expr \eval \val$}                                                         & "$\expr$ is evaluated to be equal to $\val$"\\
-	                                                                                            & $\code{59 + 10} \eval 69$ \\\hline
-	\multirow{2}{*}{$T[\tau:=\sigma]$}                                                          & "$T$ is a existential type with a type parameter $\tau$ of some type $\sigma$"\\
-	                                                                                            & $\Map[\kappa:=\tau_\kappa,\nu:=\tau_\nu]$ \\\hline
-	\multirow{2}{*}{$\exists\sigma.T$}                                                          & Concrete type $T$ with type parameter equal to $\sigma$\\
-	                                                                                            & $\exists\Text.\exists\Int.\Map$ \\\hline
-	\multirow{2}{*}{$\glist{\expr_1,\dotsc,\expr_n}$}                                           & A list of $n$ elements \\
-	                                                                                            & $\glist{1,2,3}$ \\\hline
-	\multirow{2}{*}{$\map{\expr_{k_1}\mapsto\expr_{v_1},\dotsc,\expr_{k_n}\mapsto\expr_{v_n}}$} & A Map of $n$ key-value pairs \\
-	                                                                                            & $\map{a\mapsto1,b\mapsto2,c\mapsto3}$ \\\hline
-	$(\tau_1,\dotsc,\tau_n)\to\tau_{n+1}$                                                       & Function type with $n$ formal parameters $\tau_i$ and return type $\tau_{n+1}$\\
-	$(x_1:\tau_1,\dotsc,x_n:\tau_n)\to\tau_{n+1}$                                               & $(\Int,\Real)\to\Real$ \\\hline
-	\multirow{2}{*}{$\tau_1 \times \dotsb \times \tau_n$}                                       & A Tuple type with $n$ fields of type $\tau_i$\\
-	                                                                                            & $\Real \times \Real \times \Text$ \\\hline
-	\multirow{2}{*}{$\tuple{x_1:\tau_1,\dotsc,x_n:\tau_n}$}                                     & A record type with $n$ fields with name $x_i$ and type $\tau_i$\\
-	                                                                                            & $\tuple{\text{x}:\Real, \text{y}:\Real, \text{label}:\Text}$\\\hline
-	\multirow{2}{*}{$(\xi, \tuple{x_1:\tau_1,\dotsc,x_n:\tau_n})$}                              & A struct type with typename $\xi$, and $n$ fields with name $x_i$ and type $\tau_i$\\
-	                                                                                            & $(\text{Point}, \tuple{\text{x}:\Real, \text{y}:\Real, \text{label}:\Text})$\\\hline
-	\multirow{2}{*}{$\env{x \mapsto y}$}                                                        & An environment in which $x$ maps to $y$\\
-	                                                                                            & $\env{\addr \mapsto 69}$\\\hline
-	\multirow{2}{*}{$E\env{}$}                                                                  & Environment "extension" (shorthand for $E\cup\env{}$)\\
-	                                                                                            & $\EnvStore\env{\addr \mapsto 69}$\\\hline
-\end{tabular}
-}
-
-\clearpage
-
-\[
-	\begin{split}
-		A        \alpha   & \quad \text{alpha}   \\
-		B        \beta    & \quad \text{beta}    \\
-		\Gamma   \gamma   & \quad \text{gamma}   \\
-		\Delta   \delta   & \quad \text{delta}   \\
-		E        \epsilon & \quad \text{epsilon} \\
-		Z        \zeta    & \quad \text{zeta}    \\
-		H        \eta     & \quad \text{eta}     \\
-		\Theta   \theta   & \quad \text{theta}   \\
-		I        \iota    & \quad \text{iota}    \\
-		K        \kappa   & \quad \text{kappa}   \\
-		\Lambda  \lambda  & \quad \text{lambda}  \\
-		M        \mu      & \quad \text{mu}      \\
-		N        \nu      & \quad \text{nu}      \\
-		\Xi      \xi      & \quad \text{xi}      \\
-		O        o        & \quad \text{o}       \\
-		\Pi      \pi      & \quad \text{pi}      \\
-		P        \rho     & \quad \text{rho}     \\
-		\Sigma   \sigma   & \quad \text{sigma}   \\
-		T        \tau     & \quad \text{tau}     \\
-		\Upsilon \upsilon & \quad \text{upsilon} \\
-		\Phi     \phi     & \quad \text{phi}     \\
-		X        \chi     & \quad \text{chi}     \\
-		\Psi     \psi     & \quad \text{psi}     \\
-		\Omega   \omega   & \quad \text{omega}   \\
-	\end{split}
-\]
+\begin{table}[!ht]
+	\label{tab:notations}
+	\caption{Notations}
+	\resizebox{\textwidth}{!}{
+		\begin{tabular}{rl}
+			\multirow{2}{*}{\textbf{Notation}}                                                          & \textbf{Use}                                                                        \\
+	                                                                                            		& \textbf{Example}                                                                    \\\hline
+			\multirow{2}{*}{$\code{monospace}$}                                                         & Verbatim code                                                                       \\
+	                                                                                            		& \code{59 + 10}                                                                      \\\hline
+			\multirow{2}{*}{$\val : \tau$}                                                              & "$\val$ is a term of type $\tau$"                                                   \\
+	                                                                                            		& \code{69} : \Int                                                                    \\\hline
+			\multirow{2}{*}{$\expr \eval \val$}                                                         & "$\expr$ is evaluated to be equal to $\val$"                                        \\
+	                                                                                            		& $\code{59 + 10} \eval 69$                                                           \\\hline
+			\multirow{2}{*}{$T[\tau:=\sigma]$}                                                          & "$T$ is a existential type with a type parameter $\tau$ of some type $\sigma$"      \\
+	                                                                                            		& $\Map[\kappa:=\tau_\kappa,\nu:=\tau_\nu]$                                           \\\hline
+			\multirow{2}{*}{$\exists\sigma.T$}                                                          & Concrete type $T$ with type parameter equal to $\sigma$                             \\
+	                                                                                            		& $\exists\Text.\exists\Int.\Map$                                                     \\\hline
+			\multirow{2}{*}{$\glist{\expr_1,\dotsc,\expr_n}$}                                           & A list of $n$ elements                                                              \\
+	                                                                                            		& $\glist{1,2,3}$                                                                     \\\hline
+			\multirow{2}{*}{$\map{\expr_{k_1}\mapsto\expr_{v_1},\dotsc,\expr_{k_n}\mapsto\expr_{v_n}}$} & A Map of $n$ key-value pairs                                                        \\
+	                                                                                            		& $\map{a\mapsto1,b\mapsto2,c\mapsto3}$                                               \\\hline
+			\multirow{2}{*}{$(\tau_1,\dotsc,\tau_n)\to\tau_{n+1}$}                                      & Function type with $n$ formal parameters $\tau_i$ and return type $\tau_{n+1}$      \\
+			                                                                                            & $(\Int,\Real)\to\Real$                                                              \\\hline
+			\multirow{2}{*}{$(x_1:\tau_1,\dotsc,x_n:\tau_n)\to\tau_{n+1}$}                              & Same as above, but with explicit parameters names                                   \\
+			                                                                                            & $(x:\Int,y:\Real)\to\Real$                                                              \\\hline
+			\multirow{2}{*}{$\tau_1 \times \dotsb \times \tau_n$}                                       & A Tuple type with $n$ fields of type $\tau_i$                                       \\
+	                                                                                            		& $\Real \times \Real \times \Text$                                                   \\\hline
+			\multirow{2}{*}{$\tuple{x_1:\tau_1,\dotsc,x_n:\tau_n}$}                                     & A record type with $n$ fields with name $x_i$ and type $\tau_i$                     \\
+	                                                                                            		& $\tuple{\text{x}:\Real, \text{y}:\Real, \text{label}:\Text}$                        \\\hline
+			\multirow{2}{*}{$(\xi, \tuple{x_1:\tau_1,\dotsc,x_n:\tau_n})$}                              & A struct type with typename $\xi$, and $n$ fields with name $x_i$ and type $\tau_i$ \\
+	                                                                                            		& $(\text{Point}, \tuple{\text{x}:\Real, \text{y}:\Real, \text{label}:\Text})$        \\\hline
+			\multirow{2}{*}{$\env{x \mapsto y}$}                                                        & An environment in which $x$ maps to $y$                                             \\
+	                                                                                            		& $\env{\addr \mapsto 69}$                                                            \\\hline
+			\multirow{2}{*}{$E\env{}$}                                                                  & Environment "extension" (shorthand for $E\cup\env{}$)                               \\
+	                                                                                            		& $\EnvStore\env{\addr \mapsto 69}$                                                   \\\hline
+		\end{tabular}
+	}
+\end{table}
 
 \end{document}
 
