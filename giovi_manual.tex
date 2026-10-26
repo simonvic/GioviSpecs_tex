@@ -117,10 +117,16 @@
 \usepackage{float}
 \floatplacement{listing}{H}
 
-\usepackage{marginnote}
-\newcommand{\comment}[1]{\marginnote{\color{black!30}\small\sffamily#1}}
+\usepackage[
+colorinlistoftodos,
+color=red!50,
+textsize=tiny,
+textwidth=\marginparwidth
+]{todonotes}
+\setlength{\marginparwidth}{3.5cm}
+\todostyle{impl}{color=orange!50}
+
 \newcommand{\commentinline}[1]{\parbox{0.9\linewidth}{\color{black!30}\small\sffamily#1}}
-\setlength{\marginparwidth}{3cm}
 
 \newcommand{\See}[1]{\S\ref{#1}~\textsc{\nameref{#1}}}
 \newcommand{\see}[1]{\S\ref{#1}}
@@ -478,7 +484,7 @@ if true #{ this is a comment }# do something()
 a space, as the first character is reserved for "special" comments, for example
 documentation: \code{\#? This is a documentation comment}
 
-\comment{TODO: Specificare RFC riguardo language server e altro?}
+\todo{Specificare RFC riguardo language server e altro?}
 
 \clearpage
 
@@ -549,7 +555,7 @@ supported: \code{1e69}, \code{6.9e-10}
 \paragraph{Binary exponent} For hexadecimal real numbers, a binary exponent can
 be used: \code{0x1p69}
 
-\comment{TODO: semplificare?}
+\todo{semplificare?}
 
 \clearpage
 
@@ -702,7 +708,7 @@ text block tag) will be considered the indentation leader character. So it is
 advised to be consistent with code formatting to avoid ambiguities and
 undesired side effects.
 
-\comment{TODO: riferimento a convenzioni e best practices}
+\todo{riferimento a convenzioni e best practices}
 
 \begin{minted}[autogobble=false,showtabs,tab=>,escapeinside=||]{text}
 			_out <- "{
@@ -722,11 +728,13 @@ amount of incidental whitespaces.
 
 \subsubsection{Identifiers}
 
-\comment{TODO: completare}
-
 Any other word that is not a reserved keyword is considered an identifier.
 
-\comment{TODO: restringere i caratteri permessi ad un subset unicode?}
+\todo{
+	TODO: completare
+
+	TODO: restringere i caratteri permessi ad un subset unicode?
+}
 
 \clearpage
 
@@ -856,9 +864,10 @@ statement_declaration_constant
 
 Constants are read-only values; their value is defined at declaration and
 cannot change.\\*
-\comment{TODO: decidere se usare shallow o deep immutability}
 By convention, constants identifiers are written in \code{SCREAMING\_CASE}.\\*
 The type can be omitted as it will be inferred from the expression.
+
+\todo{decidere se usare shallow o deep immutability}
 
 \begin{minted}{\giovilexer}
 const PI Real <- 3.14
@@ -893,6 +902,8 @@ statement_return
 \end{minted}
 
 The return statement can only be used within a function scope.
+
+\clearpage
 
 \subsection{Function declaration}
 
@@ -986,9 +997,7 @@ A peculiarity of the statement is that it can be written "left to right" or
 "right to left". There is no difference between the two directions, except for
 readability. Sometimes it's just better to use one instead of the other.
 
-\comment{
-	TODO: link a FAQ
-}
+\todo{link a FAQ}
 
 \begin{minted}{\giovilexer}
 "hello world" -> _out     # Printing
@@ -1217,7 +1226,7 @@ for <r, g, b> in listOfColors do {
 
 \nb{Nesting iterator patterns effectively means nesting iterations}
 
-\comment{TODO: aggiungere RFC di iteration counters}
+\todo{aggiungere RFC di iteration counters}
 
 \chapter{Scopes}
 \label{ch:scopes}
@@ -1592,9 +1601,8 @@ someFunction(someArgument)
 someArgument -> _out # still 69
 \end{minted}
 
-\comment{
-	TODO: menzionare eccezione per self functions, se decido di "formalizzare
-	il bug" :)
+\todo{
+	menzionare eccezione per self functions, se decido di "formalizzare il bug" :)
 
 	Alternativamente, formalizzare che le strutture (o tutti i prodotti tipi)
 	sono mutabili
@@ -1945,7 +1953,7 @@ declarations, that can later be accessed via the dot operator.
 Recursive struct type definitions are allowed by using the \code{self} keyword
 in place of the field type.
 
-\comment{TODO: menzionare RFC di larval types e uso del typename}
+\todo{menzionare RFC di larval types e uso del typename}
 
 \begin{minted}{\giovilexer}
 struct Node <
@@ -2066,7 +2074,7 @@ There are five kinds of patterns:
 	\item Terminal patterns:
 		\begin{itemize}
 			\item \textbf{Placeholder pattern}: \code{\_} (underscore)
-				\comment{TODO: rinominare. Sinkhole?}
+				\todo{rinominare. Sinkhole?}
 			\item \textbf{Unary pattern}: \code{someIdentifier}
 		\end{itemize}
 	\item \textbf{Product pattern}:
@@ -2256,9 +2264,9 @@ for key => value in ["Simone"=>69 "Luca"=>420 "Paolo"=>10] do {
 \chapter{Modules}
 \label{ch:modules}
 
-A module is a "container" for code; it shares the same behavior of scopes
-(\see{ch:scopes}): it can hold code, variables, functions, constants, types
-definition etcetera; in fact it can be seen as a "named scope".
+A module is a "container" for code; it shares the same behavior of
+scopes~(\see{ch:scopes}): it can hold code, variables, functions, constants,
+types definition etcetera; in fact it can be seen as a "named scope".
 
 Each file is implicitly a module, whose name is the filename containing it.
 
@@ -2342,7 +2350,7 @@ body and then gives you access to it and its declarations.
 \nb{The import of the same module can be performed multiple times, meaning that
 its body will be executed for each import.}
 
-\comment{TODO: menzionare funzione util per caching moduli}
+\todo{menzionare funzione util per caching moduli}
 
 \begin{minted}{\giovilexer}
 module MyMath {
@@ -2468,7 +2476,7 @@ The notation $T[\tau:=\sigma]$ describes a generic type $T$ with a type
 parameter $\tau$ of some type $\sigma$.\\*
 The notation $t : \exists\sigma.T$ means that $t$ is a term of concrete
 type $T$ with the type parameter $\tau$ equal to $\sigma$.
-\comment{TODO: tipi esistenziali? Rivedere notazione}
+\todo{tipi esistenziali? Rivedere notazione}
 
 \paragraph{List} To denote a list type, the existential type notation will
 be used $\List[\nu=\Type]$.\\*
@@ -2482,7 +2490,7 @@ notation will be used: $\map{a\mapsto1,b\mapsto2,c\mapsto3}$
 
 \paragraph{Identifiers set} A set $\Id=\set{i\mid i:=\text{identifier}}$ is
 used to encompass all possible identifiers allowed by the grammar.
-\comment{TODO: formalizzare}
+\todo{formalizzare}
 
 \paragraph{Product types}
 
@@ -2496,7 +2504,7 @@ record type (a tuple whose fields are named).
 
 \subparagraph{Struct} The notation $(\xi, \tuple{x_1:\tau_1, x_2:\tau_2})$
 describes a struct type (a pair of an identifier $\xi$ and a record type).
-\comment{TODO: rivedere notazione struct}
+\todo{rivedere notazione struct}
 
 \begin{definition}[Types widening/narrowing]
 	A type $N$ is said to be "narrower" than a type $W$ iff a value described
@@ -2584,7 +2592,7 @@ partioned in the $\EnvVar,\EnvConst,\EnvFunc,\EnvStucts$ environments:
 	% 	A function that maps an identifier $i$ to the module
 \end{itemize}
 
-\comment{TODO: formalizzare structs, funzioni e moduli}
+\todo{formalizzare structs, funzioni e moduli}
 
 The $\EnvSym$ function can now be defined as follows
 \[
@@ -2626,9 +2634,11 @@ Using the $\EnvVar$ variables environment as example
 	needed.
 }
 
-\comment{
-	TODO: menzionare uso di type system strutturale e nominale\\
-	TODO: usare 0-based indexes\\
+\todo{
+	TODO: menzionare uso di type system strutturale e nominale
+
+	TODO: usare 0-based indexes
+
 	TODO: usare notazione tipi polimorfici invece che solo Type
 }
 
@@ -2736,7 +2746,7 @@ Using the $\EnvVar$ variables environment as example
 	}
 \]
 
-\comment{TODO: che notazione usare per \Struct???}
+\todo{che notazione usare per \Struct???}
 
 \clearpage
 
@@ -2783,13 +2793,13 @@ Using the $\EnvVar$ variables environment as example
 	}
 \]
 
-\subsection{Range}
+% \subsection{Range}
 
-\comment{TODO: tipo concreto non implementato ancora}
+\todo{Range. Tipo concreto non implementato ancora}
 
 \subsection{Compatibility rules}
 
-\comment{TODO: menzionare covarianze (tipi composti e prodotto) e
+\todo{menzionare covarianze (tipi composti e prodotto) e
 controvarianza (parametri funzioni?)}
 
 \paragraph{Reflexivity}
@@ -2982,7 +2992,7 @@ A struct type $\sigma_1$ is narrower than a struct type $\sigma_2$ if and only
 if they have the same name (fields are ignored since they're equal by
 construction).
 
-\comment{TODO: questa regola è ridondante?}
+\todo{questa regola è ridondante?}
 \vspace{\baselineskip}
 
 \clearpage
@@ -3007,8 +3017,8 @@ and if, for all parameters $x'$ of type $\tau'$ in $\phi_1$, there is a
 parameter with the same name $y'$ of type $\omega'$ in $\phi_2$, where $\tau'$
 is narrower than $\omega'$.
 
-\comment{
-	TODO: è gia un casino cosi :D, ma includere anche opzionalità dei parametri\\
+\todo{
+	è gia un casino cosi :D, ma includere anche opzionalità dei parametri\\
 	Eventualmente estrarre una regola per il singolo parametro
 }
 
@@ -3087,7 +3097,7 @@ is narrower than $\omega'$.
 	}
 \]
 
-\comment{TODO: specificare il set $Unicode$ con i caratteri permessi da Java}
+\todo{specificare il set $Unicode$ con i caratteri permessi da Java}
 
 \[
 	\infrule{
@@ -3256,11 +3266,11 @@ expression $\expr_j$ of type $\eta_j$ (narrower than $\tau_i$).
 	}
 \]
 
-\comment{TODO: completare}
+\todo{completare}
 
 \subsection{Reference}
 
-\comment{TODO: chiarire notazione e muovere in sezione operatori}
+\todo{chiarire notazione e muovere in sezione operatori}
 
 \[
 	\infrule{
@@ -3351,7 +3361,7 @@ defined.
 	}
 \]
 
-\comment{TODO(impl): -69 as Natural fallisce (out of bounds). Dovrebbe?}
+\todo[impl]{-69 as Natural fallisce (out of bounds). Dovrebbe?}
 
 \[
 	\infrule{
@@ -3384,7 +3394,7 @@ defined.
 
 \subsubsection{Void}
 
-\comment{TODO: ?}
+\todo{?}
 
 \subsubsection{Bool}
 
@@ -3443,7 +3453,7 @@ defined.
 	}
 \]
 
-\comment{TODO: specificare se $l-r\geq0$}
+\todo{specificare se $l-r\geq0$}
 
 \[
 	\infrule{
@@ -3946,7 +3956,7 @@ defined.
 	}
 \]
 
-\comment{TODO(impl): non dovremmo permettere Real}
+\todo[impl]{non dovremmo permettere Real}
 
 \paragraph{Division}
 
@@ -4097,7 +4107,7 @@ of $\nu_1$ can be casted to a list of $\nu_2$.
 		\EnvSym\then \code{$\expr_1$ + $\expr_2$} : \tau_1
 	}
 \]
-\comment{TODO: chiarire. Il tipo della concatenazione dovrebbe essere deciso da
+\todo{chiarire. Il tipo della concatenazione dovrebbe essere deciso da
 lhs o dovrebbe essere il widest tra i due?}
 
 \[
@@ -4120,7 +4130,7 @@ lhs o dovrebbe essere il widest tra i due?}
 		\EnvSym\then \code{$\expr_1$ - $\expr_2$} : \tau_1
 	}
 \]
-\comment{TODO: chiarire. Il tipo dell'intersezione dovrebbe essere deciso da
+\todo{chiarire. Il tipo dell'intersezione dovrebbe essere deciso da
 lhs o dovrebbe essere il widest tra i due?}
 
 \[
@@ -4227,7 +4237,7 @@ can be casted to the type $\tau_2$.
 		\EnvSym\then \code{$\expr_1$ + $\expr_2$} : \tau_1
 	}
 \]
-\comment{TODO: chiarire. Il tipo della concatenazione dovrebbe essere deciso da
+\todo{chiarire. Il tipo della concatenazione dovrebbe essere deciso da
 lhs o dovrebbe essere il widest tra i due?}
 
 \paragraph{Minus}
@@ -4241,7 +4251,7 @@ lhs o dovrebbe essere il widest tra i due?}
 		\EnvSym\then \code{$\expr_1$ - $\expr_2$} : \tau_1
 	}
 \]
-\comment{TODO: chiarire. Il tipo dell'intersezione dovrebbe essere deciso da
+\todo{chiarire. Il tipo dell'intersezione dovrebbe essere deciso da
 lhs o dovrebbe essere il widest tra i due?}
 
 \[
@@ -4405,7 +4415,7 @@ Reverse: \code{<0,1,2,3,4,5> . 4..2 = <4 3 2>}
 	}
 \]
 
-\comment{TODO(impl): permettere solo a Tuple in modo da rendere esplicito la perdita degli identificatori}
+\todo[impl]{permettere solo a Tuple in modo da rendere esplicito la perdita degli identificatori}
 
 \[
 	\infrule{
@@ -4430,11 +4440,11 @@ Reverse: \code{<0,1,2,3,4,5> . 4..2 = <4 3 2>}
 
 \subsubsection{Struct}
 
-\comment{TODO: ...}
+\todo{...}
 
 \subsection{Function}
 
-\comment{TODO: ...}
+\todo{...}
 
 \clearpage
 
@@ -4460,7 +4470,7 @@ Reverse: \code{<0,1,2,3,4,5> . 4..2 = <4 3 2>}
 	}
 \]
 
-\comment{TODO: specificare il tipo Var come da implementazione?}
+\todo{specificare il tipo Var come da implementazione?}
 
 \subsection{Constant declaration}
 
@@ -4502,7 +4512,7 @@ Reverse: \code{<0,1,2,3,4,5> . 4..2 = <4 3 2>}
 	}
 \]
 
-\comment{TODO: deconstruction}
+\todo{deconstruction}
 
 \chapter{Operational semantics}
 \label{ch:opsem}
@@ -4652,7 +4662,7 @@ be applied on an identifier
 	\EnvSym\then \Zero(\List[\nu:=\Type]) = \List(0, \Zero(\nu))
 \]
 
-\comment{TODO: se eventualmente formalizzo l'operatore \code{**}, aggiornare
+\todo{se eventualmente formalizzo l'operatore \code{**}, aggiornare
 dimensione iniziale}
 
 \paragraph{Map}
@@ -4663,7 +4673,7 @@ dimensione iniziale}
 
 \subsubsection{Product types}
 
-\comment{TODO: riscrivere usando environment per membri (con default override)}
+\todo{riscrivere usando environment per membri (con default override)}
 
 \paragraph{Tuple}
 
@@ -4689,7 +4699,7 @@ dimensione iniziale}
 
 \text{}
 
-\comment{TODO: completare}
+\todo{completare}
 
 \subsubsection{Function}
 
@@ -4718,7 +4728,7 @@ dimensione iniziale}
 
 \subsection{Literals}
 
-\comment{TODO: come nelle regole di inferenza?}
+\todo{come nelle regole di inferenza?}
 
 \paragraph{Bool}
 
@@ -4771,7 +4781,7 @@ dimensione iniziale}
 	}
 \]
 
-\comment{TODO: variables interpolation?}
+\todo{variables interpolation?}
 
 \subsection{Identifiers}
 
@@ -4877,7 +4887,7 @@ Both can be performed in a single statement
 	}
 \]
 
-\comment{TODO: rettificare in caso scelgo deep immutability invece che shallow
+\todo{rettificare in caso scelgo deep immutability invece che shallow
 immutability}
 
 \paragraph{Alias declaration}
@@ -4915,7 +4925,7 @@ For example, $\Env_\EnvLoc$ will denote the set of location environments.
 
 \paragraph{Deconstruction function} Given how patterns can be nested, a
 recursive function will be used to describe the deconstruction.
-\comment{TODO: rinominare in Decomposition?}
+\todo{rinominare in Decomposition?}
 \[
 	\begin{split}
 		\decons& : (\Env_\EnvLoc,\Env_\EnvStore,\Val,\Pattern) \to (\Env_\EnvLoc,\Env_\EnvStore) \\*
@@ -5169,9 +5179,12 @@ The rules are the same for a nominal invocation, except that, if a formal
 parameter $x_i$ defines an invocation label $l_i$, then the actual parameter
 name $y_j$ is bound to the formal parameter whose label is $l_i=y_j$.
 
-\comment{TODO: se $\tau_1 = \Self$ o $\tau_{n+1} = \Self$}
+\todo{
+	TODO: se $\tau_1 = \Self$ o $\tau_{n+1} = \Self$
 
-\comment{TODO: opzionalità}
+	TODO: opzionalità
+}
+
 
 % \[
 % 	\oprule[aligned]{
