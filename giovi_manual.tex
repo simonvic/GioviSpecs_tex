@@ -449,7 +449,7 @@ models) a \emph{null} value or uninitialized memory.
 
 Every variable, constant, function parameter, product types fields etc. have a
 \emph{zero}\footnotemark[1] value, which is the value that they are initialized
-to at declaration.
+to at their declaration.
 
 \footnotetext[1]{
 	A zero value is also referred to by its more user-friendly name: the
@@ -470,9 +470,9 @@ someBool Bool
 someBool -> _out # false
 \end{minted}
 
-The same applies to lists and maps (empty list and empty map respectively), and
-most importantly to product types, where the zero value has all its fields
-initialized to their respective zero values.
+The same applies to non-primitive types: lists and maps (empty list and empty
+map respectively), and most importantly to product types, where the zero value
+has all its fields initialized to their respective zero values.
 
 \begin{listing}
 	\label{lst:product_type_zero_value}
@@ -831,8 +831,6 @@ processPizzaOrder(
 processPizzaOrder(tableNumber:69) # Margherita to table 69 and no pineapple
 \end{minted}
 
-\clearpage
-
 \subsection{Invocation labels}
 
 As we've seen in \See{sec:nominal_params}, parameters names can be specified at
@@ -1116,6 +1114,8 @@ root.nextNode -> _ # nextNode is now initialized
 root -> _out       # <"root_data", <"default_data", _>>
 \end{minted}
 
+\clearpage
+
 \subsection{Aggregation and composition}
 
 When modelling a certain domain, it is often needed to define an aggregation or
@@ -1159,7 +1159,7 @@ Car -> _out
 #>
 \end{minted}
 
-TODO: clarify multiple aggregation, overrides and defaults
+\todo{Formalizzare aggregazioni multiple, overrides e defaults}
 
 \chapter{Patterns}
 \label{ch:patterns}
@@ -1609,7 +1609,7 @@ to ensure backward compatibility in the eventuality they get used.
 \section{Other tokens}
 
 \code{..}, \code{:}, \code{,}, \code{;}, \code{\#}, \code{(}, \code{)}, \code{[}, \code{]},
-\code{\{}, \code{\}}, \code{<}, \code{>}
+\code{\{}, \code{\}}, \code{<}, \code{>}, \code{=>}
 
 \section{Comments}
 
@@ -2175,6 +2175,35 @@ counter +<- 1             # Increasing counter by one
 acceleration ->+ velocity # Increasing velocity by "acceleration"
 \end{minted}
 
+It's common having to perform operations such as sums or concatenations with a
+variable, and then to apply the resulting value of the operation to the same
+variable. Giovi gives you a shorthand for such scenarios: it's possible to
+append or suffix the \code{+}, \code{-}, \code{*} and \code{/} operators to the
+redirection operator (both left-to-right and right-to-left variant); when doing
+so, the specified operation will be performed using the destination of the
+assignment as the left-hand-side operand and the expression as the
+right-hand-side operand; finally, the result will be applied to the
+destination.
+
+Beware that the result will be identical if you were to do the operation in a
+separate expression and then assigning the result, meaning that if the operator
+is not supported or the result of the expression is incompatible, the
+assignment will fail.
+
+\begin{minted}{\giovilexer}
+counter Real <- 6.9
+counter *<- 10 # multiply by 10
+
+funnyNumbers [Int]
+funnyNumbers +<- 69 # insert 69
+funnyNumbers +<- [420, 67] # concatenate
+
+sentence Text <- "hello world how are you?"
+sentence /<- " " # ERROR: can't assign [hello, world, how, are, you?]
+\end{minted}
+
+\clearpage
+
 \section{If statement}
 
 \begin{minted}{antlr}
@@ -2270,8 +2299,8 @@ if getSomeNumber() {
 }
 \end{minted}
 
-A branch can also be "guarded" with another (possibly unrelated) boolean
-condition
+\paragraph{Branch guard} A branch can also be "guarded" with another (possibly
+unrelated) boolean condition
 
 \begin{minted}{\giovilexer}
 var funnyNumbers <- [69, 420] 
@@ -2284,6 +2313,8 @@ if getSomeNumber() {
 	in funnyNumbers when 67 not in funnyNumbers
 }
 \end{minted}
+
+\clearpage
 
 \section{Break and Skip statement}
 
@@ -2341,6 +2372,8 @@ repeat {
 	if someCondition() do break
 }
 \end{minted}
+
+\clearpage
 
 \section{For statement}
 
