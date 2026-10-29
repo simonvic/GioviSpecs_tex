@@ -357,889 +357,6 @@ giovi --repl
 > The sum of 10 and 20 is equal to 30
 \end{minted}
 
-\chapter{Grammar}
-
-\section{Introduction}
-
-This chapter describes the lexicon and syntax of the language.
-Grammar rules\footnotemark[1] will be shown using a dialect of eBNF.
-
-\footnotetext[1]{
-	Only a subset of the rules will be shown, and they may not exactly match
-	the real grammar. For the actual rules consult the appropriate grammar
-	files.
-}
-
-\begin{listing}
-	\label{lst:ebnf_dialect}
-	\caption{Example of a definition of \code{some\_rule} using the eBNF dialect}
-	\begin{minted}{antlr}
-some_rule
-	: 'some_token' some_label=some_other_rule
-	| zero_or_one_of_this?
-	| zero_or_more_of_this*
-	| one_or_more_of_this+
-	| ('some_token' | 'some_other_token' | some_other_rule)
-	;
-	\end{minted}
-\end{listing}
-
-\paragraph{Whitespaces} Whitespaces (e.g. spaces, tabs, newlines) are
-determinant \textbf{only} during the lexical parsing, meaning that \code{!=} is
-different than \code{! =}, where the former gets parsed as a single token while
-the latter gets parsed as two different tokens; in any other case, whitepsaces
-are ignored.
-
-\section{Lexicon}
-
-\subsection{Keywords}
-
-\code{if}, \code{do}, \code{else}, \code{when}, \code{for}, \code{in},
-\code{repeat}, \code{break}, \code{skip}, \code{return}\\*
-\code{default}, \code{import}, \code{module}\\*
-\code{const}, \code{var}, \code{alias},
-\code{self}, \code{function}, \code{tuple}, \code{record}, \code{struct},
-\code{type}, \code{and}, \code{or}, \code{not}, \code{as}
-
-\paragraph{Reserved keywords} Some keywords are reserved for future-proofing
-to ensure backward compatibility in the eventuality they get used.
-
-\code{def}, \code{let}, \code{ref}, \code{at}, \code{with}, \code{interface},
-\code{enum}
-
-\subsection{Operators}
-
-\begin{table}[H]
-\resizebox{\linewidth}{!}{
-	\begin{tabular}{rcl}
-		\textbf{Operator}               & \textbf{Token}  & \textbf{Description}                            \\\hline
-		PLUS                            & \texttt{+}      & Arithmetic sum, concatenation                   \\\hline
-		MINUS                           & \texttt{-}      & Arithmetic subtraction, intersection            \\\hline
-		MULTIPLICATION                  & \texttt{*}      & Arithmetic multiplication                       \\\hline
-		DIVISION                        & \texttt{/}      & Arithmetic division                             \\\hline
-		MODULO                          & \texttt{\%}     & Arithmetic remainder                            \\\hline
-		EXPONENTIAL                     & \texttt{\^}     & Arithmetic power, text repetition               \\\hline
-		EQUAL                           & \texttt{=}      & Loose equality                                  \\\hline
-		NOT EQUAL                       & \texttt{!=}     & Loose inequality                                \\\hline
-		LESS EQUAL                      & \texttt{<=}     & Arithmetic and lexicographical comparison       \\\hline
-		LESS                            & \texttt{<}      & Arithmetic and lexicographical comparison       \\\hline
-		GREATER                         & \texttt{>}      & Arithmetic and lexicographical comparison       \\\hline
-		GREATER EQUAL                   & \texttt{>=}     & Arithmetic and lexicographical comparison       \\\hline
-		CONTAINS                        & \texttt{=\~{}}  & Checks if a set of elements contains an element \\\hline
-		IS CONTAINED                    & \texttt{\~{}=}  & Reverse of CONTAINS                             \\\hline
-		\multirow{2}{*}{BOOL NOT}       & \texttt{not}    & \multirow{2}{*}{Boolean logic negation}         \\
-	                                	& \texttt{!}      &                                                 \\\hline
-		\multirow{2}{*}{BOOL AND}       & \texttt{and}    & \multirow{2}{*}{Boolean logic and}              \\
-	                                	& \texttt{\&}     &                                                 \\\hline
-		\multirow{2}{*}{BOOL OR}        & \texttt{or}     & \multirow{2}{*}{Boolean logic or}               \\
-	                                	& \texttt{|}      &                                                 \\\hline
-		BITWISE NOT                     & \texttt{!!}     & Bitwise negation                                \\\hline
-		BITWISE AND                     & \texttt{\&\&}   & Bitwise and                                     \\\hline
-		BITWISE OR                      & \texttt{||}     & Bitwise or                                      \\\hline
-		BITWISE XOR                     & \texttt{|||}    & Bitwise exclusive or                            \\\hline
-		BITWISE LEFT SHIFT              & \texttt{\{<\}}  & Bitwise left shift                              \\\hline
-		BITWISE RIGHT SHIFT             & \texttt{\{>\}}  & Bitwise right shift                             \\\hline
-		BITWISE RIGHT UNSIGNED SHIFT    & \texttt{\{>>\}} & Bitwise right unsigned shift                    \\\hline
-		IS                              & \texttt{is}     & Runtime type check, pattern matching            \\\hline
-		AS                              & \texttt{as}     & Explicit type coercion                          \\\hline
-	    \\
-		\multicolumn{3}{c}{Pseudo-Operators}                                                                \\\hline
-		DOT ACCESS                      & \texttt{.}      & Members access                                  \\\hline
-		DOTREF ACCESS                   & \texttt{::}     & Function member access                          \\\hline
-	\end{tabular}
-}
-\end{table}
-
-\subsection{Other tokens}
-
-\code{..}, \code{:}, \code{,}, \code{;}, \code{\#}, \code{(}, \code{)}, \code{[}, \code{]},
-\code{\{}, \code{\}}, \code{<}, \code{>}
-
-\subsection{Comments}
-
-There are two kinds of comments: single line and multiline.
-
-\subsubsection{Single line comment}
-
-\begin{minted}{antlr}
-	comment: '#' comment_content? ('\n' | EOF) ;
-	comment_content: [^\n]+ ;
-\end{minted}
-
-Every character after the comment token \code{\#} until a newline \code{\\n} is
-considered part of the comment.
-
-\subsubsection{Multiline comment}
-
-\begin{minted}{antlr}
-	comment_block: '#{' .* ('}#' | EOF) ;
-\end{minted}
-
-Every character between and the open comment token \code{\#\{} and the close
-comment token \code{\}\#} is considered part of the comment.\\*
-A multiline comment can also be inlined in the code.
-
-\begin{minted}{\giovilexer}
-if true #{ this is a comment }# do something()
-\end{minted}
-
-\paragraph{Conventions} By convention, \code{\#} is immediately followed by
-a space, as the first character is reserved for "special" comments, for example
-documentation: \code{\#? This is a documentation comment}
-
-\todo{Specificare RFC riguardo language server e altro?}
-
-\clearpage
-
-\subsection{Literals}
-
-\subsubsection{Boolean}
-
-\begin{minted}{antlr}
-	literal_boolean: 'true' | 'false' ;
-\end{minted}
-
-A \code{Bool} literal is simply expressed by \code{true} or \code{false}
-
-\subsubsection{Numbers}
-
-\begin{minted}{antlr}
-	literal_number
-		: literal_integer
-		| literal_natural
-		| literal_real
-		;
-	literal_integer
-		: ( numeral_decimal
-		  | numeral_hex
-		  | numeral_octal
-		  | numeral_binary
-		  ) 'i'?
-		;
-	literal_natural
-		: ( numeral_decimal
-		  | numeral_hex
-		  | numeral_octal
-		  | numeral_binary
-		  ) 'n'?
-		;
-	literal_real
-		: decimal_floating_point_literal
-		| hexadecimal_floating_point_literal
-		| (numeral_hex | numeral_octal | numeral_binary) 'r'
-		;
-\end{minted}
-
-Giovi supports three different type of numbers: integers, natural and real.
-
-\paragraph{Suffixes} By default, a numeral is parsed as an integer; you can
-add a suffix to the number to explicitate the type: \code{n} for naturals,
-\code{i} for integers, \code{r} for reals. \code{69n} \code{69i} \code{69r}
-
-\paragraph{Separators} To improve readability of large numbers, you can use
-underscores to group digits; separators cannot appear at the beginning or the
-end of the number. For example: \code{100\_000\_000}
-
-\clearpage
-
-\paragraph{Bases} Numeral literals may be expressed in multiple bases.\\*
-By default, decimal (base 10) is used; to indicate a different base use the
-appropriate prefix:
-\begin{itemize}
-	\item Decimal (base 10): \code{69420}
-	\item Hexadecimal (base 16): \code{0x10F2C}
-	\item Octal (base 8): \code{0o207454}
-	\item Binary (base 2): \code{0b0001\_0000\_1111\_0010\_1100}
-\end{itemize}
-
-\paragraph{Scientific notation} For real numbers, the scientific notation is
-supported: \code{1e69}, \code{6.9e-10}
-
-\paragraph{Binary exponent} For hexadecimal real numbers, a binary exponent can
-be used: \code{0x1p69}
-
-\todo{semplificare?}
-
-\clearpage
-
-\subsubsection{Text}
-\label{sec:text_syntax}
-
-\begin{minted}{antlr}
-	literal_normal_text
-		: '"' ([^\n] | escape_sequence | interpolation)* '"'
-		;
-
-	literal_normal_text_block
-		: '"{' (. | escape_sequence | interpolation)* '}"'
-		;
-
-	literal_exact_text
-		: "'" ([^\n] | escape_sequence)* "'"
-		;
-
-	literal_exact_text_block
-		: "'{" (. | escape_sequence)* "}'"
-		;
-\end{minted}
-
-There are four types of \code{Text} literals (a.k.a. strings).
-
-\begin{itemize}
-	\item \textbf{Normal text}: delimited by double quotes \code{"}
-	\item \textbf{Exact text}: delimited by single quptes \code{'}
-	\item \textbf{Normal text block}: delimited by \code{"\{} and \code{\}"}
-	\item \textbf{Exact text block}: delimited by \code{'\{} and \code{\}'}
-\end{itemize}
-
-\paragraph{Differences} All types of text literals can contain escape
-sequences.\\*
-Normal and exact text must be terminated on the same line (they cannot contain
-a newline).\\*
-Normal and exact text blocks can span over multiple lines and do not require
-the escape of the text delimiter.\\*
-Normal text and normal text block allow interpolation.
-
-\paragraph{Escape sequences} Some special characters may not appear in the
-text, unless when escaped by prefixing it with \code{$\backslash$} (backslash).
-
-\begin{minted}{antlr}
-	escape_sequence: character_escape | unicode_escape ;
-	character_escape: '\' [btnfrs"'\\${}] ;
-	unicode_escape: '\' 'u' HexDigit HexDigit HexDigit HexDigit ;
-\end{minted}
-
-\paragraph{Interpolation} Normal text and normal text blocks support
-interpolation, allowing the "injecttion" of a variable or expression in the
-text.\\*
-To inject a variable, simply prefix it with \code{\$} (dollar): \code{"My name
-is \$name"}.\\*
-In order for an expression that is not a simple identifier to be injected, it
-needs to be wrapped in braces: \code{"My name is \$\{user.getName()\}"}
-
-\paragraph{Text blocks} Normal and exact text blocks allow the text to span
-over multiple lines, without the need to escape the text delimiter.
-
-\begin{listing}
-	\label{lst:textblock_example}
-	\begin{minted}{\giovilexer}
-if true do {
-	if true do {
-		html Text <- "{
-			<html>
-				<head></head>
-				<body>
-					<p class="foo">Hello world</p>
-				<body>
-			</html>
-			}"
-	}
-}
-	\end{minted}
-	\caption{Example of a textblock appearing indented in a nested scope}
-\end{listing}
-
-The last newline character will be included. If you don't want it, put the
-closing tag on the previous line
-
-\begin{minted}{\giovilexer}
-t Text <- "{
-	hello world}"
-\end{minted}
-
-\subparagraph{Incidental whitespaces} In a text block, white
-spaces\footnotemark[1] are preserved, unless they're considered
-"incidental". Incidental white spaces are those needed for code indentation.
-
-\footnotetext[1]{
-	White spaces are all those character that are "invisible", such as spaces,
-	tabulations, newlines, formfeeds etc.
-}
-
-\begin{minted}[showtabs,tab=>,escapeinside=||]{\giovilexer}
-if true do {
-	if true do {
-		html Text <- "{
-			<html>
-				<head></head>
-				<body>
-					<p>Hello world</p>
-				<body>
-			</html>
-			}"
-#^^^^^^^^^^^
-# the first three tabulations are considered "incidental"
-# and won't be included in the text
-	}
-}
-\end{minted}
-
-\clearpage
-
-The amount of whitespaces that will be considered "incidental" is defined by
-the line that has less of them.
-
-\begin{listing}
-	\label{lst:textblock_incidental_whitespaces}
-	\caption{A textblock with its actual content highlighted}
-	\begin{minted}[autogobble=false,showtabs,tab=>,escapeinside=||]{text}
-			_out <- "{
-			|\colorbox{gray!80}{<html>}|
-			|\colorbox{gray!80}{	<head></head>}|
-			|\colorbox{gray!80}{	<body>}|
-			|\colorbox{gray!80}{		<p>Hello world</p>}|
-			|\colorbox{gray!80}{	<body>}|
-			|\colorbox{gray!80}{</html>}|
-			}"
-
-			_out <- "{
-		|\colorbox{gray!80}{	<html>}|
-		|\colorbox{gray!80}{		<head></head>}|
-		|\colorbox{gray!80}{		<body>}|
-		|\colorbox{gray!80}{			<p>Hello world</p>}|
-		|\colorbox{gray!80}{		<body>}|
-		|\colorbox{gray!80}{</html>}|
-		|\colorbox{gray!80}{	\}"}|
-	\end{minted}
-\end{listing}
-
-\nb{
-	Only the highlighted part will actually be included in the text literal.\\*
-	Note how line 16 \code{</html>} dictates the amount of incidental
-	whitespaces for the second textblock.
-}
-
-\subparagraph{Indentation leader} Only one type of white space will be
-considered as the indentation leader; in case of mixed types, the first
-incidental whitespace of the first line (excluding the line with the opening
-text block tag) will be considered the indentation leader character. So it is
-advised to be consistent with code formatting to avoid ambiguities and
-undesired side effects.
-
-\todo{riferimento a convenzioni e best practices}
-
-\begin{minted}[autogobble=false,showtabs,tab=>,escapeinside=||]{text}
-			_out <- "{
-		|\colorbox{gray!80}{	<html>}|
-		|\colorbox{gray!80}{		<head></head>}|
-		|\colorbox{gray!80}{		<body>}|
-		|\colorbox{gray!80}{····		<p>Hello world</p>}|
-		|\colorbox{gray!80}{		<body>}|
-		|\colorbox{gray!80}{	</html>}|
-		|\colorbox{gray!80}{	\}"}|
-\end{minted}
-
-Note how line 5 accidentally used four spaces instead of a tab; since the tab
-was chosen as indentation leader, the spaces are considered non-incidental,
-therefore they should be included in the text, hence line 5 now dictates the
-amount of incidental whitespaces.
-
-\subsubsection{Identifiers}
-
-Any other word that is not a reserved keyword is considered an identifier.
-
-\todo{
-	TODO: completare
-
-	TODO: restringere i caratteri permessi ad un subset unicode?
-}
-
-\clearpage
-
-\section{Syntax}
-\label{sec:syntax}
-
-This section mainly focuses on the syntax rules of the grammar; for more
-details about a specific feature, refer to the dedicated section.
-
-\vspace{\baselineskip}
-
-A valid Giovi program starts with zero or more top-level statements; there are
-11 valid statements:
-
-\begin{minted}{antlr}
-program: statement* ;
-statement
-	: statement_declaration
-	| statement_return
-	| statement_invocation
-	| statement_redirection
-	| statement_import
-	| statement_if
-	| statement_break
-	| statement_skip
-	| statement_repeat
-	| statement_for
-	;
-
-statement_declaration
-	: statement_declaration_alias
-	| statement_declaration_module
-	| statement_declaration_struct
-	| statement_declaration_constant
-	| statement_declaration_variable
-	| statement_declaration_function
-	;
-\end{minted}
-
-In many rules, either a single statement or a block of statements are allowed;
-the following "fragment" rules will be used.
-
-\begin{minted}{antlr}
-block: '{' statement* '}';
-block_or_statement: block | statement ;
-\end{minted}
-
-\paragraph{Identifiers} The \code{identifier} rule describes the allowed
-identifiers to be used as names for variables, constants, types etc.
-
-\begin{minted}{antlr}
-identifier: [a-zA-Z] [a-zA-Z0-9_]* ;
-\end{minted}
-
-It must start with a letter and can contain any letter, number or underscore.
-
-\clearpage
-
-\subsection{Alias declaration}
-
-\begin{minted}{antlr}
-statement_declaration_alias: 'alias' expression 'as' identifier ;
-\end{minted}
-
-Sometimes a type, a function, a constant or something else may be named in a
-too verbose way. You can use the alias statement to basically refer to the same
-thing but with a different name.
-
-\begin{minted}{\giovilexer}
-alias AVeryVerboseAndLongStructName as SomeStruct
-\end{minted}
-
-\subsection{Import statement}
-
-\begin{minted}{antlr}
-statement_import
-	: 'import' import_entry
-	| 'import' '[' import_entry+ ']'
-	;
-import_entry: import_uri ('.' import_uri)* ('as' alias=identifier)? ;
-import_uri
-	: identifier
-	| literal_normal_text
-	| literal_exact_text
-	;
-\end{minted}
-
-The import statement is used to import one or more modules
-(\see{ch:modules}).
-
-\begin{minted}{\giovilexer}
-import giovi.util.Random
-giovi.util.Random.integer() -> _out
-\end{minted}
-
-To avoid fully qualifying the module every time, it can be aliased. It's a
-shortcut for importing and then aliasing with two different statements.
-
-\begin{minted}{\giovilexer}
-import giovi.util.Random as Random
-Random.integer() -> _out
-\end{minted}
-
-For more details, see~\See{sec:import}.
-
-\subsection{Module declaration}
-
-\begin{minted}{antlr}
-statement_declaration_module
-	: 'module' identifier body=block
-	;
-\end{minted}
-
-A module\footnotemark[1] is a "container" for code, and shares the same behavior of a scope: it
-can hold code, variables, functions, constants, types definition etcetera; in
-fact it can be seen as a "named scope". See \See{ch:modules}.
-
-\footnotetext[1]{
-	Modules are still considered an experimental feature and, as such, the
-	syntax is considered unstable.
-}
-
-\subsection{Constant declaration}
-
-\begin{minted}{antlr}
-statement_declaration_constant
-	: 'const' identifier type? '<-' expression
-	;
-\end{minted}
-
-Constants are read-only values; their value is defined at declaration and
-cannot change.\\*
-The type can be omitted as it will be inferred from the expression.\\*
-By convention, constants identifiers are written in \code{SCREAMING\_CASE}.
-
-\todo{decidere se usare shallow o deep immutability}
-
-\begin{minted}{\giovilexer}
-const PI Real <- 3.14
-const TAU <- PI * 2
-\end{minted}
-
-\subsection{Variable declaration}
-
-\begin{minted}{antlr}
-statement_declaration_variable
-	: 'var' identifier type? ('default' expression)? '<-' expression
-	| identifier type ('default' expression)?
-	;
-\end{minted}
-
-A variable is identified by a name, and it is of a specific type.\\*
-By convention, variable identifiers are written in \code{pascalCase}.\\*
-Using the \code{var} keyword allows you to omit the type and let it be inferred
-from the assigned expression.
-
-\begin{minted}{\giovilexer}
-myName Text <- "Simone"
-var myNickname <- "simonvic"
-\end{minted}
-
-\subsection{Return statement}
-
-\begin{minted}{antlr}
-statement_return
-	: ('return' | '=>') expression?
-	;
-\end{minted}
-
-The return statement can only be used within a function scope.
-
-\clearpage
-
-\subsection{Function declaration}
-
-\begin{minted}{antlr}
-statement_declaration_function
-	: identifier '(' formal_parameters? ')' ('=>' return_type=type)?
-	  body=block
-	;
-
-formal_parameters
-	: formal_parameter (',' formal_parameter)*
-	;
-
-formal_parameter
-	: (label=identifier ':')? name=identifier type ('default' expression)?
-	;
-\end{minted}
-
-Functions are code blocks that can be invoked at a later time.\\*
-By convention, function identifiers are written in \code{pascalCase}.
-
-\begin{minted}{\giovilexer}
-printHelloWorld() {
-	"Hello World" -> _out
-}
-
-greetPerson(name Text, surname Text) {
-	"Greetings $name, $surname" -> _out
-}
-
-getFunLanguage() => Text {
-	=> "Giovi"
-}
-\end{minted}
-
-For more details, see~\See{ch:functions}.
-
-\subsection{Invocation statement}
-
-\begin{minted}{antlr}
-statement_invocation
-	: expression '(' actual_parameters ')'
-	;
-
-actual_parameters
-	: actual_parameter (',' actual_parameter)*
-	;
-
-actual_parameter
-	: (label=identifier ':')? expression
-	;
-\end{minted}
-
-When invoking a function, arguments can be passed using a traditional
-positional approach or a nominal approach\footnotemark[1].
-
-\footnotetext[1]{
-	Albeit the grammar doesn't enforce one approach or the other, the current
-	implementation supports either all arguments to be passed as positional or
-	as nominal. For more details, see~\See{ch:functions}.
-}
-
-\subsection{Redirection statement (assignment)}
-
-\begin{minted}{antlr}
-statement_redirection
-	: statement_redirection_rtl
-	| statement_redirection_ltr
-	;
-
-statement_redirection_rtl
-	: dest=pattern_redir '<-' src=expression
-	| dest=expression ('<-', '+<-', '-<-', '*<-', '/<-') src=expression
-	;
-
-statement_redirection_ltr
-	: src=expression '->' dest=pattern_redir
-	| src=expression ('->', '->+', '->-', '->*', '->/') content=expression
-	;
-
-pattern_redir
-	: pattern_placeholder
-	| pattern_unary
-	| pattern_placeholder
-	;
-\end{minted}
-
-The redirection statement is simply an assignment of a value to
-\textit{something}.
-
-A peculiarity of the statement is that it can be written "left to right" or
-"right to left". There is no difference between the two directions, except for
-readability. Sometimes it's just better to use one instead of the other.
-
-\todo{link a FAQ}
-
-\begin{minted}{\giovilexer}
-"hello world" -> _out     # Printing
-counter +<- 1             # Increasing counter by one
-acceleration ->+ velocity # Increasing velocity by "acceleration"
-\end{minted}
-
-\subsection{If statement}
-
-\begin{minted}{antlr}
-statement_if
-	: statement_simple_if
-	| statement_multi_if
-	;
-\end{minted}
-
-The \code{if} statement is used to evaluate boolean expressions exclusively.\\*
-There is a "traditional" \code{if}, where a single expression is evaluated and
-the appropriate execution flow is chosen, and a "multi-if" version.
-
-\subsubsection{Simple If statement}
-
-\begin{minted}{antlr}
-statement_simple_if
-	: 'if' expression 'do' statement_or_block ('else' statement_or_block)?
-	;
-\end{minted}
-
-\begin{minted}{\giovilexer}
-if someConditionIsTrue() do something() else somethingElse()
-if someConditionIsTrue() do {
-	something()
-} else {
-	somethingElse()
-}
-\end{minted}
-
-\subsubsection{Multi If statement}
-
-\begin{minted}{antlr}
-statement_multi_if
-	: 'if' subject=expression multi_if_body ('else' statement_or_block)?
-	| 'if' subjectless_multi_if_body ('else' statement_or_block)?
-	;
-\end{minted}
-
-Very often it is needed to check multiple conditions sequentially.
-
-\begin{minted}{\giovilexer}
-if name = "Simone" do {
-	"hey it's Simone!" -> _out
-} else if name = "Mario" do {
-	"heyo Mario" -> _out
-	"where is Luigi?" -> _out
-} else if name = "Luigi" do {
-	"heyo green Mario!" -> _out
-}
-\end{minted}
-
-To improve readability, the \code{if} statement allows you to write the same in
-a more concise way.
-
-\begin{minted}{\giovilexer}
-if {
-	name = "Simone" do "hey it's Simone!" -> _out
-	name = "Mario" do {
-		"heyo Mario" -> _out
-		"where is Luigi?" -> _out
-	}
-	name = "Luigi" do "heyo green Mario!" -> _out
-}
-\end{minted}
-
-\nb{Any boolean expression is allowed and exhaustiveness is not enforced! Be
-mindful of the branch order; since they're evaluated in the same order they're
-written, some branch may become unreachable if it's dominated by a previous
-one.}
-
-\subparagraph{Subject} More often than not, the conditions involve the same
-"subject". The \code{if} statement allows you to write it just once and then
-omit it in the left-hand side of the condition
-
-\begin{minted}{\giovilexer}
-if name {
-	= "Simone" do "hey it's Simone!" -> _out
-	= "Mario" do {
-		"heyo Mario" -> _out
-		"where is Luigi?" -> _out
-	}
-	= "Luigi" do "heyo green Mario!" -> _out
-}
-\end{minted}
-
-Common boolean operators are allowed
-
-\begin{minted}{\giovilexer}
-if getSomeNumber() {
-	= 69 or = 420 do "Nice!" -> _out
-	> 100 and < 999 do "big number" -> _out
-}
-\end{minted}
-
-A branch can also be "guarded" with another (possibly unrelated) boolean
-condition
-
-\begin{minted}{\giovilexer}
-var funnyNumbers <- [69, 420] 
-if getSomeNumber() {
-	# if equal to 69, but only if someCondition() is true
-	= 69 when someCondition() do "Nice!" -> _out
-
-	# if is contained in funnyNumbers list,
-	# but only when 67 is not contained in funnyNumbers
-	in funnyNumbers when 67 not in funnyNumbers
-}
-\end{minted}
-
-\subsection{Break and Skip statement}
-
-Both statements are used to control the flow of a loop, therefore can only be
-used within a loop.
-
-\subsubsection{Break statement}
-
-\begin{minted}{antlr}
-statement_break: 'break';
-\end{minted}
-
-The break statement will stop the loop and the execution will continue with the
-next instruction.
-
-\subsubsection{Skip statement}
-
-\begin{minted}{antlr}
-statement_skip: 'skip';
-\end{minted}
-
-The skip statement will stop the current loop iteration and skip to the next
-iteration.
-
-\subsection{Repeat statement}
-
-\begin{minted}{antlr}
-statement_repeat: 'repeat' ('if' expression)? statement_or_block ;
-\end{minted}
-
-The repeat statement allows you to repeat a statement or block of code. It
-allows an optional condition that gets checked at the beginning of every loop;
-if the condition fails, the iteration stops.
-
-\begin{minted}{\giovilexer}
-# this code will run indefinitely
-repeat {
-	"hello world" -> _out
-}
-\end{minted}
-
-\begin{minted}{\giovilexer}
-# the loop continues while someCondition is true
-repeat if someCondition() {
-	"hello world" -> _out
-}
-\end{minted}
-
-A "do-while" like statement, can be achieved with a \code{break} statement.
-
-\begin{minted}{\giovilexer}
-# the loop continues until someCondition is true
-repeat {
-	"hello world" -> _out
-	if someCondition() do break
-}
-\end{minted}
-
-\subsection{For statement}
-
-\begin{minted}{antlr}
-statement_for
-	: 'for' pattern_iterator 'in' iterable 'do' statement_or_block
-	;
-
-pattern_iterator: pattern_map_naked | pattern ;
-\end{minted}
-
-In its simplest form, the \code{for} statement is sued to iterate over lists,
-maps or ranges.
-
-\begin{minted}{\giovilexer}
-for i in 0..10 do somethingWith(i)
-for number in [1 2 3 4] do somethingWith(number)
-for key in ["Simone"=>69 "Luca"=>420 "Paolo"=>10] do somethingWith(key)
-\end{minted}
-
-The for statement is like an usual for-each loop, but on steroids; the iterator
-is actually a pattern (\see{ch:patterns}): for each iteration, the for
-statement will match iterated value with the pattern, and perform the
-appropriate deconstruction.
-
-\begin{listing}
-	\label{lst:for_loop_patterns_example}
-	\caption{Example of various patterns used as iterators in \code{for} loops}
-	\begin{minted}{\giovilexer}
-for _ in 0..9 do something() # do something 10 times
-
-for [[i]] in some2DMatrix do somethingWith(i)
-
-mapOfNicknames [Text => [Text]] <- [
-	"Simone" => ["Simon", "simonvic"]
-	"Mario"  => ["Super Mario", "The plumber"]
-	"Luigi"  => ["Green Mario"]
-]
-for [name => [nickname]] in mapOfNicknames do {
-	somethingWith(name, nickname)
-}
-
-listOfColors [tuple<Int,Int,Int>] <- [
-	<0 255 0>
-	<55 0 255>
-	<255 255 255>
-]
-for <r, g, b> in listOfColors do {
-	"The color is made of $r $g $b" -> _out
-}
-	\end{minted}
-\end{listing}
-
-\nb{Nesting iterator patterns effectively means nesting iterations}
-
-\todo{aggiungere RFC di iteration counters}
-
 \chapter{Scopes}
 \label{ch:scopes}
 
@@ -1249,7 +366,7 @@ referred to, simply, by their name.
 
 Scopes can be "nested" within other scopes and their lifetime has a clear begin
 and end; a scope usually coincides with a \textit{block} (see
-\See{sec:syntax}), for example in an \code{if} statement, a \code{for} or
+\See{ch:syntax}), for example in an \code{if} statement, a \code{for} or
 \code{repeat} loop or a function body.
 
 A Giovi source code file is itself a scope (see~\See{ch:modules}).
@@ -2396,7 +1513,892 @@ if Random.real() > 0.69 do {
 }
 \end{minted}
 
-\part{Type system}
+\part{The Grammar}
+
+\chapter{Introduction}
+
+This chapter describes the lexicon and syntax of the language.
+Grammar rules\footnotemark[1] will be shown using a dialect of eBNF.
+
+\footnotetext[1]{
+	Only a subset of the rules will be shown, and they may not exactly match
+	the real grammar. For the actual rules consult the appropriate grammar
+	files.
+}
+
+\begin{listing}
+	\label{lst:ebnf_dialect}
+	\caption{Example of a definition of \code{some\_rule} using the eBNF dialect}
+	\begin{minted}{antlr}
+some_rule
+	: 'some_token' some_label=some_other_rule
+	| zero_or_one_of_this?
+	| zero_or_more_of_this*
+	| one_or_more_of_this+
+	| ('some_token' | 'some_other_token' | some_other_rule)
+	;
+	\end{minted}
+\end{listing}
+
+\paragraph{Whitespaces} Whitespaces (e.g. spaces, tabs, newlines) are
+determinant \textbf{only} during the lexical parsing, meaning that \code{!=} is
+different than \code{! =}, where the former gets parsed as a single token while
+the latter gets parsed as two different tokens; in any other case, whitepsaces
+are ignored.
+
+\chapter{Lexicon}
+
+\section{Keywords}
+
+\code{if}, \code{do}, \code{else}, \code{when}, \code{for}, \code{in},
+\code{repeat}, \code{break}, \code{skip}, \code{return}\\*
+\code{default}, \code{import}, \code{module}\\*
+\code{const}, \code{var}, \code{alias},
+\code{self}, \code{function}, \code{tuple}, \code{record}, \code{struct},
+\code{type}, \code{and}, \code{or}, \code{not}, \code{as}
+
+\paragraph{Reserved keywords} Some keywords are reserved for future-proofing
+to ensure backward compatibility in the eventuality they get used.
+
+\code{def}, \code{let}, \code{ref}, \code{at}, \code{with}, \code{interface},
+\code{enum}
+
+\section{Operators}
+
+\begin{table}[H]
+\resizebox{\linewidth}{!}{
+	\begin{tabular}{rcl}
+		\textbf{Operator}               & \textbf{Token}  & \textbf{Description}                            \\\hline
+		PLUS                            & \texttt{+}      & Arithmetic sum, concatenation                   \\\hline
+		MINUS                           & \texttt{-}      & Arithmetic subtraction, intersection            \\\hline
+		MULTIPLICATION                  & \texttt{*}      & Arithmetic multiplication                       \\\hline
+		DIVISION                        & \texttt{/}      & Arithmetic division                             \\\hline
+		MODULO                          & \texttt{\%}     & Arithmetic remainder                            \\\hline
+		EXPONENTIAL                     & \texttt{\^}     & Arithmetic power, text repetition               \\\hline
+		EQUAL                           & \texttt{=}      & Loose equality                                  \\\hline
+		NOT EQUAL                       & \texttt{!=}     & Loose inequality                                \\\hline
+		LESS EQUAL                      & \texttt{<=}     & Arithmetic and lexicographical comparison       \\\hline
+		LESS                            & \texttt{<}      & Arithmetic and lexicographical comparison       \\\hline
+		GREATER                         & \texttt{>}      & Arithmetic and lexicographical comparison       \\\hline
+		GREATER EQUAL                   & \texttt{>=}     & Arithmetic and lexicographical comparison       \\\hline
+		CONTAINS                        & \texttt{=\~{}}  & Checks if a set of elements contains an element \\\hline
+		IS CONTAINED                    & \texttt{\~{}=}  & Reverse of CONTAINS                             \\\hline
+		\multirow{2}{*}{BOOL NOT}       & \texttt{not}    & \multirow{2}{*}{Boolean logic negation}         \\
+	                                	& \texttt{!}      &                                                 \\\hline
+		\multirow{2}{*}{BOOL AND}       & \texttt{and}    & \multirow{2}{*}{Boolean logic and}              \\
+	                                	& \texttt{\&}     &                                                 \\\hline
+		\multirow{2}{*}{BOOL OR}        & \texttt{or}     & \multirow{2}{*}{Boolean logic or}               \\
+	                                	& \texttt{|}      &                                                 \\\hline
+		BITWISE NOT                     & \texttt{!!}     & Bitwise negation                                \\\hline
+		BITWISE AND                     & \texttt{\&\&}   & Bitwise and                                     \\\hline
+		BITWISE OR                      & \texttt{||}     & Bitwise or                                      \\\hline
+		BITWISE XOR                     & \texttt{|||}    & Bitwise exclusive or                            \\\hline
+		BITWISE LEFT SHIFT              & \texttt{\{<\}}  & Bitwise left shift                              \\\hline
+		BITWISE RIGHT SHIFT             & \texttt{\{>\}}  & Bitwise right shift                             \\\hline
+		BITWISE RIGHT UNSIGNED SHIFT    & \texttt{\{>>\}} & Bitwise right unsigned shift                    \\\hline
+		IS                              & \texttt{is}     & Runtime type check, pattern matching            \\\hline
+		AS                              & \texttt{as}     & Explicit type coercion                          \\\hline
+	    \\
+		\multicolumn{3}{c}{Pseudo-Operators}                                                                \\\hline
+		DOT ACCESS                      & \texttt{.}      & Members access                                  \\\hline
+		DOTREF ACCESS                   & \texttt{::}     & Function member access                          \\\hline
+	\end{tabular}
+}
+\end{table}
+
+\section{Other tokens}
+
+\code{..}, \code{:}, \code{,}, \code{;}, \code{\#}, \code{(}, \code{)}, \code{[}, \code{]},
+\code{\{}, \code{\}}, \code{<}, \code{>}
+
+\section{Comments}
+
+There are two kinds of comments: single line and multiline.
+
+\subsection{Single line comment}
+
+\begin{minted}{antlr}
+	comment: '#' comment_content? ('\n' | EOF) ;
+	comment_content: [^\n]+ ;
+\end{minted}
+
+Every character after the comment token \code{\#} until a newline \code{\\n} is
+considered part of the comment.
+
+\subsection{Multiline comment}
+
+\begin{minted}{antlr}
+	comment_block: '#{' .* ('}#' | EOF) ;
+\end{minted}
+
+Every character between and the open comment token \code{\#\{} and the close
+comment token \code{\}\#} is considered part of the comment.\\*
+A multiline comment can also be inlined in the code.
+
+\begin{minted}{\giovilexer}
+if true #{ this is a comment }# do something()
+\end{minted}
+
+\paragraph{Conventions} By convention, \code{\#} is immediately followed by
+a space, as the first character is reserved for "special" comments, for example
+documentation: \code{\#? This is a documentation comment}
+
+\todo{Specificare RFC riguardo language server e altro?}
+
+\clearpage
+
+\section{Literals}
+
+\subsection{Boolean}
+
+\begin{minted}{antlr}
+	literal_boolean: 'true' | 'false' ;
+\end{minted}
+
+A \code{Bool} literal is simply expressed by \code{true} or \code{false}
+
+\subsection{Numbers}
+
+\begin{minted}{antlr}
+	literal_number
+		: literal_integer
+		| literal_natural
+		| literal_real
+		;
+	literal_integer
+		: ( numeral_decimal
+		  | numeral_hex
+		  | numeral_octal
+		  | numeral_binary
+		  ) 'i'?
+		;
+	literal_natural
+		: ( numeral_decimal
+		  | numeral_hex
+		  | numeral_octal
+		  | numeral_binary
+		  ) 'n'?
+		;
+	literal_real
+		: decimal_floating_point_literal
+		| hexadecimal_floating_point_literal
+		| (numeral_hex | numeral_octal | numeral_binary) 'r'
+		;
+\end{minted}
+
+Giovi supports three different type of numbers: integers, natural and real.
+
+\paragraph{Suffixes} By default, a numeral is parsed as an integer; you can
+add a suffix to the number to explicitate the type: \code{n} for naturals,
+\code{i} for integers, \code{r} for reals. \code{69n} \code{69i} \code{69r}
+
+\paragraph{Separators} To improve readability of large numbers, you can use
+underscores to group digits; separators cannot appear at the beginning or the
+end of the number. For example: \code{100\_000\_000}
+
+\clearpage
+
+\paragraph{Bases} Numeral literals may be expressed in multiple bases.\\*
+By default, decimal (base 10) is used; to indicate a different base use the
+appropriate prefix:
+\begin{itemize}
+	\item Decimal (base 10): \code{69420}
+	\item Hexadecimal (base 16): \code{0x10F2C}
+	\item Octal (base 8): \code{0o207454}
+	\item Binary (base 2): \code{0b0001\_0000\_1111\_0010\_1100}
+\end{itemize}
+
+\paragraph{Scientific notation} For real numbers, the scientific notation is
+supported: \code{1e69}, \code{6.9e-10}
+
+\paragraph{Binary exponent} For hexadecimal real numbers, a binary exponent can
+be used: \code{0x1p69}
+
+\todo{semplificare?}
+
+\clearpage
+
+\subsection{Text}
+\label{sec:text_syntax}
+
+\begin{minted}{antlr}
+	literal_normal_text
+		: '"' ([^\n] | escape_sequence | interpolation)* '"'
+		;
+
+	literal_normal_text_block
+		: '"{' (. | escape_sequence | interpolation)* '}"'
+		;
+
+	literal_exact_text
+		: "'" ([^\n] | escape_sequence)* "'"
+		;
+
+	literal_exact_text_block
+		: "'{" (. | escape_sequence)* "}'"
+		;
+\end{minted}
+
+There are four types of \code{Text} literals (a.k.a. strings).
+
+\begin{itemize}
+	\item \textbf{Normal text}: delimited by double quotes \code{"}
+	\item \textbf{Exact text}: delimited by single quptes \code{'}
+	\item \textbf{Normal text block}: delimited by \code{"\{} and \code{\}"}
+	\item \textbf{Exact text block}: delimited by \code{'\{} and \code{\}'}
+\end{itemize}
+
+\paragraph{Differences} All types of text literals can contain escape
+sequences.\\*
+Normal and exact text must be terminated on the same line (they cannot contain
+a newline).\\*
+Normal and exact text blocks can span over multiple lines and do not require
+the escape of the text delimiter.\\*
+Normal text and normal text block allow interpolation.
+
+\paragraph{Escape sequences} Some special characters may not appear in the
+text, unless when escaped by prefixing it with \code{$\backslash$} (backslash).
+
+\begin{minted}{antlr}
+	escape_sequence: character_escape | unicode_escape ;
+	character_escape: '\' [btnfrs"'\\${}] ;
+	unicode_escape: '\' 'u' HexDigit HexDigit HexDigit HexDigit ;
+\end{minted}
+
+\paragraph{Interpolation} Normal text and normal text blocks support
+interpolation, allowing the "injecttion" of a variable or expression in the
+text.\\*
+To inject a variable, simply prefix it with \code{\$} (dollar): \code{"My name
+is \$name"}.\\*
+In order for an expression that is not a simple identifier to be injected, it
+needs to be wrapped in braces: \code{"My name is \$\{user.getName()\}"}
+
+\subsubsection{Text blocks}
+
+Normal and exact text blocks allow the text to span over multiple lines,
+without the need to escape the text delimiter.
+
+\begin{listing}
+	\label{lst:textblock_example}
+	\begin{minted}{\giovilexer}
+if true do {
+	if true do {
+		html Text <- "{
+			<html>
+				<head></head>
+				<body>
+					<p class="foo">Hello world</p>
+				<body>
+			</html>
+			}"
+	}
+}
+	\end{minted}
+	\caption{Example of a textblock appearing indented in a nested scope}
+\end{listing}
+
+The last newline character will be included. If you don't want it, put the
+closing tag on the previous line
+
+\begin{minted}{\giovilexer}
+t Text <- "{
+	hello world}"
+\end{minted}
+
+\subparagraph{Incidental whitespaces} In a text block, white
+spaces\footnotemark[1] are preserved, unless they're considered
+"incidental". Incidental white spaces are those needed for code indentation.
+
+\footnotetext[1]{
+	White spaces are all those character that are "invisible", such as spaces,
+	tabulations, newlines, formfeeds etc.
+}
+
+\begin{minted}[showtabs,tab=>,escapeinside=||]{\giovilexer}
+if true do {
+	if true do {
+		html Text <- "{
+			<html>
+				<head></head>
+				<body>
+					<p>Hello world</p>
+				<body>
+			</html>
+			}"
+#^^^^^^^^^^^
+# the first three tabulations are considered "incidental"
+# and won't be included in the text
+	}
+}
+\end{minted}
+
+\clearpage
+
+The amount of whitespaces that will be considered "incidental" is defined by
+the line that has less of them.
+
+\begin{listing}
+	\label{lst:textblock_incidental_whitespaces}
+	\caption{A textblock with its actual content highlighted}
+	\begin{minted}[autogobble=false,showtabs,tab=>,escapeinside=||]{text}
+			_out <- "{
+			|\colorbox{gray!80}{<html>}|
+			|\colorbox{gray!80}{	<head></head>}|
+			|\colorbox{gray!80}{	<body>}|
+			|\colorbox{gray!80}{		<p>Hello world</p>}|
+			|\colorbox{gray!80}{	<body>}|
+			|\colorbox{gray!80}{</html>}|
+			}"
+
+			_out <- "{
+		|\colorbox{gray!80}{	<html>}|
+		|\colorbox{gray!80}{		<head></head>}|
+		|\colorbox{gray!80}{		<body>}|
+		|\colorbox{gray!80}{			<p>Hello world</p>}|
+		|\colorbox{gray!80}{		<body>}|
+		|\colorbox{gray!80}{</html>}|
+		|\colorbox{gray!80}{	\}"}|
+	\end{minted}
+\end{listing}
+
+\nb{
+	Only the highlighted part will actually be included in the text literal.\\*
+	Note how line 16 \code{</html>} dictates the amount of incidental
+	whitespaces for the second textblock.
+}
+
+\subparagraph{Indentation leader} Only one type of white space will be
+considered as the indentation leader; in case of mixed types, the first
+incidental whitespace of the first line (excluding the line with the opening
+text block tag) will be considered the indentation leader character. So it is
+advised to be consistent with code formatting to avoid ambiguities and
+undesired side effects.
+
+\todo{riferimento a convenzioni e best practices}
+
+\begin{minted}[autogobble=false,showtabs,tab=>,escapeinside=||]{text}
+			_out <- "{
+		|\colorbox{gray!80}{	<html>}|
+		|\colorbox{gray!80}{		<head></head>}|
+		|\colorbox{gray!80}{		<body>}|
+		|\colorbox{gray!80}{····		<p>Hello world</p>}|
+		|\colorbox{gray!80}{		<body>}|
+		|\colorbox{gray!80}{	</html>}|
+		|\colorbox{gray!80}{	\}"}|
+\end{minted}
+
+Note how line 5 accidentally used four spaces instead of a tab; since the tab
+was chosen as indentation leader, the spaces are considered non-incidental,
+therefore they should be included in the text, hence line 5 now dictates the
+amount of incidental whitespaces.
+
+\subsection{Identifiers}
+
+Any other word that is not a reserved keyword is considered an identifier.
+
+\todo{
+	TODO: completare
+
+	TODO: restringere i caratteri permessi ad un subset unicode?
+}
+
+\clearpage
+
+\chapter{Syntax}
+\label{ch:syntax}
+
+This section mainly focuses on the syntax rules of the grammar; for more
+details about a specific feature, refer to the dedicated section.
+
+\vspace{\baselineskip}
+
+A valid Giovi program starts with zero or more top-level statements; there are
+11 valid statements:
+
+\begin{minted}{antlr}
+program: statement* ;
+statement
+	: statement_declaration
+	| statement_return
+	| statement_invocation
+	| statement_redirection
+	| statement_import
+	| statement_if
+	| statement_break
+	| statement_skip
+	| statement_repeat
+	| statement_for
+	;
+
+statement_declaration
+	: statement_declaration_alias
+	| statement_declaration_module
+	| statement_declaration_struct
+	| statement_declaration_constant
+	| statement_declaration_variable
+	| statement_declaration_function
+	;
+\end{minted}
+
+In many rules, either a single statement or a block of statements are allowed;
+the following "fragment" rules will be used.
+
+\begin{minted}{antlr}
+block: '{' statement* '}';
+block_or_statement: block | statement ;
+\end{minted}
+
+\paragraph{Identifiers} The \code{identifier} rule describes the allowed
+identifiers to be used as names for variables, constants, types etc.
+
+\begin{minted}{antlr}
+identifier: [a-zA-Z] [a-zA-Z0-9_]* ;
+\end{minted}
+
+It must start with a letter and can contain any letter, number or underscore.
+
+\clearpage
+
+\section{Alias declaration}
+
+\begin{minted}{antlr}
+statement_declaration_alias: 'alias' expression 'as' identifier ;
+\end{minted}
+
+Sometimes a type, a function, a constant or something else may be named in a
+too verbose way. You can use the alias statement to basically refer to the same
+thing but with a different name.
+
+\begin{minted}{\giovilexer}
+alias AVeryVerboseAndLongStructName as SomeStruct
+\end{minted}
+
+\section{Import statement}
+
+\begin{minted}{antlr}
+statement_import
+	: 'import' import_entry
+	| 'import' '[' import_entry+ ']'
+	;
+import_entry: import_uri ('.' import_uri)* ('as' alias=identifier)? ;
+import_uri
+	: identifier
+	| literal_normal_text
+	| literal_exact_text
+	;
+\end{minted}
+
+The import statement is used to import one or more modules
+(\see{ch:modules}).
+
+\begin{minted}{\giovilexer}
+import giovi.util.Random
+giovi.util.Random.integer() -> _out
+\end{minted}
+
+To avoid fully qualifying the module every time, it can be aliased. It's a
+shortcut for importing and then aliasing with two different statements.
+
+\begin{minted}{\giovilexer}
+import giovi.util.Random as Random
+Random.integer() -> _out
+\end{minted}
+
+For more details, see~\See{sec:import}.
+
+\section{Module declaration}
+
+\begin{minted}{antlr}
+statement_declaration_module
+	: 'module' identifier body=block
+	;
+\end{minted}
+
+A module\footnotemark[1] is a "container" for code, and shares the same behavior of a scope: it
+can hold code, variables, functions, constants, types definition etcetera; in
+fact it can be seen as a "named scope". See \See{ch:modules}.
+
+\footnotetext[1]{
+	Modules are still considered an experimental feature and, as such, the
+	syntax is considered unstable.
+}
+
+\section{Constant declaration}
+
+\begin{minted}{antlr}
+statement_declaration_constant
+	: 'const' identifier type? '<-' expression
+	;
+\end{minted}
+
+Constants are read-only values; their value is defined at declaration and
+cannot change.\\*
+The type can be omitted as it will be inferred from the expression.\\*
+By convention, constants identifiers are written in \code{SCREAMING\_CASE}.
+
+\todo{decidere se usare shallow o deep immutability}
+
+\begin{minted}{\giovilexer}
+const PI Real <- 3.14
+const TAU <- PI * 2
+\end{minted}
+
+\section{Variable declaration}
+
+\begin{minted}{antlr}
+statement_declaration_variable
+	: 'var' identifier type? ('default' expression)? '<-' expression
+	| identifier type ('default' expression)?
+	;
+\end{minted}
+
+A variable is identified by a name, and it is of a specific type.\\*
+By convention, variable identifiers are written in \code{pascalCase}.\\*
+Using the \code{var} keyword allows you to omit the type and let it be inferred
+from the assigned expression.
+
+\begin{minted}{\giovilexer}
+myName Text <- "Simone"
+var myNickname <- "simonvic"
+\end{minted}
+
+\section{Return statement}
+
+\begin{minted}{antlr}
+statement_return
+	: ('return' | '=>') expression?
+	;
+\end{minted}
+
+The return statement can only be used within a function scope.
+
+\clearpage
+
+\section{Function declaration}
+
+\begin{minted}{antlr}
+statement_declaration_function
+	: identifier '(' formal_parameters? ')' ('=>' return_type=type)?
+	  body=block
+	;
+
+formal_parameters
+	: formal_parameter (',' formal_parameter)*
+	;
+
+formal_parameter
+	: (label=identifier ':')? name=identifier type ('default' expression)?
+	;
+\end{minted}
+
+Functions are code blocks that can be invoked at a later time.\\*
+By convention, function identifiers are written in \code{pascalCase}.
+
+\begin{minted}{\giovilexer}
+printHelloWorld() {
+	"Hello World" -> _out
+}
+
+greetPerson(name Text, surname Text) {
+	"Greetings $name, $surname" -> _out
+}
+
+getFunLanguage() => Text {
+	=> "Giovi"
+}
+\end{minted}
+
+For more details, see~\See{ch:functions}.
+
+\section{Invocation statement}
+
+\begin{minted}{antlr}
+statement_invocation
+	: expression '(' actual_parameters ')'
+	;
+
+actual_parameters
+	: actual_parameter (',' actual_parameter)*
+	;
+
+actual_parameter
+	: (label=identifier ':')? expression
+	;
+\end{minted}
+
+When invoking a function, arguments can be passed using a traditional
+positional approach or a nominal approach\footnotemark[1].
+
+\footnotetext[1]{
+	Albeit the grammar doesn't enforce one approach or the other, the current
+	implementation supports either all arguments to be passed as positional or
+	as nominal. For more details, see~\See{ch:functions}.
+}
+
+\section{Redirection statement}
+
+\begin{minted}{antlr}
+statement_redirection
+	: statement_redirection_rtl
+	| statement_redirection_ltr
+	;
+
+statement_redirection_rtl
+	: dest=pattern_redir '<-' src=expression
+	| dest=expression ('<-', '+<-', '-<-', '*<-', '/<-') src=expression
+	;
+
+statement_redirection_ltr
+	: src=expression '->' dest=pattern_redir
+	| src=expression ('->', '->+', '->-', '->*', '->/') content=expression
+	;
+
+pattern_redir
+	: pattern_placeholder
+	| pattern_unary
+	| pattern_placeholder
+	;
+\end{minted}
+
+The redirection statement is simply an assignment of a value to
+\textit{something}.
+
+A peculiarity of the statement is that it can be written "left to right" or
+"right to left". There is no difference between the two directions, except for
+readability. Sometimes it's just better to use one instead of the other.
+
+\todo{link a FAQ}
+
+\begin{minted}{\giovilexer}
+"hello world" -> _out     # Printing
+counter +<- 1             # Increasing counter by one
+acceleration ->+ velocity # Increasing velocity by "acceleration"
+\end{minted}
+
+\section{If statement}
+
+\begin{minted}{antlr}
+statement_if
+	: statement_simple_if
+	| statement_multi_if
+	;
+\end{minted}
+
+The \code{if} statement is used to evaluate boolean expressions exclusively.\\*
+There is a "traditional" \code{if}, where a single expression is evaluated and
+the appropriate execution flow is chosen, and a "multi-if" version.
+
+\subsection{Simple If statement}
+
+\begin{minted}{antlr}
+statement_simple_if
+	: 'if' expression 'do' statement_or_block ('else' statement_or_block)?
+	;
+\end{minted}
+
+\begin{minted}{\giovilexer}
+if someConditionIsTrue() do something() else somethingElse()
+if someConditionIsTrue() do {
+	something()
+} else {
+	somethingElse()
+}
+\end{minted}
+
+\subsection{Multi If statement}
+
+\begin{minted}{antlr}
+statement_multi_if
+	: 'if' subject=expression multi_if_body ('else' statement_or_block)?
+	| 'if' subjectless_multi_if_body ('else' statement_or_block)?
+	;
+\end{minted}
+
+Very often it is needed to check multiple conditions sequentially.
+
+\begin{minted}{\giovilexer}
+if name = "Simone" do {
+	"hey it's Simone!" -> _out
+} else if name = "Mario" do {
+	"heyo Mario" -> _out
+	"where is Luigi?" -> _out
+} else if name = "Luigi" do {
+	"heyo green Mario!" -> _out
+}
+\end{minted}
+
+To improve readability, the \code{if} statement allows you to write the same in
+a more concise way.
+
+\begin{minted}{\giovilexer}
+if {
+	name = "Simone" do "hey it's Simone!" -> _out
+	name = "Mario" do {
+		"heyo Mario" -> _out
+		"where is Luigi?" -> _out
+	}
+	name = "Luigi" do "heyo green Mario!" -> _out
+}
+\end{minted}
+
+\nb{Any boolean expression is allowed and exhaustiveness is not enforced! Be
+mindful of the branch order; since they're evaluated in the same order they're
+written, some branch may become unreachable if it's dominated by a previous
+one.}
+
+\paragraph{Subject} More often than not, the conditions involve the same
+"subject". The \code{if} statement allows you to write it just once and then
+omit it in the left-hand side of the condition
+
+\begin{minted}{\giovilexer}
+if name {
+	= "Simone" do "hey it's Simone!" -> _out
+	= "Mario" do {
+		"heyo Mario" -> _out
+		"where is Luigi?" -> _out
+	}
+	= "Luigi" do "heyo green Mario!" -> _out
+}
+\end{minted}
+
+Common boolean operators are allowed
+
+\begin{minted}{\giovilexer}
+if getSomeNumber() {
+	= 69 or = 420 do "Nice!" -> _out
+	> 100 and < 999 do "big number" -> _out
+}
+\end{minted}
+
+A branch can also be "guarded" with another (possibly unrelated) boolean
+condition
+
+\begin{minted}{\giovilexer}
+var funnyNumbers <- [69, 420] 
+if getSomeNumber() {
+	# if equal to 69, but only if someCondition() is true
+	= 69 when someCondition() do "Nice!" -> _out
+
+	# if is contained in funnyNumbers list,
+	# but only when 67 is not contained in funnyNumbers
+	in funnyNumbers when 67 not in funnyNumbers
+}
+\end{minted}
+
+\section{Break and Skip statement}
+
+Both statements are used to control the flow of a loop, therefore can only be
+used within a loop.
+
+\subsection{Break statement}
+
+\begin{minted}{antlr}
+statement_break: 'break';
+\end{minted}
+
+The break statement will stop the loop and the execution will continue with the
+next instruction.
+
+\subsection{Skip statement}
+
+\begin{minted}{antlr}
+statement_skip: 'skip';
+\end{minted}
+
+The skip statement will stop the current loop iteration and skip to the next
+iteration.
+
+\section{Repeat statement}
+
+\begin{minted}{antlr}
+statement_repeat: 'repeat' ('if' expression)? statement_or_block ;
+\end{minted}
+
+The repeat statement allows you to repeat a statement or block of code. It
+allows an optional condition that gets checked at the beginning of every loop;
+if the condition fails, the iteration stops.
+
+\begin{minted}{\giovilexer}
+# this code will run indefinitely
+repeat {
+	"hello world" -> _out
+}
+\end{minted}
+
+\begin{minted}{\giovilexer}
+# the loop continues while someCondition is true
+repeat if someCondition() {
+	"hello world" -> _out
+}
+\end{minted}
+
+A "do-while" like statement, can be achieved with a \code{break} statement.
+
+\begin{minted}{\giovilexer}
+# the loop continues until someCondition is true
+repeat {
+	"hello world" -> _out
+	if someCondition() do break
+}
+\end{minted}
+
+\section{For statement}
+
+\begin{minted}{antlr}
+statement_for
+	: 'for' pattern_iterator 'in' iterable 'do' statement_or_block
+	;
+
+pattern_iterator: pattern_map_naked | pattern ;
+\end{minted}
+
+In its simplest form, the \code{for} statement is sued to iterate over lists,
+maps or ranges.
+
+\begin{minted}{\giovilexer}
+for i in 0..10 do somethingWith(i)
+for number in [1 2 3 4] do somethingWith(number)
+for key in ["Simone"=>69 "Luca"=>420 "Paolo"=>10] do somethingWith(key)
+\end{minted}
+
+The for statement is like an usual for-each loop, but on steroids; the iterator
+is actually a pattern (\see{ch:patterns}): for each iteration, the for
+statement will match iterated value with the pattern, and perform the
+appropriate deconstruction.
+
+\begin{listing}
+	\label{lst:for_loop_patterns_example}
+	\caption{Example of various patterns used as iterators in \code{for} loops}
+	\begin{minted}{\giovilexer}
+for _ in 0..9 do something() # do something 10 times
+
+for [[i]] in some2DMatrix do somethingWith(i)
+
+mapOfNicknames [Text => [Text]] <- [
+	"Simone" => ["Simon", "simonvic"]
+	"Mario"  => ["Super Mario", "The plumber"]
+	"Luigi"  => ["Green Mario"]
+]
+for [name => [nickname]] in mapOfNicknames do {
+	somethingWith(name, nickname)
+}
+
+listOfColors [tuple<Int,Int,Int>] <- [
+	<0 255 0>
+	<55 0 255>
+	<255 255 255>
+]
+for <r, g, b> in listOfColors do {
+	"The color is made of $r $g $b" -> _out
+}
+	\end{minted}
+\end{listing}
+
+\nb{Nesting iterator patterns effectively means nesting iterations}
+
+\todo{aggiungere RFC di iteration counters}
+
+\part{The Type system}
 
 \chapter{Types}
 
