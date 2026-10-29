@@ -2656,15 +2656,13 @@ which formally describes the lookup order and priority of a symbol $i$.
 
 \paragraph{Environment extension} Given how scopes and symbols lookup work, it
 will be useful to define "new" type environments extending an existing
-environment. The notation $E\env{t:\tau}$ will be used as a shorthand to denote
-$E \cup \env{t:\tau}$, which is a new environment that inherits from $E$ and
-extends it with $\env{t:\tau}$.
-
-Using the $\EnvVar$ variables environment as example
+environment. The notation $E\env{i:\tau}$ will be used as a shorthand to denote
+$E \cup \env{i:\tau}$, which is a new environment that inherits from $E$ and
+extends it with $\env{i:\tau}$. Formally:
 \[
-	\EnvVar\env{t:\tau}(u) \mapsto \begin{cases}
-		T &\text{ if } u = t \\*
-		\EnvVar(u) & \\*
+	E\env{i:\tau}(j) \mapsto \begin{cases}
+		i &\text{ if } j = i \\*
+		E(j) & \\*
 	\end{cases}
 \]
 
