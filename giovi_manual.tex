@@ -2534,14 +2534,28 @@ record type (a tuple whose fields are named).
 describes a struct type (a pair of an identifier $\xi$ and a record type).
 \todo{rivedere notazione struct}
 
-\begin{definition}[Types widening/narrowing]
-	A type $N$ is said to be "narrower" than a type $W$ iff a value described
-	by $N$ can also be described by $W$ without any loss of information.\\*
-	Conversely, a type $W$ is said to be "wider" than a type $N$ iff it can
-	describe any value described by $N$ without loss of information.\\*
-	A "narrower than" relationship is denoted using the $\narreq$ operator.
-	For example: $N \narreq W$.
+\begin{definition}[Types widening and narrowing]
+	A type $\eta$ is said to be "narrower" than a type $\omega$ iff a value
+	described by $\eta$ can also be described by $\omega$ without any loss of
+	information\footnotemark[1].\\*
+	Conversely, a type $\omega$ is said to be "wider" than a type $\eta$ iff it
+	can describe any value described by $\eta$ without loss of information.\\*
+	A "narrower than"\footnotemark[2] relationship is denoted using
+	the $\narreq$ operator. For example: $\eta\narreq\omega$.
 \end{definition}
+
+\footnotetext[1]{
+	In this language, a loss of information can be a loss of data, for example
+	when coercing a \Real~to an \Int, but also a loss of "semantic data".
+	See~\See{sec:product_types_compatibility}.
+}
+
+\footnotetext[2]{
+	As you'll see in \See{par:compatibility_reflexivity}, the symbol $\narreq$
+	actually denotes a "narrower or equal than" relationship; that's why it is
+	used instead of the more common symbol $<:$ which is reserved to denote a
+	"strictly narrower than" relationship.
+}
 
 The $\sqcap$ operator produces the least wide type for the operand types
 \[
@@ -2831,6 +2845,7 @@ Using the $\EnvVar$ variables environment as example
 controvarianza (parametri funzioni?)}
 
 \paragraph{Reflexivity}
+\label{par:compatibility_reflexivity}
 \[
 	\infrule{
 		\EnvSym\then \tau:\Type
@@ -2888,6 +2903,7 @@ controvarianza (parametri funzioni?)}
 \clearpage
 
 \subsubsection{Product types}
+\label{sec:product_types_compatibility}
 
 Since the widening and narrowing is crucial for type inference, Tuples, Records
 and Structs require some additional attention as they have some differences.
@@ -4646,7 +4662,7 @@ For example: $\EnvLoc,\EnvStore \then \expr \Then \EnvStore_2$
 \subsection{Zero values}
 \label{sec:zero_values}
 
-For more info, see \See{ch:defaults}.
+For more info, see~\See{ch:defaults}.
 
 A type's zero value will be described using $\Zero$
 \[
