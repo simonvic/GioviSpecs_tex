@@ -360,9 +360,11 @@ giovi --repl
 
 \section{Introduction}
 
-This chapter describes the lexicon and syntax of the language. Grammar rules
-will be shown using a dialect of eBNF.
+This chapter describes the lexicon and syntax of the language.
+Grammar rules\footnotemark[1] will be shown using a dialect of eBNF.
 
+\footnotetext[1]{
+	Only a subset of the rules will be shown, and they may not exactly match
 \begin{listing}
 	\label{lst:ebnf_dialect}
 	\caption{Example of a definition of \code{someRule} using the eBNF dialect}
@@ -375,8 +377,6 @@ someRule
 	\end{minted}
 \end{listing}
 
-\nb{
-	Only a subsest of the rules will be shown, and they may not exactly match
 	the real grammar. For the actual rules consult the appropriate grammar
 	files.
 }
@@ -609,10 +609,10 @@ text, unless when escaped by prefixing it with \code{$\backslash$} (backslash).
 \paragraph{Interpolation} Normal text and normal text blocks support
 interpolation, allowing the "injecttion" of a variable or expression in the
 text.\\*
-To inject a variable, simply prefix it with \code{\$} (dollar):\\*
-\code{"My name is \$name"}.\\*
-In order for an expression to be injected, it needs to be wrapped in braces:\\*
-\code{"My name is \$\{user.getName()\}"}
+To inject a variable, simply prefix it with \code{\$} (dollar): \code{"My name
+is \$name"}.\\*
+In order for an expression that is not a simple identifier to be injected, it
+needs to be wrapped in braces: \code{"My name is \$\{user.getName()\}"}
 
 \paragraph{Text blocks} Normal and exact text blocks allow the text to span
 over multiple lines, without the need to escape the text delimiter.
@@ -644,9 +644,14 @@ t Text <- "{
 	hello world}"
 \end{minted}
 
-\subparagraph{Incidental whitespaces} In a text block, white spaces (spaces,
-newlines, tabs) are preserved, unless they're considered "incidental".\\*
-Incidental white spaces are those needed for code indentation.
+\subparagraph{Incidental whitespaces} In a text block, white
+spaces\footnotemark[1] are preserved, unless they're considered
+"incidental". Incidental white spaces are those needed for code indentation.
+
+\footnotetext[1]{
+	White spaces are all those character that are "invisible", such as spaces,
+	tabulations, newlines, formfeeds etc.
+}
 
 \begin{minted}[showtabs,tab=>,escapeinside=||]{\giovilexer}
 if true do {
@@ -838,7 +843,7 @@ import giovi.util.Random as Random
 Random.integer() -> _out
 \end{minted}
 
-For more details, see \See{sec:import}.
+For more details, see~\See{sec:import}.
 
 \subsection{Module declaration}
 
@@ -848,11 +853,14 @@ statement_declaration_module
 	;
 \end{minted}
 
-A module is a "container" for code, and shares the same behavior of a scope: it
+A module\footnotemark[1] is a "container" for code, and shares the same behavior of a scope: it
 can hold code, variables, functions, constants, types definition etcetera; in
 fact it can be seen as a "named scope". See \See{ch:modules}.
 
-\nb{Modules are an experimental feature.}
+\footnotetext[1]{
+	Modules are still considered an experimental feature and, as such, the
+	syntax is considered unstable.
+}
 
 \subsection{Constant declaration}
 
@@ -864,8 +872,8 @@ statement_declaration_constant
 
 Constants are read-only values; their value is defined at declaration and
 cannot change.\\*
-By convention, constants identifiers are written in \code{SCREAMING\_CASE}.\\*
-The type can be omitted as it will be inferred from the expression.
+The type can be omitted as it will be inferred from the expression.\\*
+By convention, constants identifiers are written in \code{SCREAMING\_CASE}.
 
 \todo{decidere se usare shallow o deep immutability}
 
@@ -939,7 +947,7 @@ getFunLanguage() => Text {
 }
 \end{minted}
 
-For more details, see \See{ch:functions}.
+For more details, see~\See{ch:functions}.
 
 \subsection{Invocation statement}
 
@@ -958,12 +966,13 @@ actual_parameter
 \end{minted}
 
 When invoking a function, arguments can be passed using a traditional
-positional approach or a nominal approach.\\*
-For more details, see \See{ch:functions}.
+positional approach or a nominal approach\footnotemark[1].
 
-\nb{Albeit the grammar doesn't enforce one approach or the other, the current
-implementation supports either all arguments to be passed as positional or as
-nominal.}
+\footnotetext[1]{
+	Albeit the grammar doesn't enforce one approach or the other, the current
+	implementation supports either all arguments to be passed as positional or
+	as nominal. For more details, see~\See{ch:functions}.
+}
 
 \subsection{Redirection statement (assignment)}
 
@@ -1235,11 +1244,12 @@ A scope is a code region within which you can execute statements and perform
 declarations (e.g. variables, constants, types, functions) that can later be
 referred to, simply, by their name.
 
-A Giovi source code file is itself a scope (see \See{ch:modules}). Scopes can
-be "nested" within other scopes. Their lifetime has a clear begin and end; a
-scope usually coincides with a \textit{block} (see \See{sec:syntax}), for
-example in an \code{if} statement, a \code{for} or \code{repeat} loop or a
-function body.
+Scopes can be "nested" within other scopes and their lifetime has a clear begin
+and end; a scope usually coincides with a \textit{block} (see
+\See{sec:syntax}), for example in an \code{if} statement, a \code{for} or
+\code{repeat} loop or a function body.
+
+A Giovi source code file is itself a scope (see~\See{ch:modules}).
 
 \begin{listing}
 	\label{lst:scope_lifetype}
@@ -1306,20 +1316,22 @@ if true do {
 "hello $username" -> _out # "hello simonvic"
 \end{minted}
 
-For a more formal definition, see \See{ch:opsem}
+For a more formal definition, see~\See{ch:opsem}
 
 \chapter{Defaults}
 \label{ch:defaults}
 
 An important design philosophy of the language is that it has no concept (nor
-models) a "null" value or uninitialized memory.
+models) a \emph{null} value or uninitialized memory.
 
 Every variable, constant, function parameter, product types fields etc. have a
-"default" value, which is the value that they are initialized to at
-declaration.
+\emph{zero}\footnotemark[1] value, which is the value that they are initialized
+to at declaration.
 
-A default value is also referred to as the "zero" value; the two terms will be
-used interchangeably.
+\footnotetext[1]{
+	A zero value is also referred to by its more user-friendly name: the
+	\emph{default} value; the two terms will be used interchangeably.
+}
 
 Every type has a zero value, for example it's the number zero for numeric
 types, an empty string for \code{Text}, false for \code{Bool} etc.
@@ -1362,7 +1374,7 @@ someDefaultPerson.favoriteColor -> _out # <0,0,0>
 	\end{minted}
 \end{listing}
 
-For a more formal definition, see \See{sec:zero_values}.
+For a more formal definition, see~\See{sec:zero_values}.
 
 \clearpage
 
@@ -1897,8 +1909,9 @@ There are three product types:
 
 All product types follow the same rules of the default (\see{ch:defaults}),
 hence, when a variable or any other value of such type is declared, it is
-initialized with its zero value; there is one exception (see
-\See{sec:recursive_structs}).
+initialized with its zero value.\footnotemark[1]
+
+\footnotetext[1]{There is one exception: see~\See{sec:recursive_structs}.}
 
 \section{Tuples}
 \label{sec:tuples}
@@ -1962,7 +1975,7 @@ struct Node <
 >
 \end{minted}
 
-All types in Giovi have a zero value (see \See{ch:defaults}) and all values
+All types in Giovi have a zero value (see~\See{ch:defaults}) and all values
 of such type are initialized with it, and the same applies to structs;
 however recursive structs are the exception.\\*
 In the case of the a recursive struct, the fields of such type will be
@@ -2140,9 +2153,9 @@ getPoint() -> <_, y>
 A unary pattern is a terminal pattern that simply states a single "unit" to
 which the value is assigned to as a whole, without deconstruction.\\*
 The pattern is denoted by an identifier (the name) and an optional type to
-which the deconstructed value is widened to.
+which the deconstructed value is widened to.\footnotemark[1]
 
-\nb{A variable declaration is secretly a unary pattern!}
+\footnotetext[1]{A variable declaration is secretly a unary pattern!}
 
 \clearpage
 
@@ -2152,7 +2165,7 @@ A product pattern describes the data structure of a product type, hence it is
 meant to be used with product values (tuples, records, structs).
 
 Like mentioned above, the patterns follow the same rules of types
-compatibility. In order to be able to deconstruct all product values, you are
+compatibility; in order to be able to deconstruct all product values, you are
 given the choice of two deconstruction approaches: positional and nominal.
 
 \subsection{Positional}
