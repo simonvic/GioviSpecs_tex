@@ -9,4 +9,5 @@
 *.pdf
 *.synctex.gz
 *.toc
+*.lol
 _minted
