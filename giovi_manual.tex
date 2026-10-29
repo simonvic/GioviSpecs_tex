@@ -365,21 +365,23 @@ Grammar rules\footnotemark[1] will be shown using a dialect of eBNF.
 
 \footnotetext[1]{
 	Only a subset of the rules will be shown, and they may not exactly match
-\begin{listing}
-	\label{lst:ebnf_dialect}
-	\caption{Example of a definition of \code{someRule} using the eBNF dialect}
-	\begin{minted}{antlr}
-someRule
-	: 'some_token' someLabel=someOtherRule
-	| zeroOrOneOfThis? zeroOrMoreThis* oneOrMoreThis+
-	| ('some_token' | 'some_other_token')
-	;
-	\end{minted}
-\end{listing}
-
 	the real grammar. For the actual rules consult the appropriate grammar
 	files.
 }
+
+\begin{listing}
+	\label{lst:ebnf_dialect}
+	\caption{Example of a definition of \code{some\_rule} using the eBNF dialect}
+	\begin{minted}{antlr}
+some_rule
+	: 'some_token' some_label=some_other_rule
+	| zero_or_one_of_this?
+	| zero_or_more_of_this*
+	| one_or_more_of_this+
+	| ('some_token' | 'some_other_token' | some_other_rule)
+	;
+	\end{minted}
+\end{listing}
 
 \paragraph{Whitespaces} Whitespaces (e.g. spaces, tabs, newlines) are
 determinant \textbf{only} during the lexical parsing, meaning that \code{!=} is
@@ -1293,6 +1295,9 @@ declaration in a parent scope is visible to the children scopes.
 username Text <- "simonvic"
 if true do {
 	"hello $username" -> _out # "hello simonvic"
+	if true do {
+		"how are you, $username?" -> _out # "how are you, simonvic?"
+	}
 }
 \end{minted}
 
