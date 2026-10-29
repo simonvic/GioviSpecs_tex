@@ -194,8 +194,9 @@ textwidth=\marginparwidth
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[section]
 
+\newcommand{\lwb}{\sqcap}
 \makeatletter
-\providecommand{\bigsqcap}{\mathop{\mathpalette\@updown\bigsqcup}}
+\providecommand{\biglwb}{\mathop{\mathpalette\@updown\bigsqcup}}
 \newcommand*{\@updown}[2]{\rotatebox[origin=c]{180}{$\m@th#1#2$}}
 \makeatother
 
@@ -2557,16 +2558,18 @@ describes a struct type (a pair of an identifier $\xi$ and a record type).
 	"strictly narrower than" relationship.
 }
 
-The $\sqcap$ operator produces the least wide type for the operand types
+\paragraph{Least Wider Bound} The $\lwb$ operator produces the least wide type
+for the operand types
 \[
 	\infrule[aligned]{
 		\EnvSym & \then \tau_1:\Type \semiq \tau_2:\Type \\*
 		\EnvSym & \then \exists_{\omega:\Type}{\tau_1\narreq\omega \land \tau_2\narreq\omega} \\*
 		\EnvSym & \then \nexists_{\omega'\Type}{\tau_1\narreq\omega' \land \tau_2\narreq\omega' \land \omega'\narreq\omega}
 	}{
-		\EnvSym\then \tau_1 \sqcap \tau_2 = \omega
+		\EnvSym\then \tau_1 \lwb \tau_2 = \omega
 	}
 \]
+\todo{Least Upper Bound?}
 
 \clearpage
 
@@ -3174,7 +3177,7 @@ is narrower than $\omega'$.
 
 \[
 	\infrule{
-		\EnvSym\then n \geq 1 \semiq \forall_{i\in[1,n]}{\tau_i:\Type,\expr_i\in\Expr,\expr_i:\tau_i} \semiq \omega = \bigsqcap_{i=1}^{n}{\tau_i}
+		\EnvSym\then n \geq 1 \semiq \forall_{i\in[1,n]}{\tau_i:\Type,\expr_i\in\Expr,\expr_i:\tau_i} \semiq \omega = \biglwb_{i=1}^{n}{\tau_i}
 	}{
 		\EnvSym\then \code{[$\expr_1$, $\dotsc$, $\expr_n$]}:\exists\omega.\List
 	}
@@ -3201,7 +3204,7 @@ List of $\omega$ (widest among $\tau$)
 	\infrule{
 		\EnvSym\then \forall_{i \in [1,n]}{\kappa_i:\Type, k_i\in\Expr, k_i:\kappa_i} \semiq n \geq 1 \\*
 		\EnvSym\then \forall_{i \in [1,n]}{\nu_i:\Type, v_i\in\Expr, v_i:\nu_i} \hfill\\*
-		\EnvSym\then \omega_\kappa = \bigsqcap_{i=1}^{n}{\kappa_i} \semiq \omega_\nu = \bigsqcap_{i=1}^{n}{\nu_i}
+		\EnvSym\then \omega_\kappa = \biglwb_{i=1}^{n}{\kappa_i} \semiq \omega_\nu = \biglwb_{i=1}^{n}{\nu_i}
 	}{
 		\EnvSym\then \code{[$k_1$=>$v_1$, $\dotsc$, $k_n$=>$v_n$]}:\exists\omega_\kappa.\exists\omega_\nu.\Map
 	}
@@ -3334,7 +3337,7 @@ expression $\expr_j$ of type $\eta_j$ (narrower than $\tau_i$).
 	\infrule{
 		\EnvSym\then \tau_1 \in \Number \semiq \expr_1\in\Expr \semiq \expr_1:\tau_1\\*
 		\EnvSym\then \tau_2 \in \Number \semiq \expr_2\in\Expr \semiq \expr_2:\tau_2 \\*
-		\EnvSym\then \omega = \tau_1 \sqcap \tau_2
+		\EnvSym\then \omega = \tau_1 \lwb \tau_2
 	}{
 		\EnvSym\then \code{$\expr_1$..$\expr_2$} : \exists\omega.\Range
 	}
@@ -3346,7 +3349,7 @@ Range from $\expr_1$ (begin) to $\expr_2$ (end).
 		\EnvSym\then \tau_1 \in \Number \semiq \expr_1\in\Expr \semiq \expr_1:\tau_1\\*
 		\EnvSym\then \tau_2 \in \Number \semiq \expr_2\in\Expr \semiq \expr_2:\tau_2 \\*
 		\EnvSym\then \tau_3 \in \Number \semiq \expr_3\in\Expr \semiq \expr_3:\tau_3 \\*
-		\EnvSym\then \omega = \tau_1 \sqcap \tau_2 \sqcap \tau_3
+		\EnvSym\then \omega = \tau_1 \lwb \tau_2 \lwb \tau_3
 	}{
 		\EnvSym\then \code{$\expr_1$..$\expr_2$..$\expr_3$} : \exists\omega.\Range
 	}
@@ -5289,7 +5292,7 @@ name $y_j$ is bound to the formal parameter whose label is $l_i=y_j$.
 			\textbf{Symbol}                                       & \textbf{Use}                     & \textbf{Example}                          \\\hline
 			$\bop$                                                & Generic binary operator          & $x \bop y$                                \\\hline
 			$\narreq$                                             & "Narrower than" operator         & $\Int \narreq \Real$                      \\\hline
-			$\sqcap$                                              & "Least wide type" operator       & $\Int \sqcap \Real$                       \\\hline
+			$\lwb$                                                & "Least wide type" operator       & $\Int \lwb \Real$                       \\\hline
 			$\then$                                               & Assumptions suffix               & $\EnvSym \then \val:\tau$                 \\\hline
 			$\Then$                                               & Environments modification prefix & $\expr \Then \EnvStore$                   \\\hline
 			$\tau,\omega,\eta,\kappa,\nu$, lowercase greek letter & A type                           & $\tau = \Int$                             \\\hline
