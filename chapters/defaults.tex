@@ -1,0 +1,126 @@
+\chapter{Defaults}
+\label{ch:defaults}
+
+An important design philosophy of the language is that it has no concept (nor
+models) a \emph{null} value or uninitialized memory.
+
+Every variable, constant, function parameter, product types fields etc. have a
+\emph{zero}\footnotemark[1] value, which is the value that they are initialized
+to at their declaration.
+
+\footnotetext[1]{
+	A zero value is also referred to by its more user-friendly name: the
+	\emph{default} value; the two terms will be used interchangeably.
+}
+
+Every type has a zero value, for example it's the number zero for numeric
+types, an empty string for \code{Text}, false for \code{Bool} etc.
+
+\begin{minted}{\giovilexer}
+someInteger Int
+someInteger -> _out # 0
+
+someText Text
+someText -> _out # "" (empty string)
+
+someBool Bool
+someBool -> _out # false
+\end{minted}
+
+The same applies to non-primitive types: lists and maps (empty list and empty
+map respectively), and most importantly to product types, where the zero value
+has all its fields initialized to their respective zero values.
+
+\begin{listing}
+	\label{lst:product_type_zero_value}
+	\caption{
+		Example of a variable being initialized with the zero value of its
+		product type
+	}
+	\begin{minted}{\giovilexer}
+struct Person <
+	name Text
+	aliases [Text]
+	age Int
+	isAdult Bool
+	favoriteColor tuple<Int, Int, Int>
+>
+someDefaultPerson Person
+someDefaultPerson.name -> _out # ""
+someDefaultPerson.aliaes -> _out # []
+someDefaultPerson.age -> _out # 0
+someDefaultPerson.isAdult -> _out # false
+someDefaultPerson.favoriteColor -> _out # <0,0,0>
+	\end{minted}
+\end{listing}
+
+For a more formal definition, see~\See{sec:zero_values}.
+
+\clearpage
+
+\section{The default keyword}
+
+The \code{default} keyword can be used in redirections, for example, to "reset"
+a variable to its default value
+
+\begin{minted}{\giovilexer}
+age Int
+69 -> age
+age -> _out # 69
+default -> age
+age -> _out # 0
+\end{minted}
+
+You can get the default value of a type with the dot operator
+
+\begin{minted}{\giovilexer}
+Int.default -> _out # 0
+Bool.default -> _out # false
+Person.default -> _out
+# Person.<name:"", aliaes:[], age:0, isAdult:false, favoriteColor:<0,0,0>>
+\end{minted}
+
+You can also get the default value of a variable, which will be useful later
+with \See{sec:default_override}
+
+\begin{minted}{\giovilexer}
+age Int
+age.default -> _out # 0
+\end{minted}
+
+\section{Overriding default}
+\label{sec:default_override}
+
+A peculiarity of the language is that the default value is overrideable.
+
+\nb{This is possible only at declaration.}
+
+\begin{minted}{\giovilexer}
+age Int default 69
+age.default -> _out # 69
+\end{minted}
+
+Product types fields can also have their default value overridden
+
+\begin{listing}
+\label{lst:product_type_zero_value_overridden}
+	\caption{
+		Example of a variable being initialized with the overridden zero value
+		of its product type
+	}\begin{minted}{\giovilexer}
+struct Person <
+	name Text default "nobody"
+	aliases [Text]
+	age Int default 18
+	isAdult Bool default true
+	favoriteColor tuple<Int, Int, Int> default <255, 255, 255>
+>
+someDefaultPerson Person
+someDefaultPerson.name -> _out # nobody
+someDefaultPerson.aliaes -> _out # []
+someDefaultPerson.age -> _out # 18
+someDefaultPerson.isAdult -> _out # true
+someDefaultPerson.favoriteColor -> _out # <255,255,255>
+	\end{minted}
+\end{listing}
+

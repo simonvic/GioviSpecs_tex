@@ -1,0 +1,449 @@
+\chapter{Functions}
+\label{ch:functions}
+
+\section{Intro}
+
+Functions are code blocks that can be invoked at a later time.
+
+In Giovi, functions are first-class citizens, meaning that they are like any
+other value: they have a well defined type (signature), they can be assigned to
+variables, returned from other functions or passed to them as arguments, and so
+on.
+
+\paragraph{Function signature} A function signature is made of the function
+name, its formal parameters (if any) and its return type (if any).
+
+\paragraph{Declaration} A "traditional" function can be declared
+by specifying its signature and its body.
+
+\begin{minted}{\giovilexer}
+buildGreetingMessage(name Text) => Text {
+	if name = "simonvic" do {
+		=> "heyo $name, how are you?"
+	}
+	=> "greetings, $name."
+}
+\end{minted}
+
+It can later be invoked.
+
+\nb{You have to declare the function first before invoking it. Hoisting is
+still an experimental feature.}
+
+\begin{minted}{\giovilexer}
+buildGreetingMessage("simonvic") -> _out
+\end{minted}
+
+A function can also exist, for example, as a variable, where its type is the
+signature. In this case the variable is an "empty function"; before invoking
+it, you want to assign an actual function instance (with compatible signature.
+
+\begin{minted}{\giovilexer}
+greetingBuilder function(name Text) => Text
+greetingBuilder <- buildGreetingMessage
+# greetingBuilder is now "referencing" the previously
+# defined buildGreetingMessage function
+greetingBuilder("simonvic") -> _out
+\end{minted}
+
+\section{The dotref operator}
+
+A "traditional" function declaration is semantically similar to a declaration
+of a constant of type function, but with a difference: while there cannot be
+two equally named functions defined in the same scope, there can be a function
+and a variable (or constant) sharing the same name.
+
+However, a function is always shadowed by a variable (or constant) with the
+same name. To explicitly refer to the function, the \code{::} prefix is
+required.
+
+\begin{minted}{\giovilexer}
+var foo <- 69
+function foo() { "hello world" -> _out }
+foo -> _out # 69
+::foo -> _out # function(){}
+\end{minted}
+
+The dotref operator can also be used instead of a dot operator
+
+\begin{minted}{\giovilexer}
+struct SomeStruct <
+	foo Int default 69
+	function foo() { "hello world" -> _out }
+>
+
+someStruct SomeStruct
+someStruct.foo -> _out # 69
+someStruct::foo -> _out # function(){}
+\end{minted}
+
+\clearpage
+
+\section{Function scope}
+
+The scope of a function behaves like a normal scope, which means that, unlike
+many other languages, it doesn't have a "call stack". It can be seen as a
+normal scope in which some variables (i.e. formal parameters) are pre-declared
+and declarations in parent scopes are visible.
+
+\begin{minted}{\giovilexer}
+const DEG_TO_RAD <- 0.01745329
+degreeToRadians(deg Int) => Int {
+	=> deg * DEG_TO_RAD
+}
+degreeToRadians(180) -> _out # 3.14
+\end{minted}
+
+\nb{This behavior, while it offers a lot of flexibility, it has some caveats:
+when a function, that depends on a declaration of a parent scope, is invoked
+within a scope where such declaration is not present, the program will error.}
+
+\begin{minted}{\giovilexer}
+degreeToRadians(deg Int) => Int {
+	=> deg * DEG_TO_RAD
+}
+if true do {
+	const DEG_TO_RAD <- 0.01745329
+	degreeToRadians(180) -> _out # 3.14
+} else {
+	degreeToRadians(180) -> _out # ERROR: DEG_TO_RAD not declared
+}
+\end{minted}
+
+\subsection{Nested functions}
+
+A function declaration can appear anywhere, even within other function scopes.
+Like any other declaration, its lifetime is bound to its enclosing scope,
+meaning that after its enclosing scope has ended, the function will not be
+visible anymore.
+
+This can be very useful when you have repeating code, but you don't want to
+expose a function.
+
+\begin{minted}{\giovilexer}
+function makePizza(ingredients [Text]) => Pizza {
+	if "pineapple" in ingredients do panic()
+
+	function cook(ingredient Text, seconds Int) {
+		# cook the ingredient ...
+	}
+
+	cookedIngredients [Text]
+	for ingredient in ingredients do {
+		if ingredient {
+			= "tomato" do cook(ingredient, 60) ->+ cookedIngredients
+			= "fries" do cook(ingredient, 30) ->+ cookedIngredients
+		} else {
+			cook(ingredient, 100) ->+ cookedIngredients
+		}
+	}
+	=> assemblePizza(cookedIngredients)
+}
+\end{minted}
+
+\clearpage
+
+\section{Parameters and invocation}
+
+A formal parameter is the parameter that is declared in the function signature;
+it has a name and a type. A function can have zero or more formal parameters.
+They share the variable declaration syntax since they could be seen as such;
+when a function is invoked, before executing the first statement of its body, a
+new function scope is created and the formal parameters are declared as
+variables.
+
+The actual parameters (a.k.a. arguments) of the invocation are passed by value,
+which means they're copied, therefore, while the function body can mutate the
+parameters, the mutation will not be visible outside the function.
+
+\begin{minted}{\giovilexer}
+someFunction(someParameter Int) {
+	someParameter -> _out # 69
+	someParameter <- 420
+	someParameter -> _out # 420
+}
+someArgument Int <- 69
+someFunction(someArgument)
+someArgument -> _out # still 69
+\end{minted}
+
+\todo{
+	menzionare eccezione per self functions, se decido di "formalizzare il bug" :)
+
+	Alternativamente, formalizzare che le strutture (o tutti i prodotti tipi)
+	sono mutabili
+}
+
+\paragraph{Parameters defaults}
+
+A formal parameter, being like a normal variable, also has a default value. You
+can pass a default value by simply using the \code{default} keyword or the
+underscore \code{\_}
+
+\begin{minted}{\giovilexer}
+someFunction(x Int, y Text) {
+	x -> _out # 0
+	y -> _out # "" (empty string)
+}
+someFunction(default, default)
+someFunction(_, _)
+\end{minted}
+
+\subsection{Optional parameters}
+
+Giovi supports optional parameters: by overriding a formal parameter's default
+value, the parameter will be marked as optional. An optional parameter can be
+omitted at invocation; its default value will be used instead.
+
+\begin{minted}{\giovilexer}
+someFunction(x Int default 69, y Text default "hello world") {
+	x -> _out # 69
+	y -> _out # hello world
+}
+someFunction()
+\end{minted}
+
+You can mark a parameter as optional without overriding its default
+
+\begin{minted}{\giovilexer}
+someFunction(x Int default _) { }
+# equivalent to
+someFunction(x Int default Int.default) { }
+\end{minted}
+
+It's possible to mix optional and required parameters, however only trailing
+(last) optional parameters can be omitted when invoking using the positional
+approach (\see{sec:arg_approach})
+
+\begin{minted}{\giovilexer}
+processPizzaOrder(
+  kind Text default "Margherita",
+  tableNumber Int,
+  withPineapple Bool default false,
+) {
+	if withPineapple do panic()
+	makePizza(kind) -> pizza Pizza
+	serve(pizza, tableNumber)
+}
+
+processPizzaOrder("Diavola", 69) # "Diavola" to table 69
+processPizzaOrder(_, 69) # "Margherita" to table 69
+processPizzaOrder(_, _) # "Margherita" to table 0
+processPizzaOrder(_, 69, true) # "Margherita" with pineapple to table 69
+processPizzaOrder(69) # ERROR: expecting pizza type, but got 69
+\end{minted}
+
+\subsection{Positional and nominal parameters}
+\label{sec:arg_approach}
+
+\paragraph{Positional parameters} When invoking a function with the positional
+approach, you just pass the values as arguments, which will be assigned to the
+respective formal parameters in the same order: the first argument is assigned
+to the first formal parameter, the second to the second and so on.
+
+\paragraph{Nominal parameters} \label{sec:nominal_params} Giovi supports
+nominal arguments: you can specify the name of the argument. When using the
+nominal approach, the order of the arguments is not important.
+
+\begin{minted}{\giovilexer}
+processPizzaOrder(kind Text, tableNumber Int, withPineapple Bool) { #{...}# }
+processPizzaOrder(tableNumber:69, withPineapple:false, kind:"Diavola")
+\end{minted}
+
+When using the nominal approach, all optional parameters can be omitted, as
+long as the required parameters are specified.
+
+\begin{minted}{\giovilexer}
+processPizzaOrder(
+  kind Text default "Margherita",
+  tableNumber Int,
+  withPineapple Bool default false
+) { #{...}# }
+processPizzaOrder(tableNumber:69) # Margherita to table 69 and no pineapple
+\end{minted}
+
+\subsection{Invocation labels}
+
+As we've seen in \See{sec:nominal_params}, parameters names can be specified at
+invocation.
+
+When declaring a function, you sometimes have to decide whether to name a
+parameter to either favor readability in the function body at the expense of
+invocation or viceversa.
+
+% \begin{minted}{\giovilexer}
+% processPizzaOrder(
+%   kind Text,
+%   tableNumber Int,
+%   hasPineapple Bool,
+% ) {
+% 	if hasPineapple do return
+% 	makePizza(kind) -> pizza Pizza
+% 	serve(pizza, tableNumber)
+% }
+%
+% processPizzaOrder(
+%   kind: "Diavola",
+%   tableNumber: 69,
+%   hasPineapple: false,
+% )
+% \end{minted}
+%
+% ... or viceversa
+%
+% \begin{minted}{\giovilexer}
+% processPizzaOrder(
+%   ofKind Text
+%   atTableNumber Int,
+%   withPineapple Bool,
+% ) {
+% 	if withPineapple do return
+% 	makePizza(ofKind) -> pizza Pizza
+% 	serve(pizza, atTableNumber)
+% }
+%
+% processPizzaOrder(
+%   ofKind: "Diavola",
+%   atTableNumber: 69,
+%   withPineapple: false,
+% )
+% \end{minted}
+
+To get the best of both worlds and further improve readability, Giovi allows
+you to define an "invocation label". Such label is the name of the parameter
+that is exposed to the invocation, while the formal parameter name remains
+unchanged in the function body. If an invocation label is not specified, the
+formal parameter name will be used.
+
+\begin{minted}{\giovilexer}
+processPizzaOrder(
+  ofKind: kind Text,
+  atTable: tableNumber Int,
+  hasPineapple Bool,
+) {
+	if hasPineapple do panic()
+	makePizza(kind) -> pizza Pizza
+	serve(pizza, tableNumber)
+}
+
+processPizzaOrder(
+  ofKind: "Diavola",
+  atTable: 69,
+  hasPineapple: false
+)
+\end{minted}
+
+\clearpage
+
+\section{Struct functions}
+\label{sec:struct_functions}
+
+Functions can be defined within structs (\see{sec:structs}) and will be
+associated to the type.\\*
+Beware that these are, by definition, NOT methods; it can be seen as simple
+syntax sugar to better organize code using types as "namespaces" for these
+functions. We could make an analogy with "static methods" in OO languages.
+
+\begin{minted}{\giovilexer}
+Vehicle <
+	speed Int
+
+	accelerate(v Vehicle, amount Int) {
+		amount ->+ v.speed
+	}
+
+	brake(v Vehicle) {
+		v.speed -<- 1
+	}
+
+	speedToMilesPerHour(v Vehicle) => Int {
+		=> v.speed / 1.6093
+	}
+>
+
+car Vehicle
+Vehicle.accelerate(car, 10)
+"${car.speed} KMH" -> _out
+"${Vehicle.speedToMilesPerHour(car)} MPH" -> _out
+\end{minted}
+
+Note that, although functions can be invoked from an instance of a struct,
+they're still only related to the type; the syntax is allowed because of self
+functions (\see{sec:self_func}).
+
+\subsection{Self functions}
+\label{sec:self_func}
+
+More often than not, functions defined within a struct type are meant to
+operate on such type (e.g. creating, updating, reading).
+
+The \code{self} keyword can be prefixed to the function declaration; it's a
+shortcut for defining a function that has a first parameter of the same type of
+the struct in which the function is defined.
+
+\begin{minted}{\giovilexer}
+Vehicle <
+	speed Int
+	self speedToMilesPerHour() => Int {
+		=> self.speed / 1.6093
+	}
+>
+\end{minted}
+
+Albeit \code{self} is a reserved keyword and cannot be used as parameter name,
+the previous example would be equivalent to the following
+
+\begin{minted}{\giovilexer}
+Vehicle <
+	speed Int
+	speedToMilesPerHour(self Vehicle) => Int {
+		=> self.speed / 1.6093
+	}
+>
+\end{minted}
+
+This also allows you to invoke the function using the instance of the struct as
+the left-hand side of the dot operator, which will be passed automatically as
+the first argument.
+
+\begin{minted}{\giovilexer}
+car Vehicle
+car.speedToMilesPerHour() -> _out
+# equivalent to
+Vehicle.speedToMilesPerHour(car) -> _out
+\end{minted}
+
+\subsection{Self returning functions}
+
+The \code{self} keyword can also be used as a return type as a shorthand.\\*
+This comes very handy for writing "chainable" functions.
+
+\begin{minted}{\giovilexer}
+Color <
+	r Int
+	g Int
+	b Int
+
+	rgb(r Int, g Int, b Int) => self {
+		=> Color.<r g b>
+	}
+
+	self brigthen() => self {
+		self.r *<- 0.5
+		self.g *<- 0.5
+		self.b *<- 0.5
+		=> self
+	}
+
+	self saturate() => self {
+		# ...
+		=> self
+	}
+>
+
+Color.rgb(5, 20, 512)
+	.brigthen()
+	.saturate()
+	.brighten()
+\end{minted}
+

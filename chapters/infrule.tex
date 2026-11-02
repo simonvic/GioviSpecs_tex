@@ -1,0 +1,2102 @@
+\chapter{Inference rules}
+
+\section{Notations and Terminology}
+
+\paragraph{Judgements and terms} To describe the type system, its types and
+the inference rules, this document uses "judgements" on "terms".\\*
+For example, $\tau:T$ is a judgement telling that $\tau$ is a term of type $T$.
+
+\paragraph{Assumptions} Zero or more assumptions (comma separated) can be
+used for a judgement; they're specified before the "turnstile" symbol
+$\then$.\\*
+For example, $\EnvSym \then \tau:T$ can be read as "if $\EnvSym$ is true, then
+$\tau$ is a term of type $T$".
+
+\paragraph{Premise} Judgements can be made based on zero or more premises
+(semicolon separated judgements).\\*
+For example, $\infrule{\EnvSym_1\then\tau_1:T\semiq\EnvSym_2\then\tau_2:T}{
+\EnvSym_1,\EnvSym_2\then \code{$\tau_1$ + $\tau_2$}: T}$ means that with a
+premise that both judgements $\EnvSym_1\then\tau_1:T$ and
+$\EnvSym_2\then\tau_2:T$ are true, then
+$\EnvSym_1,\EnvSym_2\then\code{$\tau_1$+$\tau_2$}:T$ is true.
+
+\paragraph{Code} Text written with \code{monospaced} font denotes the text
+as written in code verbatim. Some types may also be written with
+\texttt{Monospace} font (usually in PascalCase).
+
+If the code evaluates to some value, to denote its type the
+"$:\texttt{SomeType}$" notation will be used.\\*
+For example: $\code{59 + 10} : \Int$
+
+To denote to what the value evaluates to, the $\eval$ symbol will be used.\\*
+For example: $\code{59 + 10} \eval 69$
+
+\paragraph{Functions} Functions are denoted by a list of zero or more input
+arguments followed by an output argument.\\*
+For example, $(\tau_1,\tau_2)\to\tau_3$ describes a function type that takes
+two arguments of type $\tau_1$ and $\tau_2$ respectively, and produces a value
+of type $\tau_3$.
+
+\clearpage
+
+\paragraph{"Generic" types} Some types are "generic" (a.k.a. existential
+types), meaning that they declare one or more type variable (a.k.a. type
+parameters).\\*
+The notation $T[\tau:=\sigma]$ describes a generic type $T$ with a type
+parameter $\tau$ of some type $\sigma$.\\*
+The notation $t : \exists\sigma.T$ means that $t$ is a term of concrete
+type $T$ with the type parameter $\tau$ equal to $\sigma$.
+\todo{tipi esistenziali? Rivedere notazione}
+
+\paragraph{List} To denote a list type, the existential type notation will
+be used $\List[\nu=\Type]$.\\*
+To denote a value, for example of type $\exists\Int.\List$, this notation will
+be used: $\glist{1,2,3}$
+
+\paragraph{Map} To denote a map type, the existential type notation will
+be used $\Map[\kappa:=\Type,\nu:=\Type]$.\\*
+To denote a value, for example of type $\exists\Text.\exists\Int.\Map$, this
+notation will be used: $\map{a\mapsto1,b\mapsto2,c\mapsto3}$
+
+\paragraph{Identifiers set} A set $\Id=\set{i\mid i:=\text{identifier}}$ is
+used to encompass all possible identifiers allowed by the grammar.
+\todo{formalizzare}
+
+\paragraph{Product types}
+
+\subparagraph{Tuple} A tuple type is denoted with the cartesian product
+operator.\\*
+For example, $\tau_1 \times \tau_2 \times \tau_3$ describes a 3-tuple type
+with three fields of type $\tau_1, \tau_2, \tau_3$.
+
+\subparagraph{Record} The notation $\tuple{x_1:\tau_1, x_2:\tau_2}$ describes a
+record type (a tuple whose fields are named).
+
+\subparagraph{Struct} The notation $(\xi, \tuple{x_1:\tau_1, x_2:\tau_2})$
+describes a struct type (a pair of an identifier $\xi$ and a record type).
+\todo{rivedere notazione struct}
+
+\begin{definition}[Types widening and narrowing]
+	A type $\eta$ is said to be "narrower" than a type $\omega$ iff a value
+	described by $\eta$ can also be described by $\omega$ without any loss of
+	information\footnotemark[1].\\*
+	Conversely, a type $\omega$ is said to be "wider" than a type $\eta$ iff it
+	can describe any value described by $\eta$ without loss of information.\\*
+	A "narrower than"\footnotemark[2] relationship is denoted using
+	the $\narreq$ operator. For example: $\eta\narreq\omega$.
+\end{definition}
+
+\footnotetext[1]{
+	In this language, a loss of information can be a loss of data, for example
+	when coercing a \Real~to an \Int, but also a loss of "semantic data".
+	See~\See{sec:product_types_compatibility}.
+}
+
+\footnotetext[2]{
+	As you'll see in \See{par:compatibility_reflexivity}, the symbol $\narreq$
+	actually denotes a "narrower or equal than" relationship; that's why it is
+	used instead of the more common symbol $<:$ which is reserved to denote a
+	"strictly narrower than" relationship.
+}
+
+\paragraph{Least Wider Bound} The $\lwb$ operator produces the least wide type
+for the operand types
+\[
+	\infrule[aligned]{
+		\EnvSym & \then \tau_1:\Type \semiq \tau_2:\Type \\*
+		\EnvSym & \then \exists_{\omega:\Type}{\tau_1\narreq\omega \land \tau_2\narreq\omega} \\*
+		\EnvSym & \then \nexists_{\omega'\Type}{\tau_1\narreq\omega' \land \tau_2\narreq\omega' \land \omega'\narreq\omega}
+	}{
+		\EnvSym\then \tau_1 \lwb \tau_2 = \omega
+	}
+\]
+\todo{Least Upper Bound?}
+
+\clearpage
+
+\subsection{Type environments}
+
+The definition of an expression type is done within a "context" (a.k.a. type
+environment) which describes the type of any identifier or any other
+expressions appearing in the described expression.
+
+The general type environment is denoted by $\EnvSym$, a function that maps an
+identifier to its type.
+
+To avoid ambiguities and to more clearly describe expressions, $\EnvSym$ is
+partioned in the $\EnvVar,\EnvConst,\EnvFunc,\EnvStucts$ environments:
+
+\begin{itemize}
+	\item $\EnvVar$: the Variable environment, a function that maps a variable
+		identifier $i$ to its type $\tau$
+		\[
+			\begin{split}
+				\EnvVar : \Id &\to \Type\\*
+				\EnvVar(i)    &\mapsto \tau
+			\end{split}
+		\]
+	\item $\EnvConst$: the Constants environment, a function that maps a
+		constant identifier $i$ to its type $\tau$
+		\[
+			\begin{split}
+				\EnvConst : \Id &\to \Type\\*
+				\EnvConst(i)    &\mapsto \tau
+			\end{split}
+		\]
+	\item $\EnvFunc$: the Functions environment, a function that maps a
+		function identifier $i$ to its definition signature $(i, \phi)$
+		\[
+			\begin{split}
+				\EnvFunc : \Id &\to (\Id, \Function)\\*
+				\EnvFunc(i)    &\mapsto (i, \phi)
+			\end{split}
+		\]
+		With a type $\tau$, it maps to the function defined within the type
+		$\tau$
+		\[
+			\begin{split}
+				\EnvFunc : (\Type,\Id) &\to (\Id, \Function)\\*
+				\EnvFunc(\tau, i)      &\mapsto (i, \phi)
+			\end{split}
+		\]
+	\item $\EnvStucts$: the Structs environment
+		\[
+			\begin{split}
+				\EnvStucts : \Id &\to (\Id, \Record)\\*
+				\EnvStucts(i)    &\mapsto (i, \rho)
+			\end{split}
+		\]
+		A function that maps a typename $i$ (struct definition identifier) to
+		its type definition (identifier $i$ and record $\rho$)
+	% \item $\EnvModules$: the Modules environment
+	% 	\[
+	% 		\begin{split}
+	% 			\EnvModules : \Id & \to \Module\\*
+	% 			\EnvModules(i)    & \mapsto m
+	% 		\end{split}
+	% 	\]
+	% 	A function that maps an identifier $i$ to the module
+\end{itemize}
+
+\todo{formalizzare structs, funzioni e moduli}
+
+The $\EnvSym$ function can now be defined as follows
+\[
+	\begin{split}
+		\EnvSym : \Id & \to \Type\\*
+		\EnvSym(i) & \mapsto \begin{cases}
+			\EnvStucts(i) &\text{ if } \EnvVar(i)=\varnothing \land \EnvConst(i)=\varnothing \land \EnvFunc(i)=\varnothing \\*
+			\EnvFunc(i) &\text{ if } \EnvVar(i)=\varnothing \land \EnvConst(i)=\varnothing \\*
+			\EnvConst(i) &\text{ if } \EnvVar(i)=\varnothing \\*
+			\EnvVar(i) & \\*
+			% \EnvModules(i) & \text{ if } \\*
+		\end{cases}
+	\end{split}
+\]
+which formally describes the lookup order and priority of a symbol $i$.
+
+\paragraph{Environment extension} Given how scopes and symbols lookup work, it
+will be useful to define "new" type environments extending an existing
+environment. The notation $E\env{i:\tau}$ will be used as a shorthand to denote
+$E \cup \env{i:\tau}$, which is a new environment that inherits from $E$ and
+extends it with $\env{i:\tau}$. Formally:
+\[
+	E\env{i:\tau}(j) \mapsto \begin{cases}
+		i &\text{ if } j = i \\*
+		E(j) & \\*
+	\end{cases}
+\]
+
+\clearpage
+
+\section{Types}
+
+\nb{
+	The syntax for expressing a type or an expression may be ambiguous without
+	context. For this reason the \code{type.} prefix syntax is used, but note
+	that in some contexts (e.g. variable declaration) the \code{type.} is not
+	needed.
+}
+
+\todo{
+	TODO: menzionare uso di type system strutturale e nominale
+
+	TODO: usare 0-based indexes
+
+	TODO: usare notazione tipi polimorfici invece che solo Type
+}
+
+\subsection{Primitive types}
+
+\[
+	\begin{split}
+		&\EnvSym\then \Void:\Type \\
+		&\EnvSym\then \Bool:\Type \\
+		&\EnvSym\then \Natural:\Type \\
+		&\EnvSym\then \Int:\Type \\
+		&\EnvSym\then \Real:\Type \\
+		&\EnvSym\then \Text:\Type \\
+	\end{split}
+\]
+
+\subsection{Collection types}
+
+\[
+	\begin{split}
+		&\EnvSym\then \List[\nu=\Type]:\Type \\
+		&\EnvSym\then \Map[\kappa:=\Type,\nu:=\Type]:\Type \\
+	\end{split}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \tau:\Type
+	}{
+		\EnvSym\then \code{type.[$\tau$]} \eval \exists\tau.\List
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \tau:\Type \semiq \sigma:\Type
+	}{
+		\EnvSym\then \code{type.[$\tau$ => $\sigma$]} \eval \exists\tau.\exists\sigma.\Map
+	}
+\]
+
+\nb{
+	When the type parameters are not needed in the rule, they will be omitted.
+	For example: $\tau=\List$, $\expr:\Map$
+}
+
+\clearpage
+
+\subsection{Product types}
+
+\paragraph{Tuple}
+
+\[
+	\EnvSym\then \Tuple : \Type
+\]
+
+\nb{
+	When the whole definition of a tuple type is not needed, the type will
+	simply be denoted by \Tuple.
+}
+
+\[
+	\infrule{
+		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type}
+	}{
+		\EnvSym\then \code{tuple <$\tau_1$, $\dotsc$, $\tau_n$>} \eval \tau_1 \times \dotsb \times \tau_n
+	}
+\]
+
+\paragraph{Record}
+
+\[
+	\EnvSym\then \Record : \Type
+\]
+
+\nb{
+	When the whole definition of a record type is not needed, the type will
+	simply be denoted by \Record.
+}
+
+\[
+	\infrule{
+		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type, x_i \in \Id}
+	}{
+		\EnvSym\then \code{record <$x_1$ $\tau_1$, $\dotsc$, $x_n$ $\tau_n$>} \eval \tuple{x_1:\tau_1, \dotsc, x_n:\tau_n}
+	}
+\]
+
+\paragraph{Struct}
+
+\[
+	\EnvSym\then \Struct : \Type
+\]
+
+\nb{
+	When the whole definition of a struct type is not needed, the type will
+	simply be denoted by \Struct.
+}
+
+\[
+	\infrule{
+		\EnvSym\then \xi \in \Id \semiq n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type, x_i \in \Id}
+	}{
+		\EnvSym,\code{struct $\xi$ <$x_1$ $\tau_1$, $\dotsc$, $x_n$ $\tau_n$>} \then \code{$\xi$} \eval (\xi,\tuple{x_1:\tau_1,\dotsc,x_n:\tau_n})
+	}
+\]
+
+\todo{che notazione usare per \Struct???}
+
+\clearpage
+
+\subsection{Functions}
+
+\[
+	\EnvSym\then \Function : \Type
+\]
+
+\nb{
+	When the whole definition of a function type is not needed, the type will
+	simply be denoted by \Function.
+}
+
+\[
+	\infrule{
+		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type,x_i\in\Id} \semiq \tau_{n+1}\Type
+	}{
+		\EnvSym\then \code{::($x_1$ $\tau_1$, $\dotsc$, $x_n$ $\tau_n$) => $\tau_{n+1}$} \eval (\tau_1,\dotsc,\tau_n)\to\tau_{n+1}
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type,x_i\in\Id}
+	}{
+		\EnvSym\then \code{::($x_1$ $\tau_1$, $\dotsc$, $x_n$ $\tau_n$)} \eval (\tau_1,\dotsc,\tau_n)\to\Void
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \xi \in \Id \semiq n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type,x_i\in\Id} \semiq \tau_{n+1}\Type
+	}{
+		\EnvSym,\code{$\xi$($x_1$ $\tau_1$, $\dotsc$, $x_n$ $\tau_n$) => $\tau_{n+1}$ \{\}} \then \code{$\xi$} : (\tau_1,\dotsc,\tau_n)\to\tau_{n+1}
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \xi \in \Id \semiq n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type,x_i\in\Id}
+	}{
+		\EnvSym,\code{$\xi$($x_1$ $\tau_1$, $\dotsc$, $x_n$ $\tau_n$) \{\}} \then \code{$\xi$} : (\tau_1,\dotsc,\tau_n)\to\Void
+	}
+\]
+
+% \subsection{Range}
+
+\todo{Range. Tipo concreto non implementato ancora}
+
+\subsection{Compatibility rules}
+
+\todo{menzionare covarianze (tipi composti e prodotto) e
+controvarianza (parametri funzioni?)}
+
+\paragraph{Reflexivity}
+\label{par:compatibility_reflexivity}
+\[
+	\infrule{
+		\EnvSym\then \tau:\Type
+	}{
+		\EnvSym\then \tau \narreq \tau
+	}
+\]
+
+\paragraph{Transitivity}
+\[
+	\infrule{
+		\EnvSym\then \tau_1 \narreq \tau_2 \semiq \tau_2 \narreq \tau_3
+	}{
+		\EnvSym\then \tau_1 \narreq \tau_3
+	}
+\]
+
+\subsubsection{Primitive types}
+
+\[
+	\infrule{
+		\EnvSym\then \tau : \Type
+	}{
+		\EnvSym\then \Void \narreq \tau
+	}
+\]
+
+\[
+	\EnvSym\then \Natural \narreq \Int
+	\qquad \EnvSym\then \Int \narreq \Real
+\]
+
+\subsubsection{Collection types}
+
+\[
+	\infrule{
+		\EnvSym\then \tau_1 = \List[\nu_1:=\Type]\\*
+		\EnvSym\then \tau_2 = \List[\nu_2:=\Type]\\*
+		\EnvSym\then \nu_1 \narreq \nu_2
+	}{
+		\EnvSym\then \tau_1 \narreq \tau_2
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \tau_1 = \Map[\kappa_1:=\Type, \nu_1:=\Type]\\*
+		\EnvSym\then \tau_2 = \Map[\kappa_2:=\Type, \nu_2:=\Type]\\*
+		\EnvSym\then \kappa_1 \narreq \kappa_2 \land \nu_1 \narreq \nu_2
+	}{
+		\EnvSym\then \tau_1 \narreq \tau_2
+	}
+\]
+
+\clearpage
+
+\subsubsection{Product types}
+\label{sec:product_types_compatibility}
+
+Since the widening and narrowing is crucial for type inference, Tuples, Records
+and Structs require some additional attention as they have some differences.
+
+\vspace{\baselineskip}
+
+In order to quickly understand why the widening between product types behaves
+the way it does, ask yourself: \textit{what information does this data
+carry?}\\*
+For example, \code{<1,2,3,"foo">} is a tuple with three integer fields and a
+text field; no additional semantic information is given, and those values could
+mean anything.\\*
+Instead, \code{<x:1, y:2, z:3, name:"foo">} is a record with three integer
+fields and a text field, with the additional information about their name;
+their semantic meaning is still uncertain.\\*
+Finally, \code{Rgb.<x:1, y:2, z:3, name:"foo">} is a struct describing a color
+which has an integer field for each red, green and blue channel, and a field
+representing the common name of the color.\\*
+Instead, \code{Point.<x:1, y:2, z:3, name:"foo">} is a struct describing
+a point in a coordinate system which has a three integer field for each
+dimension and a label.
+
+\vspace{\baselineskip}
+
+While all previous examples evaluates to an "equal" value (the data they
+carry), their semantic meaning is potentially very different. This means that,
+while the tuple or the record could be widened to either \code{Rgb} or
+\code{Point} (where the "added information" is their semantic meaning), a
+\code{Point} cannot be losslessly converted to \code{Rgb} or other narrower
+types, because we would "lose" their semantic meaning.\\*
+If you're ok with losing such information, conversion between "incompatible"
+product types can still be achieved via explicit type coercion (casting).
+
+\clearpage
+
+\paragraph{Tuple}
+
+\[
+	\infrule{
+		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type} \semiq \theta_1 = \bigtimes_{i \in [1,n]}{\tau_i}\\*
+		\EnvSym\then m \geq n \semiq \forall_{i\in[1,m]}{\omega_i:\Type} \semiq \theta_2 = \bigtimes_{j \in [1,m]}{\omega_j}\\*
+		\EnvSym\then \forall_{i \in [1,n]}{\tau_i \narreq \omega_i}
+	}{
+		\EnvSym\then \theta_1 \narreq \theta_2
+	}
+\]
+A tuple type $\theta_1$ is narrower than the tuple type $\theta_2$ if the first
+$n$ fields of $\theta_1$ have a type $\tau$ narrower than the first $n$ fields
+types $\omega$ of $\theta_2$.
+
+\vspace{\baselineskip}
+
+\[
+	\infrule{
+		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type} \semiq \theta = \bigtimes_{i \in [1,n]}{\tau_i}\\*
+		\EnvSym\then m \geq n \semiq \forall_{j\in[1,m]}{x_j \in \Id, \omega_j:\Type} \semiq \rho = \tuple{x_1:\omega_1,\dotsc,x_m:\omega_m} \\*
+		\EnvSym\then \forall_{i \in [1,n]}{\tau_i \narreq \omega_i}
+	}{
+		\EnvSym\then \theta \narreq \rho
+	}
+\]
+A tuple type $\theta$ is narrower than the record type $\rho$ if the first $n$
+fields of $\theta$ have a type $\tau$ narrower than the first $n$ fields type
+$\omega$ of $\rho$ (fields names are ignored).
+
+\vspace{\baselineskip}
+
+\[
+	\infrule{
+		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type} \semiq \theta = \bigtimes_{i \in [1,n]}{\tau_i}\\*
+		\EnvSym\then \xi \in \Id \semi m \geq n \semi \forall_{j\in[1,m]}{x_j \in \Id, \omega_j:\Type} \semi \sigma = (\xi, \tuple{x_1:\omega_1,\dotsc,x_m:\omega_m}) \\*
+		\EnvSym\then \forall_{i \in [1,n]}{\tau_i \narreq \omega_i}
+	}{
+		\EnvSym\then \theta \narreq \sigma
+	}
+\]
+A tuple type $\theta$ is narrower than the struct type $\sigma$ if the first
+$n$ fields of $\theta$ have a type $\tau$ narrower than the first $n$ fields
+type $\omega$ of $\sigma$ (struct name and fields names are ignored).
+
+\vspace{\baselineskip}
+
+\clearpage
+
+\paragraph{Record}
+
+\[
+	\infrule{
+		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{x_i \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \semiq \rho_1 = \tuple{x_1:\tau_1,\dotsc,x_n:\tau_n} \\*
+		\EnvSym\then m \geq n \semiq \forall_{j\in[1,m]}{y_j \in \mathcal{M} \subseteq \Id, \omega_j:\Type} \semiq \rho_2 = \tuple{y_1:\omega_1,\dotsc,y_m:\omega_m} \\*
+		\EnvSym\then \forall_{x':\tau'\in\mathcal{N}}{\exists_{y':\omega'\in\mathcal{M}}{x'=y' \land \tau' \narreq \omega'}}
+	}{
+		\EnvSym\then \rho_1 \narreq \rho_2
+	}
+\]
+A record type $\rho_1$ is narrower than a record type $\rho_2$ if, for all
+fields $x'$ of type $\tau'$ in $\rho_1$, there is a field with the same name
+$y'$ of type $\omega'$ in $\rho_2$, where $\tau'$ is narrower than $\omega'$.
+
+\vspace{\baselineskip}
+
+\[
+	\infrule{
+		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{x \in \mathcal{N} \subseteq \mathcal{M}, \tau_i:\Type} \semiq \rho = \tuple{x_1:\tau_1,\dotsc,x_n:\tau_n} \\*
+		\EnvSym\then \xi \in \Id \semi m \geq n \semi \forall_{j\in[1,m]}{y_j \in \Id, \omega_j:\Type} \semiq \sigma = (\xi, \tuple{y_1:\omega_1,\dotsc,y_m:\omega_m}) \\*
+		\EnvSym\then \forall_{x':\tau'\in\mathcal{N}}{\exists_{y':\omega'\in\mathcal{M}}{x'=y' \land \tau' \narreq \omega'}}
+	}{
+		\EnvSym\then \rho \narreq \sigma
+	}
+\]
+A record type $\rho$ is narrower than a struct type $\sigma$ if, for all fields
+$x'$ of type $\tau'$ in $\rho$, there is a field with the same name $y'$ of
+type $\omega'$ in $\sigma$, where $\tau'$ is narrower than $\omega'$ (struct
+name is ignored).
+
+\paragraph{Struct}
+
+\[
+	\infrule{
+		\EnvSym\then \xi_1 \in \Id \semiq n \geq 0 \semiq \forall_{i\in[1,n]}{x_i \in \Id, \tau_i:\Type} \\*
+		\EnvSym\then \sigma_1 = (\xi_1, \tuple{x_1:\tau_1,\dotsc,x_n:\tau_n}) \\*
+		\EnvSym\then \xi_2 \in \Id \semiq m \geq n \semiq \forall_{j\in[1,m]}{y_j \in \Id, \omega_j:\Type} \\*
+		\EnvSym\then \sigma_2 = (\xi_2, \tuple{y_1:\omega_1,\dotsc,y_m:\omega_m}) \\*
+		\EnvSym\then \xi_1 = \xi_2
+	}{
+		\EnvSym\then \sigma_1 \narreq \sigma_2
+	}
+\]
+A struct type $\sigma_1$ is narrower than a struct type $\sigma_2$ if and only
+if they have the same name (fields are ignored since they're equal by
+construction).
+
+\todo{questa regola è ridondante?}
+\vspace{\baselineskip}
+
+\clearpage
+
+\subsubsection{Function}
+
+\[
+	\infrule{
+		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{x_i\in\mathcal{N}\subseteq\mathcal{M},\tau_i:\Type} \semiq \tau_{n+1}:\Type  \\*
+		\EnvSym\then \phi_1 = (x_1:\tau_1,\dotsc,x_n:\tau_n)\to\tau_{n+1} \\*
+		\EnvSym\then m \geq n \semiq \forall_{j\in[1,m]}{y_j\in\mathcal{M}\subseteq\Id,\omega_i:\Type} \semiq \omega_{m+1}:\Type \\*
+		\EnvSym\then \phi_2 = (y_1:\omega_1,\dotsc,y_m:\omega_m)\to\omega_{m+1} \\*
+		\EnvSym\then \tau_{n+1} \narreq \omega_{m+1} \\*
+		\EnvSym\then \forall_{x':\tau'}{\exists_{y':\omega'}{x'=y' \land \tau' \narreq \omega'}}
+	}{
+		\EnvSym\then \phi_1 \narreq \phi_2
+	}
+\]
+A function type $\phi_1$ is narrower than a function type $\phi_2$ if the
+return type $\tau_{n+1}$ is narrower than the other return type $\omega_{m+1}$,
+and if, for all parameters $x'$ of type $\tau'$ in $\phi_1$, there is a
+parameter with the same name $y'$ of type $\omega'$ in $\phi_2$, where $\tau'$
+is narrower than $\omega'$.
+
+\todo{
+	è gia un casino cosi :D, ma includere anche opzionalità dei parametri\\
+	Eventualmente estrarre una regola per il singolo parametro
+}
+
+
+\commentinline{
+	TODO: come menzionato nel README, il widening tra funzioni potrebbe essere
+	errato se si considerano i domini delle funzioni rispetto al loro corpo.
+
+	Per funzioni senza parametri è ok: \code{::() => Int} può essere allargata
+	a \code{::() => Real}.
+
+	Ma se una funziona richiede dei parametri \code{::(i Int) => Int},
+	significa che il suo corpo sa come lavorare con \code{i Int}; nel momento
+	in cui si allarga a \code{::(i Real) => Real}, il corpo potrebbe operare su
+	un tipo inaspettato
+}
+
+\clearpage
+
+\section{Expressions}
+
+\subsection{Literals}
+
+\subsubsection{Bool}
+
+\[
+	\EnvSym\then \code{true}:\Bool \qquad \EnvSym \then \code{false}:\Bool
+\]
+
+\subsubsection{Int}
+
+\[
+	\infrule{
+		\EnvSym\then x \in \mathbb{Z} \semiq x \in [-2^{31}, 2^{31} - 1]
+	}{
+		\EnvSym\then \code{$x$} : \Int \\*
+		\land \EnvSym\then \code{$x$i} : \Int
+	}
+\]
+
+% \subparagraph{Examples} \verb|0, 0i, 69, -420, 32i, -99i|
+
+\subsubsection{Natural}
+
+\[
+	\infrule{
+		\EnvSym\then x \in \mathbb{N} \semiq x \in [0, 2^{31}]
+	}{
+		\EnvSym\then \code{$x$n} : \Natural
+	}
+\]
+
+% \subparagraph{Examples} \verb|0n, 69n, 420n|
+
+\subsubsection{Real}
+
+\[
+	\infrule{
+		\EnvSym\then x \in \mathbb{R}
+	}{
+		\EnvSym\then \code{$x$} : \Real \\*
+		\land \EnvSym\then \code{$x$r} : \Real
+	}
+\]
+
+% \subparagraph{Examples} \verb|0r, 0.0, 6.9, -4.20|
+
+\subsubsection{Text}
+
+\[
+	\infrule{
+		\EnvSym\then x \in \text{Unicode} \setminus \set{"\backslash n", "\backslash r"} \semiq n \geq 0
+	}{
+		\EnvSym\then \code{"$x_1 \dotsc x_n$"} : \Text \\*
+		\land \EnvSym\then \code{'$x_1 \dotsc x_n$'} : \Text
+	}
+\]
+
+\todo{specificare il set $Unicode$ con i caratteri permessi da Java}
+
+\[
+	\infrule{
+		\EnvSym\then x \in \text{Unicode} \semiq n \geq 0
+	}{
+		\EnvSym\then \code{"\{$x_1 \dotsc x_n$\}"} : \Text \\*
+		\land \EnvSym\then \code{'\{$x_1 \dotsc x_n$\}'} : \Text
+	}
+\]
+
+% \subparagraph{Examples} \verb|"hello", 'world', "{hello}", '{world}'|
+
+\clearpage
+
+\subsection{Collection types}
+
+\subsubsection{List}
+
+\[
+	\EnvSym\then \code{[]}:\exists\Void.\List
+\]
+
+\[
+	\infrule{
+		\EnvSym\then n \geq 1 \semiq \tau:\Type \semiq \forall_{i\in[1,n]}{\expr_i\in\Expr,\expr_i:\tau}
+	}{
+		\EnvSym\then \code{[$\expr_1$, $\dotsc$, $\expr_n$]}:\exists\tau.\List
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then n \geq 1 \semiq \forall_{i\in[1,n]}{\tau_i:\Type,\expr_i\in\Expr,\expr_i:\tau_i} \semiq \omega = \biglwb_{i=1}^{n}{\tau_i}
+	}{
+		\EnvSym\then \code{[$\expr_1$, $\dotsc$, $\expr_n$]}:\exists\omega.\List
+	}
+\]
+
+List of $\omega$ (widest among $\tau$)
+
+\subsubsection{Map}
+
+\[
+	\EnvSym\then \code{[=>]}:\exists\Void.\exists\Void.\Map
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \kappa:\Type \semiq \forall_{i\in[1,n]}{k_i\in\Expr,k_i:\kappa} \semiq n \geq 1 \\*
+		\EnvSym\then \nu:\Type \semiq \forall_{i\in[1,n]}{v_i\in\Expr,v_i:\nu} \hfill
+	}{
+		\EnvSym\then \code{[$k_1$=>$v_1$, $\dotsc$, $k_n$=>$v_n$]}:\exists\kappa.\exists\nu.\Map
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \forall_{i \in [1,n]}{\kappa_i:\Type, k_i\in\Expr, k_i:\kappa_i} \semiq n \geq 1 \\*
+		\EnvSym\then \forall_{i \in [1,n]}{\nu_i:\Type, v_i\in\Expr, v_i:\nu_i} \hfill\\*
+		\EnvSym\then \omega_\kappa = \biglwb_{i=1}^{n}{\kappa_i} \semiq \omega_\nu = \biglwb_{i=1}^{n}{\nu_i}
+	}{
+		\EnvSym\then \code{[$k_1$=>$v_1$, $\dotsc$, $k_n$=>$v_n$]}:\exists\omega_\kappa.\exists\omega_\nu.\Map
+	}
+\]
+
+Map of $\omega_\kappa$ keys (widest  among $\kappa$) and $\omega_\nu$ (widest
+among $\nu$).
+
+\clearpage
+
+\subsection{Product types}
+
+\subsubsection{Tuple}
+
+\[
+	\infrule{
+		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type, \expr_i\in\Expr, \expr_i:\tau_i}
+	}{
+		\EnvSym\then \code{<$\expr_1$, $\dotsc$, $\expr_n$>}:\tau_1 \times \dotsc \times \tau_n
+	}
+\]
+
+\subsubsection{Record}
+
+\[
+	\infrule{
+		\EnvSym\then n \geq 1 \semiq \forall_{i\in[1,n]}{x_i\in\Id, \tau_i:\Type, \expr_i\in\Expr, \expr_i:\tau_i}
+	}{
+		\EnvSym\then \code{<$x_1$:$\expr_1$, $\dotsc$, $x_n$:$\expr_n$>}:\tuple{x_1:\tau_1,\dotsc,x_2:\tau_n}
+	}
+\]
+
+\subsubsection{Struct}
+
+\[
+	\infrule{
+		\EnvSym\then \xi \in \Id \semiq n \geq 0 \semiq \forall_{i\in[1,n]}{x_i \in \Id, \tau_i:\Type} \semiq \sigma = (\xi, \tuple{x_1:\tau_1,\dotsc,x_n:\tau_n}) \\*
+	}{
+		\EnvSym\then \code{$\xi$.<>} : \sigma \\*
+	}
+\]
+This expression initializes a struct $\xi$ of type $\sigma$.
+
+\[
+	\infrule{
+		\EnvSym\then \xi \in \Id \semiq n \geq 0 \semiq \forall_{i\in[1,n]}{x_i \in \Id, \tau_i:\Type} \semiq \sigma = (\xi, \tuple{x_1:\tau_1,\dotsc,x_n:\tau_n}) \\*
+		\EnvSym\then \forall_{i\in[1,n]}{\eta_i:\Type,\eta_i\narreq\tau_i,\expr_i:\eta_i} \\*
+	}{
+		\EnvSym\then \code{$\xi$.<$\expr_1$, $\dotsc$, $\expr_n$>} : \sigma \\*
+	}
+\]
+This expression initializes a struct $\xi$ of type $\sigma$ by using a
+tuple-like notation, where each field gets initialized with the expression
+$\expr_i$ of type $\eta_i$ (narrower than $\tau_i$).
+
+\[
+	\infrule{
+		\EnvSym\then \xi \in \Id \semi n \geq 0 \semi \forall_{i\in[1,n]}{x_i\in\mathcal{N}\subseteq\Id, \tau_i:\Type} \semi \sigma = (\xi, \tuple{x_1:\tau_1,\dotsc,x_n:\tau_n}) \\*
+		\EnvSym\then m \leq n \semi \forall_{j\in[1,m]}{y_j\in\mathcal{M}\subseteq\mathcal{N}, \eta_j:\Type, \expr_j:\eta_j} \\*
+		\EnvSym\then \forall_{j\in[1,m]}{\exists_{i\in[1,n]}{y_j=x_i \land \eta_j\narreq\tau_i}}
+		% \EnvSym\then \forall_{\mathcal{M}\ni y':\eta'}{\exists_{\mathcal{N}\ni x':\tau'}{y'=x' \land \eta'\narr\tau'}}
+	}{
+		\EnvSym\then \code{$\xi$.<$y_1$:$\expr_1$, $\dotsc$, $y_n$:$\expr_n$>} : \sigma \\*
+	}
+\]
+This expression initializes a struct $\xi$ of type $\sigma$ by using a
+record-like notation, where each specified field $y_j$ gets initialized with the
+expression $\expr_j$ of type $\eta_j$ (narrower than $\tau_i$).
+
+\clearpage
+
+\subsection{Parenthesized expression}
+
+\[
+	\infrule{
+		\EnvSym\then \tau:\Type \semiq \expr\in\Expr \semiq \expr:\tau
+	}{
+		\EnvSym\then \code{\{$\expr$\}} : \tau
+	}
+\]
+
+\subsection{Invocation}
+
+\paragraph{Positional}
+
+\[
+	\infrule{
+		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type} \semiq \tau_{n+1}:\Type \\*
+		\EnvSym\then \phi = (\tau_1,\dotsc,\tau_n)\to\tau_{n+1} \semiq  f : \phi \\*
+		\EnvSym\then \forall_{i\in[1,n]}{\eta_i:\Type,\eta_i\narreq\tau_i,\expr_i:\eta_i}
+	}{
+		\EnvSym\then \code{$f$($\expr_1$,$\dotsc$,$\expr_n$)} : \tau_{n+1}
+	}
+\]
+
+\paragraph{Nominal}
+
+\[
+	\infrule{
+		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{x\in\mathcal{N}\subseteq\Id,\tau_i:\Type} \semiq \tau_{n+1}:\Type \\*
+		\EnvSym\then \phi = (x_1:\tau_1,\dotsc,x_n:\tau_n)\to\tau_{n+1} \semiq  f : \phi \\*
+		\EnvSym\then \forall_{j\in[1,n]}{y\in\mathcal{N},\eta_j:\Type,\expr_j:\eta_j} \\*
+		\EnvSym\then \forall_{j\in[1,n]}{\exists_{i\in[1,n]}{y_j=x_i,\eta_j\narreq\tau_i}}
+	}{
+		\EnvSym\then \code{$f$($y_1$:$\expr_1$,$\dotsc$,$y_n$:$\expr_n$)} : \tau_{n+1}
+	}
+\]
+
+\todo{completare}
+
+\subsection{Reference}
+
+\todo{chiarire notazione e muovere in sezione operatori}
+
+\[
+	\infrule{
+		\EnvSym\then x \in \Id \\*
+		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{x_i\in\Id,\tau_i:\Type} \semiq \tau_{n+1}\Type \\*
+		\EnvSym\then \phi = (x_1:\tau_1,\dotsc,x_n:\tau_n)\to\tau_{n+1} \\*
+	}{
+		\EnvSym,\code{$x$ $\phi$}\then \code{::$x$} : \phi
+	}
+\]
+
+\clearpage
+
+\subsection{Range}
+
+\[
+	\infrule{
+		\EnvSym\then \tau_1 \in \Number \semiq \expr_1\in\Expr \semiq \expr_1:\tau_1\\*
+		\EnvSym\then \tau_2 \in \Number \semiq \expr_2\in\Expr \semiq \expr_2:\tau_2 \\*
+		\EnvSym\then \omega = \tau_1 \lwb \tau_2
+	}{
+		\EnvSym\then \code{$\expr_1$..$\expr_2$} : \exists\omega.\Range
+	}
+\]
+Range from $\expr_1$ (begin) to $\expr_2$ (end).
+
+\[
+	\infrule{
+		\EnvSym\then \tau_1 \in \Number \semiq \expr_1\in\Expr \semiq \expr_1:\tau_1\\*
+		\EnvSym\then \tau_2 \in \Number \semiq \expr_2\in\Expr \semiq \expr_2:\tau_2 \\*
+		\EnvSym\then \tau_3 \in \Number \semiq \expr_3\in\Expr \semiq \expr_3:\tau_3 \\*
+		\EnvSym\then \omega = \tau_1 \lwb \tau_2 \lwb \tau_3
+	}{
+		\EnvSym\then \code{$\expr_1$..$\expr_2$..$\expr_3$} : \exists\omega.\Range
+	}
+\]
+Range from $\expr_1$ (begin) to $\expr_2$ (end) with a step $\expr_3$.
+
+\clearpage
+
+\subsection{General rules}
+
+\[
+	\infrule{
+		\EnvSym\then \tau_1:\Type \semiq \expr_1:\tau \\*
+		\EnvSym\then \tau_2:\Type \semiq \tau_1 \narreq \tau_2 \semiq \expr_2:\tau_2
+	}{
+		\EnvSym\then \code{$\expr_1$ = $\expr_2$} : \Bool
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \tau_1:\Type \semiq \expr_1:\tau_1 \\*
+		\EnvSym\then \tau_2:\Type \semiq \expr_2:\tau_2 \\*
+		\EnvSym\then \code{$\expr_1$ = $\expr_2$} : \Bool
+	}{
+		\EnvSym\then \code{$\expr_1$ != $\expr_2$} : \Bool
+	}
+\]
+If the "equal" operator is defined, the "not equal" operator is also defined.
+
+\vspace{\baselineskip}
+
+\[
+	\infrule{
+		\EnvSym\then \tau_1:\Type \semiq \expr_1:\tau_1 \\*
+		\EnvSym\then \tau_2:\Type \semiq \expr_2:\tau_2 \\*
+		\EnvSym\then \code{$\expr_1$ =\~{} $\expr_2$}: \Bool
+	}{
+		\EnvSym\then \code{$\expr_2$ \~{}= $\expr_1$}: \Bool
+	}
+\]
+If the "contains" operator is defined, the "contained" operator is also
+defined.
+
+\vspace{\baselineskip}
+
+\[
+	\Number = \set{\Natural, \Int, \Real}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \expr:\Number \semiq \tau \in \Number
+	}{
+		\EnvSym\then \code{$\expr$ as $\tau$}: \tau
+	}
+\]
+
+\todo[impl]{-69 as Natural fallisce (out of bounds). Dovrebbe?}
+
+\[
+	\infrule{
+		\EnvSym\then \tau \in \Number \semiq \expr:\tau
+	}{
+		\EnvSym\then \code{+$\expr$}: \tau
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \tau \in \Number\setminus\set{\Natural} \semiq \expr:\tau
+	}{
+		\EnvSym\then \code{-$\expr$}: \tau
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \tau_1,\tau_2 \in \Number \semiq \expr_1:\tau_1 \semiq \expr_2:\tau_2\\*
+		\bop = \set{\code{=}, \code{!=}, \code{<}, \code{<=}, \code{>=}, \code{>=}, \code{>}}
+	}{
+		\EnvSym\then \code{$\expr_1$ $\bop$ $\expr_2$}: \Bool
+	}
+\]
+
+\clearpage
+
+\subsection{Primitive types}
+
+\subsubsection{Void}
+
+\todo{?}
+
+\subsubsection{Bool}
+
+\[
+	\infrule{
+		\EnvSym\then \expr:\Bool
+	}{
+		\EnvSym\then \code{!$\expr$}:\Bool
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Bool \semiq \expr_2:\Bool \\*
+		\bop = \set{\code{and}, \code{\&}, \code{or}, \code{|}}
+	}{
+		\EnvSym\then \code{$\expr_1$ $\bop$ $\expr_2$}:\Bool
+	}
+\]
+
+\subsubsection{Natural}
+
+\paragraph{Plus}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Natural
+	}{
+		\EnvSym\then \code{$\expr_1$ + $\expr_2$} : \Natural
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Int
+	}{
+		\EnvSym\then \code{$\expr_1$ + $\expr_2$} : \Int
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Real
+	}{
+		\EnvSym\then \code{$\expr_1$ + $\expr_2$} : \Real
+	}
+\]
+
+\paragraph{Minus}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Natural
+	}{
+		\EnvSym\then \code{$\expr_1$ - $\expr_2$} : \Int
+	}
+\]
+
+\todo{specificare se $l-r\geq0$}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Int
+	}{
+		\EnvSym\then \code{$\expr_1$ - $\expr_2$} : \Int
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Real
+	}{
+		\EnvSym\then \code{$\expr_1$ - $\expr_2$} : \Real
+	}
+\]
+
+\paragraph{Multiplication}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Natural
+	}{
+		\EnvSym\then \code{$\expr_1$ * $\expr_2$} : \Natural
+	}
+\]
+
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Int
+	}{
+		\EnvSym\then \code{$\expr_1$ * $\expr_2$} : \Int
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Real
+	}{
+		\EnvSym\then \code{$\expr_1$ * $\expr_2$} : \Real
+	}
+\]
+
+\paragraph{Division}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Natural
+	}{
+		\EnvSym\then \code{$\expr_1$ / $\expr_2$} : \Real
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Int
+	}{
+		\EnvSym\then \code{$\expr_1$ / $\expr_2$} : \Real
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Real
+	}{
+		\EnvSym\then \code{$\expr_1$ / $\expr_2$} : \Real
+	}
+\]
+
+\paragraph{Modulo}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Natural
+	}{
+		\EnvSym\then \code{$\expr_1$ \% $\expr_2$} : \Natural
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Int
+	}{
+		\EnvSym\then \code{$\expr_1$ \% $\expr_2$} : \Int
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Real
+	}{
+		\EnvSym\then \code{$\expr_1$ \% $\expr_2$} : \Real
+	}
+\]
+
+\paragraph{Power}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Natural
+	}{
+		\EnvSym\then \code{$\expr_1$ \^{} $\expr_2$} : \Natural
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Int
+	}{
+		\EnvSym\then \code{$\expr_1$ \^{} $\expr_2$} : \Int
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Natural \semiq \expr_2:\Real
+	}{
+		\EnvSym\then \code{$\expr_1$ \^{} $\expr_2$} : \Real
+	}
+\]
+
+\subsubsection{Int}
+
+\paragraph{Bitwise not}
+
+\[
+	\infrule{
+		\EnvSym\then \expr:\Int
+	}{
+		\EnvSym\then \code{!!$\expr$} : \Int
+	}
+\]
+
+\paragraph{Bitwise and}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Natural
+	}{
+		\EnvSym\then \code{$\expr_1$ \&\& $\expr_2$} : \Int
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Int
+	}{
+		\EnvSym\then \code{$\expr_1$ \&\& $\expr_2$} : \Int
+	}
+\]
+
+\paragraph{Bitwise or}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Natural
+	}{
+		\EnvSym\then \code{$\expr_1$ || $\expr_2$} : \Int
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Int
+	}{
+		\EnvSym\then \code{$\expr_1$ || $\expr_2$} : \Int
+	}
+\]
+
+\paragraph{Bitwise xor}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Natural
+	}{
+		\EnvSym\then \code{$\expr_1$ ||| $\expr_2$} : \Int
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Int
+	}{
+		\EnvSym\then \code{$\expr_1$ ||| $\expr_2$} : \Int
+	}
+\]
+
+\paragraph{Bitwise left shift}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Natural
+	}{
+		\EnvSym\then \code{$\expr_1$ \{<\} $\expr_2$} : \Int
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Int
+	}{
+		\EnvSym\then \code{$\expr_1$ \{<\} $\expr_2$} : \Int
+	}
+\]
+
+\paragraph{Bitwise right shift}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Natural
+	}{
+		\EnvSym\then \code{$\expr_1$ \{>\} $\expr_2$} : \Int
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Int
+	}{
+		\EnvSym\then \code{$\expr_1$ \{>\} $\expr_2$} : \Int
+	}
+\]
+
+\paragraph{Bitwise right unsigned shift}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Natural
+	}{
+		\EnvSym\then \code{$\expr_1$ \{>>\} $\expr_2$} : \Int
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Int
+	}{
+		\EnvSym\then \code{$\expr_1$ \{>>\} $\expr_2$} : \Int
+	}
+\]
+
+\paragraph{Plus}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Natural
+	}{
+		\EnvSym\then \code{$\expr_1$ + $\expr_2$} : \Int
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Int
+	}{
+		\EnvSym\then \code{$\expr_1$ + $\expr_2$} : \Int
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Real
+	}{
+		\EnvSym\then \code{$\expr_1$ + $\expr_2$} : \Real
+	}
+\]
+
+\paragraph{Minus}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Natural
+	}{
+		\EnvSym\then \code{$\expr_1$ - $\expr_2$} : \Int
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Int
+	}{
+		\EnvSym\then \code{$\expr_1$ - $\expr_2$} : \Int
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Real
+	}{
+		\EnvSym\then \code{$\expr_1$ - $\expr_2$} : \Real
+	}
+\]
+
+\paragraph{Multiplication}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Natural
+	}{
+		\EnvSym\then \code{$\expr_1$ * $\expr_2$} : \Int
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Int
+	}{
+		\EnvSym\then \code{$\expr_1$ * $\expr_2$} : \Int
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Real
+	}{
+		\EnvSym\then \code{$\expr_1$ * $\expr_2$} : \Real
+	}
+\]
+
+\paragraph{Division}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Natural
+	}{
+		\EnvSym\then \code{$\expr_1$ / $\expr_2$} : \Real
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Int
+	}{
+		\EnvSym\then \code{$\expr_1$ / $\expr_2$} : \Real
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Real
+	}{
+		\EnvSym\then \code{$\expr_1$ / $\expr_2$} : \Real
+	}
+\]
+
+\paragraph{Modulo}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Natural
+	}{
+		\EnvSym\then \code{$\expr_1$ \% $\expr_2$} : \Int
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Int
+	}{
+		\EnvSym\then \code{$\expr_1$ \% $\expr_2$} : \Int
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Real
+	}{
+		\EnvSym\then \code{$\expr_1$ \% $\expr_2$} : \Real
+	}
+\]
+
+\paragraph{Power}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Natural
+	}{
+		\EnvSym\then \code{$\expr_1$ \^{} $\expr_2$} : \Real
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Int
+	}{
+		\EnvSym\then \code{$\expr_1$ \^{} $\expr_2$} : \Real
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \expr_2:\Real
+	}{
+		\EnvSym\then \code{$\expr_1$ \^{} $\expr_2$} : \Real
+	}
+\]
+
+\subsubsection{Real}
+
+\paragraph{Plus}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \tau \in \Number \semiq \expr_2:\tau
+	}{
+		\EnvSym\then \code{$\expr_1$ + $\expr_2$} : \Real
+	}
+\]
+
+\paragraph{Minus}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \tau \in \Number \semiq \expr_2:\tau
+	}{
+		\EnvSym\then \code{$\expr_1$ - $\expr_2$} : \Real
+	}
+\]
+
+\paragraph{Multiplication}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \tau \in \Number \semiq \expr_2:\tau
+	}{
+		\EnvSym\then \code{$\expr_1$ * $\expr_2$} : \Real
+	}
+\]
+
+\paragraph{Division}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \tau \in \Number \semiq \expr_2:\tau
+	}{
+		\EnvSym\then \code{$\expr_1$ / $\expr_2$} : \Real
+	}
+\]
+
+\paragraph{Modulo}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \tau \in \Number \semiq \expr_2:\tau
+	}{
+		\EnvSym\then \code{$\expr_1$ \% $\expr_2$} : \Real
+	}
+\]
+
+\paragraph{Power}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Int \semiq \tau \in \Number \semiq \expr_2:\tau
+	}{
+		\EnvSym\then \code{$\expr_1$ \^{} $\expr_2$} : \Real
+	}
+\]
+
+\subsubsection{Text}
+
+\paragraph{As}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Text \semiq \tau \in \Number \cup \set{\Text, \Bool}
+	}{
+		\EnvSym\then \code{$\expr_1$ as $\tau$}: \tau
+	}
+\]
+
+\paragraph{Plus}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Text \semiq \tau:\Type \semiq \expr_2:\tau
+	}{
+		\EnvSym\then \code{$\expr_1$ + $\expr_2$}: \Text
+	}
+\]
+
+\paragraph{Minus}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Text \semiq \expr_2:\Text
+	}{
+		\EnvSym\then \code{$\expr_1$ - $\expr_2$}: \Text
+	}
+\]
+
+\paragraph{Power}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Text \semiq \tau \in \Number \semiq \expr_2:\tau
+	}{
+		\EnvSym\then \code{$\expr_1$ \^{} $\expr_2$}: \Text
+	}
+\]
+
+\todo[impl]{non dovremmo permettere Real}
+
+\paragraph{Division}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Text \semiq \expr_2:\Text
+	}{
+		\EnvSym\then \code{$\expr_1$ / $\expr_2$}: \exists\Text.\List
+	}
+\]
+
+\paragraph{Equal}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Text \semiq \expr_2:\Text
+	}{
+		\EnvSym\then \code{$\expr_1$ = $\expr_2$}: \Bool
+	}
+\]
+
+\paragraph{Less}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Text \semiq \expr_2:\Text
+	}{
+		\EnvSym\then \code{$\expr_1$ < $\expr_2$}: \Bool
+	}
+\]
+
+\paragraph{Less equal}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Text \semiq \expr_2:\Text
+	}{
+		\EnvSym\then \code{$\expr_1$ <= $\expr_2$}: \Bool
+	}
+\]
+
+\paragraph{Greater equal}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Text \semiq \expr_2:\Text
+	}{
+		\EnvSym\then \code{$\expr_1$ >= $\expr_2$}: \Bool
+	}
+\]
+
+\paragraph{Greater}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Text \semiq \expr_2:\Text
+	}{
+		\EnvSym\then \code{$\expr_1$ > $\expr_2$}: \Bool
+	}
+\]
+
+\paragraph{Contains}
+
+\[
+	\infrule{
+		\EnvSym\then \expr_1:\Text \semiq \expr_2:\Text
+	}{
+		\EnvSym\then \code{$\expr_1$ =\~{} $\expr_2$}: \Bool
+	}
+\]
+
+\paragraph{Dot access}
+
+\[
+	\infrule{
+		\text{Index access}\\*
+		\EnvSym\then \expr_1:\Text \semiq \expr_2:\Int
+	}{
+		\EnvSym\then \code{$\expr_1$.$\expr_2$}: \Text
+	}
+\]
+
+\[
+	\infrule{
+		\text{"Slice"}\\*
+		\EnvSym\then \expr_1:\Text \semiq \expr_2:\exists\Int.\Range
+	}{
+		\EnvSym\then \code{$\expr_1$.$\expr_2$}: \Text
+	}
+\]
+
+\[
+	\infrule{
+		\text{Text length}\\*
+		\EnvSym\then \expr_1:\Text
+	}{
+		\EnvSym\then \code{$\expr_1$.\_count}: \Int
+	}
+\]
+
+\[
+	\infrule{
+		\text{Characters range}\\*
+		\EnvSym\then \expr_1:\Text
+	}{
+		\EnvSym\then \code{$\expr_1$.\_range}: \exists\Int.\Range
+	}
+\]
+
+\[
+	\infrule{
+		\text{Characters list}\\*
+		\EnvSym\then \expr_1:\Text
+	}{
+		\EnvSym\then \code{$\expr_1$.\_chars}: \exists\Text.\List
+	}
+\]
+
+\clearpage
+
+\subsection{Collection types}
+
+\subsubsection{List}
+
+\paragraph{As}
+
+\[
+	\infrule{
+		\EnvSym\then \tau_1 = \List[\nu_1 := \Type] \\*
+		\EnvSym\then \tau_2 = \List[\nu_2 := \Type] \\*
+		\EnvSym\then \expr:\tau_1 \semiq x:\nu_1 \\*
+		\EnvSym\then \code{$x$ as $\nu_2$} : \nu_2
+	}{
+		\EnvSym\then \code{$\expr$ as $\tau_2$} : \tau_2
+	}
+\]
+If a term of type $\nu_1$ can be casted to type $\nu_2$ $\implies$ A list
+of $\nu_1$ can be casted to a list of $\nu_2$.
+
+\paragraph{Plus}
+
+\[
+	\infrule{
+		\EnvSym\then \tau_1=\List \semiq \expr_1:\tau_1 \\*
+		\EnvSym\then \tau_2=\List \semiq \expr_2:\tau_2 \\*
+		\EnvSym\then \tau_2 \narreq \tau_1
+	}{
+		\EnvSym\then \code{$\expr_1$ + $\expr_2$} : \tau_1
+	}
+\]
+\todo{chiarire. Il tipo della concatenazione dovrebbe essere deciso da
+lhs o dovrebbe essere il widest tra i due?}
+
+\[
+	\infrule{
+		\EnvSym\then \tau=\List[\nu_1:=\Type] \semiq \expr_1:\tau \\*
+		\EnvSym\then \nu_2:\Type \semiq \nu_2\narreq\nu_1 \semiq \expr_2:\nu_2
+	}{
+		\EnvSym\then \code{$\expr_1$ + $\expr_2$} : \tau
+	}
+\]
+
+\paragraph{Minus}
+
+\[
+	\infrule{
+		\EnvSym\then \tau_1=\List \semiq \expr_1:\tau_1 \\*
+		\EnvSym\then \tau_2=\List \semiq \expr_2:\tau_2 \\*
+		\EnvSym\then \tau_2 \narreq \tau_1
+	}{
+		\EnvSym\then \code{$\expr_1$ - $\expr_2$} : \tau_1
+	}
+\]
+\todo{chiarire. Il tipo dell'intersezione dovrebbe essere deciso da
+lhs o dovrebbe essere il widest tra i due?}
+
+\[
+	\infrule{
+		\EnvSym\then \tau=\List[\nu_1:=\Type] \semiq \expr_1:\tau \\*
+		\EnvSym\then \nu_2:\Type \semiq \nu_2\narreq\nu_1 \semiq \expr_2:\nu_2
+	}{
+		\EnvSym\then \code{$\expr_1$ - $\expr_2$} : \tau
+	}
+\]
+
+\paragraph{Contains}
+
+\[
+	\infrule{
+		\EnvSym\then \tau_1:\Type \semiq \expr_1:\exists\tau_1.\List \\*
+		\EnvSym\then \tau_2:\Type \semiq \tau_2 \narreq \tau_1 \semiq \expr_2:\tau_2
+	}{
+		\EnvSym\then \code{$\expr_1$ =\~{} $\expr_2$} : \Bool
+	}
+\]
+A list of $\tau_1$ contains an element of type $\tau_2$ (narrower than
+$\tau_1$).
+
+\[
+	\infrule{
+		\EnvSym\then \tau_1:\Type \semiq \expr_1:\exists\tau_1.\List\\*
+		\EnvSym\then \tau_2:\Type \semiq \tau_2 \narreq \tau_1 \semiq \expr_2:\exists\tau_2.\List
+	}{
+		\EnvSym\then \code{$\expr_1$ =\~{} $\expr_2$} : \Bool
+	}
+\]
+A list of $\tau_1$ contains the elements of a list of $\tau_2$ (narrower than
+$\tau_1$).
+
+\paragraph{Dot access}
+
+\[
+	\infrule{
+		\text{Index access}\\*
+		\EnvSym\then \tau:\Type
+		\semiq \expr_1:\exists\tau.\List
+		\semiq \expr_2:\Int
+	}{
+		\EnvSym\then \code{$\expr_1$.$\expr_2$}: \tau
+	}
+\]
+
+\[
+	\infrule{
+		\text{"Slice"}\\*
+		\EnvSym\then \tau : \Type
+		\semiq \expr_1:\exists\tau.\List
+		\semiq \expr_2:\exists\Int.\Range
+	}{
+		\EnvSym\then \code{$\expr_1$.$\expr_2$}: \tau
+	}
+\]
+
+\[
+	\infrule{
+		\text{Count access}\\*
+		\EnvSym\then \tau:\Type \semiq \expr:\exists\tau.\List
+	}{
+		\EnvSym\then \code{$\expr$.\_count}: \Int
+	}
+\]
+
+\[
+	\infrule{
+		\text{Range access}\\*
+		\EnvSym\then \expr:\Text
+	}{
+		\EnvSym\then \code{$\expr$.\_range}: \exists\Int.\Range
+	}
+\]
+
+\subsubsection{Map}
+
+\paragraph{As}
+
+\[
+	\infrule{
+		\EnvSym\then \tau_1 = \Map[\kappa_1:=\Type,\nu_1:=\Type] \\*
+		\EnvSym\then \tau_2 = \Map[\kappa_2:=\Type,\nu_2:=\Type] \\*
+		\EnvSym\then \expr:\tau_1 \semiq \expr_k:\kappa_1 \semiq \expr_v:\nu_1 \\*
+		\EnvSym\then \code{$\expr_k$ as $\kappa_2$} : \kappa_2 \land \code{$\expr_v$ as $\nu_2$} : \nu_2
+	}{
+		\EnvSym\then \code{$\expr$ as $\tau_2$} : \tau_2
+	}
+\]
+If a term of type $\kappa_1$ and be casted to type $\kappa_2$ $\land$ A term of
+type $\nu_1$ can be casted to type $\nu_2$ $\implies$ A map of type $\tau_1$
+can be casted to the type $\tau_2$.
+
+\paragraph{Plus}
+
+\[
+	\infrule{
+		\EnvSym\then \tau_1=\Map \semiq \expr_1:\tau_1 \\*
+		\EnvSym\then \tau_2=\Map \semiq \expr_2:\tau_2 \\*
+		\EnvSym\then \tau_2 \narreq \tau_1
+	}{
+		\EnvSym\then \code{$\expr_1$ + $\expr_2$} : \tau_1
+	}
+\]
+\todo{chiarire. Il tipo della concatenazione dovrebbe essere deciso da
+lhs o dovrebbe essere il widest tra i due?}
+
+\paragraph{Minus}
+
+\[
+	\infrule{
+		\EnvSym\then \tau_1=\Map \semiq \expr_1:\tau_1 \\*
+		\EnvSym\then \tau_2=\Map \semiq \expr_2:\tau_2 \\*
+		\EnvSym\then \tau_2 \narreq \tau_1
+	}{
+		\EnvSym\then \code{$\expr_1$ - $\expr_2$} : \tau_1
+	}
+\]
+\todo{chiarire. Il tipo dell'intersezione dovrebbe essere deciso da
+lhs o dovrebbe essere il widest tra i due?}
+
+\[
+	\infrule{
+		\EnvSym\then \tau=\Map[\kappa_1:=\Type] \semiq \expr_1:\tau \\*
+		\EnvSym\then \kappa_2:\Type \semiq \kappa_2\narreq\kappa_1 \semiq \expr_2:\kappa_2
+	}{
+		\EnvSym\then \code{$\expr_1$ - $\expr_2$} : \tau
+	}
+\]
+
+
+\paragraph{Contains}
+
+\[
+	\infrule{
+		\EnvSym\then \tau = \Map[\kappa_1:=\Type,\nu:=\Type] \semiq \expr_1:\tau \\*
+		\EnvSym\then \kappa_2:\Type \semiq \kappa_2 \narreq \kappa_1 \semiq \expr_2:\kappa_2
+	}{
+		\EnvSym\then \code{$\expr_1$ =\~{} $\expr_2$} : \Bool
+	}
+\]
+A map $\expr_1$ of type $\tau$ contains a key of type $\kappa_2$ (narrower than
+$\kappa_1$).
+
+\[
+	\infrule{
+		\EnvSym\then \tau_1 = \Map[\kappa_1:=\Type,\nu_1:=\Type] \semiq \expr_1:\tau_1 \\*
+		\EnvSym\then \tau_2 = \Map[\kappa_2:=\Type,\nu_2:=\Type] \semiq \expr_2:\tau_2 \\*
+		\EnvSym\then \kappa_2 \narreq \kappa_1 \land \nu_2 \narreq \nu_1
+	}{
+		\EnvSym\then \code{$\expr_1$ =\~{} $\expr_2$} : \Bool
+	}
+\]
+A map $\expr_1$ of type $\tau_1$ contais the key-value pairs of type $\kappa_2$
+(narrower than $\kappa_1$) and $\nu_2$ (narrower than $\nu_1$) of the map
+$\expr_2$ of type $\tau_2$.
+
+\paragraph{Dot access}
+
+\[
+	\infrule{
+		\text{Access by key}\\*
+		\EnvSym\then \tau = \Map[\kappa_1:=\Type,\nu:=\Type] \semiq \expr_1:\tau \\*
+		\EnvSym\then \kappa_2 = \Type \semiq \kappa_2 \narreq \kappa_1 \semiq \expr_2:\kappa_2
+	}{
+		\EnvSym\then \code{$\expr_1$.$\expr_2$}: \nu
+	}
+\]
+
+\[
+	\infrule{
+		\text{Count access}\\*
+		\EnvSym\then \tau = \Map[\kappa:=\Type,\nu:=\Type] \semiq \expr:\tau \\*
+	}{
+		\EnvSym\then \code{$\expr$.\_count}: \Int
+	}
+\]
+
+\[
+	\infrule{
+		\text{Keys access}\\*
+		\EnvSym\then \tau = \Map[\kappa:=\Type,\nu:=\Type] \semiq \expr:\tau \\*
+	}{
+		\EnvSym\then \code{$\expr$.\_keys}: \exists\kappa.\List
+	}
+\]
+
+\[
+	\infrule{
+		\text{Values access}\\*
+		\EnvSym\then \tau = \Map[\kappa:=\Type,\nu:=\Type] \semiq \expr:\tau \\*
+	}{
+		\EnvSym\then \code{$\expr$.\_values}: \exists\nu.\List
+	}
+\]
+
+\subsection{Product types}
+
+\[
+	\Product = \set{\texttt{Tuple, Record, Struct}}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then \tau_1 \in \Product \semiq \expr_1:\tau_1 \\*
+		\EnvSym\then \tau_2 \in \Product \semiq \expr_2:\tau_2
+	}{
+		\EnvSym\then \code{$\expr_1$ = $\expr_2$}: \Bool
+	}
+\]
+
+\[
+	\infrule{
+		\text{Fields count access} \\*
+		\EnvSym\then \tau\in\Product \semiq \expr:\tau
+	}{
+		\EnvSym\then \code{$\expr$.\_count}: \Int
+	}
+\]
+
+\[
+	\infrule{
+		\text{Fields range access} \\*
+		\EnvSym\then \tau\in\Product \semiq \expr:\tau
+	}{
+		\EnvSym\then \code{$\expr$.\_range}: \exists\Int.\Range
+	}
+\]
+
+\[
+	\infrule{
+		\text{Fields names access} \\*
+		\EnvSym\then \tau\in\set{\Record,\Struct} \semiq \expr:\tau
+	}{
+		\EnvSym\then \code{$\expr$.\_fields}: \exists\Text.\List
+	}
+\]
+
+\subsubsection{Tuple}
+
+\paragraph{Dot access}
+
+\[
+	\infrule{
+		\text{"Slice"}\\*
+		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type} \semiq \expr_1:\tau_1 \times \dotsb \times \tau_n \\*
+		\EnvSym\then \expr_2:\exists\Int.\Range
+	}{
+		\EnvSym\then \code{$\expr_1$.$\expr_2$}: \bigtimes_{i \in \expr_2} \tau_i
+	}
+\]
+
+Example: \code{<0,1,2,3,4,5> . 2..4 = <2 3 4>}
+
+With step: \code{<0,1,2,3,4,5> . 0..5..2 = <0 2 4>}
+
+Reverse: \code{<0,1,2,3,4,5> . 4..2 = <4 3 2>}
+
+\[
+	\infrule{
+		\text{Access by index}\\*
+		\EnvSym\then n \geq 0 \semiq \forall_{i\in[1,n]}{\tau_i:\Type} \semiq \expr_1:\tau_1 \times \dotsb \times \tau_n \\*
+		\EnvSym\then \expr_2:\Int \semiq \expr_2 \in [1,n]
+	}{
+		\EnvSym\then \code{$\expr_1$.$\expr_2$}: \tau_{\expr_2}
+	}
+\]
+
+\subsubsection{Record}
+
+\paragraph{Dot access}
+
+\[
+	\infrule{
+		\text{Access by index} \\*
+		\EnvSym\then n \geq 1 \semiq \forall_{i\in[1,n]}{\tau_i:\Type, x_i\in\Id} \semiq \expr_1:\tuple{x_1:\tau_1,\dotsc,x_n:\tau_n}\\*
+		\EnvSym\then \expr_2:\Int \semiq \expr_2 \in [1,n]
+	}{
+		\EnvSym\then \code{$\expr_1$.$\expr_2$}: \tau_{\expr_2}
+	}
+\]
+
+\todo[impl]{permettere solo a Tuple in modo da rendere esplicito la perdita degli identificatori}
+
+\[
+	\infrule{
+		\text{"Slice"}\\*
+		\EnvSym\then n \geq 1 \semiq \forall_{i\in[1,n]}{\tau_i:\Type, x_i\in\Id} \semiq \rho=\tuple{x_1:\tau_1,\dotsc,x_n:\tau_n} \semiq \expr_1:\rho\\*
+		\EnvSym\then \expr_2:\exists\Int.\Range \\*
+		\EnvSym\then \forall_{i\in\expr_2}{\rho'=\tuple{x_j:\tau_j, \dotsc, x_j:\tau_j}}
+	}{
+		\EnvSym\then \code{$\expr_1$.$\expr_2$}: \rho'
+	}
+\]
+
+\[
+	\infrule{
+		\text{Access by name}\\*
+		\EnvSym\then n \geq 1 \semiq \forall_{i\in[1,n]}{\tau_i:\Type, x_i \in \Id} \semiq \expr:\tuple{x_1:\tau_1,\dotsc,x_n:\tau_n} \\*
+		\EnvSym\then x' \in \Id \semiq \exists_{j\in[1,n]} x_j = x'
+	}{
+		\EnvSym\then \code{$\expr$.$x'$}: \tau_j
+	}
+\]
+
+\subsubsection{Struct}
+
+\todo{...}
+
+\subsection{Function}
+
+\todo{...}
+
+\clearpage
+
+\section{Statements}
+
+\subsection{Variable declaration}
+
+\[
+	\infrule{
+		\EnvSym\then x \in \Id \semiq \tau:\Type
+	}{
+		\EnvSym, \code{$x$ $\tau$} \then x:\tau
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then x\in\Id \semiq \tau:\Type \\*
+		\EnvSym\then \tau_\expr:\Type \semiq \tau_\expr\narreq\tau \semiq \expr\in\Expr \semiq \expr:\tau_\expr
+	}{
+		\EnvSym, \code{var $x$ $\tau$ <- $\expr$} \then x:\tau \qquad \text{(esplicit type)} \\*
+		\land \EnvSym, \code{var $x$ <- $\expr$} \then x:\tau \qquad \text{(implicit type)}
+	}
+\]
+
+\todo{specificare il tipo Var come da implementazione?}
+
+\subsection{Constant declaration}
+
+\[
+	\infrule{
+		\EnvSym\then x\in\Id \semiq \tau:\Type \\*
+		\EnvSym\then \tau_\expr:\Type \semiq \tau_\expr\narreq\tau \semiq \expr\in\Expr \semiq \expr:\tau_\expr
+	}{
+		\EnvSym, \code{const $x$ $\tau$ <- $\expr$} \then x:\tau \qquad \text{(esplicit type)} \\*
+		\land \EnvSym, \code{const $x$ <- $\expr$} \then x:\tau \qquad \text{(implicit type)}
+	}
+\]
+
+\subsection{Alias declaration}
+
+\[
+	\infrule{
+		\EnvSym\then x \in \Id \semiq \expr \in \Expr \semiq \tau:\Type \semiq \expr:\tau
+	}{
+		\EnvSym, \code{alias $e$ as $x$} \then x:\tau
+	}
+\]
+
+\subsection{For loop}
+
+\[
+	\infrule{
+		\EnvSym\then x \in \Id \semiq \tau:\Type \semiq \expr:\exists\tau.\List
+	}{
+		\EnvSym, \code{for $x$ in $\expr$ do} \then x:\tau
+	}
+\]
+
+\[
+	\infrule{
+		\EnvSym\then k \in \Id \semiq v \in \Id \semiq \kappa:\Type \semiq \nu:\Type \semiq \expr:\exists\kappa.\exists\nu.\Map
+	}{
+		\EnvSym, \code{for $k$=>$v$ in $\expr$ do} \then k:\kappa \semiq v:\nu
+	}
+\]
+
+\todo{deconstruction}
+

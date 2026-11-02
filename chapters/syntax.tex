@@ -1,0 +1,528 @@
+\chapter{Syntax}
+\label{ch:syntax}
+
+This section mainly focuses on the syntax rules of the grammar; for more
+details about a specific feature, refer to the dedicated section.
+
+\vspace{\baselineskip}
+
+A valid Giovi program starts with zero or more top-level statements; there are
+11 valid statements:
+
+\begin{minted}{antlr}
+program: statement* ;
+statement
+	: statement_declaration
+	| statement_return
+	| statement_invocation
+	| statement_redirection
+	| statement_import
+	| statement_if
+	| statement_break
+	| statement_skip
+	| statement_repeat
+	| statement_for
+	;
+
+statement_declaration
+	: statement_declaration_alias
+	| statement_declaration_module
+	| statement_declaration_struct
+	| statement_declaration_constant
+	| statement_declaration_variable
+	| statement_declaration_function
+	;
+\end{minted}
+
+In many rules, either a single statement or a block of statements are allowed;
+the following "fragment" rules will be used.
+
+\begin{minted}{antlr}
+block: '{' statement* '}';
+block_or_statement: block | statement ;
+\end{minted}
+
+\paragraph{Identifiers} The \code{identifier} rule describes the allowed
+identifiers to be used as names for variables, constants, types etc.
+
+\begin{minted}{antlr}
+identifier: [a-zA-Z] [a-zA-Z0-9_]* ;
+\end{minted}
+
+It must start with a letter and can contain any letter, number or underscore.
+
+\clearpage
+
+\section{Alias declaration}
+
+\begin{minted}{antlr}
+statement_declaration_alias: 'alias' expression 'as' identifier ;
+\end{minted}
+
+Sometimes a type, a function, a constant or something else may be named in a
+too verbose way. You can use the alias statement to basically refer to the same
+thing but with a different name.
+
+\begin{minted}{\giovilexer}
+alias AVeryVerboseAndLongStructName as SomeStruct
+\end{minted}
+
+\section{Import statement}
+
+\begin{minted}{antlr}
+statement_import
+	: 'import' import_entry
+	| 'import' '[' import_entry+ ']'
+	;
+import_entry: import_uri ('.' import_uri)* ('as' alias=identifier)? ;
+import_uri
+	: identifier
+	| literal_normal_text
+	| literal_exact_text
+	;
+\end{minted}
+
+The import statement is used to import one or more modules
+(\see{ch:modules}).
+
+\begin{minted}{\giovilexer}
+import giovi.util.Random
+giovi.util.Random.integer() -> _out
+\end{minted}
+
+To avoid fully qualifying the module every time, it can be aliased. It's a
+shortcut for importing and then aliasing with two different statements.
+
+\begin{minted}{\giovilexer}
+import giovi.util.Random as Random
+Random.integer() -> _out
+\end{minted}
+
+For more details, see~\See{sec:import}.
+
+\section{Module declaration}
+
+\begin{minted}{antlr}
+statement_declaration_module
+	: 'module' identifier body=block
+	;
+\end{minted}
+
+A module\footnotemark[1] is a "container" for code, and shares the same behavior of a scope: it
+can hold code, variables, functions, constants, types definition etcetera; in
+fact it can be seen as a "named scope". See \See{ch:modules}.
+
+\footnotetext[1]{
+	Modules are still considered an experimental feature and, as such, the
+	syntax is considered unstable.
+}
+
+\section{Constant declaration}
+
+\begin{minted}{antlr}
+statement_declaration_constant
+	: 'const' identifier type? '<-' expression
+	;
+\end{minted}
+
+Constants are read-only values; their value is defined at declaration and
+cannot change.\\*
+The type can be omitted as it will be inferred from the expression.\\*
+By convention, constants identifiers are written in \code{SCREAMING\_CASE}.
+
+\todo{decidere se usare shallow o deep immutability}
+
+\begin{minted}{\giovilexer}
+const PI Real <- 3.14
+const TAU <- PI * 2
+\end{minted}
+
+\section{Variable declaration}
+
+\begin{minted}{antlr}
+statement_declaration_variable
+	: 'var' identifier type? ('default' expression)? '<-' expression
+	| identifier type ('default' expression)?
+	;
+\end{minted}
+
+A variable is identified by a name, and it is of a specific type.\\*
+By convention, variable identifiers are written in \code{pascalCase}.\\*
+Using the \code{var} keyword allows you to omit the type and let it be inferred
+from the assigned expression.
+
+\begin{minted}{\giovilexer}
+myName Text <- "Simone"
+var myNickname <- "simonvic"
+\end{minted}
+
+\section{Return statement}
+
+\begin{minted}{antlr}
+statement_return
+	: ('return' | '=>') expression?
+	;
+\end{minted}
+
+The return statement can only be used within a function scope.
+
+\clearpage
+
+\section{Function declaration}
+
+\begin{minted}{antlr}
+statement_declaration_function
+	: identifier '(' formal_parameters? ')' ('=>' return_type=type)?
+	  body=block
+	;
+
+formal_parameters
+	: formal_parameter (',' formal_parameter)*
+	;
+
+formal_parameter
+	: (label=identifier ':')? name=identifier type ('default' expression)?
+	;
+\end{minted}
+
+Functions are code blocks that can be invoked at a later time.\\*
+By convention, function identifiers are written in \code{pascalCase}.
+
+\begin{minted}{\giovilexer}
+printHelloWorld() {
+	"Hello World" -> _out
+}
+
+greetPerson(name Text, surname Text) {
+	"Greetings $name, $surname" -> _out
+}
+
+getFunLanguage() => Text {
+	=> "Giovi"
+}
+\end{minted}
+
+For more details, see~\See{ch:functions}.
+
+\section{Invocation statement}
+
+\begin{minted}{antlr}
+statement_invocation
+	: expression '(' actual_parameters ')'
+	;
+
+actual_parameters
+	: actual_parameter (',' actual_parameter)*
+	;
+
+actual_parameter
+	: (label=identifier ':')? expression
+	;
+\end{minted}
+
+When invoking a function, arguments can be passed using a traditional
+positional approach or a nominal approach\footnotemark[1].
+
+\footnotetext[1]{
+	Albeit the grammar doesn't enforce one approach or the other, the current
+	implementation supports either all arguments to be passed as positional or
+	as nominal. For more details, see~\See{ch:functions}.
+}
+
+\section{Redirection statement}
+
+\begin{minted}{antlr}
+statement_redirection
+	: statement_redirection_rtl
+	| statement_redirection_ltr
+	;
+
+statement_redirection_rtl
+	: dest=pattern_redir '<-' src=expression
+	| dest=expression ('<-', '+<-', '-<-', '*<-', '/<-') src=expression
+	;
+
+statement_redirection_ltr
+	: src=expression '->' dest=pattern_redir
+	| src=expression ('->', '->+', '->-', '->*', '->/') content=expression
+	;
+
+pattern_redir
+	: pattern_placeholder
+	| pattern_unary
+	| pattern_placeholder
+	;
+\end{minted}
+
+The redirection statement is simply an assignment of a value to
+\textit{something}.
+
+A peculiarity of the statement is that it can be written "left to right" or
+"right to left". There is no difference between the two directions, except for
+readability. Sometimes it's just better to use one instead of the other.
+
+\todo{link a FAQ}
+
+\begin{minted}{\giovilexer}
+"hello world" -> _out     # Printing
+counter +<- 1             # Increasing counter by one
+acceleration ->+ velocity # Increasing velocity by "acceleration"
+\end{minted}
+
+It's common having to perform operations such as sums or concatenations with a
+variable, and then to apply the resulting value of the operation to the same
+variable. Giovi gives you a shorthand for such scenarios: it's possible to
+append or suffix the \code{+}, \code{-}, \code{*} and \code{/} operators to the
+redirection operator (both left-to-right and right-to-left variant); when doing
+so, the specified operation will be performed using the destination of the
+assignment as the left-hand-side operand and the expression as the
+right-hand-side operand; finally, the result will be applied to the
+destination.
+
+Beware that the result will be identical if you were to do the operation in a
+separate expression and then assigning the result, meaning that if the operator
+is not supported or the result of the expression is incompatible, the
+assignment will fail.
+
+\begin{minted}{\giovilexer}
+counter Real <- 6.9
+counter *<- 10 # multiply by 10
+
+funnyNumbers [Int]
+funnyNumbers +<- 69 # insert 69
+funnyNumbers +<- [420, 67] # concatenate
+
+sentence Text <- "hello world how are you?"
+sentence /<- " " # ERROR: can't assign [hello, world, how, are, you?]
+\end{minted}
+
+\clearpage
+
+\section{If statement}
+
+\begin{minted}{antlr}
+statement_if
+	: statement_simple_if
+	| statement_multi_if
+	;
+\end{minted}
+
+The \code{if} statement is used to evaluate boolean expressions exclusively.\\*
+There is a "traditional" \code{if}, where a single expression is evaluated and
+the appropriate execution flow is chosen, and a "multi-if" version.
+
+\subsection{Simple If statement}
+
+\begin{minted}{antlr}
+statement_simple_if
+	: 'if' expression 'do' statement_or_block ('else' statement_or_block)?
+	;
+\end{minted}
+
+\begin{minted}{\giovilexer}
+if someConditionIsTrue() do something() else somethingElse()
+if someConditionIsTrue() do {
+	something()
+} else {
+	somethingElse()
+}
+\end{minted}
+
+\subsection{Multi If statement}
+
+\begin{minted}{antlr}
+statement_multi_if
+	: 'if' subject=expression multi_if_body ('else' statement_or_block)?
+	| 'if' subjectless_multi_if_body ('else' statement_or_block)?
+	;
+\end{minted}
+
+Very often it is needed to check multiple conditions sequentially.
+
+\begin{minted}{\giovilexer}
+if name = "Simone" do {
+	"hey it's Simone!" -> _out
+} else if name = "Mario" do {
+	"heyo Mario" -> _out
+	"where is Luigi?" -> _out
+} else if name = "Luigi" do {
+	"heyo green Mario!" -> _out
+}
+\end{minted}
+
+To improve readability, the \code{if} statement allows you to write the same in
+a more concise way.
+
+\begin{minted}{\giovilexer}
+if {
+	name = "Simone" do "hey it's Simone!" -> _out
+	name = "Mario" do {
+		"heyo Mario" -> _out
+		"where is Luigi?" -> _out
+	}
+	name = "Luigi" do "heyo green Mario!" -> _out
+}
+\end{minted}
+
+\nb{Any boolean expression is allowed and exhaustiveness is not enforced! Be
+mindful of the branch order; since they're evaluated in the same order they're
+written, some branch may become unreachable if it's dominated by a previous
+one.}
+
+\paragraph{Subject} More often than not, the conditions involve the same
+"subject". The \code{if} statement allows you to write it just once and then
+omit it in the left-hand side of the condition
+
+\begin{minted}{\giovilexer}
+if name {
+	= "Simone" do "hey it's Simone!" -> _out
+	= "Mario" do {
+		"heyo Mario" -> _out
+		"where is Luigi?" -> _out
+	}
+	= "Luigi" do "heyo green Mario!" -> _out
+}
+\end{minted}
+
+Common boolean operators are allowed
+
+\begin{minted}{\giovilexer}
+if getSomeNumber() {
+	= 69 or = 420 do "Nice!" -> _out
+	> 100 and < 999 do "big number" -> _out
+}
+\end{minted}
+
+\paragraph{Branch guard} A branch can also be "guarded" with another (possibly
+unrelated) boolean condition
+
+\begin{minted}{\giovilexer}
+var funnyNumbers <- [69, 420] 
+if getSomeNumber() {
+	# if equal to 69, but only if someCondition() is true
+	= 69 when someCondition() do "Nice!" -> _out
+
+	# if is contained in funnyNumbers list,
+	# but only when 67 is not contained in funnyNumbers
+	in funnyNumbers when 67 not in funnyNumbers
+}
+\end{minted}
+
+\clearpage
+
+\section{Break and Skip statement}
+
+Both statements are used to control the flow of a loop, therefore can only be
+used within a loop.
+
+\subsection{Break statement}
+
+\begin{minted}{antlr}
+statement_break: 'break';
+\end{minted}
+
+The break statement will stop the loop and the execution will continue with the
+next instruction.
+
+\subsection{Skip statement}
+
+\begin{minted}{antlr}
+statement_skip: 'skip';
+\end{minted}
+
+The skip statement will stop the current loop iteration and skip to the next
+iteration.
+
+\section{Repeat statement}
+
+\begin{minted}{antlr}
+statement_repeat: 'repeat' ('if' expression)? statement_or_block ;
+\end{minted}
+
+The repeat statement allows you to repeat a statement or block of code. It
+allows an optional condition that gets checked at the beginning of every loop;
+if the condition fails, the iteration stops.
+
+\begin{minted}{\giovilexer}
+# this code will run indefinitely
+repeat {
+	"hello world" -> _out
+}
+\end{minted}
+
+\begin{minted}{\giovilexer}
+# the loop continues while someCondition is true
+repeat if someCondition() {
+	"hello world" -> _out
+}
+\end{minted}
+
+A "do-while" like statement, can be achieved with a \code{break} statement.
+
+\begin{minted}{\giovilexer}
+# the loop continues until someCondition is true
+repeat {
+	"hello world" -> _out
+	if someCondition() do break
+}
+\end{minted}
+
+\clearpage
+
+\section{For statement}
+
+\begin{minted}{antlr}
+statement_for
+	: 'for' pattern_iterator 'in' iterable 'do' statement_or_block
+	;
+
+pattern_iterator: pattern_map_naked | pattern ;
+\end{minted}
+
+In its simplest form, the \code{for} statement is sued to iterate over lists,
+maps or ranges.
+
+\begin{minted}{\giovilexer}
+for i in 0..10 do somethingWith(i)
+for number in [1 2 3 4] do somethingWith(number)
+for key in ["Simone"=>69 "Luca"=>420 "Paolo"=>10] do somethingWith(key)
+\end{minted}
+
+The for statement is like an usual for-each loop, but on steroids; the iterator
+is actually a pattern (\see{ch:patterns}): for each iteration, the for
+statement will match iterated value with the pattern, and perform the
+appropriate deconstruction.
+
+\begin{listing}
+	\label{lst:for_loop_patterns_example}
+	\caption{Example of various patterns used as iterators in \code{for} loops}
+	\begin{minted}{\giovilexer}
+for _ in 0..9 do something() # do something 10 times
+
+for [[i]] in some2DMatrix do somethingWith(i)
+
+mapOfNicknames [Text => [Text]] <- [
+	"Simone" => ["Simon", "simonvic"]
+	"Mario"  => ["Super Mario", "The plumber"]
+	"Luigi"  => ["Green Mario"]
+]
+for [name => [nickname]] in mapOfNicknames do {
+	somethingWith(name, nickname)
+}
+
+listOfColors [tuple<Int,Int,Int>] <- [
+	<0 255 0>
+	<55 0 255>
+	<255 255 255>
+]
+for <r, g, b> in listOfColors do {
+	"The color is made of $r $g $b" -> _out
+}
+	\end{minted}
+\end{listing}
+
+\nb{Nesting iterator patterns effectively means nesting iterations}
+
+\todo{aggiungere RFC di iteration counters}
+
+

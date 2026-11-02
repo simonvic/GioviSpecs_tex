@@ -1,0 +1,84 @@
+\chapter{Scopes}
+\label{ch:scopes}
+
+A scope is a code region within which you can execute statements and perform
+declarations (e.g. variables, constants, types, functions) that can later be
+referred to, simply, by their name.
+
+Scopes can be "nested" within other scopes and their lifetime has a clear begin
+and end; a scope usually coincides with a \textit{block} (see
+\See{ch:syntax}), for example in an \code{if} statement, a \code{for} or
+\code{repeat} loop or a function body.
+
+A Giovi source code file is itself a scope (see~\See{ch:modules}).
+
+\begin{listing}
+	\label{lst:scope_lifetype}
+	\caption{Example of nested scopes and their "lifetime"}
+	\begin{minted}{\giovilexer}
+# begin scope
+if true do {
+	# begin scope
+	for _ in 0..10 do {
+		# begin scope
+		"hello world" -> _out
+		# end scope
+	}
+	# end scope
+} else {
+	# begin scope
+	"hello world" -> _out
+	# end scope
+}
+#end scope
+	\end{minted}
+\end{listing}
+
+\clearpage
+
+\section{Declarations lifetime} The lifetime of a declaration is bound to
+the lifetime of the scope in which it has been declared.
+
+\begin{minted}{\giovilexer}
+if true do {
+	username Text <- "simonvic"
+	"hello $username" -> _out # "hello simonvic"
+}
+"hello $username" -> _out # ERROR: username not defined
+\end{minted}
+
+A scope "inherits" the declarations of their parent scope; more precisely, a
+declaration in a parent scope is visible to the children scopes.
+
+\begin{minted}{\giovilexer}
+username Text <- "simonvic"
+if true do {
+	"hello $username" -> _out # "hello simonvic"
+	if true do {
+		"how are you, $username?" -> _out # "how are you, simonvic?"
+	}
+}
+\end{minted}
+
+Two declarations of the same type cannot have the same name.
+
+\begin{minted}{\giovilexer}
+username Text <- "simonvic"
+username Text <- "mario" # ERROR: username already declared
+\end{minted}
+
+\section{Shadowing} You can, for example, declare a variable with the same
+name of another variable declared in a parent scope; the variable in the parent
+scope is now "shadowed", and cannot be referred to by its name.
+
+\begin{minted}{\giovilexer}
+username Text <- "simonvic"
+if true do {
+	username Text <- "mario"
+	"hello $username" -> _out # "hello mario"
+}
+"hello $username" -> _out # "hello simonvic"
+\end{minted}
+
+For a more formal definition, see~\See{ch:opsem}
+

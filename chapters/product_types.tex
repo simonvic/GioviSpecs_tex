@@ -1,0 +1,145 @@
+\chapter{Product types}
+
+In this chapter product types will be discussed. A product type is called as
+such because it can be seen as a Cartesian product of other types.
+
+There are three product types:
+\begin{itemize}
+	\item \textbf{Tuple} (\see{sec:tuples})
+	\item \textbf{Record} (\see{sec:records})
+	\item \textbf{Struct} (\see{sec:structs})
+\end{itemize}
+
+All product types follow the same rules of the default (\see{ch:defaults}),
+hence, when a variable or any other value of such type is declared, it is
+initialized with its zero value.\footnotemark[1]
+
+\footnotetext[1]{There is one exception: see~\See{sec:recursive_structs}.}
+
+\section{Tuples}
+\label{sec:tuples}
+
+A Tuple is an ordered collection of zero or more heterogeneous values.
+
+\begin{minted}{\giovilexer}
+someTuple tuple<Text, Bool, Real>
+someTuple <- <"foo", true, 420.69>
+\end{minted}
+
+Tuples being ordered means that two tuple types with the same fields (same
+count and equally typed), but in different position, are considered different.
+
+\section{Records}
+\label{sec:records}
+
+A Record is an unordered collection of zero or more named (labeled)
+heterogeneous values.
+
+\begin{minted}{\giovilexer}
+someRecord record<field1 Text, field2 Bool, field3 Real>
+someRecord <- <field1:"foo", field2:true, field3:420.69>
+\end{minted}
+
+Records being unordered means that two record types with the same fields (same
+count, equally named and equally typed) are equal, regardless of the order
+their fields appear at.
+
+\section{Structs}
+\label{sec:structs}
+
+A Struct is a named unordered collection of zero or more named (labeled)
+heterogeneous fields. In other words, a struct type is a type you can define
+and later refer to via its name. Structs could be seen as Records
+(\see{sec:records}) with a typename associated to it.
+
+Before being able to use a struct type, it must first be declared.
+
+\begin{minted}{\giovilexer}
+struct SomeStruct <field1 Text, field2 Bool, field3 Real>
+someStruct SomeStruct
+\end{minted}
+
+\paragraph{Struct constants} Like for functions (see
+\See{sec:struct_functions}), a struct type can also contain constant
+declarations, that can later be accessed via the dot operator.
+
+\subsection{Recursive struct types}
+\label{sec:recursive_structs}
+
+Recursive struct type definitions are allowed by using the \code{self} keyword
+in place of the field type.
+
+\todo{menzionare RFC di larval types e uso del typename}
+
+\begin{minted}{\giovilexer}
+struct Node <
+	data Text,
+	nextNode self
+>
+\end{minted}
+
+All types in Giovi have a zero value (see~\See{ch:defaults}) and all values
+of such type are initialized with it, and the same applies to structs;
+however recursive structs are the exception.\\*
+In the case of the a recursive struct, the fields of such type will be
+initialized with a lazy approach: the initialization of such fields happens
+only upon the first access/use.
+
+\begin{minted}{\giovilexer}
+struct Node <
+	data Text default "default_data",
+	nextNode self
+>
+root Node <- <data:"root_data">
+root -> _out       # <"root_data", _>
+root.nextNode -> _ # nextNode is now initialized
+root -> _out       # <"root_data", <"default_data", _>>
+\end{minted}
+
+\clearpage
+
+\subsection{Aggregation and composition}
+
+When modelling a certain domain, it is often needed to define an aggregation or
+composition relationship between types. To achieve aggregation, practically
+speaking, it's simply possible to define a field of a previously typed.
+
+\begin{minted}{\giovilexer}
+struct Fullname <name Text, surname Text>
+struct Person <age Int, fullname Fullname>
+Person -> _out # Person<age Int, fullname Fullname>
+\end{minted}
+
+At times, however, it may be desirable to "flatten/inline" such aggregated
+fields; instead of manually copying the fields in the new declaration, it's
+possible to specify the typename of the other type you want to aggregate.
+
+\begin{minted}{\giovilexer}
+struct Person <age Int> + Fullname
+Person -> _out # <age Int, name Text, surname Text>
+\end{minted}
+
+The aggregate type can also be specified before the new declaration; by doing
+so, the fields will appear before the ones in the new declaration.
+
+\begin{minted}{\giovilexer}
+Fullname + struct Person <age Int>
+Person -> _out # <name Text, surname Text, age Int>
+\end{minted}
+
+Multiple aggregations are possible
+
+\begin{minted}{\giovilexer}
+Vehicle, Engine + struct Car<brand Text> + AirCondition, ReclineableSeats
+Car -> _out
+# Car<
+#	Vehicle fields...,
+#	Engine fields...,
+#	brand Text,
+#	AirCondition fields...,
+#	ReclineableSeats fields...,
+#>
+\end{minted}
+
+\todo{Formalizzare aggregazioni multiple, overrides e defaults}
+
