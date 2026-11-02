@@ -32,6 +32,12 @@ for city => <x, y> in CITIES do {
 only when it is "equal or narrower" than the pattern; the rules are similar to
 types widening rules.
 
+\todo{
+	mmhhh... questo non è esattamente corretto. $\!x:\Int\rightarrow p_x:\Real$ è
+	compatibile ma,
+	$\!\tuple{x,y}\rightarrow\tuple{p_x,p_y,p_z}$ non lo è
+}
+
 \begin{minted}{\giovilexer}
 getPoint() => tuple<Int, Int> { => <69, 420> }
 getPoint() -> <x Real, y Real>
