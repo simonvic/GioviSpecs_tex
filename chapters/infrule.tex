@@ -105,7 +105,7 @@ for the operand types
 	\infrule[aligned]{
 		\EnvSym & \then \tau_1:\Type \semiq \tau_2:\Type \\*
 		\EnvSym & \then \exists_{\omega:\Type}{\tau_1\narreq\omega \land \tau_2\narreq\omega} \\*
-		\EnvSym & \then \nexists_{\omega'\Type}{\tau_1\narreq\omega' \land \tau_2\narreq\omega' \land \omega'\narreq\omega}
+		\EnvSym & \then \nexists_{\omega':\Type}{\tau_1\narreq\omega' \land \tau_2\narreq\omega' \land \omega'\narreq\omega}
 	}{
 		\EnvSym\then \tau_1 \lwb \tau_2 = \omega
 	}
