@@ -21,10 +21,9 @@ invocation etc.).\\*
 Unless noted otherwise, $\expr \in \Expr$ is implied.
 
 \paragraph{Expression's value} To denote to what value an expression evaluates
-to, the $\eval$ symbol will be used, for example: $\expr \eval \val$\\*
+to, the $\eval$ symbol will be used, for example: $\expr \eval \val$.\\*
 To specify the value along with its type, the notation $\tau(\val)$ will be
-used, where $\tau:\Type$ and $\val\in\Val$, for example:
-$\expr\eval\Int(\val)$\\*
+used, where $\tau:\Type$, for example: $\expr\eval\Int(\val)$.\\*
 Unless noted otherwise, $\val \in \Val$ is implied.
 
 \paragraph{Environments} Two environments will be used:
@@ -79,7 +78,7 @@ will be used $\EnvLoc\env{i\mapsto\addr}$ where it's defined as follows:
 	\end{cases}
 \]
 
-\paragraph{The $\alloc()$ function} When store environment is extended with
+\paragraph{The $\alloc()$ function} When a store environment is extended with
 a mapping, it's implicit that it is added if it does not exist, and it is
 updated if it already exists. In some cases, to improve clarity, the $\alloc()$
 function will be used to explicitly state that a new memory "address" is
